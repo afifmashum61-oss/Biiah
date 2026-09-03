@@ -1,242 +1,562 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="scroll-smooth">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Arobiyatuna - Media Pembelajaran Bahasa Arab Interaktif | MTsN 1 Sijunjung</title>
+  <title>Media Pembelajaran Bahasa Arab Kelas 11 MA - Yosi, S. Ag, M. Pd.</title>
   
-  <!-- FontAwesome Icons & Google Fonts -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/components.css">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            emerald: {
+              main: '#0C3B2E',
+              dark: '#07271E',
+              light: '#145241',
+              card: '#EBF5E9',
+            },
+            lime: {
+              accent: '#C6F235',
+              hover: '#b3df24',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="css/styles.css">
 </head>
-<body class="islamic-bg-pattern">
+<body class="bg-[#F5F7F3] text-[#0D1F17] antialiased min-h-screen flex flex-col">
 
-  <!-- Header & Navigation Bar -->
-  <header class="app-header">
-    <div class="header-container">
-      <a href="#" class="brand-logo">
-        <i class="fas fa-quran"></i>
+  <!-- TOP HEADER NAVBAR -->
+  <header class="sticky top-0 z-40 bg-[#F5F7F3]/90 backdrop-blur-md border-b border-[#E2ECDE] transition-all">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      
+      <!-- Brand Logo & Subject -->
+      <div class="flex items-center gap-3 cursor-pointer" data-target="home">
+        <div class="w-12 h-12 rounded-2xl bg-[#0C3B2E] text-[#C6F235] flex items-center justify-center font-bold text-xl shadow-md border border-[#0C3B2E]/20">
+          <i data-lucide="book-open" class="w-6 h-6"></i>
+        </div>
         <div>
-          <span class="brand-title">العَرَبِيَّةُ التَّفَاعُلِيَّةُ</span>
-          <span class="brand-subtitle">Media Pembelajaran Bahasa Arab Interaktif</span>
-        </div>
-      </a>
-      <ul class="nav-menu">
-        <li><a href="#teacher-profile" class="nav-link"><i class="fas fa-user-check"></i> Profil Guru</a></li>
-        <li><a href="#chapters" class="nav-link active"><i class="fas fa-book"></i> Materi Bab</a></li>
-        <li><a href="#evaluation" class="nav-link" onclick="document.querySelector('[data-tab=kuis]').click()"><i class="fas fa-trophy"></i> Kuis Evaluasi</a></li>
-      </ul>
-    </div>
-  </header>
-
-  <!-- Hero Section -->
-  <section class="hero-banner">
-    <div class="hero-content">
-      <h1 class="hero-arabic-title">مَلْعَبُ التَّعَلُّمِ لِلُّغَةِ العَرَبِيَّةِ</h1>
-      <div class="hero-title">Belajar Bahasa Arab Interaktif Berbasis 5 Maharah Lengkap</div>
-      <p class="hero-desc">
-        Kuasai 5 Kemampuan Bahasa (Mufrodat, Qira'ah, Kalam, Istima', Kitabah & Qawa'id) secara mudah, seru, dan berteknologi modern.
-      </p>
-    </div>
-  </section>
-
-  <!-- Main Content Container -->
-  <main class="main-content">
-    
-    <!-- Chapter Selector Cards Grid -->
-    <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 1rem; color: var(--text-dark);" id="chapters">
-      <i class="fas fa-bookmark" style="color: var(--primary-gold);"></i> Pilih Bab Pembelajaran:
-    </h3>
-    <div id="chapter-grid" class="chapter-grid">
-      <!-- Generated dynamically by app.js -->
-    </div>
-
-    <!-- Maharah Navigation Tabs -->
-    <div class="maharah-tabs">
-      <button class="tab-btn active" data-tab="mufrodat">
-        <i class="fas fa-list-alt"></i> <span>Kosakata (مُفْرَدَاتٌ)</span>
-      </button>
-      <button class="tab-btn" data-tab="qiraah">
-        <i class="fas fa-book-open"></i> <span>Membaca (قِرَاءَةٌ)</span>
-      </button>
-      <button class="tab-btn" data-tab="kalam">
-        <i class="fas fa-comments"></i> <span>Berbicara (كَلَامٌ)</span>
-      </button>
-      <button class="tab-btn" data-tab="istima">
-        <i class="fas fa-headphones"></i> <span>Mendengar (إِسْتِمَاعٌ)</span>
-      </button>
-      <button class="tab-btn" data-tab="qawaid">
-        <i class="fas fa-pen-nib"></i> <span>Menulis & Qawa'id</span>
-      </button>
-      <button class="tab-btn" data-tab="kuis" id="evaluation">
-        <i class="fas fa-award"></i> <span>Kuis Evaluasi</span>
-      </button>
-    </div>
-
-    <!-- Tab Panels Section -->
-    
-    <!-- 1. Panel Mufrodat -->
-    <div id="panel-mufrodat" class="tab-content-panel active">
-      <div class="section-title-wrap">
-        <div class="section-title">
-          <i class="fas fa-list-alt"></i>
-          <h2>Kosakata & Pelafalan Audio</h2>
-          <span class="arabic-sub">الْمُفْرَدَاتُ</span>
+          <h1 class="font-bold text-lg text-[#0C3B2E] leading-tight">العَرَبِيَّةُ • Bahasa Arab</h1>
+          <p class="text-xs text-gray-500 font-semibold">Kelas XI MA • MAN 1 Pontianak</p>
         </div>
       </div>
-      <p style="color: var(--text-muted); margin-bottom: 1rem;">
-        Klik ikon audio pada setiap kartu untuk mendengarkan pelafalan Bahasa Arab yang tajam dan akurat.
-      </p>
-      <div id="mufrodat-container" class="mufrodat-grid">
-        <!-- Rendered dynamically -->
-      </div>
-    </div>
 
-    <!-- 2. Panel Qira'ah -->
-    <div id="panel-qiraah" class="tab-content-panel">
-      <div class="section-title-wrap">
-        <div class="section-title">
-          <i class="fas fa-book-open"></i>
-          <h2>Kemampuan Membaca</h2>
-          <span class="arabic-sub">مَهَارَةُ الْقِرَاءَةِ</span>
+
+      <!-- Identity & Hamburger Button -->
+      <div class="flex items-center gap-3">
+        <!-- Teacher Profile Pill (Desktop) -->
+        <div class="hidden sm:flex items-center gap-2.5 bg-white border border-[#E2ECDE] px-3.5 py-1.5 rounded-full shadow-sm">
+          <div class="w-7 h-7 rounded-full bg-[#0C3B2E] text-[#C6F235] flex items-center justify-center text-xs font-bold">
+            Y
+          </div>
+          <div class="text-left leading-tight">
+            <p class="text-xs font-bold text-[#0C3B2E] identity-name">Yosi, S. Ag, M. Pd.</p>
+            <p class="text-[10px] text-gray-500 font-semibold identity-school">MAN 1 Pontianak</p>
+          </div>
         </div>
-      </div>
-      <div id="qiraah-container">
-        <!-- Rendered dynamically -->
-      </div>
-    </div>
 
-    <!-- 3. Panel Kalam (Hiwar & Recorder) -->
-    <div id="panel-kalam" class="tab-content-panel">
-      <div class="section-title-wrap">
-        <div class="section-title">
-          <i class="fas fa-comments"></i>
-          <h2>Kemampuan Berbicara & Percakapan</h2>
-          <span class="arabic-sub">مَهَارَةُ الْكَلَامِ</span>
-        </div>
-      </div>
-      <div id="hiwar-container">
-        <!-- Rendered dynamically -->
-      </div>
-    </div>
-
-    <!-- 4. Panel Istima' -->
-    <div id="panel-istima" class="tab-content-panel">
-      <div class="section-title-wrap">
-        <div class="section-title">
-          <i class="fas fa-headphones"></i>
-          <h2>Kemampuan Mendengarkan Audio</h2>
-          <span class="arabic-sub">مَهَارَةُ الإِسْتِمَاعِ</span>
-        </div>
-      </div>
-      <div id="istima-container">
-        <!-- Rendered dynamically -->
-      </div>
-    </div>
-
-    <!-- 5. Panel Kitabah & Qawa'id -->
-    <div id="panel-qawaid" class="tab-content-panel">
-      <div class="section-title-wrap">
-        <div class="section-title">
-          <i class="fas fa-pen-nib"></i>
-          <h2>Tata Bahasa & Menyusun Kalimat</h2>
-          <span class="arabic-sub">مَهَارَةُ الْكِتَابَةِ وَالقَوَاعِدُ</span>
-        </div>
-      </div>
-      <div id="qawaid-container">
-        <!-- Rendered dynamically -->
-      </div>
-    </div>
-
-    <!-- 6. Panel Kuis Evaluasi -->
-    <div id="panel-kuis" class="tab-content-panel">
-      <div class="section-title-wrap">
-        <div class="section-title">
-          <i class="fas fa-award"></i>
-          <h2>Evaluasi Akhir Seluruh Maharah</h2>
-          <span class="arabic-sub">الإِخْتِبَارُ الشَّامِلُ</span>
-        </div>
-      </div>
-      <div id="quiz-container">
-        <!-- Rendered dynamically -->
-      </div>
-    </div>
-
-  </main>
-
-  <!-- Certificate Result Modal Overlay -->
-  <div id="certificate-modal" class="modal-overlay">
-    <div class="certificate-card">
-      <i class="fas fa-ribbon" style="font-size: 3.5rem; color: var(--primary-gold); margin-bottom: 0.5rem;"></i>
-      <h2 class="certificate-title">شَهَادَةُ التَّقْدِيْرِ</h2>
-      <h4 style="font-weight: 700; color: var(--text-dark); margin-bottom: 0.5rem;">Sertifikat Pencapaian Hasil Belajar</h4>
-      <p style="font-size: 0.9rem; color: var(--text-muted);">Selamat! Anda telah menyelesaikan Kuis Evaluasi Maharah Bahasa Arab</p>
-
-      <div class="certificate-score" id="cert-score">0</div>
-
-      <div class="certificate-breakdown" id="cert-breakdown">
-        <!-- Skill items breakdown -->
-      </div>
-
-      <div style="margin-top: 1rem; font-size: 0.88rem; color: var(--text-muted);">
-        <span>Waktu Pengerjaan: <strong id="cert-time">00:00</strong></span> | 
-        <span>Jumlah Benar: <strong id="cert-correct">0</strong></span>
-      </div>
-
-      <!-- Teacher Signature Block -->
-      <div class="cert-signature-block">
-        <div class="cert-signature-title">Guru Pengampu Bahasa Arab:</div>
-        <div class="cert-teacher-name">Maijusnawita, S.Ag</div>
-        <div class="cert-teacher-nip">NIP. 197105212014112002</div>
-        <div class="cert-school-name">MTsN 1 Sijunjung | TP 2026 - 2027</div>
-      </div>
-
-      <div style="margin-top: 1.5rem;">
-        <button id="btn-close-cert" class="btn btn-primary btn-lg">
-          <i class="fas fa-redo"></i> Kembali ke Menu Utama
+        <!-- HAMBURGER MENU BUTTON -->
+        <button 
+          id="hamburgerBtn" 
+          onclick="window.toggleDrawer(true)"
+          class="w-12 h-12 rounded-2xl bg-[#0C3B2E] text-white flex items-center justify-center hover:bg-[#07271E] transition-all shadow-md focus:outline-none focus:ring-2 focus:ring-[#C6F235] cursor-pointer"
+          aria-label="Buka Menu Navigasi"
+        >
+          <i data-lucide="menu" class="w-6 h-6 text-[#C6F235] pointer-events-none"></i>
         </button>
       </div>
     </div>
-  </div>
+  </header>
 
-  <!-- Footer -->
-  <footer class="app-footer" id="teacher-profile">
-    <div class="footer-content">
+  <!-- HAMBURGER MENU OVERLAY DRAWER -->
+  <div id="drawerBackdrop" class="drawer-backdrop" onclick="window.toggleDrawer(false)"></div>
+  <aside id="drawerContent" class="drawer-content">
+    
+    <!-- Drawer Header -->
+    <div class="p-6 border-b border-white/10 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-[#C6F235] text-[#0C3B2E] flex items-center justify-center font-bold text-lg">
+          <i data-lucide="sparkles" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <h3 class="font-bold text-white text-base">Menu Pembelajaran</h3>
+          <p class="text-xs text-emerald-200">Bahasa Arab XI MA</p>
+        </div>
+      </div>
+      <button id="closeDrawerBtn" onclick="window.toggleDrawer(false)" class="w-9 h-9 rounded-full bg-white/10 text-white hover:bg-white/20 flex items-center justify-center transition-colors cursor-pointer">
+        <i data-lucide="x" class="w-5 h-5 pointer-events-none"></i>
+      </button>
+    </div>
+
+    <!-- Drawer Teacher Profile Banner -->
+    <div class="p-5 mx-4 mt-4 bg-white/10 rounded-2xl border border-white/10 backdrop-blur-sm">
+      <div class="flex items-center gap-3">
+        <div class="w-12 h-12 rounded-full bg-[#C6F235] text-[#0C3B2E] font-bold text-lg flex items-center justify-center border-2 border-white shadow">
+          Y
+        </div>
+        <div>
+          <span class="bg-[#C6F235] text-[#0C3B2E] text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">Pengampu / Owner</span>
+          <h4 class="font-bold text-white text-sm mt-0.5 identity-name">Yosi, S. Ag, M. Pd.</h4>
+          <p class="text-xs text-emerald-200 identity-school">MAN 1 Pontianak</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Drawer Navigation Links Grouped by Chapter (Bab) -->
+    <nav class="p-4 flex-1 overflow-y-auto space-y-4 text-sm">
       
-      <!-- Teacher / Owner Identity Card in Footer -->
-      <div class="teacher-identity-card" style="max-width: 650px; margin: 0 auto 1.8rem auto; text-align: left; background: #FFFFFF; border: 1.5px solid var(--primary-gold); box-shadow: var(--shadow-md);">
-        <div class="teacher-avatar">
-          <i class="fas fa-user-graduate"></i>
+      <!-- Home Link -->
+      <a href="#" class="drawer-nav-item active" data-target="home">
+        <i data-lucide="home" class="w-5 h-5"></i>
+        <span>Beranda Utama</span>
+      </a>
+
+      <!-- BAB 1: السَّفَرُ وَالسِّيَاحَةُ -->
+      <div class="space-y-1 pt-1">
+        <div class="px-3 py-1.5 text-[11px] font-extrabold uppercase tracking-wider text-[#C6F235] bg-white/10 rounded-xl border border-white/10 flex items-center gap-1.5">
+          <i data-lucide="compass" class="w-3.5 h-3.5 text-[#C6F235]"></i>
+          <span>BAB 1: السَّفَرُ وَالسِّيَاحَةُ (Wisata & Bepergian)</span>
         </div>
-        <div class="teacher-info">
-          <span class="teacher-badge"><i class="fas fa-award"></i> GURU PENGAMPU & PEMILIK MEDIA</span>
-          <h3 class="teacher-name" style="color: var(--dark-bg);">Maijusnawita, S.Ag</h3>
-          <div class="teacher-nip" style="color: var(--primary-gold-hover);"><i class="fas fa-id-card"></i> NIP: 197105212014112002</div>
-          <div class="teacher-school" style="color: var(--text-dark);">
-            <i class="fas fa-school"></i> MTsN 1 Sijunjung, Kec. IV Nagari, Kab. Sijunjung, Prov. Sumatera Barat
+        <a href="#" class="drawer-nav-item text-xs pl-5" data-target="mufrodat" data-topic="topik1">
+          <i data-lucide="layout-grid" class="w-4 h-4 text-lime-300"></i>
+          <span>Mufrodat Bab 1 (27 Kosakata)</span>
+        </a>
+        <a href="#" class="drawer-nav-item text-xs pl-5" data-target="qiraah" data-item="1">
+          <i data-lucide="book-open-text" class="w-4 h-4 text-lime-300"></i>
+          <span>Qira'ah 1: Goa Pindul</span>
+        </a>
+        <a href="#" class="drawer-nav-item text-xs pl-5" data-target="qiraah" data-item="2">
+          <i data-lucide="book-open-text" class="w-4 h-4 text-lime-300"></i>
+          <span>Qira'ah 2: Pantai Losari</span>
+        </a>
+        <a href="#" class="drawer-nav-item text-xs pl-5" data-target="kalam" data-item="1">
+          <i data-lucide="messages-square" class="w-4 h-4 text-lime-300"></i>
+          <span>Kalam 1: Liburan Sukoharjo</span>
+        </a>
+        <a href="#" class="drawer-nav-item text-xs pl-5" data-target="kalam" data-item="2">
+          <i data-lucide="messages-square" class="w-4 h-4 text-lime-300"></i>
+          <span>Kalam 2: Wisata Goa Pindul</span>
+        </a>
+        <a href="#" class="drawer-nav-item text-xs pl-5" data-target="qawaid" data-item="1">
+          <i data-lucide="file-code" class="w-4 h-4 text-lime-300"></i>
+          <span>Qawa'id 1: Tashrif Fi'il Madhy</span>
+        </a>
+      </div>
+
+      <!-- BAB 2: الصِّحَّةُ -->
+      <div class="space-y-1 pt-1">
+        <div class="px-3 py-1.5 text-[11px] font-extrabold uppercase tracking-wider text-[#C6F235] bg-white/10 rounded-xl border border-white/10 flex items-center gap-1.5">
+          <i data-lucide="activity" class="w-3.5 h-3.5 text-[#C6F235]"></i>
+          <span>BAB 2: الصِّحَّةُ (Kesehatan)</span>
+        </div>
+        <a href="#" class="drawer-nav-item text-xs pl-5" data-target="mufrodat" data-topic="topik2">
+          <i data-lucide="layout-grid" class="w-4 h-4 text-lime-300"></i>
+          <span>Mufrodat Bab 2 (30 Kosakata Sehat)</span>
+        </a>
+        <a href="#" class="drawer-nav-item text-xs pl-5" data-target="qiraah" data-item="3">
+          <i data-lucide="book-open-text" class="w-4 h-4 text-lime-300"></i>
+          <span>Qira'ah 1: Mari Hidup Sehat 1 (هَيَّا نَعِيْشُ بِالصِّحَّةِ ١)</span>
+        </a>
+        <a href="#" class="drawer-nav-item text-xs pl-5" data-target="qiraah" data-item="4">
+          <i data-lucide="book-open-text" class="w-4 h-4 text-lime-300"></i>
+          <span>Qira'ah 2: Mari Hidup Sehat 2 (هَيَّا نَعِيْشُ بِالصِّحَّةِ ٢)</span>
+        </a>
+        <a href="#" class="drawer-nav-item text-xs pl-5" data-target="kalam" data-item="3">
+          <i data-lucide="messages-square" class="w-4 h-4 text-lime-300"></i>
+          <span>Kalam 1: Di Rumah Sakit (فِي الْمُسْتَشْفَى)</span>
+        </a>
+        <a href="#" class="drawer-nav-item text-xs pl-5" data-target="kalam" data-item="4">
+          <i data-lucide="messages-square" class="w-4 h-4 text-lime-300"></i>
+          <span>Kalam 2: Di Apotek (فِي الصَّيْدَلِيَّةِ)</span>
+        </a>
+        <a href="#" class="drawer-nav-item text-xs pl-5" data-target="qawaid" data-item="2">
+          <i data-lucide="file-code" class="w-4 h-4 text-lime-300"></i>
+          <span>Qawa'id 2: Tashrif Fi'il Mudhari'</span>
+        </a>
+      </div>
+
+      <!-- BAB 3: الحَجُّ وَالعُمْرَةُ -->
+      <div class="space-y-1 pt-1">
+        <div class="px-3 py-1.5 text-[11px] font-extrabold uppercase tracking-wider text-[#C6F235] bg-white/10 rounded-xl border border-white/10 flex items-center gap-1.5">
+          <i data-lucide="moon" class="w-3.5 h-3.5 text-[#C6F235]"></i>
+          <span>BAB 3: الحَجُّ وَالعُمْرَةُ (Haji & Umrah)</span>
+        </div>
+        <a href="#" class="drawer-nav-item text-xs pl-5" data-target="mufrodat" data-topic="topik3">
+          <i data-lucide="layout-grid" class="w-4 h-4 text-lime-300"></i>
+          <span>Mufrodat Bab 3 (Ka'bah & Thawaf)</span>
+        </a>
+        <a href="#" class="drawer-nav-item text-xs pl-5" data-target="qiraah" data-item="5">
+          <i data-lucide="book-open-text" class="w-4 h-4 text-lime-300"></i>
+          <span>Qira'ah 1: Manasik Haji & Umrah (الْحَجُّ وَالْعُمْرَةُ)</span>
+        </a>
+        <a href="#" class="drawer-nav-item text-xs pl-5" data-target="qiraah" data-item="6">
+          <i data-lucide="book-open-text" class="w-4 h-4 text-lime-300"></i>
+          <span>Qira'ah 2: Umrah di Bulan Ramadan (الْعُمْرَةُ فِي رَمَضَانَ)</span>
+        </a>
+        <a href="#" class="drawer-nav-item text-xs pl-5" data-target="kalam" data-item="5">
+          <i data-lucide="messages-square" class="w-4 h-4 text-lime-300"></i>
+          <span>Kalam 1: Ka'bah Al-Musharrafah (الْكَعْبَةُ الْمُشَرَّفَةُ)</span>
+        </a>
+        <a href="#" class="drawer-nav-item text-xs pl-5" data-target="kalam" data-item="6">
+          <i data-lucide="messages-square" class="w-4 h-4 text-lime-300"></i>
+          <span>Kalam 2: Hajar Aswad (الْحَجَرُ الأَسْوَدُ)</span>
+        </a>
+        <a href="#" class="drawer-nav-item text-xs pl-5" data-target="qawaid" data-item="3">
+          <i data-lucide="file-code" class="w-4 h-4 text-lime-300"></i>
+          <span>Qawa'id 3: Fi'il Amr & Munada</span>
+        </a>
+      </div>
+
+      <!-- BAB 4: الوِحْدَةُ الرَّابِعَةُ: الأَدْيَانُ فِي إِنْدُونِيسِيَا -->
+      <div class="space-y-1 pt-1">
+        <div class="px-3 py-1.5 text-[11px] font-extrabold uppercase tracking-wider text-[#C6F235] bg-white/10 rounded-xl border border-white/10 flex items-center gap-1.5">
+          <i data-lucide="globe" class="w-3.5 h-3.5 text-[#C6F235]"></i>
+          <span>BAB 4: الأَدْيَانُ فِي إِنْدُونِيسِيَا (Agama di Indonesia)</span>
+        </div>
+        <a href="#" class="drawer-nav-item text-xs pl-5" data-target="mufrodat" data-topic="topik4">
+          <i data-lucide="layout-grid" class="w-4 h-4 text-lime-300"></i>
+          <span>Mufrodat Bab 4 (Toleransi & Kebangsaan)</span>
+        </a>
+        <a href="#" class="drawer-nav-item text-xs pl-5" data-target="qiraah" data-item="7">
+          <i data-lucide="book-open-text" class="w-4 h-4 text-lime-300"></i>
+          <span>Qira'ah: Agama di Indonesia (الأَدْيَانُ فِي إِندُونِيسِيَا)</span>
+        </a>
+        <a href="#" class="drawer-nav-item text-xs pl-5" data-target="kalam" data-item="7">
+          <i data-lucide="messages-square" class="w-4 h-4 text-lime-300"></i>
+          <span>Kalam 1: Keberagaman Agama (تَنَوُّعُ الأَدْيَانِ)</span>
+        </a>
+        <a href="#" class="drawer-nav-item text-xs pl-5" data-target="kalam" data-item="8">
+          <i data-lucide="messages-square" class="w-4 h-4 text-lime-300"></i>
+          <span>Kalam 2: Tempat Ibadah (مَكَانُ الْعِبَادَةِ)</span>
+        </a>
+        <a href="#" class="drawer-nav-item text-xs pl-5" data-target="qawaid" data-item="4">
+          <i data-lucide="file-code" class="w-4 h-4 text-lime-300"></i>
+          <span>Qawa'id 4: Kaidah Na'at & Man'ut</span>
+        </a>
+        <a href="#" class="drawer-nav-item text-xs pl-5" data-target="qawaid" data-item="5">
+          <i data-lucide="file-code" class="w-4 h-4 text-lime-300"></i>
+          <span>Qawa'id 5: Kaidah Idhafah (Mudhaf & Mudhaf Ilaih)</span>
+        </a>
+      </div>
+
+      <!-- EVALUASI & KUIS -->
+      <div class="pt-2">
+        <a href="#" class="drawer-nav-item bg-[#C6F235] text-[#0C3B2E] hover:bg-[#b3df24] font-extrabold" data-target="latihan">
+          <i data-lucide="pen-tool" class="w-5 h-5 text-[#0C3B2E]"></i>
+          <span>Latihan & Kuis Evaluasi</span>
+        </a>
+      </div>
+
+    </nav>
+
+    <!-- Drawer Footer -->
+    <div class="p-5 border-t border-white/10 bg-[#07271E] text-center text-xs text-emerald-300">
+      <p>© 2026 Media Pembelajaran Bahasa Arab</p>
+      <p class="text-[10px] text-emerald-400/70 mt-0.5">MAN 1 Pontianak • Kelas XI MA</p>
+    </div>
+
+  </aside>
+
+  <!-- MAIN CONTENT CONTAINER -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+    <!-- 1. HOME / DASHBOARD VIEW -->
+    <section id="view-home" class="view-section space-y-8">
+      
+      <!-- HERO BANNER CARD (Inspired by Reference Design) -->
+      <div class="relative bg-[#0C3B2E] text-white rounded-3xl p-8 md:p-12 overflow-hidden shadow-2xl border border-[#0C3B2E]">
+        <!-- Decorative Glow Blur -->
+        <div class="absolute -top-24 -right-24 w-96 h-96 bg-[#C6F235]/15 rounded-full blur-3xl pointer-events-none"></div>
+        
+        <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          <!-- Left Content -->
+          <div class="lg:col-span-7 space-y-6">
+            <div class="inline-flex items-center gap-2 bg-white/10 border border-white/20 backdrop-blur-md px-4 py-1.5 rounded-full text-xs text-[#C6F235] font-semibold">
+              <i data-lucide="sparkles" class="w-4 h-4"></i>
+              Media Pembelajaran Interaktif 2026
+            </div>
+
+            <h2 class="font-diwani text-white font-bold leading-relaxed text-4xl sm:text-5xl md:text-6xl tracking-wide">
+              اللُّغَةُ العَرَبِيَّةُ نُحِبُّهَا وَنَتَعَوَّدُ بِهَا
+            </h2>
+
+            <p class="text-emerald-100/90 text-sm sm:text-base max-w-xl leading-relaxed">
+              Platform pembelajaran digital terpadu menyajikan Mufrodat, Qira'ah ber-audio, Percakapan Kalam, Tata Bahasa Qawa'id, dan Evaluasi Latihan interaktif.
+            </p>
+
+            <!-- Action Button inside Hero -->
+            <div class="flex flex-wrap items-center gap-4 pt-2">
+              <button data-target="mufrodat" class="px-6 py-3 bg-[#C6F235] text-[#0C3B2E] font-extrabold rounded-full text-sm hover:bg-[#b3df24] transition-all shadow-lg hover:scale-105 transform flex items-center gap-2">
+                <span>Mulai Belajar Sekarang</span>
+                <i data-lucide="arrow-right" class="w-4 h-4"></i>
+              </button>
+            </div>
           </div>
-          <div class="teacher-year" style="color: var(--text-muted);">
-            <i class="fas fa-calendar-check"></i> Tahun Pelajaran: 2026 – 2027
+
+          <!-- Right 3D Illustration Graphic -->
+          <div class="lg:col-span-5 flex justify-center lg:justify-end">
+            <div class="relative group">
+              <!-- Backdrop Glow -->
+              <div class="absolute -inset-1 bg-gradient-to-r from-[#C6F235]/40 to-emerald-500/40 rounded-3xl blur-xl opacity-75 group-hover:opacity-100 transition duration-500"></div>
+              <!-- Image Container -->
+              <div class="relative overflow-hidden rounded-3xl border-2 border-white/20 bg-[#07271E] shadow-2xl max-w-sm">
+                <img 
+                  src="img/kaaba_3d.jpg" 
+                  alt="Ilustrasi 3D Ka'bah & Kaligrafi Pembelajaran Bahasa Arab" 
+                  class="w-full h-auto object-cover transform hover:scale-105 transition duration-700 ease-out"
+                />
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      <div style="font-family: var(--font-arabic-heading); font-size: 1.4rem; color: var(--primary-gold); margin-bottom: 0.4rem;">
-        العَرَبِيَّةُ التَّفَاعُلِيَّةُ - Arobiyatuna
+      <!-- MAIN MENU FEATURE CARDS GRID (SaaS/Fintech Layout) -->
+      <div>
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h3 class="text-2xl font-bold text-[#0C3B2E]">Menu Pembelajaran Utama</h3>
+            <p class="text-sm text-gray-600">Pilih modul materi yang ingin Anda pelajari hari ini</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          
+          <!-- Card 1: Mufrodat -->
+          <div class="card-modern p-6 cursor-pointer flex flex-col justify-between group" data-target="mufrodat">
+            <div>
+              <div class="w-12 h-12 rounded-2xl bg-[#EBF5E9] text-[#0C3B2E] flex items-center justify-center font-bold text-xl mb-4 group-hover:bg-[#0C3B2E] group-hover:text-[#C6F235] transition-colors">
+                <i data-lucide="layout-grid" class="w-6 h-6"></i>
+              </div>
+              <span class="badge-lime mb-2">المفردات</span>
+              <h4 class="text-xl font-bold text-[#0C3B2E] mb-2">Mufrodat (Kosakata)</h4>
+              <p class="text-xs text-gray-600 leading-relaxed mb-4">
+                Kartu memori interaktif (flipcard) dilengkapi audio pengucapan, jenis kata, dan contoh penggunaan.
+              </p>
+            </div>
+            <div class="flex items-center justify-between text-xs font-bold text-[#0C3B2E] pt-4 border-t border-[#E2ECDE]">
+              <span>Buka Mufrodat</span>
+              <i data-lucide="arrow-right" class="w-4 h-4 text-[#0C3B2E] group-hover:translate-x-1 transition-transform"></i>
+            </div>
+          </div>
+
+          <!-- Card 2: Qira'ah -->
+          <div class="card-modern p-6 cursor-pointer flex flex-col justify-between group" data-target="qiraah">
+            <div>
+              <div class="w-12 h-12 rounded-2xl bg-[#EBF5E9] text-[#0C3B2E] flex items-center justify-center font-bold text-xl mb-4 group-hover:bg-[#0C3B2E] group-hover:text-[#C6F235] transition-colors">
+                <i data-lucide="book-open-text" class="w-6 h-6"></i>
+              </div>
+              <span class="badge-lime mb-2">القراءة</span>
+              <h4 class="text-xl font-bold text-[#0C3B2E] mb-2">Maharah Qira'ah (Membaca)</h4>
+              <p class="text-xs text-gray-600 leading-relaxed mb-4">
+                Teks bacaan Bahasa Arab Kelas 11 ber-harakat dengan fitur pemutar suara narasi dan terjemahan.
+              </p>
+            </div>
+            <div class="flex items-center justify-between text-xs font-bold text-[#0C3B2E] pt-4 border-t border-[#E2ECDE]">
+              <span>Buka Qira'ah</span>
+              <i data-lucide="arrow-right" class="w-4 h-4 text-[#0C3B2E] group-hover:translate-x-1 transition-transform"></i>
+            </div>
+          </div>
+
+          <!-- Card 3: Kalam -->
+          <div class="card-modern p-6 cursor-pointer flex flex-col justify-between group" data-target="kalam">
+            <div>
+              <div class="w-12 h-12 rounded-2xl bg-[#EBF5E9] text-[#0C3B2E] flex items-center justify-center font-bold text-xl mb-4 group-hover:bg-[#0C3B2E] group-hover:text-[#C6F235] transition-colors">
+                <i data-lucide="messages-square" class="w-6 h-6"></i>
+              </div>
+              <span class="badge-lime mb-2">الكلام</span>
+              <h4 class="text-xl font-bold text-[#0C3B2E] mb-2">Maharah Kalam (Berbicara)</h4>
+              <p class="text-xs text-gray-600 leading-relaxed mb-4">
+                Simulasi dialog dan percakapan (*Hiwar*) situasi sehari-hari dengan pengisi suara interaktif.
+              </p>
+            </div>
+            <div class="flex items-center justify-between text-xs font-bold text-[#0C3B2E] pt-4 border-t border-[#E2ECDE]">
+              <span>Buka Kalam</span>
+              <i data-lucide="arrow-right" class="w-4 h-4 text-[#0C3B2E] group-hover:translate-x-1 transition-transform"></i>
+            </div>
+          </div>
+
+          <!-- Card 4: Qawa'id -->
+          <div class="card-modern p-6 cursor-pointer flex flex-col justify-between group" data-target="qawaid">
+            <div>
+              <div class="w-12 h-12 rounded-2xl bg-[#EBF5E9] text-[#0C3B2E] flex items-center justify-center font-bold text-xl mb-4 group-hover:bg-[#0C3B2E] group-hover:text-[#C6F235] transition-colors">
+                <i data-lucide="file-code" class="w-6 h-6"></i>
+              </div>
+              <span class="badge-lime mb-2">القواعد</span>
+              <h4 class="text-xl font-bold text-[#0C3B2E] mb-2">Qawa'id / Qoidah (Grammar)</h4>
+              <p class="text-xs text-gray-600 leading-relaxed mb-4">
+                Ringkasan tata bahasa Arab (Jumlah Fi'liyyah/Ismiyyah, Fi'il Amr, Na'at Man'ut) dengan pemetaan visual.
+              </p>
+            </div>
+            <div class="flex items-center justify-between text-xs font-bold text-[#0C3B2E] pt-4 border-t border-[#E2ECDE]">
+              <span>Buka Qawa'id</span>
+              <i data-lucide="arrow-right" class="w-4 h-4 text-[#0C3B2E] group-hover:translate-x-1 transition-transform"></i>
+            </div>
+          </div>
+
+          <!-- Card 5: Latihan Interaktif -->
+          <div class="card-modern p-6 cursor-pointer flex flex-col justify-between group sm:col-span-2 lg:col-span-2 bg-gradient-to-r from-[#0C3B2E] to-[#145241] text-white" data-target="latihan">
+            <div>
+              <div class="w-12 h-12 rounded-2xl bg-[#C6F235] text-[#0C3B2E] flex items-center justify-center font-bold text-xl mb-4">
+                <i data-lucide="award" class="w-6 h-6"></i>
+              </div>
+              <span class="bg-[#C6F235] text-[#0C3B2E] text-xs font-bold px-3 py-1 rounded-full mb-2 inline-block">التدريبات</span>
+              <h4 class="text-2xl font-bold text-white mb-2">Latihan & Kuis Evaluasi Interaktif</h4>
+              <p class="text-xs text-white/80 leading-relaxed mb-4">
+                Uji pemahaman Anda melalui kuis pilihan ganda dengan penilaian otomatis, umpan balik langsung, dan pembahasannya.
+              </p>
+            </div>
+            <div class="flex items-center justify-between text-xs font-bold text-[#C6F235] pt-4 border-t border-white/10">
+              <span>Mulai Kuis Latihan</span>
+              <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+            </div>
+          </div>
+
+        </div>
       </div>
-      <p class="footer-text" style="line-height: 1.6;">
-        Media Pembelajaran Bahasa Arab Interaktif Berbasis 5 Maharah<br>
-        &copy; 2026 - 2027 MTsN 1 Sijunjung. Hak Cipta Dilindungi.
-      </p>
+
+    </section>
+
+    <!-- 2. MUFRODAT VIEW -->
+    <section id="view-mufrodat" class="view-section hidden space-y-6">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#E2ECDE] pb-4">
+        <div>
+          <span class="badge-lime mb-1">المفردات • Kosakata</span>
+          <h2 class="text-3xl font-extrabold text-[#0C3B2E]">Mufrodat Bahasa Arab Kelas 11 MA</h2>
+          <p class="text-sm text-gray-600">Klik kartu untuk melihat terjemahan dan contoh kalimatnya</p>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="relative w-full md:w-72">
+          <i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400"></i>
+          <input 
+            type="text" 
+            id="mufrodatSearch" 
+            placeholder="Cari kosakata..." 
+            class="w-full pl-10 pr-4 py-2.5 rounded-full border border-[#E2ECDE] bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[#0C3B2E]"
+          >
+        </div>
+      </div>
+
+      <!-- Filter Tabs (Satu Baris Horizontal) -->
+      <div id="topicFilters" class="flex items-center gap-2 overflow-x-auto whitespace-nowrap pb-2 scrollbar-none w-full">
+        <!-- Dynamically injected topic filters -->
+      </div>
+
+      <!-- Mufrodat Cards Grid -->
+      <div id="mufrodatGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Dynamically populated -->
+      </div>
+    </section>
+
+    <!-- 3. MAHARAH QIRAAH VIEW -->
+    <section id="view-qiraah" class="view-section hidden space-y-6">
+      <div class="border-b border-[#E2ECDE] pb-4">
+        <span class="badge-lime mb-1">مهارة القراءة • Membaca</span>
+        <h2 class="text-3xl font-extrabold text-[#0C3B2E]">Maharah Qira'ah (Kemahiran Membaca)</h2>
+        <p class="text-sm text-gray-600">Bacalah teks Bahasa Arab berikut dan dengarkan pelafalannya</p>
+      </div>
+
+      <div id="qiraahContainer">
+        <!-- Dynamically populated -->
+      </div>
+    </section>
+
+    <!-- 4. MAHARAH KALAM VIEW -->
+    <section id="view-kalam" class="view-section hidden space-y-6">
+      <div class="border-b border-[#E2ECDE] pb-4">
+        <span class="badge-lime mb-1">مهارة الكلام • Berbicara</span>
+        <h2 class="text-3xl font-extrabold text-[#0C3B2E]">Maharah Kalam (Kemahiran Berbicara)</h2>
+        <p class="text-sm text-gray-600">Latih kelancaran percakapan (*Hiwar*) Bahasa Arab Anda</p>
+      </div>
+
+      <div id="kalamContainer">
+        <!-- Dynamically populated -->
+      </div>
+    </section>
+
+    <!-- 5. QAWAID VIEW -->
+    <section id="view-qawaid" class="view-section hidden space-y-6">
+      <div class="border-b border-[#E2ECDE] pb-4">
+        <span class="badge-lime mb-1">القواعد • Tata Bahasa</span>
+        <h2 class="text-3xl font-extrabold text-[#0C3B2E]">Qawa'id / Qoidah (Tata Bahasa Arab)</h2>
+        <p class="text-sm text-gray-600">Pelajari struktur kalimat dan rumus gramatika Bahasa Arab Kelas 11 MA</p>
+      </div>
+
+      <div id="qawaidContainer">
+        <!-- Dynamically populated -->
+      </div>
+    </section>
+
+    <!-- 6. LATIHAN VIEW -->
+    <section id="view-latihan" class="view-section hidden space-y-6">
+      <div class="border-b border-[#E2ECDE] pb-4">
+        <span class="badge-lime mb-1">التدريبات • Evaluasi</span>
+        <h2 class="text-3xl font-extrabold text-[#0C3B2E]">Latihan & Kuis Interaktif</h2>
+        <p class="text-sm text-gray-600">Uji kemampuan Bahasa Arab Anda dan dapatkan nilai langsung</p>
+      </div>
+
+      <div id="quizContainer">
+        <!-- Dynamically populated -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER SECTION WITH TEACHER IDENTITY -->
+  <footer class="bg-[#0C3B2E] text-white border-t border-[#07271E] mt-16 py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center pb-8 border-b border-white/10">
+        
+        <div class="md:col-span-6 space-y-3">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-[#C6F235] text-[#0C3B2E] font-bold flex items-center justify-center text-lg">
+              <i data-lucide="book-open" class="w-5 h-5"></i>
+            </div>
+            <h3 class="font-extrabold text-xl text-white">Media Pembelajaran Bahasa Arab</h3>
+          </div>
+          <p class="text-xs text-emerald-200 leading-relaxed max-w-md">
+            Dikembangkan khusus untuk mendukung kegiatan belajar mengajar mata pelajaran Bahasa Arab siswa-siswi Kelas XI Madrasah Aliyah (MA).
+          </p>
+        </div>
+
+        <!-- Identity Highlight Box in Footer -->
+        <div class="md:col-span-6 flex md:justify-end">
+          <div class="bg-white/10 border border-white/15 p-5 rounded-2xl backdrop-blur-sm flex items-center gap-4 max-w-md w-full">
+            <div class="w-14 h-14 rounded-2xl bg-[#C6F235] text-[#0C3B2E] font-bold text-2xl flex items-center justify-center shrink-0 border-2 border-white shadow-lg">
+              Y
+            </div>
+            <div>
+              <span class="bg-[#C6F235] text-[#0C3B2E] text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">Penyusun & Pemilik Website</span>
+              <h4 class="font-bold text-white text-base mt-1 identity-name">Yosi, S. Ag, M. Pd.</h4>
+              <p class="text-xs text-emerald-200 identity-school">MAN 1 Pontianak</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-emerald-300 gap-4">
+        <p>© 2026 MAN 1 Pontianak. All rights reserved.</p>
+        <p class="text-emerald-400/80">Desain UI terinspirasi modern SaaS/Fintech emerald-lime palette</p>
+      </div>
     </div>
   </footer>
 
-  <!-- Application JavaScript Files -->
+  <!-- Scripts -->
   <script src="js/data.js"></script>
-  <script src="js/tts.js"></script>
-  <script src="js/recorder.js"></script>
-  <script src="js/quiz.js"></script>
   <script src="js/app.js"></script>
+  <script src="js/quiz.js"></script>
+
 </body>
 </html>

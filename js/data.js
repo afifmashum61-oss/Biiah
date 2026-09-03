@@ -1,1068 +1,1869 @@
 /**
- * Data Store untuk Aplikasi Web Media Pembelajaran Bahasa Arab Interaktif (Arobiyatuna)
- * Bab 3 Qawa'id disesuaikan 100% dengan Gambar Rujukan Resmi:
- * - Title: لَا النَّاهِيَة وَ لَمْ النَّافِيَة
- * - Reference: (الشيخ مصطفى الغلاييني. جامع الدروس العربية. بيروت: دار الكتب العلمية، ٢٠١٢)
- * - Tabel dengan background kuning (#FEFDE8), Fi'il Mudhari' disorot warna MERAH
- * - Keterangan: Perhatikan perubahan fi'il mudhari' pada kolom di atas!
- *   1. لَمْ di sini lam nafi yang berarti belum/tidak, sedangkan لَا adalah la nahiyah yang berarti jangan!. Keduanya masuk kepada fi'il mudhari' saja.
+ * Data Material Bahasa Arab Kelas 11 MA
+ * Pemilik / Penyusun: Yosi, S. Ag, M. Pd. (MAN 1 Pontianak)
  */
 
-const arabicData = {
-  chapters: [
+const ARABIC_DATA = {
+  identity: {
+    name: "Yosi, S. Ag, M. Pd.",
+    title: "Guru Bahasa Arab",
+    school: "MAN 1 Pontianak",
+    subject: "Bahasa Arab - Kelas XI MA",
+    year: "2026",
+    avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=300&auto=format&fit=crop"
+  },
+
+  topics: [
+    { id: "topik1", title: "BAB 1: السَّفَرُ وَالسِّيَاحَةُ (Wisata & Bepergian)", icon: "compass" },
+    { id: "topik2", title: "BAB 2: الصِّحَّةُ (Kesehatan)", icon: "activity" },
+    { id: "topik3", title: "BAB 3: الحَجُّ وَالعُمْرَةُ (Haji & Umrah)", icon: "moon" },
+    { id: "topik4", title: "BAB 4: الأَدْيَانُ فِي إِنْدُونِيسِيَا (Agama di Indonesia)", icon: "globe" }
+  ],
+
+  mufrodat: [
+    // --- BAB 1: السَّفَرُ وَالسِّيَاحَةُ (Bepergian & Wisata) ---
     {
       id: 1,
-      title: "سَنَةٌ هِجْرِيَّةٌ جَدِيْدَةٌ",
-      titleIndo: "Tahun Baru Hijriah",
-      subtitle: "هِجْرَةُ الرَّسُوْلِ ﷺ وَتَطْبِيْقُهَا فِي الْحَيَاةِ الْيَوْمِيَّةِ",
-      subtitleIndo: "Hijrah Rasulullah ﷺ dan Penerapannya di Era Digital",
-      icon: "fa-calendar-alt",
-      qiraah: {
-        title: "سَنَةٌ هِجْرِيَّةٌ جَدِيْدَةٌ",
-        fullArabic: `اليَوْمَ هُوَ الأَوَّلُ مِنْ شَهْرِ مُحَرَّمٍ، وَالتَّلَامِيْذُ يَحْتَفِلُوْنَ بِسَنَةٍ هِجْرِيَّةٍ جَدِيْدَةٍ فِي مَلْعَبِ الْمَدْرَسَةِ. التَّلَامِيْذُ يَجْلِسُوْنَ فِي جُزْءِ الْيَمِيْنِ، وَالتِّلْمِيْذَاتُ يَجْلِسْنَ فِي الْجُزْءِ الْيَسَارِ. هُمْ يَسْتَمِعُوْنَ إِلَى الْمُحَاضَرَةِ الدِّيْنِيَّةِ الَّتِي يُلْقِيْهَا الأُسْتَاذُ مُحَمَّدُ نَبِيْلُ. تَحَدَّثَ الأُسْتَاذُ فِي مُحَاضَرَتِهِ عَنْ هِجْرَةِ الرَّسُوْلِ ﷺ مِنْ مَكَّةَ إِلَى الْمَدِيْنَةِ. وَهَذِهِ هِيَ الْقِصَّةُ:
-
-هَاجَرَ الرَّسُوْلُ ﷺ وَأَصْحَابُهُ مِنْ مَكَّةَ إِلَى الْمَدِينَةِ. هُمْ تَرَكُوا وَطَنَهُمْ وَبُيُوتَهُمْ وَأَمْوَالَهُمْ وَتِجَارَتَهُمْ فِي مَكَّةَ. حَاوَلَ الْكُفَّارُ أَنْ يَقْتُلُوا النَّبِيَّ ﷺ، وَحَاوَلُوا أَنْ يَمْنَعُوهُ وَيَمْنَعُوا أَصْحَابَهُ مِنَ الْهِجْرَةِ، وَلَكِنَّ اللَّهَ حَفِظَ النَّبِيَّ ﷺ وَنَجَّاهُ وَنَجَّى أَصْحَابَهُ فِي الْهِجْرَةِ وَجَعَلَهُمْ يَصِلُوْنَ إِلَى الْمَدِيْنَةِ سَالِمِيْنَ.
-
-كَانَتِ الْهِجْرَةُ حَادِثَةً عَظِيْمَةً فِي التَّارِيْخِ الإِسْلَامِيِّ؛ لِذَا جَعَلَ الْمُسْلِمُوْنَ يَوْمَ الْهِجْرَةِ أَوَّلَ يَوْمٍ فِي تَقْوِيْمِ الْعَامِ الْهِجْرِيِّ. وَأَوَّلُ مَنْ وَضَعَ التَّقْوِيْمَ الْهِجْرِيَّ هُوَ عُمَرُ بْنُ الْخَطَّابِ رَضِيَ اللَّهُ عَنْهُ.
-
-قَالَ الأُسْتَاذُ أَيْضًا فِي مُحَاضَرَتِهِ عَنْ تَطْبِيْقِ التَّلَامِيْذِ لِلْهِجْرَةِ فِي حَيَاتِهِمُ الْيَوْمِيَّةِ. يُمْكِنُنَا تَطْبِيْقُ الْهِجْرَةِ بِاسْتِخْدَامِ الْهَاتِفِ لِوَسَائِلِ التَّوَاصُلِ الاِجْتِمَاعِيِّ بِحِكْمَةٍ. يَجِبُ عَلَيْنَا أَنْ نَسْتَعْمِلَ التِّكْنُولُوجِيَا فِي الأَنْشِطَةِ النَّافِعَةِ، مِثْلَ الدَّعْوَةِ وَالتَّعَلُّمِ. لَا يَجُوْزُ لَنَا اسْتِخْدَامُهَا فَقَطْ لِلتَّصْوِيْرِ الذَّاتِيِّ (selfie) وَنَشْرِ hoax وَغَيْرِ ذَلِك.`,
-        paragraphs: [
-          {
-            arabic: "اليَوْمَ هُوَ الأَوَّلُ مِنْ شَهْرِ مُحَرَّمٍ، وَالتَّلَامِيْذُ يَحْتَفِلُوْنَ بِسَنَةٍ هِجْرِيَّةٍ جَدِيْدَةٍ فِي مَلْعَبِ الْمَدْرَسَةِ. التَّلَامِيْذُ يَجْلِسُوْنَ فِي جُزْءِ الْيَمِيْنِ، وَالتِّلْمِيْذَاتُ يَجْلِسْنَ فِي الْجُزْءِ الْيَسَارِ.",
-            translation: "Hari ini adalah tanggal satu Muharram, dan para siswa sedang merayakan tahun baru Hijriah di lapangan sekolah. Murid-murid laki-laki duduk di sebelah kanan, dan murid-murid perempuan duduk di sebelah kiri."
-          },
-          {
-            arabic: "هُمْ يَسْتَمِعُوْنَ إِلَى الْمُحَاضَرَةِ الدِّيْنِيَّةِ الَّتِي يُلْقِيْهَا الأُسْتَاذُ مُحَمَّدُ نَبِيْلُ. تَحَدَّثَ الأُسْتَاذُ فِي مُحَاضَرَتِهِ عَنْ هِجْرَةِ الرَّسُوْلِ ﷺ مِنْ مَكَّةَ إِلَى الْمَدِيْنَةِ.",
-            translation: "Mereka mendengarkan ceramah agama yang disampaikan oleh Ustadz Muhammad Nabil. Ustadz berbicara dalam ceramahnya tentang hijrah Rasulullah ﷺ dari Makkah ke Madinah."
-          },
-          {
-            arabic: "هَاجَرَ الرَّسُوْلُ ﷺ وَأَصْحَابُهُ مِنْ مَكَّةَ إِلَى الْمَدِينَةِ. هُمْ تَرَكُوا وَطَنَهُمْ وَبُيُوتَهُمْ وَأَمْوَالَهُمْ وَتِجَارَتَهُمْ فِي مَكَّةَ.",
-            translation: "Rasulullah ﷺ dan para sahabatnya berhijrah dari Makkah ke Madinah. Mereka meninggalkan tanah air, rumah-rumah, harta benda, dan perdagangan mereka di Makkah."
-          },
-          {
-            arabic: "حَاوَلَ الْكُفَّارُ أَنْ يَقْتُلُوا النَّبِيَّ ﷺ، وَحَاوَلُوا أَنْ يَمْنَعُوهُ وَيَمْنَعُوا أَصْحَابَهُ مِنَ الْهِجْرَةِ، وَلَكِنَّ اللَّهَ حَفِظَ النَّبِيَّ ﷺ وَنَجَّاهُ وَنَجَّى أَصْحَابَهُ فِي الْهِجْرَةِ وَجَعَلَهُمْ يَصِلُوْنَ إِلَى الْمَدِيْنَةِ سَالِمِيْنَ.",
-            translation: "Orang-orang kafir berusaha membunuh Nabi ﷺ dan mencoba menghalangi beliau serta para sahabatnya dari hijrah. Namun Allah menjaga Nabi ﷺ dan menyelamatkan beliau beserta sahabat-sahabatnya dalam hijrah serta membuat mereka tiba di Madinah dengan selamat."
-          },
-          {
-            arabic: "كَانَتِ الْهِجْرَةُ حَادِثَةً عَظِيْمَةً فِي التَّارِيْخِ الإِسْلَامِيِّ؛ لِذَا جَعَلَ الْمُسْلِمُوْنَ يَوْمَ الْهِجْرَةِ أَوَّلَ يَوْمٍ فِي تَقْوِيْمِ الْعَامِ الْهِجْرِيِّ. وَأَوَّلُ مَنْ وَضَعَ التَّقْوِيْمَ الْهِجْرِيَّ هُوَ عُمَرُ بْنُ الْخَطَّابِ رَضِيَ اللَّهُ عَنْهُ.",
-            translation: "Hijrah adalah peristiwa besar dalam sejarah Islam; oleh karena itu umat Islam menjadikan hari hijrah sebagai hari pertama dalam kalender tahun Hijriah. Dan orang pertama yang menetapkan kalender Hijriah adalah Umar bin Khattab radhiyallahu 'anhu."
-          },
-          {
-            arabic: "قَالَ الأُسْتَاذُ أَيْضًا فِي مُحَاضَرَتِهِ عَنْ تَطْبِيْقِ التَّلَامِيْذِ لِلْهِجْرَةِ فِي حَيَاتِهِمُ الْيَوْمِيَّةِ. يُمْكِنُنَا تَطْبِيْقُ الْهِجْرَةِ بِاسْتِخْدَامِ الْهَاتِفِ لِوَسَائِلِ التَّوَاصُلِ الاِجْتِمَاعِيِّ بِحِكْمَةٍ.",
-            translation: "Ustadz juga menyampaikan dalam ceramahnya tentang penerapan hijrah oleh para siswa dalam kehidupan sehari-hari. Kita dapat menerapkan hijrah dengan menggunakan ponsel untuk media sosial secara bijak."
-          },
-          {
-            arabic: "يَجِبُ عَلَيْنَا أَنْ نَسْتَعْمِلَ التِّكْنُولُوجِيَا فِي الأَنْشِطَةِ النَّافِعَةِ، مِثْلَ الدَّعْوَةِ وَالتَّعَلُّمِ. لَا يَجُوْزُ لَنَا اسْتِخْدَامُهَا فَقَطْ لِلتَّصْوِيْرِ الذَّاتِيِّ (selfie) وَنَشْرِ hoax وَغَيْرِ ذَلِك.",
-            translation: "Kita wajib menggunakan teknologi dalam kegiatan yang bermanfaat, seperti da'wah dan belajar. Tidak boleh bagi kita menggunakannya hanya untuk swafoto (selfie), menyebarkan berita bohong (hoax), dan lain sebagainya."
-          }
-        ]
-      },
-      mufrodat: [
-        { arabic: "شَهْرُ مُحَرَّمٍ", latin: "Syahru Muharram", indo: "Bulan Muharram (Awal Tahun)", category: "الْقِرَاءَةُ - Waktu", icon: "fa-moon" },
-        { arabic: "يَحْتَفِلُوْنَ", latin: "Yahkafiluna", indo: "Mereka merayakan", category: "الْقِرَاءَةُ - Kata Kerja", icon: "fa-glass-cheers" },
-        { arabic: "سَنَةٌ هِجْرِيَّةٌ جَدِيْدَةٌ", latin: "Sanatun Hijriyyatun Jadidah", indo: "Tahun Baru Hijriah", category: "الْقِرَاءَةُ - Waktu", icon: "fa-calendar-alt" },
-        { arabic: "مَلْعَبُ الْمَدْرَسَةِ", latin: "Mal'abul Madrasah", indo: "Lapangan Sekolah", category: "الْقِرَاءَةُ - Tempat", icon: "fa-school" },
-        { arabic: "جُزْءُ الْيَمِيْنِ", latin: "Juz'ul Yamin", indo: "Sebelah Kanan", category: "الْقِرَاءَةُ - Arah", icon: "fa-arrow-right" },
-        { arabic: "جُزْءُ الْيَسَارِ", latin: "Juz'ul Yasar", indo: "Sebelah Kiri", category: "الْقِرَاءَةُ - Arah", icon: "fa-arrow-left" },
-        { arabic: "مُحَاضَرَةٌ دِيْنِيَّةٌ", latin: "Muhadharatun Diniyyah", indo: "Ceramah Agama", category: "الْقِرَاءَةُ - Kegiatan", icon: "fa-bullhorn" },
-        { arabic: "هَاجَرَ - يُهَاجِرُ", latin: "Hajara - Yuhajiru", indo: "Berhijrah / Pindah", category: "الْقِرَاءَةُ - Kata Kerja", icon: "fa-walking" },
-        { arabic: "أَصْحَابٌ", latin: "Ash-hab", indo: "Sahabat-sahabat Nabi", category: "الْقِرَاءَةُ - Orang", icon: "fa-users" },
-        { arabic: "تَرَكُوا", latin: "Taraku", indo: "Mereka telah meninggalkan", category: "الْقِرَاءَةُ - Kata Kerja", icon: "fa-door-open" },
-        { arabic: "وَطَنٌ", latin: "Wathan", indo: "Tanah Air / Negeri", category: "الْقِرَاءَةُ - Tempat", icon: "fa-flag" },
-        { arabic: "أَمْوَالٌ", latin: "Amwal", indo: "Harta Benda", category: "الْقِرَاءَةُ - Benda", icon: "fa-coins" },
-        { arabic: "تِجَارَةٌ", latin: "Tijarah", indo: "Perdagangan / Bisnis", category: "الْقِرَاءَةُ - Pekerjaan", icon: "fa-store" },
-        { arabic: "حَاوَلَ الْكُفَّارُ", latin: "Hawalal Kuffar", indo: "Orang Kafir Berusaha", category: "الْقِرَاءَةُ - Peristiwa", icon: "fa-user-shield" },
-        { arabic: "حَفِظَ - يَحْفَظُ", latin: "Hafizha - Yahfazhu", indo: "Menjaga / Memelihara", category: "الْقِرَاءَةُ - Kata Kerja", icon: "fa-shield-alt" },
-        { arabic: "سَالِمِيْنَ", latin: "Salimin", indo: "Dalam Keadaan Selamat", category: "الْقِرَاءَةُ - Sifat", icon: "fa-check-circle" },
-        { arabic: "حَادِثَةٌ عَظِيْمَةٌ", latin: "Haditsatun 'Azhimah", indo: "Peristiwa Besar", category: "الْقِرَاءَةُ - Konsep", icon: "fa-star" },
-        { arabic: "تَقْوِيْمٌ هِجْرِيٌّ", latin: "Taqwimun Hijriyyun", indo: "Kalender Hijriah", category: "الْقِرَاءَةُ - Benda", icon: "fa-calendar" },
-        { arabic: "تَطْبِيْقٌ", latin: "Tathbiq", indo: "Penerapan / Aplikasi", category: "الْقِرَاءَةُ - Konsep", icon: "fa-cogs" },
-        { arabic: "وَسَائِلُ التَّوَاصُلِ", latin: "Wasailut Tawashul", indo: "Media Sosial / Komunikasi", category: "الْقِرَاءَةُ - Teknologi", icon: "fa-mobile-alt" }
-      ],
-      hiwar: [
-        { speaker: "أَحْمَدُ", role: "Siswa A", avatarIcon: "fa-user-graduate", arabic: "السَّلَامُ عَلَيْكُمْ يَا حَسَنُ، مَاذَا يَفْعَلُ التَّلَامِيْذُ فِي مَلْعَبِ الْمَدْرَسَةِ؟", translation: "Assalamu'alaikum wahai Hasan, apa yang sedang dilakukan para siswa di lapangan sekolah?" },
-        { speaker: "حَسَنُ", role: "Siswa B", avatarIcon: "fa-user-tie", arabic: "وَعَلَيْكُمُ السَّلَامُ يَا أَحْمَدُ. هُمْ يَحْتَفِلُوْنَ بِسَنَةٍ هِجْرِيَّةٍ جَدِيْدَةٍ.", translation: "Wa'alaikumussalam wahai Ahmad. Mereka sedang merayakan tahun baru Hijriah." },
-        { speaker: "أَحْمَدُ", role: "Siswa A", avatarIcon: "fa-user-graduate", arabic: "أَيْنَ يَجْلِسُ التَّلَامِيْذُ وَالتِّلْمِيْذَاتُ؟", translation: "Di manakah duduk murid laki-laki dan murid perempuan?" },
-        { speaker: "حَسَنُ", role: "Siswa B", avatarIcon: "fa-user-tie", arabic: "التَّلَامِيْذُ يَجْلِسُوْنَ فِي الْيَمِيْنِ، وَالتِّلْمِيْذَاتُ فِي الْيَسَارِ.", translation: "Murid laki-laki duduk di sebelah kanan, dan murid perempuan di sebelah kiri." },
-        { speaker: "أَحْمَدُ", role: "Siswa A", avatarIcon: "fa-user-graduate", arabic: "إِلَى مَنْ يَسْتَمِعُوْنَ فِي هَذَا الْيَوْمِ؟", translation: "Kepada siapakah mereka mendengarkan ceramah pada hari ini?" },
-        { speaker: "حَسَنُ", role: "Siswa B", avatarIcon: "fa-user-tie", arabic: "يَسْتَمِعُوْنَ إِلَى الْمُحَاضَرَةِ الدِّيْنِيَّةِ الَّتِي يُلْقِيْهَا الأُسْتَاذُ مُحَمَّدُ نَبِيْلُ.", translation: "Mereka mendengarkan ceramah agama yang disampaikan oleh Ustadz Muhammad Nabil." },
-        { speaker: "أَحْمَدُ", role: "Siswa A", avatarIcon: "fa-user-graduate", arabic: "عَمَّا يَتَحَدَّثُ الأُسْتَاذُ فِي مُحَاضَرَتِهِ؟", translation: "Tentang apakah Ustadz berbicara dalam ceramahnya?" },
-        { speaker: "حَسَنُ", role: "Siswa B", avatarIcon: "fa-user-tie", arabic: "يَتَحَدَّثُ عَنْ هِجْرَةِ الرَّسُوْلِ ﷺ مِنْ مَكَّةَ إِلَى الْمَدِيْنَةِ.", translation: "Beliau berbicara tentang Hijrah Rasulullah ﷺ dari Makkah ke Madinah." },
-        { speaker: "أَحْمَدُ", role: "Siswa A", avatarIcon: "fa-user-graduate", arabic: "مَاذَا تَرَكَ الصَّحَابَةُ فِي مَكَّةَ عِنْدَ الْهِجْرَةِ؟", translation: "Apa yang ditinggalkan para sahabat di Makkah ketika berhijrah?" },
-        { speaker: "حَسَنُ", role: "Siswa B", avatarIcon: "fa-user-tie", arabic: "تَرَكُوا وَطَنَهُمْ وَبُيُوتَهُمْ وَأَمْوَالَهُمْ وَتِجَارَتَهُمْ.", translation: "Mereka meninggalkan tanah air, rumah, harta benda, dan perdagangan mereka." },
-        { speaker: "أَحْمَدُ", role: "Siswa A", avatarIcon: "fa-user-graduate", arabic: "هَلْ حَاوَلَ الْكُفَّارُ مَنْعَ الرَّسُوْلِ مِنَ الْهِجْرَةِ؟", translation: "Apakah orang-orang kafir mencoba menghalangi Rasulullah dari hijrah?" },
-        { speaker: "حَسَنُ", role: "Siswa B", avatarIcon: "fa-user-tie", arabic: "نَعَمْ، حَاوَلُوا قَتْلَهُ، وَلَكِنَّ اللَّهَ حَفِظَهُ وَنَجَّاهُ فِي الْهِجْرَةِ.", translation: "Ya, mereka mencoba membunuh beliau, namun Allah menjaga dan menyelamatkannya." },
-        { speaker: "أَحْمَدُ", role: "Siswa A", avatarIcon: "fa-user-graduate", arabic: "مَنِ الَّذِي وَضَعَ التَّقْوِيْمَ الْهِجْرِيَّ لأَوَّلِ مَرَّةٍ؟", translation: "Siapakah yang pertama kali menetapkan kalender Hijriah?" },
-        { speaker: "حَسَنُ", role: "Siswa B", avatarIcon: "fa-user-tie", arabic: "هُوَ عُمَرُ بْنُ الْخَطَّابِ رَضِيَ اللَّهُ عَنْهُ.", translation: "Dia adalah Umar bin Khattab radhiyallahu 'anhu." },
-        { speaker: "أَحْمَدُ", role: "Siswa A", avatarIcon: "fa-user-graduate", arabic: "كَيْفَ نُطَبِّقُ الْهِجْرَةَ فِي حَيَاتِنَا الْيَوْمِيَّةِ؟", translation: "Bagaimanakah kita menerapkan Hijrah dalam kehidupan sehari-hari kita?" },
-        { speaker: "حَسَنُ", role: "Siswa B", avatarIcon: "fa-user-tie", arabic: "نُطَبِّقُهَا بِاسْتِخْدَامِ الْهَاتِفِ لِوَسَائِلِ التَّوَاصُلِ بِحِكْمَةٍ.", translation: "Kita menerapkannya dengan menggunakan ponsel untuk media sosial secara bijak." },
-        { speaker: "أَحْمَدُ", role: "Siswa A", avatarIcon: "fa-user-graduate", arabic: "فِي أَيِّ نَشَاطٍ يَجِبُ اسْتِخْدَامُ التِّكْنُولُوجِيَا؟", translation: "Dalam kegiatan apa kita wajib menggunakan teknologi?" },
-        { speaker: "حَسَنُ", role: "Siswa B", avatarIcon: "fa-user-tie", arabic: "فِي الأَنْشِطَةِ النَّافِعَةِ، مِثْلَ الدَّعْوَةِ وَالتَّعَلُّمِ.", translation: "Dalam kegiatan yang bermanfaat, seperti da'wah dan belajar." },
-        { speaker: "أَحْمَدُ", role: "Siswa A", avatarIcon: "fa-user-graduate", arabic: "مَا الَّذِي لَا يَجُوْزُ فِعْلُهُ بِالْهَاتِفِ؟", translation: "Apa yang tidak boleh dilakukan dengan menggunakan ponsel?" },
-        { speaker: "حَسَنُ", role: "Siswa B", avatarIcon: "fa-user-tie", arabic: "لَا يَجُوْزُ اسْتِخْدَامُهُ فَقَطْ لِلتَّصْوِيْرِ الذَّاتِيِّ وَنَشْرِ الْأَكَاذِيْبِ.", translation: "Tidak boleh menggunakannya hanya untuk swafoto (selfie) dan menyebarkan berita bohong (hoax)." }
-      ],
-      qawaid: {
-        title: "تَصْرِيْفُ الْفِعْلِ الْمَاضِي (Tashrif Lughawi Fi'il Madhi 14 Dhomir - 'اِحْتَفَلَ')",
-        explanation: "Tashrif Lughawi adalah perubahan bentuk kata kerja (Fi'il Madhi) berdasarkan 14 Kata Ganti Nama (Dhomir). Berikut adalah tabel Tashrif Lughawi lengkap untuk Fi'il Madhi 'اِحْتَفَلَ' (Merayakan):",
-        tashrifTable: [
-          { dhomir: "هُوَ", dhomirMeaning: "Dia (1 Laki-laki)", arabic: "اِحْتَفَلَ", latin: "Ihtafala", meaning: "Dia (1 Lk) telah merayakan" },
-          { dhomir: "هُمَا", dhomirMeaning: "Mereka Berdua (2 Laki-laki)", arabic: "اِحْتَفَلَا", latin: "Ihtafalā", meaning: "Mereka berdua (2 Lk) telah merayakan" },
-          { dhomir: "هُمْ", dhomirMeaning: "Mereka (Jamak Laki-laki)", arabic: "اِحْتَفَلُوا", latin: "Ihtafalū", meaning: "Mereka (Jamak Lk) telah merayakan" },
-          { dhomir: "هِيَ", dhomirMeaning: "Dia (1 Perempuan)", arabic: "اِحْتَفَلَتْ", latin: "Ihtafalat", meaning: "Dia (1 Pr) telah merayakan" },
-          { dhomir: "هُمَا", dhomirMeaning: "Mereka Berdua (2 Perempuan)", arabic: "اِحْتَفَلَتَا", latin: "Ihtafalatā", meaning: "Mereka berdua (2 Pr) telah merayakan" },
-          { dhomir: "هُنَّ", dhomirMeaning: "Mereka (Jamak Perempuan)", arabic: "اِحْتَفَلْنَ", latin: "Ihtafalna", meaning: "Mereka (Jamak Pr) telah merayakan" },
-          { dhomir: "أَنْتَ", dhomirMeaning: "Kamu (1 Laki-laki)", arabic: "اِحْتَفَلْتَ", latin: "Ihtafalta", meaning: "Kamu (1 Lk) telah merayakan" },
-          { dhomir: "أَنْتُمَا", dhomirMeaning: "Kamu Berdua (2 Laki-laki)", arabic: "اِحْتَفَلْتُمَا", latin: "Ihtafaltumā", meaning: "Kamu berdua (2 Lk) telah merayakan" },
-          { dhomir: "أَنْتُمْ", dhomirMeaning: "Kalian (Jamak Laki-laki)", arabic: "اِحْتَفَلْتُمْ", latin: "Ihtafaltum", meaning: "Kalian (Jamak Lk) telah merayakan" },
-          { dhomir: "أَنْتِ", dhomirMeaning: "Kamu (1 Perempuan)", arabic: "اِحْتَفَلْتِ", latin: "Ihtafalti", meaning: "Kamu (1 Pr) telah merayakan" },
-          { dhomir: "أَنْتُمَا", dhomirMeaning: "Kamu Berdua (2 Perempuan)", arabic: "اِحْتَفَلْتُمَا", latin: "Ihtafaltumā", meaning: "Kamu berdua (2 Pr) telah merayakan" },
-          { dhomir: "أَنْتُنَّ", dhomirMeaning: "Kalian (Jamak Perempuan)", arabic: "اِحْتَفَلْتُنَّ", latin: "Ihtafaltunna", meaning: "Kalian (Jamak Pr) telah merayakan" },
-          { dhomir: "أَنَا", dhomirMeaning: "Saya (Laki-laki / Perempuan)", arabic: "اِحْتَفَلْتُ", latin: "Ihtafaltu", meaning: "Saya telah merayakan" },
-          { dhomir: "نَحْنُ", dhomirMeaning: "Kami / Kita", arabic: "اِحْتَفَلْنَا", latin: "Ihtafalnā", meaning: "Kami/Kita telah merayakan" }
-        ],
-        examples: [
-          { pattern: "Fi'il Madhi (Dhomir هُمْ)", sample: "التَّلَامِيْذُ اِحْتَفَلُوا بِسَنَةٍ هِجْرِيَّةٍ", meaning: "Siswa-siswa telah merayakan tahun baru Hijriah" },
-          { pattern: "Fi'il Madhi (Dhomir نَحْنُ)", sample: "نَحْنُ اِحْتَفَلْنَا فِي مَلْعَبِ الْمَدْرَسَةِ", meaning: "Kami telah merayakan di lapangan sekolah" }
-        ],
-        exercises: [
-          {
-            id: 1,
-            instruction: "Susunlah kata-kata berikut menjadi kalimat sempurna sesuai teks Bab 1!",
-            words: ["مِنْ", "الرَّسُوْلُ", "هَاجَرَ", "مَكَّةَ", "إِلَى", "الْمَدِيْنَةِ"],
-            correctOrder: ["هَاجَرَ", "الرَّسُوْلُ", "مِنْ", "مَكَّةَ", "إِلَى", "الْمَدِيْنَةِ"],
-            arabicSentence: "هَاجَرَ الرَّسُوْلُ مِنْ مَكَّةَ إِلَى الْمَدِيْنَةِ"
-          },
-          {
-            id: 2,
-            instruction: "Susunlah kata-kata berikut tentang penetapan kalender Hijriah!",
-            words: ["التَّقْوِيْمَ", "وَضَعَ", "عُمَرُ", "الْهِجْرِيَّ", "أَوَّلُ", "مَنْ"],
-            correctOrder: ["أَوَّلُ", "مَنْ", "وَضَعَ", "التَّقْوِيْمَ", "الْهِجْرِيَّ", "عُمَرُ"],
-            arabicSentence: "أَوَّلُ مَنْ وَضَعَ التَّقْوِيْمَ الْهِجْرِيَّ عُمَرُ"
-          }
-        ]
-      }
+      topicId: "topik1",
+      arabic: "سِيَاحَةٌ",
+      latin: "Siyaahatun",
+      indonesian: "Wisata / Pariwisata",
+      exampleArabic: "السِّيَاحَةُ نَشَاطٌ مُهِمٌّ فِي أَيَّامِ الْعُطْلَةِ.",
+      exampleIndo: "Wisata adalah kegiatan penting di hari libur.",
+      type: "Nomina (Isim)",
+      image: "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=400&auto=format&fit=crop"
     },
     {
       id: 2,
-      title: "سِيْرَةُ النَّبِيِّ صَلَّى اللهُ عَلَيْهِ وَسَلَّم",
-      titleIndo: "Sirah Nabi Muhammad ﷺ",
-      subtitle: "مِنْ وِلَادَتِهِ صَلَّى اللهُ عَلَيْهِ وَسَلَّمَ إِلَى وَفَاتِهِ",
-      subtitleIndo: "Perjalanan Hidup Rasulullah ﷺ dari Lahir hingga Wafat",
-      icon: "fa-history",
-      qiraah: {
-        title: "سِيْرَةُ النَّبِيِّ صَلَّى اللهُ عَلَيْهِ وَسَلَّم",
-        fullArabic: `فِي الْأُسْبُوعِ الْمَاضِي، احْتَفَلَ التَّلَامِيذُ بِذِكْرَى مَوْلِدِ الرَّسُولِ. هُمْ يَسْتَمِعُونَ إِلَى مُحَاضَرَةٍ دِينِيَّةٍ أَلْقَاهَا الْأُسْتَاذُ مُحَمَّدُ إِدْرِيسُ. وَتَحَدَّثَ الْأُسْتَاذُ فِي مُحَاضَرَتِهِ عَنْ "سِيرَةِ النَّبِيِّ مُنْذُ وِلَادَتِهِ إِلَى وَفَاتِهِ".
-
-قَدْ وُلِدَ فِي يَوْمِ الاثْنَيْنِ، فِي عَامِ الْفِيلِ، الثَّانِي عَشَرَ مِنْ شَهْرِ رَبِيعِ الأَوَّلِ. اسْمُ أَبِيهِ عَبْدُ اللَّهِ بْنُ عَبْدِ الْمُطَّلِبِ، وَأُمُّهُ آمِنَةُ بِنْتُ وَهْبٍ. وُلِدَ الرَّسُولُ يَتِيمًا، فَقَدْ تُوُفِّيَ أَبُوهُ وَهُوَ فِي بَطْنِ أُمِّهِ، ثُمَّ تُوُفِّيَتْ أُمُّهُ وَكَانَ عُمْرُهُ سِتَّ سِنِينَ، فَرَبَّاهُ جَدُّهُ عَبْدُ الْمُطَّلِبِ. وَلَمَّا تُوُفِّيَ جَدُّهُ عَبْدُ الْمُطَّلِبِ، رَبَّاهُ عَمُّهُ أَبُو طَالِبٍ، وَكَانَ عُمْرُهُ ثَمَانِيَ سِنِينَ.
-
-فِي الصِّغَرِ، عَمِلَ مُحَمَّدٌ فِي رِعَايَةِ الْغَنَمِ، ثُمَّ ذَهَبَ إِلَى الشَّامِ مَعَ عَمِّهِ أَبِي طَالِبٍ لِلتِّجَارَةِ، ثُمَّ تَزَوَّجَ خَدِيجَةَ بَعْدَ ذَلِكَ، وَكَانَ عُمْرُهُ خَمْسًا وَعِشْرِينَ سَنَةً، وَعُمْرُهَا أَرْبَعِينَ سَنَةً.
-
-وَلَمَّا بَلَغَ عُمْرُهُ أَرْبَعِينَ سَنَةً، بَعَثَ اللَّهُ مُحَمَّدًا نَبِيًّا وَرَسُولًا، ثُمَّ تُوُفِّيَ عَمُّهُ أَبُو طَالِبٍ وَكَانَ عُمْرُهُ خَمْسِينَ سَنَةً، ثُمَّ تُوُفِّيَتْ مِنْ بَعْدِهِ زَوْجَتُهُ خَدِيجَةُ، وَهِيَ أَوَّلُ مَنْ آمَنَ بِاللَّهِ وَرَسُولِهِ وَأَوَّلُ امْرَأَةٍ صَدَّقَتْ نُبُوَّتَهُ.
-
-وَبَعْدَ ذَلِكَ خَرَجَ الرَّسُولُ مَعَ أَصْحَابِهِ إِلَى الطَّائِفِ يَدْعُو أَهْلَهَا إِلَى الْإِسْلَامِ فَلَمْ يُسْلِمُوا، ثُمَّ أَسْرَى اللَّهُ بِرَسُولِهِ لَيْلًا مِنَ الْمَسْجِدِ الْحَرَامِ إِلَى الْمَسْجِدِ الْأَقْصَى، وَإِلَى السَّمَوَاتِ فِي الْمِعْرَاجِ.
-
-ثُمَّ هَاجَرَ الرَّسُولُ وَأَصْحَابُهُ مِنْ مَكَّةَ إِلَى الْمَدِينَةِ وَكَانَتْ هِجْرَتُهُ فِي السَّنَةِ الثَّالِثَةِ وَالْخَمْسِينَ مِنْ عُمْرِهِ. وَوَفَاتُهُ فِي الثَّانِي عَشَرَ مِنْ شَهْرِ رَبِيعٍ الأَوَّلِ مِنَ السَّنَةِ الْحَادِيَةِ عَشْرَةَ لِلْهِجْرَةِ، وَكَانَ عُمْرُهُ ثَلَاثًا وَسِتِّينَ سَنَةً.
-
-وَقَالَ الْأُسْتَاذُ: الْحِكَمُ الْمَأْخُوذَةُ مِنْ ذِكْرَى مَوْلِدِ النَّبِيِّ مِنْهَا: تَزِيدُ الْحُبَّ لِلنَّبِيِّ، التَّخَلُّقُ بِأَخْلَاقِ الرَّسُولِ، اِتِّبَاعُ سُنَنِ الرَّسُولِ، نَشْرُ الْخَيْرَاتِ بَيْنَ النَّاسِ.`,
-        paragraphs: [
-          {
-            arabic: "فِي الْأُسْبُوعِ الْمَاضِي، احْتَفَلَ التَّلَامِيذُ بِذِكْرَى مَوْلِدِ الرَّسُولِ. هُمْ يَسْتَمِعُونَ إِلَى مُحَاضَرَةٍ دِينِيَّةٍ أَلْقَاهَا الْأُسْتَاذُ مُحَمَّدُ إِدْرِيسُ. وَتَحَدَّثَ الْأُسْتَاذُ فِي مُحَاضَرَتِهِ عَنْ \"سِيرَةِ النَّبِيِّ مُنْذُ وِلَادَتِهِ إِلَى وَفَاتِهِ\".",
-            translation: "Pada minggu lalu, para siswa merayakan peringatan maulid Nabi. Mereka mendengarkan ceramah agama yang disampaikan oleh Ustadz Muhammad Idris. Ustadz berbicara dalam ceramahnya tentang \"Sirah Nabi sejak kelahirannya hingga wafatnya\"."
-          },
-          {
-            arabic: "قَدْ وُلِدَ فِي يَوْمِ الاثْنَيْنِ، فِي عَامِ الْفِيلِ، الثَّانِي عَشَرَ مِنْ شَهْرِ رَبِيعِ الأَوَّلِ. اسْمُ أَبِيهِ عَبْدُ اللَّهِ بْنُ عَبْدِ الْمُطَّلِبِ، وَأُمُّهُ آمِنَةُ بِنْتُ وَهْبٍ. وُلِدَ الرَّسُولُ يَتِيمًا، فَقَدْ تُوُفِّيَ أَبُوهُ وَهُوَ فِي بَطْنِ أُمِّهِ، ثُمَّ تُوُفِّيَتْ أُمُّهُ وَكَانَ عُمْرُهُ سِتَّ سِنِينَ، فَرَبَّاهُ جَدُّهُ عَبْدُ الْمُطَّلِبِ. وَلَمَّا تُوُفِّيَ جَدُّهُ عَبْدُ الْمُطَّلِبِ، رَبَّاهُ عَمُّهُ أَبُو طَالِبٍ، وَكَانَ عُمْرُهُ ثَمَانِيَ سِنِينَ.",
-            translation: "Nabi dilahirkan pada hari Senin, Tahun Gajah, tanggal 12 bulan Rabi'ul Awwal. Nama ayahnya adalah Abdullah bin Abdul Muttalib, dan ibunya adalah Aminah binti Wahab. Rasulullah lahir dalam keadaan yatim, karena ayahnya wafat ketika beliau masih di kandungan ibunya. Kemudian ibunya wafat ketika beliau berumur 6 tahun, lalu beliau diasuh kakeknya Abdul Muttalib. Ketika kakeknya wafat, beliau diasuh pamannya Abu Talib saat berusia 8 tahun."
-          },
-          {
-            arabic: "فِي الصِّغَرِ، عَمِلَ مُحَمَّدٌ فِي رِعَايَةِ الْغَنَمِ، ثُمَّ ذَهَبَ إِلَى الشَّامِ مَعَ عَمِّهِ أَبِي طَالِبٍ لِلتِّجَارَةِ، ثُمَّ تَزَوَّجَ خَدِيجَةَ بَعْدَ ذَلِكَ، وَكَانَ عُمْرُهُ خَمْسًا وَعِشْرِينَ سَنَةً، وَعُمْرُهَا أَرْبَعِينَ سَنَةً.",
-            translation: "Di masa kecil, Muhammad bekerja menggembala kambing, kemudian pergi ke Syam bersama pamannya Abu Talib untuk berdagang. Kemudian beliau menikah dengan Khadijah setelah itu saat berusia 25 tahun dan Khadijah berusia 40 tahun."
-          },
-          {
-            arabic: "وَلَمَّا بَلَغَ عُمْرُهُ أَرْبَعِينَ سَنَةً، بَعَثَ اللَّهُ مُحَمَّدًا نَبِيًّا وَرَسُولًا، ثُمَّ تُوُفِّيَ عَمُّهُ أَبُو طَالِبٍ وَكَانَ عُمْرُهُ خَمْسِينَ سَنَةً، ثُمَّ تُوُفِّيَتْ مِنْ بَعْدِهِ زَوْجَتُهُ خَدِيجَةُ، وَهِيَ أَوَّلُ مَنْ آمَنَ بِاللَّهِ وَرَسُولِهِ وَأَوَّلُ امْرَأَةٍ صَدَّقَتْ نُبُوَّتَهُ.",
-            translation: "Ketika usianya mencapai 40 tahun, Allah mengutus Muhammad sebagai Nabi dan Rasul. Kemudian pamannya Abu Talib wafat saat Nabi berumur 50 tahun, lalu tak lama setelah itu istrinya Khadijah wafat; dialah wanita pertama yang beriman kepada Allah dan Rasul-Nya serta wanita pertama yang membenarkan kenabiannya."
-          },
-          {
-            arabic: "وَبَعْدَ ذَلِكَ خَرَجَ الرَّسُولُ مَعَ أَصْحَابِهِ إِلَى الطَّائِفِ يَدْعُو أَهْلَهَا إِلَى الْإِسْلَامِ فَلَمْ يُسْلِمُوا، ثُمَّ أَسْرَى اللَّهُ بِرَسُولِهِ لَيْلًا مِنَ الْمَسْجِدِ الْحَرَامِ إِلَى الْمَسْجِدِ الْأَقْصَى، وَإِلَى السَّمَوَاتِ فِي الْمِعْرَاجِ.",
-            translation: "Setelah itu Rasulullah keluar bersama sahabatnya ke Thaif mengajak penduduknya ke Islam namun mereka belum berislam. Kemudian Allah memperjalankan (Isra') Rasul-Nya di malam hari dari Masjidil Haram ke Masjidil Aqsha, dan diangkat ke langit dalam peristiwa Mi'raj."
-          },
-          {
-            arabic: "ثُمَّ هَاجَرَ الرَّسُولُ وَأَصْحَابُهُ مِنْ مَكَّةَ إِلَى الْمَدِينَةِ وَكَانَتْ هِجْرَتُهُ فِي السَّنَةِ الثَّالِثَةِ وَالْخَمْسِينَ مِنْ عُمْرِهِ. وَوَفَاتُهُ فِي الثَّانِي عَشَرَ مِنْ شَهْرِ رَبِيعٍ الأَوَّلِ مِنَ السَّنَةِ الْحَادِيَةِ عَشْرَةَ لِلْهِجْرَةِ، وَكَانَ عُمْرُهُ ثَلَاثًا وَسِتِّينَ سَنَةً.",
-            translation: "Kemudian Rasulullah dan para sahabatnya berhijrah dari Makkah ke Madinah saat usianya 53 tahun. Dan wafatnya beliau pada tanggal 12 Rabi'ul Awwal tahun 11 Hijriah saat berusia 63 tahun."
-          },
-          {
-            arabic: "وَقَالَ الْأُسْتَاذُ: الْحِكَمُ الْمَأْخُوذَةُ مِنْ ذِكْرَى مَوْلِدِ النَّبِيِّ مِنْهَا: تَزِيدُ الْحُبَّ لِلنَّبِيِّ، التَّخَلُّقُ بِأَخْلَاقِ الرَّسُولِ، اِتِّبَاعُ سُنَنِ الرَّسُولِ، نَشْرُ الْخَيْرَاتِ بَيْنَ النَّاسِ.",
-            translation: "Ustadz berkata: Hikmah yang dapat dipetik dari peringatan maulid Nabi di antaranya: menambah rasa cinta kepada Nabi, meneladani akhlak Rasulullah, mengikuti sunnah-sunnah Rasul, dan menyebarkan kebaikan di antara manusia."
-          }
-        ]
-      },
-      mufrodat: [
-        { arabic: "مَوْلِدُ الرَّسُولِ", latin: "Maulidur Rasul", indo: "Kelahiran Nabi", category: "الْقِرَاءَةُ - Peristiwa", icon: "fa-baby" },
-        { arabic: "سِيْرَةُ النَّبِيِّ", latin: "Siratun Nabiyy", indo: "Sejarah / Biografi Nabi", category: "الْقِرَاءَةُ - Konsep", icon: "fa-history" },
-        { arabic: "وِلَادَةٌ", latin: "Wiladah", indo: "Kelahiran", category: "الْقِرَاءَةُ - Peristiwa", icon: "fa-birthday-cake" },
-        { arabic: "وَفَاةٌ", latin: "Wafah", indo: "Wafat / Meninggal dunia", category: "الْقِرَاءَةُ - Peristiwa", icon: "fa-heart-broken" },
-        { arabic: "عَامُ الْفِيلِ", latin: "'Amul Fil", indo: "Tahun Gajah", category: "الْقِرَاءَةُ - Waktu", icon: "fa-calendar-times" },
-        { arabic: "رَبِيعُ الأَوَّلِ", latin: "Rabi'ul Awwal", indo: "Bulan Rabi'ul Awwal", category: "الْقِرَاءَةُ - Waktu", icon: "fa-moon" },
-        { arabic: "يَتِيمٌ", latin: "Yatim", indo: "Yatim (Ayah Wafat)", category: "الْقِرَاءَةُ - Status", icon: "fa-child" },
-        { arabic: "بَطْنُ أُمِّهِ", latin: "Batnu Ummihi", indo: "Kandungan Ibunya", category: "الْقِرَاءَةُ - Tubuh", icon: "fa-heart" },
-        { arabic: "جَدٌّ (عَبْدُ الْمُطَّلِبِ)", latin: "Jaddun ('Abdul Muttalib)", indo: "Kakek (Abdul Muttalib)", category: "الْقِرَاءَةُ - Keluarga", icon: "fa-user-clock" },
-        { arabic: "عَمٌّ (أَبُو طَالِبٍ)", latin: "'Ammun (Abu Talib)", indo: "Paman (Abu Talib)", category: "الْقِرَاءَةُ - Keluarga", icon: "fa-user-friends" },
-        { arabic: "رِعَايَةُ الْغَنَمِ", latin: "Ri'ayatul Ghanam", indo: "Menggembala Kambing", category: "الْقِرَاءَةُ - Pekerjaan", icon: "fa-horse" },
-        { arabic: "تِجَارَةٌ إِلَى الشَّامِ", latin: "Tijaratun ilasy Syam", indo: "Berdagang ke Negeri Syam", category: "الْقِرَاءَةُ - Pekerjaan", icon: "fa-shopping-bag" },
-        { arabic: "زَوْجَةٌ (خَدِيجَةُ)", latin: "Zaujatun (Khadijah)", indo: "Istri (Khadijah RA)", category: "الْقِرَاءَةُ - Keluarga", icon: "fa-female" },
-        { arabic: "بَعَثَ - يَبْعَثُ", latin: "Ba'atsa - Yab'atsu", indo: "Mengutus sebagai Nabi", category: "الْقِرَاءَةُ - Kata Kerja", icon: "fa-paper-plane" },
-        { arabic: "أَوَّلُ امْرَأَةٍ", latin: "Awwalu Imra'atin", indo: "Wanita Pertama Beriman", category: "الْقِرَاءَةُ - Orang", icon: "fa-star" },
-        { arabic: "الإِسْرَاءُ وَالْمِعْرَاجُ", latin: "Al-Isra' wal Mi'raj", indo: "Perjalanan Isra' & Mi'raj", category: "الْقِرَاءَةُ - Peristiwa", icon: "fa-cloud-moon" },
-        { arabic: "الْمَسْجِدُ الأَقْصَى", latin: "Al-Masjidul Aqsha", indo: "Masjidil Aqsha", category: "الْقِرَاءَةُ - Tempat", icon: "fa-mosque" },
-        { arabic: "السَّمَوَاتُ", latin: "As-Samawat", indo: "Langit-langit", category: "الْقِرَاءَةُ - Alam", icon: "fa-cloud-sun" },
-        { arabic: "التَّخَلُّقُ بِأَخْلَاقِهِ", latin: "At-Takhalluqu bi Akhlaqihi", indo: "Berakhlak dengan Akhlak Nabi", category: "الْقِرَاءَةُ - Akhlak", icon: "fa-gem" },
-        { arabic: "اتِّبَاعُ سُنَنِهِ", latin: "Ittiba'u Sunanihi", indo: "Mengikuti Sunnah-sunnah Nabi", category: "الْقِرَاءَةُ - Agama", icon: "fa-scroll" }
-      ],
-      hiwar: [
-        { speaker: "عُمَرُ", role: "Siswa A", avatarIcon: "fa-user-graduate", arabic: "مَتَى وُلِدَ النَّبِيُّ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ يَا عَلِيُّ؟", translation: "Kapan Nabi Muhammad ﷺ dilahirkan wahai Ali?" },
-        { speaker: "عَلِيٌّ", role: "Siswa B", avatarIcon: "fa-user-ninja", arabic: "وُلِدَ فِي يَوْمِ الاثْنَيْنِ، 12 مِنْ شَهْرِ رَبِيْعِ الأَوَّلِ فِي عَامِ الْفِيْلِ.", translation: "Beliau lahir pada hari Senin, 12 Rabi'ul Awwal di Tahun Gajah." },
-        { speaker: "عُمَرُ", role: "Siswa A", avatarIcon: "fa-user-graduate", arabic: "مَا اسْمُ أَبِيْهِ وَمَا اسْمُ أُمِّهِ؟", translation: "Siapakah nama ayahnya dan siapa nama ibunya?" },
-        { speaker: "عَلِيٌّ", role: "Siswa B", avatarIcon: "fa-user-ninja", arabic: "اسْمُ أَبِيهِ عَبْدُ اللَّهِ، وَأُمُّهُ آمِنَةُ بِنْتُ وَهْبٍ.", translation: "Nama ayahnya Abdullah, dan ibunya Aminah binti Wahab." },
-        { speaker: "عُمَرُ", role: "Siswa A", avatarIcon: "fa-user-graduate", arabic: "هَلْ وُلِدَ النَّبِيُّ يَتِيْمًا؟", translation: "Apakah Nabi dilahirkan dalam keadaan yatim?" },
-        { speaker: "عَلِيٌّ", role: "Siswa B", avatarIcon: "fa-user-ninja", arabic: "نَعَمْ، فَقَدْ تُوُفِّيَ أَبُوهُ وَهُوَ فِي بَطْنِ أُمِّهِ.", translation: "Ya, karena ayahnya wafat ketika beliau masih di kandungan ibunya." },
-        { speaker: "عُمَرُ", role: "Siswa A", avatarIcon: "fa-user-graduate", arabic: "مَنْ رَبَّى النَّبِيَّ بَعْدَ وَفَاةِ أُمِّهِ؟", translation: "Siapakah yang mengasuh Nabi setelah ibunya wafat?" },
-        { speaker: "عَلِيٌّ", role: "Siswa B", avatarIcon: "fa-user-ninja", arabic: "رَبَّاهُ جَدُّهُ عَبْدُ الْمُطَّلِبِ، ثُمَّ عَمُّهُ أَبُو طَالِبٍ.", translation: "Beliau diasuh kakeknya Abdul Muttalib, lalu pamannya Abu Talib." },
-        { speaker: "عُمَرُ", role: "Siswa A", avatarIcon: "fa-user-graduate", arabic: "مَاذَا عَمِلَ مُحَمَّدٌ فِي صِغَرِهِ؟", translation: "Apakah pekerjaan Muhammad di masa kecilnya?" },
-        { speaker: "عَلِيٌّ", role: "Siswa B", avatarIcon: "fa-user-ninja", arabic: "عَمِلَ فِي رِعَايَةِ الْغَنَمِ، ثُمَّ ذَهَبَ إِلَى الشَّامِ لِلتِّجَارَةِ.", translation: "Beliau bekerja menggembala kambing, kemudian pergi ke Syam untuk berdagang." },
-        { speaker: "عُمَرُ", role: "Siswa A", avatarIcon: "fa-user-graduate", arabic: "كَمْ كَانَ عُمْرُهُ عِنْدَمَا تَزَوَّجَ خَدِيْجَةَ؟", translation: "Berapakah usia beliau ketika menikah dengan Khadijah?" },
-        { speaker: "عَلِيٌّ", role: "Siswa B", avatarIcon: "fa-user-ninja", arabic: "كَانَ عُمْرُهُ خَمْسًا وَعِشْرِينَ سَنَةً، وَعُمْرُهَا أَرْبَعِينَ سَنَةً.", translation: "Usia beliau 25 tahun, dan usia Khadijah 40 tahun." },
-        { speaker: "عُمَرُ", role: "Siswa A", avatarIcon: "fa-user-graduate", arabic: "كَمْ كَانَ عُمْرُهُ عِنْدَمَا نَزَلَ عَلَيْهِ الْوَحْيُ؟", translation: "Berapa usia beliau ketika wahyu turun kepada beliau?" },
-        { speaker: "عَلِيٌّ", role: "Siswa B", avatarIcon: "fa-user-ninja", arabic: "كَانَ عُمْرُهُ أَرْبَعِيْنَ سَنَةً.", translation: "Usia beliau saat itu adalah 40 tahun." },
-        { speaker: "عُمَرُ", role: "Siswa A", avatarIcon: "fa-user-graduate", arabic: "مَنْ هِيَ أَوَّلُ امْرَأَةٍ آمَنَتْ بِالرَّسُوْلِ؟", translation: "Siapakah wanita pertama yang beriman kepada Rasulullah?" },
-        { speaker: "عَلِيٌّ", role: "Siswa B", avatarIcon: "fa-user-ninja", arabic: "هِيَ زَوْجَتُهُ خَدِيْجَةُ رَضِيَ اللَّهُ عَنْهَا، وَأَوَّلُ امْرَأَةٍ صَدَّقَتْ نُبُوَّتَهُ.", translation: "Dialah istrinya Khadijah radhiyallahu 'anha, dan wanita pertama yang membenarkan kenabiannya." },
-        { speaker: "عُمَرُ", role: "Siswa A", avatarIcon: "fa-user-graduate", arabic: "كَمْ كَانَ عُمْرُ النَّبِيِّ عِنْدَ الْهِجْرَةِ؟", translation: "Berapakah usia Nabi ketika beliau berhijrah?" },
-        { speaker: "عَلِيٌّ", role: "Siswa B", avatarIcon: "fa-user-ninja", arabic: "كَانَتْ هِجْرَتُهُ فِي السَّنَةِ الثَّالِثَةِ وَالْخَمْسِينَ مِنْ عُمْرِهِ.", translation: "Hijrah beliau terjadi pada usia 53 tahun." },
-        { speaker: "عُمَرُ", role: "Siswa A", avatarIcon: "fa-user-graduate", arabic: "وَمَا هِيَ الْحِكَمُ الْمَأْخُوذَةُ مِنْ ذِكْرَى مَوْلِدِ النَّبِيِّ؟", translation: "Dan apakah hikmah yang dipetik dari peringatan maulid Nabi?" },
-        { speaker: "عَلِيٌّ", role: "Siswa B", avatarIcon: "fa-user-ninja", arabic: "تَزِيْدُ الْحُبَّ لِلنَّبِيِّ، وَالتَّخَلُّقُ بِأَخْلَاقِهِ، وَاتِّبَاعُ سُنَنِهِ، وَنَشْرُ الْخَيْرَاتِ.", translation: "Menambah rasa cinta kepada Nabi, meneladani akhlaknya, mengikuti sunnahnya, dan menyebarkan kebaikan." }
-      ],
-      qawaid: {
-        title: "الأَعْدَادُ وَالأَعْمَارُ فِي السِّيْرَةِ (Bilangan & Usia dalam Sirah)",
-        explanation: "Dalam Sirah Nabi, kita mempelajari pengucapan angka dan usia (الأَعْدَادُ). Contoh: 6 tahun (سِتَّ سِنِينَ), 8 tahun (ثَمَانِيَ سِنِينَ), 25 tahun (خَمْسًا وَعِشْرِينَ سَنَةً), 40 tahun (أَرْبَعِينَ سَنَةً), 50 tahun (خَمْسِينَ سَنَةً), 53 tahun (الثَّالِثَةِ وَالْخَمْسِينَ), 63 tahun (ثَلَاثًا وَسِتِّينَ سَنَةً).",
-        examples: [
-          { pattern: "Usia 25", sample: "كَانَ عُمْرُهُ خَمْسًا وَعِشْرِينَ سَنَةً", meaning: "Usianya adalah 25 tahun" },
-          { pattern: "Usia 63", sample: "تُوُفِّيَ وَعُمْرُهُ ثَلَاثٌ وَسِتُّونَ سَنَةً", meaning: "Beliau wafat pada usia 63 tahun" }
-        ],
-        exercises: [
-          {
-            id: 1,
-            instruction: "Susun kata-kata berikut mengenai usia Nabi saat diutus menjadi Rasul!",
-            words: ["بَعَثَ", "أَرْبَعِينَ", "سَنَةً", "عُمْرُهُ", "اللَّهُ", "نَبِيًّا", "بَلَغَ", "لَمَّا"],
-            correctOrder: ["لَمَّا", "بَلَغَ", "عُمْرُهُ", "أَرْبَعِينَ", "سَنَةً", "بَعَثَ", "اللَّهُ", "نَبِيًّا"],
-            arabicSentence: "لَمَّا بَلَغَ عُمْرُهُ أَرْبَعِينَ سَنَةً بَعَثَ اللَّهُ نَبِيًّا"
-          }
-        ]
-      }
+      topicId: "topik1",
+      arabic: "غَارٌ",
+      latin: "Ghaarun",
+      indonesian: "Gua / Goa",
+      exampleArabic: "ذَهَبْنَا إِلَى غَارِ فِيْنْدُوْل فِي يُوْكِيَاكِرْتَا.",
+      exampleIndo: "Kami pergi ke Goa Pindul di Yogyakarta.",
+      type: "Nomina (Isim)",
+      image: "https://images.unsplash.com/photo-1508873696983-2df515122519?q=80&w=400&auto=format&fit=crop"
     },
     {
       id: 3,
-      title: "نُزُولُ الْقُرْآنِ وَ عِيدُ الْفِطْرِ وَعِيدُ الْأَضْحَى",
-      titleIndo: "Nuzulul Qur'an & Dua Hari Raya",
-      subtitle: "نُزُولُ الْوَحْيِ فِي غَارِ حِرَاءٍ وَفَرْحَةُ العِيْدَيْنِ",
-      subtitleIndo: "Turunnya Wahyu di Gua Hira dan Kebahagiaan Hari Raya",
-      icon: "fa-quran",
-      qiraah: {
-        title: "نُزُولُ الْقُرْآنِ وَ عِيدُ الْفِطْرِ وَعِيدُ الْأَضْحَى",
-        fullArabic: `**نُزُولُ الْقُرْآنِ**
+      topicId: "topik1",
+      arabic: "نَهْرٌ",
+      latin: "Nahrun",
+      indonesian: "Sungai",
+      exampleArabic: "يَجْرِي الْمَاءُ فِي النَّهْرِ بِنَظَافَةٍ.",
+      exampleIndo: "Air mengalir bersih di sungai.",
+      type: "Nomina (Isim)",
+      image: "https://images.unsplash.com/photo-1444464666168-49d633b86797?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 4,
+      topicId: "topik1",
+      arabic: "تَزَحْلُفٌ",
+      latin: "Tazahlufun",
+      indonesian: "Susur Sungai / Arung Jeram (Tubing)",
+      exampleArabic: "مَارَسْنَا التَّزَحْلُفَ فِي النَّهْرِ.",
+      exampleIndo: "Kami melakukan susur sungai di gua.",
+      type: "Nomina (Isim)",
+      image: "https://images.unsplash.com/photo-1530541930197-ff16ac917b0e?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 5,
+      topicId: "topik1",
+      arabic: "إِطَارَاتٌ",
+      latin: "Ithaaraatun",
+      indonesian: "Ban Pelampung / Ban",
+      exampleArabic: "اسْتَخْدَمْنَا الإِطَارَاتِ لِلتَّزَحْلُفِ.",
+      exampleIndo: "Kami menggunakan ban pelampung untuk susur sungai.",
+      type: "Nomina (Isim)",
+      image: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 6,
+      topicId: "topik1",
+      arabic: "عَوَّامَةٌ",
+      latin: "'Awwaamatun",
+      indonesian: "Jaket Pelampung / Pelampung",
+      exampleArabic: "لَبِسَ السَّائِحُ الْعَوَّامَةَ لِلأَمَانِ.",
+      exampleIndo: "Wisatawan mengenakan pelampung demi keselamatan.",
+      type: "Nomina (Isim)",
+      image: "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 7,
+      topicId: "topik1",
+      arabic: "مُرْشِدُ السِّيَاحَةِ",
+      latin: "Murshid us-Siyaahati",
+      indonesian: "Pemandu Wisata (Tour Guide)",
+      exampleArabic: "شَرَحَ مُرْشِدُ السِّيَاحَةِ تَارِيخَ الْمَكَانِ.",
+      exampleIndo: "Pemandu wisata menjelaskan sejarah tempat itu.",
+      type: "Frasa Nomina",
+      image: "https://images.unsplash.com/photo-1539635278303-d4002c07eae3?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 8,
+      topicId: "topik1",
+      arabic: "تَذْكِرَةٌ",
+      latin: "Tadhkiratun",
+      indonesian: "Tiket",
+      exampleArabic: "حَجَزْتُ تَذْكِرَةَ الدُّخُولِ لِلْمَتْحَفِ.",
+      exampleIndo: "Saya memesan tiket masuk ke museum.",
+      type: "Nomina (Isim)",
+      image: "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 9,
+      topicId: "topik1",
+      arabic: "شُبَّاكُ التَّذَاكِرِ",
+      latin: "Shubbaak ut-Tadhaakiri",
+      indonesian: "Loket Tiket",
+      exampleArabic: "اِشْتَرَيْنَا التَّذَاكِرَ مِنْ شُبَّاكِ التَّذَاكِرِ.",
+      exampleIndo: "Kami membeli tiket dari loket tiket.",
+      type: "Frasa Nomina",
+      image: "https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 10,
+      topicId: "topik1",
+      arabic: "سُيَّاحٌ",
+      latin: "Suyyaahun",
+      indonesian: "Wisatawan / Turis",
+      exampleArabic: "وَصَلَ السُّيَّاحُ إِلَى الْمَطَارِ صَبَاحًا.",
+      exampleIndo: "Para wisatawan tiba di bandara pada pagi hari.",
+      type: "Nomina (Isim Jamak)",
+      image: "https://images.unsplash.com/photo-1488646953014-85cb44e25828?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 11,
+      topicId: "topik1",
+      arabic: "لُهْنَةٌ / هَدِيَّةٌ",
+      latin: "Luhnatun / Hadiyyatun",
+      indonesian: "Oleh-oleh / Souvenir",
+      exampleArabic: "اِشْتَرَيْتُ لُهْنَةً جَمِيلَةً لِلأَصْدِقَاءِ.",
+      exampleIndo: "Saya membeli oleh-oleh indah untuk teman-teman.",
+      type: "Nomina (Isim)",
+      image: "https://images.unsplash.com/photo-1513885535751-8b9238bd345a?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 12,
+      topicId: "topik1",
+      arabic: "بِطَاقَةُ الْمُرُورِ الإِلِكْتُرُونِيَّةُ",
+      latin: "Bithaaqat ul-Muruur il-Elektroniyyah",
+      indonesian: "Kartu Elektronik (E-Money / Pass)",
+      exampleArabic: "اسْتَخْدَمْتُ بِطَاقَةَ الْمُرُورِ لِلدُّخُولِ.",
+      exampleIndo: "Saya menggunakan kartu elektronik untuk masuk.",
+      type: "Frasa Nomina",
+      image: "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 13,
+      topicId: "topik1",
+      arabic: "ضِفَّةُ النَّهْرِ",
+      latin: "Dhiffat un-Nahri",
+      indonesian: "Tepi Sungai / Bantaran Sungai",
+      exampleArabic: "جَلَسْنَا عَلَى ضِفَّةِ النَّهْرِ نَسْتَمْتِعُ بِالْمَنَاظِرِ.",
+      exampleIndo: "Kami duduk di tepi sungai menikmati pemandangan.",
+      type: "Frasa Nomina",
+      image: "https://images.unsplash.com/photo-1448375240586-882707db888b?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 14,
+      topicId: "topik1",
+      arabic: "رَكِبَ - يَرْكَبُ",
+      latin: "Rakiba - Yarkabu",
+      indonesian: "Naik / Mengendarai",
+      exampleArabic: "رَكِبْنَا السَّيَّارَةَ إِلَى الْجَبَلِ.",
+      exampleIndo: "Kami naik mobil ke gunung.",
+      type: "Verba (Fi'il)",
+      image: "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 15,
+      topicId: "topik1",
+      arabic: "ذَهَبَ - يَذْهَبُ",
+      latin: "Dhahaba - Yadhhabu",
+      indonesian: "Pergi",
+      exampleArabic: "ذَهَبَ الطَّالِبُ إِلَى الْمَدْرَسَةِ صَبَاحًا.",
+      exampleIndo: "Siswa itu pergi ke sekolah di pagi hari.",
+      type: "Verba (Fi'il)",
+      image: "https://images.unsplash.com/photo-1476514525535-ce74f45814d0?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 16,
+      topicId: "topik1",
+      arabic: "إِسْتَعَدَّ - يَسْتَعِدُّ",
+      latin: "Ista'adda - Yasta'iddu",
+      indonesian: "Bersiap-siap / Persiapan",
+      exampleArabic: "إِسْتَعَدَّ الْمُسَافِرُونَ لِلسَّفَرِ.",
+      exampleIndo: "Para musafir bersiap-siap untuk bepergian.",
+      type: "Verba (Fi'il)",
+      image: "https://images.unsplash.com/photo-1501555088652-021faa106b9b?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 17,
+      topicId: "topik1",
+      arabic: "وَصَلَتْ - تَصِلُ",
+      latin: "Wasalat - Tasilu",
+      indonesian: "Tiba / Sampai",
+      exampleArabic: "وَصَلَتْ حَفْصَةُ إِلَى الْفُنْدُقِ سَالِمَةً.",
+      exampleIndo: "Hafshah telah tiba di hotel dengan selamat.",
+      type: "Verba (Fi'il)",
+      image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 18,
+      topicId: "topik1",
+      arabic: "مَكَثَ - يَمْكُثُ",
+      latin: "Makatha - Yamkuthu",
+      indonesian: "Tinggal / Menetap",
+      exampleArabic: "مَكَّثْنَا فِي سُوكُوهَارْجُو ثَلاَثَةَ أَيَّامٍ.",
+      exampleIndo: "Kami tinggal di Sukoharjo selama tiga hari.",
+      type: "Verba (Fi'il)",
+      image: "https://images.unsplash.com/photo-1518780664697-55e3ad937233?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 19,
+      topicId: "topik1",
+      arabic: "مَشَى - يَمْشِي",
+      latin: "Mashaa - Yamshii",
+      indonesian: "Berjalan Kaki",
+      exampleArabic: "مَشَى السُّيَّاحُ فِي الشَّارِعِ الْقَدِيمِ.",
+      exampleIndo: "Para turis berjalan kaki di jalan tua.",
+      type: "Verba (Fi'il)",
+      image: "https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 20,
+      topicId: "topik1",
+      arabic: "اِسْتَخْدَمَ (عَوَّامَةً)",
+      latin: "Istakhdama ('Awwaamatan)",
+      indonesian: "Menggunakan / Memakai (Pelampung)",
+      exampleArabic: "اِسْتَخْدَمَ السَّائِحُ الْعَوَّامَةَ فِي النَّهْرِ.",
+      exampleIndo: "Wisatawan itu menggunakan pelampung di sungai.",
+      type: "Verba (Fi'il)",
+      image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 21,
+      topicId: "topik1",
+      arabic: "شَاهَدَ الْمَنَاظِرَ الْجَمِيلَةَ",
+      latin: "Shaahada al-Manaadhira al-Jamiilah",
+      indonesian: "Melihat Pemandangan Indah",
+      exampleArabic: "شَاهَدْنَا الْمَنَاظِرَ الْجَمِيلَةَ مِنَ الْجَبَلِ.",
+      exampleIndo: "Kami menyaksikan pemandangan indah dari gunung.",
+      type: "Frasa Verba",
+      image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 22,
+      topicId: "topik1",
+      arabic: "شَاطِئٌ",
+      latin: "Shaati'un",
+      indonesian: "Pantai",
+      exampleArabic: "ذَهَبْنَا إِلَى شَاطِئِ الْبَحْرِ فِي الْعُطْلَةِ.",
+      exampleIndo: "Kami pergi ke pantai laut pada hari libur.",
+      type: "Nomina (Isim)",
+      image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 23,
+      topicId: "topik1",
+      arabic: "فِرَاشٌ",
+      latin: "Firaashun",
+      indonesian: "Matras / Alas / Tikar",
+      exampleArabic: "بَسَطْنَا الْفِرَاشَ عَلَى الشَّاطِئِ.",
+      exampleIndo: "Kami membentangkan alas di pantai.",
+      type: "Nomina (Isim)",
+      image: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 24,
+      topicId: "topik1",
+      arabic: "رِمَالٌ بَيْضَاءُ",
+      latin: "Rimaalun Baidhaa'u",
+      indonesian: "Pasir Putih",
+      exampleArabic: "يَمْشِي الأَطْفَالُ عَلَى الرِّمَالِ الْبَيْضَاءِ.",
+      exampleIndo: "Anak-anak berjalan di atas pasir putih.",
+      type: "Frasa Nomina",
+      image: "https://images.unsplash.com/photo-1519046904884-53103b34b206?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 25,
+      topicId: "topik1",
+      arabic: "بَسَطَ - يَبْسُطُ",
+      latin: "Basatha - Yabsuthu",
+      indonesian: "Membentangkan (Alas / Tikar)",
+      exampleArabic: "بَسَطَ عَلِيٌّ الْفِرَاشَ عَلَى الرَّمْلِ.",
+      exampleIndo: "Ali membentangkan tikar di atas pasir.",
+      type: "Verba (Fi'il)",
+      image: "https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 26,
+      topicId: "topik1",
+      arabic: "تَشَمَّسَ - يَتَشَمَّسُ",
+      latin: "Tashammasa - Yatashammasu",
+      indonesian: "Berjemur (di bawah sinar matahari)",
+      exampleArabic: "يَتَشَمَّسُ السَّائِحُ عَلَى الشَّاطِئِ.",
+      exampleIndo: "Turis itu berjemur di pantai.",
+      type: "Verba (Fi'il)",
+      image: "https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 27,
+      topicId: "topik1",
+      arabic: "لَعِبَ - يَلْعَبُ",
+      latin: "La'iba - Yal'abu",
+      indonesian: "Bermain",
+      exampleArabic: "لَعِبَ الأَطْفَالُ بِالرِّمَالِ البَيْضَاءِ.",
+      exampleIndo: "Anak-anak bermain pasir putih.",
+      type: "Verba (Fi'il)",
+      image: "https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?q=80&w=400&auto=format&fit=crop"
+    },
 
-نَزَلَ الْقُرْآنُ عَلَى النَّبِيِّ مُحَمَّدٍ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ فِي غَارِ حِرَاءٍ، وَكَانَ عُمْرُهُ أَرْبَعِينَ سَنَةً. كَانَ النَّبِيُّ مُحَمَّدٌ يَخْلُو بِنَفْسِهِ فِي الْغَارِ وَيَتَعَبَّدُ اللَّهَ فِيهِ ، ثُمَّ نَزَلَ عَلَيْهِ جِبْرِيلُ بِالْوَحْيِ وَأَمَرَهُ بِالْقِرَاءَةِ. وَكَانَ ذَلِكَ فِي اللَّيْلَةِ السَّابِعَةِ عَشْرَةَ مِنْ شَهْرِ رَمَضَانَ.
+    // --- BAB 2: الصِّحَّةُ (Kesehatan & Olahraga) ---
+    {
+      id: 28,
+      topicId: "topik2",
+      arabic: "دَرَّاجَةٌ",
+      latin: "Darraajatun",
+      indonesian: "Sepeda",
+      exampleArabic: "يَرْكَبُ الطَّالِبُ الدَّرَّاجَةَ إِلَى الْمَدْرَسَةِ.",
+      exampleIndo: "Siswa itu naik sepeda ke sekolah.",
+      type: "Nomina (Isim)",
+      image: "https://images.unsplash.com/photo-1485965120184-e220f721d03e?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 29,
+      topicId: "topik2",
+      arabic: "رِيَاضَةٌ",
+      latin: "Riyaadhatun",
+      indonesian: "Olahraga",
+      exampleArabic: "الرِّيَاضَةُ تُقَوِّي الْجِسْمَ وَتُنَمِّي الْعَقْلَ.",
+      exampleIndo: "Olahraga menguatkan tubuh dan mengasah akal.",
+      type: "Nomina (Isim)",
+      image: "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 30,
+      topicId: "topik2",
+      arabic: "كُرَةُ الْقَدَمِ",
+      latin: "Kuratu al-Qadami",
+      indonesian: "Sepak Bola",
+      exampleArabic: "يَلْعَبُ الأَوْلاَدُ كُرَةَ الْقَدَمِ فِي الْمَلْعَبِ.",
+      exampleIndo: "Anak-anak bermain sepak bola di lapangan.",
+      type: "Frasa Nomina",
+      image: "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 31,
+      topicId: "topik2",
+      arabic: "سِبَاحَةٌ",
+      latin: "Sibaahatun",
+      indonesian: "Berenang / Renang",
+      exampleArabic: "السِّبَاحَةُ رِيَاضَةٌ مُفِيدَةٌ لِلصِّحَّةِ.",
+      exampleIndo: "Berenang adalah olahraga yang bermanfaat untuk kesehatan.",
+      type: "Nomina (Isim)",
+      image: "https://images.unsplash.com/photo-1530549387789-4c1017266635?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 32,
+      topicId: "topik2",
+      arabic: "مَلْعَبُ الْقَرْيَةِ",
+      latin: "Mal'abu al-Qaryati",
+      indonesian: "Lapangan Desa",
+      exampleArabic: "نَلْعَبُ كُرَةَ الْقَدَمِ فِي مَلْعَبِ الْقَرْيَةِ.",
+      exampleIndo: "Kami bermain sepak bola di lapangan desa.",
+      type: "Frasa Nomina",
+      image: "https://images.unsplash.com/photo-1529900748604-07564a03e7a6?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 33,
+      topicId: "topik2",
+      arabic: "جَرْيٌ",
+      latin: "Jaryun",
+      indonesian: "Lari / Lari Pagi",
+      exampleArabic: "الجَرْيُ فِي الصَّبَاحِ يُنَشِّطُ الْجِسْمَ.",
+      exampleIndo: "Lari di pagi hari menyegarkan tubuh.",
+      type: "Nomina (Isim)",
+      image: "https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 34,
+      topicId: "topik2",
+      arabic: "حَكِيمٌ ج حُكَمَاءُ",
+      latin: "Hakiimun j Hukamaa'u",
+      indonesian: "Orang Bijak / Dokter",
+      exampleArabic: "الْحَكِيمُ يُقَدِّمُ النَّصِيحَةَ الطَّيِّبَةَ.",
+      exampleIndo: "Orang bijak menyampaikan nasihat yang baik.",
+      type: "Nomina (Isim)",
+      image: "https://images.unsplash.com/photo-1537368910025-700350fe46c7?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 35,
+      topicId: "topik2",
+      arabic: "صَحِيحٌ ج أَصِحَّاءُ",
+      latin: "Sahiihun j Asihhaa'u",
+      indonesian: "Orang Sehat",
+      exampleArabic: "الْعَقْلُ السَّلِيمُ فِي الْجِسْمِ الصَّحِيحِ.",
+      exampleIndo: "Akal yang sehat terdapat pada tubuh yang sehat.",
+      type: "Adjektiva (Sifat)",
+      image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 36,
+      topicId: "topik2",
+      arabic: "مَرِيضٌ ج مَرْضَى",
+      latin: "Mariidhun j Mardhaa",
+      indonesian: "Pasien / Orang Sakit",
+      exampleArabic: "يَزُورُ الطَّبِيبُ الْمَرِيضَ فِي الْمُسْتَشْفَى.",
+      exampleIndo: "Dokter mengunjungi pasien di rumah sakit.",
+      type: "Nomina (Isim)",
+      image: "https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 37,
+      topicId: "topik2",
+      arabic: "صُدَاعٌ",
+      latin: "Shudaa'un",
+      indonesian: "Sakit Kepala / Pusing",
+      exampleArabic: "أَصَابَنِي الصُّدَاعُ فِي هَذَا الصَّبَاحِ.",
+      exampleIndo: "Saya mengalami sakit kepala pagi ini.",
+      type: "Nomina (Isim)",
+      image: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 38,
+      topicId: "topik2",
+      arabic: "أَلَمٌ فِي الصَّدْرِ",
+      latin: "Alamun fii as-Sadri",
+      indonesian: "Nyeri / Sakit Dada",
+      exampleArabic: "يَشْعُرُ الْمَرِيضُ بِأَلَمٍ فِي الصَّدْرِ.",
+      exampleIndo: "Pasien merasakan nyeri pada dadanya.",
+      type: "Frasa Nomina",
+      image: "https://images.unsplash.com/photo-1505751172876-fa1923c5c528?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 39,
+      topicId: "topik2",
+      arabic: "عَدَمُ وُضُوحِ الرُّؤْيَةِ",
+      latin: "'Adamu Wudhuuh ir-Ru'yati",
+      indonesian: "Pandangan Kabur / Tidak Jelas",
+      exampleArabic: "يَعَانِي الْمَرِيضُ مِنْ عَدَمِ وُضُوحِ الرُّؤْيَةِ.",
+      exampleIndo: "Pasien menderita pandangan yang kabur.",
+      type: "Frasa Nomina",
+      image: "https://images.unsplash.com/photo-1516714435131-44d6b64dc6a2?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 40,
+      topicId: "topik2",
+      arabic: "طَعَامٌ مَالِحٌ",
+      latin: "Tha'aamun Maalihun",
+      indonesian: "Makanan Asin",
+      exampleArabic: "تَجَنَّبْ تَنَاوُلَ الطَّعَامِ الْمَالِحِ لِصِحَّتِكَ.",
+      exampleIndo: "Hindari mengonsumsi makanan asin demi kesehatanmu.",
+      type: "Frasa Nomina",
+      image: "https://images.unsplash.com/photo-1518013038568-ce1149756050?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 41,
+      topicId: "topik2",
+      arabic: "طَعَامٌ حُلْوٌ",
+      latin: "Tha'aamun Hulwun",
+      indonesian: "Makanan Manis",
+      exampleArabic: "لاَ تُكْثِرْ مِنْ أَكْلِ الطَّعَامِ الْحُلْوِ.",
+      exampleIndo: "Jangan terlalu banyak makan makanan manis.",
+      type: "Frasa Nomina",
+      image: "https://images.unsplash.com/photo-1551024709-8f23befc6f87?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 42,
+      topicId: "topik2",
+      arabic: "طَعَامٌ مَقْلِيٌّ",
+      latin: "Tha'aamun Maqliyyun",
+      indonesian: "Makanan Gorengan / Digoreng",
+      exampleArabic: "الطَّعَامُ الْمَقْلِيُّ يَحْتَوِي عَلَى الزَّيْتِ الْكَثِيرِ.",
+      exampleIndo: "Makanan gorengan mengandung banyak minyak.",
+      type: "Frasa Nomina",
+      image: "https://images.unsplash.com/photo-1562967914-608f82629710?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 43,
+      topicId: "topik2",
+      arabic: "لُحُومٌ مُصَنَّعَةٌ",
+      latin: "Luhuumun Musanna'atun",
+      indonesian: "Daging Olahan (Sosis, dsb.)",
+      exampleArabic: "اللُّهُومُ الْمُصَنَّعَةُ لَيْسَتْ جَيِّدَةً لِلصِّحَّةِ.",
+      exampleIndo: "Daging olahan kurang baik untuk kesehatan.",
+      type: "Frasa Nomina",
+      image: "https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 44,
+      topicId: "topik2",
+      arabic: "جِلْدُ الدَّجَاجِ",
+      latin: "Jildu ad-Dajaaji",
+      indonesian: "Kulit Ayam",
+      exampleArabic: "جِلْدُ الدَّجَاجِ يَحْتَوِي عَلَى الدُّهُونِ.",
+      exampleIndo: "Kulit ayam mengandung banyak lemak.",
+      type: "Frasa Nomina",
+      image: "https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 45,
+      topicId: "topik2",
+      arabic: "جِهَازُ قِيَاسِ ضَغْطِ الدَّمِ",
+      latin: "Jihaazu Qiyaasi Dhagti ad-Dami",
+      indonesian: "Alat Ukur Tekanan Darah (Tensi)",
+      exampleArabic: "يَسْتَخْدِمُ الطَّبِيبُ جِهَازَ قِيَاسِ ضَغْطِ الدَّمِ.",
+      exampleIndo: "Dokter menggunakan alat ukur tekanan darah.",
+      type: "Frasa Nomina",
+      image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 46,
+      topicId: "topik2",
+      arabic: "دَوَاءٌ",
+      latin: "Dawaa'un",
+      indonesian: "Obat",
+      exampleArabic: "يَتَنَاوَلُ الْمَرِيضُ الدَّوَاءَ فِي الْوَقْتِ الْمُحَدَّدِ.",
+      exampleIndo: "Pasien meminum obat pada waktu yang ditentukan.",
+      type: "Nomina (Isim)",
+      image: "https://images.unsplash.com/photo-1471864190281-a93a3070b6de?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 47,
+      topicId: "topik2",
+      arabic: "صَيْدَلِيَّةٌ",
+      latin: "Saydaliyyatun",
+      indonesian: "Apotek",
+      exampleArabic: "نَشْتَرِي الدَّوَاءَ مِنَ الصَّيْدَلِيَّةِ.",
+      exampleIndo: "Kita membeli obat dari apotek.",
+      type: "Nomina (Isim)",
+      image: "https://images.unsplash.com/photo-1586015555751-63bb77f4322a?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 48,
+      topicId: "topik2",
+      arabic: "مُسْتَشْفَى",
+      latin: "Mustashfaa",
+      indonesian: "Rumah Sakit",
+      exampleArabic: "الْمُسْتَشْفَى مَكَانٌ لِعِلاَجِ الْمَرْضَى.",
+      exampleIndo: "Rumah sakit adalah tempat untuk mengobati orang sakit.",
+      type: "Nomina (Isim)",
+      image: "https://images.unsplash.com/photo-1587351021759-3e566b6af7cc?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 49,
+      topicId: "topik2",
+      arabic: "صَيْدَلِيٌّ",
+      latin: "Saydaliyyun",
+      indonesian: "Apoteker",
+      exampleArabic: "يُعْطِي الصَّيْدَلِيُّ الدَّوَاءَ لِلْمَرِيضِ.",
+      exampleIndo: "Apoteker memberikan obat kepada pasien.",
+      type: "Nomina (Isim)",
+      image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 50,
+      topicId: "topik2",
+      arabic: "طَبِيبٌ",
+      latin: "Thabiibun",
+      indonesian: "Dokter",
+      exampleArabic: "يَفْحَصُ الطَّبِيبُ الْمَرِيضَ بِعِنَايَةٍ.",
+      exampleIndo: "Dokter memeriksa pasien dengan cermat.",
+      type: "Nomina (Isim)",
+      image: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 51,
+      topicId: "topik2",
+      arabic: "فَوَاكِهُ",
+      latin: "Fawaakihu",
+      indonesian: "Buah-buahan",
+      exampleArabic: "الْفَوَاكِهُ غَنِيَّةٌ بِالْفِيتَامِينَاتِ.",
+      exampleIndo: "Buah-buahan kaya akan vitamin.",
+      type: "Nomina (Isim)",
+      image: "https://images.unsplash.com/photo-1619566636858-adf3ef46400b?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 52,
+      topicId: "topik2",
+      arabic: "مَوْزٌ",
+      latin: "Mauzun",
+      indonesian: "Pisang",
+      exampleArabic: "الْمَوْزُ فَاكِهَةٌ لَذِيذَةٌ وَمُفِيدَةٌ.",
+      exampleIndo: "Pisang adalah buah yang lezat dan bergizi.",
+      type: "Nomina (Isim)",
+      image: "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 53,
+      topicId: "topik2",
+      arabic: "بُرْتُقَالٌ",
+      latin: "Burtuqaalun",
+      indonesian: "Jeruk",
+      exampleArabic: "الْبُرْتُقَالُ يَحْتَوِي عَلَى فِيتَامِين ج.",
+      exampleIndo: "Jeruk mengandung banyak vitamin C.",
+      type: "Nomina (Isim)",
+      image: "https://images.unsplash.com/photo-1611080626919-7cf5a9dbab5b?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 54,
+      topicId: "topik2",
+      arabic: "خَضْرَاوَاتٌ",
+      latin: "Khadhraawaatun",
+      indonesian: "Sayur-sayuran",
+      exampleArabic: "تَأْكُلُ الأُسْرَةُ الْخَضْرَاوَاتِ الطَّازَجَةَ.",
+      exampleIndo: "Keluarga makan sayur-sayuran yang segar.",
+      type: "Nomina (Isim)",
+      image: "https://images.unsplash.com/photo-1540420773420-3366772f4999?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 55,
+      topicId: "topik2",
+      arabic: "سَمَكٌ",
+      latin: "Samakun",
+      indonesian: "Ikan",
+      exampleArabic: "السَّمَكُ طَعَامٌ صِحِّيٌّ مُمْتَازٌ.",
+      exampleIndo: "Ikan adalah makanan sehat yang sangat baik.",
+      type: "Nomina (Isim)",
+      image: "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 56,
+      topicId: "topik2",
+      arabic: "لَبَنٌ مُصَفًّى",
+      latin: "Labanun Musaffaa",
+      indonesian: "Yogurt / Susu Murni",
+      exampleArabic: "اللَّبَنُ الْمُصَفَّى مُفِيدٌ لِلْهَضْمِ.",
+      exampleIndo: "Yogurt sangat bermanfaat untuk pencernaan.",
+      type: "Frasa Nomina",
+      image: "https://images.unsplash.com/photo-1488477181946-6428a0291777?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 57,
+      topicId: "topik2",
+      arabic: "بِلاَ سُكَّرٍ",
+      latin: "Bilaa Sukkarin",
+      indonesian: "Tanpa Gula / Bebas Gula",
+      exampleArabic: "أَشْرَبُ الشَّايَ بِلاَ سُكَّرٍ.",
+      exampleIndo: "Saya minum teh tanpa gula.",
+      type: "Frasa Nomina",
+      image: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?q=80&w=400&auto=format&fit=crop"
+    },
 
-قَالَ جِبْرِيلُ لِمُحَمَّدٍ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ :اقْرَأْ، فَقَالَ مُحَمَّدٌ :مَا أَنَا بِقَارِئٍ، (لِأَنَّ مُحَمَّدًا كَانَ أُمِّيًّا). فَقَالَ جِبْرِيلُ :اقْرَأْ، فَقَالَ مُحَمَّدٌ :مَا أَنَا بِقَارِئٍ. ثُمَّ قَالَ جِبْرِيلُ:
+    // --- BAB 3: الحَجُّ وَالعُمْرَةُ (Haji & Umrah) ---
+    {
+      id: 58,
+      topicId: "topik3",
+      arabic: "الْحَجُّ / الْعُمْرَةُ",
+      latin: "Al-Hajju / Al-Umratu",
+      indonesian: "Haji / Umrah",
+      exampleArabic: "الْحَجُّ رُكْنٌ مِنْ أَرْكَانِ الإِسْلاَمِ.",
+      exampleIndo: "Haji adalah salah satu rukun Islam.",
+      type: "Nomina (Isim)",
+      image: "https://images.unsplash.com/photo-1565552645632-d725f8bfc19a?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 59,
+      topicId: "topik3",
+      arabic: "الْكَعْبَةُ الْمُشَرَّفَةُ",
+      latin: "Al-Ka'bat ul-Musharrafah",
+      indonesian: "Ka'bah Al-Musharrafah",
+      exampleArabic: "يَطُوفُ الْمُسْلِمُونَ حَوْلَ الْكَعْبَةِ الْمُشَرَّفَةِ.",
+      exampleIndo: "Umat Islam bertawaf mengelilingi Ka'bah Al-Musharrafah.",
+      type: "Frasa Nomina",
+      image: "https://images.unsplash.com/photo-1591604466107-ec97de577aff?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 60,
+      topicId: "topik3",
+      arabic: "الإِحْرَامُ",
+      latin: "Al-Ihraamu",
+      indonesian: "Ihram / Niat & Pakaian Ihram",
+      exampleArabic: "يَلْبَسُ الْحَاجُّ مَلاَبِسَ الإِحْرَامِ.",
+      exampleIndo: "Jamaah haji memakai pakaian ihram.",
+      type: "Nomina (Isim)",
+      image: "https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 61,
+      topicId: "topik3",
+      arabic: "الْحَاجُّ ج الْحُجَّاجُ",
+      latin: "Al-Haajju j Al-Hujjaaju",
+      indonesian: "Jamaah Haji",
+      exampleArabic: "يَصِلُ الْحُجَّاجُ إِلَى مَكَّةَ الْمُكَرَّمَةِ.",
+      exampleIndo: "Para jamaah haji tiba di Makkah Al-Mukarramah.",
+      type: "Nomina (Isim)",
+      image: "https://images.unsplash.com/photo-1580418827493-f2b22c0a76cb?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 62,
+      topicId: "topik3",
+      arabic: "مَحْرَمٌ - مَحْرَمَةٌ",
+      latin: "Mahramun - Mahramatun",
+      indonesian: "Mahram (Laki-laki / Perempuan)",
+      exampleArabic: "تُسَافِرُ الْمَرْأَةُ مَعَ مَحْرَمِهَا.",
+      exampleIndo: "Seorang wanita bepergian bersama mahramnya.",
+      type: "Nomina (Isim)",
+      image: "https://images.unsplash.com/photo-1519834785169-98be25ec3f84?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 63,
+      topicId: "topik3",
+      arabic: "الْمِيقَاتُ",
+      latin: "Al-Miiqaatu",
+      indonesian: "Miqat (Batas Waktu & Tempat Ihram)",
+      exampleArabic: "يَبْدَأُ الإِحْرَامُ مِنَ الْمِيقَاتِ.",
+      exampleIndo: "Ihram dimulai dari miqat.",
+      type: "Nomina (Isim)",
+      image: "https://images.unsplash.com/photo-1564769625905-50e93615e769?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 64,
+      topicId: "topik3",
+      arabic: "الطَّوَافُ بِالْكَعْبَةِ",
+      latin: "At-Thawaafu bil-Ka'bati",
+      indonesian: "Tawaf Mengelilingi Ka'bah",
+      exampleArabic: "الطَّوَافُ بِالْكَعْبَةِ سَبْعَةُ أَشْوَاطٍ.",
+      exampleIndo: "Tawaf mengelilingi Ka'bah sebanyak 7 putaran.",
+      type: "Frasa Nomina",
+      image: "https://images.unsplash.com/photo-1565552645632-d725f8bfc19a?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 65,
+      topicId: "topik3",
+      arabic: "السَّعْيُ بَيْنَ الصَّفَا وَالْمَرْوَةِ",
+      latin: "As-Sa'yu bainas-Shafaa wal-Marwati",
+      indonesian: "Sa'i Antara Shafa dan Marwah",
+      exampleArabic: "السَّعْيُ بَيْنَ الصَّفَا وَالْمَرْوَةِ مِنْ وِاجِبَاتِ الْحَجِّ.",
+      exampleIndo: "Sa'i antara Shafa dan Marwah termasuk kewajiban haji.",
+      type: "Frasa Nomina",
+      image: "https://images.unsplash.com/photo-1519834785169-98be25ec3f84?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 66,
+      topicId: "topik3",
+      arabic: "الْمَبِيتُ فِي مِنًى",
+      latin: "Al-Mabiitu fii Minaa",
+      indonesian: "Bermalam di Mina",
+      exampleArabic: "يَبِيتُ الْحُجَّاجُ فِي مِنًى فِي أَيَّامِ التَّشْرِيقِ.",
+      exampleIndo: "Jamaah haji bermalam di Mina pada hari-hari Tasyrik.",
+      type: "Frasa Nomina",
+      image: "https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 67,
+      topicId: "topik3",
+      arabic: "الْوُقُوفُ بِعَرَفَةَ",
+      latin: "Al-Wuquufu bi-'Arafata",
+      indonesian: "Wukuf di Arafah",
+      exampleArabic: "الْحَجُّ عَرَفَةُ، وَالْوُقُوفُ بِعَرَفَةَ رُكْنٌ أَعْظَمُ.",
+      exampleIndo: "Haji adalah Arafah, dan wukuf di Arafah adalah rukun terbesar.",
+      type: "Frasa Nomina",
+      image: "https://images.unsplash.com/photo-1591604466107-ec97de577aff?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 68,
+      topicId: "topik3",
+      arabic: "الْمَبِيتُ فِي مُزْدَلِفَةَ",
+      latin: "Al-Mabiitu fii Muzdalifata",
+      indonesian: "Bermalam di Muzdalifah",
+      exampleArabic: "يَتَوَجَّهُ الْحُجَّاجُ لِلْمَبِيتِ فِي مُزْدَلِفَةَ بَعْدَ عَرَفَةَ.",
+      exampleIndo: "Jamaah haji bertolak untuk bermalam di Muzdalifah setelah Arafah.",
+      type: "Frasa Nomina",
+      image: "https://images.unsplash.com/photo-1580418827493-f2b22c0a76cb?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 69,
+      topicId: "topik3",
+      arabic: "رَمْيُ الْجَمَرَاتِ",
+      latin: "Ramyul-Jamaraati",
+      indonesian: "Melempar Jumrah",
+      exampleArabic: "يَقُومُ الْحُجَّاجُ بِرَمْيِ الْجَمَرَاتِ فِي مِنًى.",
+      exampleIndo: "Jamaah haji melakukan lempar jumrah di Mina.",
+      type: "Frasa Nomina",
+      image: "https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 70,
+      topicId: "topik3",
+      arabic: "التَّحَلُّلُ",
+      latin: "At-Tahallulu",
+      indonesian: "Tahallul (Mencukur / Memotong Rambut)",
+      exampleArabic: "يَتَحَلَّلُ الْحَاجُّ بِقَصِّ الشَّعْرِ بَعْدَ الطَّوَافِ وَالسَّعْيِ.",
+      exampleIndo: "Jamaah haji bertahallul dengan memotong rambut setelah tawaf dan sa'i.",
+      type: "Nomina (Isim)",
+      image: "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 71,
+      topicId: "topik3",
+      arabic: "الْحَجَرُ الأَسْوَدُ",
+      latin: "Al-Hajarul-Aswadu",
+      indonesian: "Hajar Aswad (Batu Hitam Ka'bah)",
+      exampleArabic: "يُشِيرُ الْحَاجُّ إِلَى الْحَجَرِ الأَسْوَدِ فِي الطَّوَافِ.",
+      exampleIndo: "Jamaah haji memberi isyarat ke Hajar Aswad saat tawaf.",
+      type: "Frasa Nomina",
+      image: "https://images.unsplash.com/photo-1565552645632-d725f8bfc19a?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 72,
+      topicId: "topik3",
+      arabic: "نَاصِعُ الْبَيَاضِ",
+      latin: "Naasi'ul-Bayaadhi",
+      indonesian: "Putih Bersih / Putih Silau",
+      exampleArabic: "كَانَ الْحَجَرُ الأَسْوَدُ نَاصِعَ الْبَيَاضِ حِينَ نَزَلَ مِنَ الْجَنَّةِ.",
+      exampleIndo: "Hajar Aswad dulunya putih bersih ketika turun dari surga.",
+      type: "Adjektiva (Sifat)",
+      image: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?q=80&w=400&auto=format&fit=crop"
+    },
 
-اقْرَأْ بِاسْمِ رَبِّكَ الَّذِي خَلَقَ (١)
-خَلَقَ الْإِنْسَانَ مِنْ عَلَقٍ (٢)
-اقْرَأْ وَرَبُّكَ الْأَكْرَمُ (٣)
-الَّذِي عَلَّمَ بِالْقَلَمِ (٤)
-عَلَّمَ الْإِنْسَانَ مَا لَمْ يَعْلَمْ (٥)
+    // --- BAB 4: الأَدْيَانُ فِي إِنْدُونِيسِيَا (Agama-agama di Indonesia) ---
+    {
+      id: 73,
+      topicId: "topik4",
+      arabic: "الإِسْلاَمُ",
+      latin: "Al-Islaamu",
+      indonesian: "Agama Islam",
+      exampleArabic: "الإِسْلاَمُ دِينُ السَّلاَمِ وَالرَّحْمَةِ.",
+      exampleIndo: "Islam adalah agama kedamaian dan kasih sayang.",
+      type: "Nomina (Isim)",
+      image: "https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 74,
+      topicId: "topik4",
+      arabic: "الْكَاثُولِيكِيَّةُ",
+      latin: "Al-Kaathuuliikiyyatu",
+      indonesian: "Agama Katolik",
+      exampleArabic: "الْكَاثُولِيكِيَّةُ إِحْدَى الأَدْيَانِ فِي إِنْدُونِيسِيَا.",
+      exampleIndo: "Katolik adalah salah satu agama di Indonesia.",
+      type: "Nomina (Isim)",
+      image: "https://images.unsplash.com/photo-1548625361-1851214041b6?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 75,
+      topicId: "topik4",
+      arabic: "الْبُرُوتِسْتَانْتِيَّةُ",
+      latin: "Al-Buruutistaantiyyatu",
+      indonesian: "Agama Protestan",
+      exampleArabic: "الْبُرُوتِسْتَانْتِيَّةُ دِينٌ يَعْتَنِقُهُ بَعْضُ الْمُوَاطِنِينَ.",
+      exampleIndo: "Protestan adalah agama yang dianut sebagian warga.",
+      type: "Nomina (Isim)",
+      image: "https://images.unsplash.com/photo-1519817650390-64a93db51149?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 76,
+      topicId: "topik4",
+      arabic: "الْهِنْدُوسِيَّةُ",
+      latin: "Al-Hinduusiyyatu",
+      indonesian: "Agama Hindu",
+      exampleArabic: "الْهِنْدُوسِيَّةُ مَوْجُودَةٌ بِكَثْرَةٍ فِي بَالِي.",
+      exampleIndo: "Agama Hindu terdapat banyak di Bali.",
+      type: "Nomina (Isim)",
+      image: "https://images.unsplash.com/photo-1609946782701-8c464a93e3d9?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 77,
+      topicId: "topik4",
+      arabic: "الْبُوذِيَّةُ",
+      latin: "Al-Buudhiyyatu",
+      indonesian: "Agama Buddha",
+      exampleArabic: "الْبُوذِيَّةُ دِينٌ يَدْعُو إِلَى السَّلاَمِ.",
+      exampleIndo: "Agama Buddha adalah agama yang mengajak pada kedamaian.",
+      type: "Nomina (Isim)",
+      image: "https://images.unsplash.com/photo-1561361513-2d000a50f0dc?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 78,
+      topicId: "topik4",
+      arabic: "الْكُونْفُوشِيَّةُ",
+      latin: "Al-Kuunfuushiyyatu",
+      indonesian: "Agama Khonghucu",
+      exampleArabic: "الْكُونْفُوشِيَّةُ مِنَ الأَدْيَانِ الْمَعْتَرَفِ بِهَا.",
+      exampleIndo: "Khonghucu termasuk agama yang diakui.",
+      type: "Nomina (Isim)",
+      image: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 79,
+      topicId: "topik4",
+      arabic: "الْمُسْلِمُ",
+      latin: "Al-Muslimu",
+      indonesian: "Orang Muslim / Umat Islam",
+      exampleArabic: "يُصَلِّي الْمُسْلِمُ فِي الْمَسْجِدِ.",
+      exampleIndo: "Orang Muslim shalat di masjid.",
+      type: "Nomina (Isim)",
+      image: "https://images.unsplash.com/photo-1585036156171-384164a8c675?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 80,
+      topicId: "topik4",
+      arabic: "الْمَسِيحِيُّ / الْكَاثُولِيكِيُّ",
+      latin: "Al-Masihiyyu / Al-Kaathuuliikiyyu",
+      indonesian: "Orang Katolik",
+      exampleArabic: "يَذْهَبُ الْمَسِيحِيُّ الْكَاثُولِيكِيُّ إِلَى الْكَنِيسَةِ.",
+      exampleIndo: "Orang Katolik pergi ke gereja.",
+      type: "Nomina (Isim)",
+      image: "https://images.unsplash.com/photo-1544717305-2782549b5136?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 81,
+      topicId: "topik4",
+      arabic: "الْمَسِيحِيُّ / الْبُرُوتِسْتَانْتِيُّ",
+      latin: "Al-Masihiyyu / Al-Buruutistaantiyyu",
+      indonesian: "Orang Protestan",
+      exampleArabic: "يُعَامِلُ الْمَسِيحِيُّ الْبُرُوتِسْتَانْتِيُّ جِيرَانَهُ بِاحْتِرَامٍ.",
+      exampleIndo: "Orang Protestan memperlakukan tetangganya dengan hormat.",
+      type: "Nomina (Isim)",
+      image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 82,
+      topicId: "topik4",
+      arabic: "الْهِنْدُوسِيُّ",
+      latin: "Al-Hinduusiyyu",
+      indonesian: "Umat Hindu",
+      exampleArabic: "يَتَعَبَّدُ الْهِنْدُوسِيُّ فِي فُورَا.",
+      exampleIndo: "Umat Hindu beribadah di Pura.",
+      type: "Nomina (Isim)",
+      image: "https://images.unsplash.com/photo-1609946782701-8c464a93e3d9?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 83,
+      topicId: "topik4",
+      arabic: "الْبُوذِيُّ",
+      latin: "Al-Buudhiyyu",
+      indonesian: "Umat Buddha",
+      exampleArabic: "يَتَعَبَّدُ الْبُوذِيُّ فِي فِهَارَا.",
+      exampleIndo: "Umat Buddha beribadah di Vihara.",
+      type: "Nomina (Isim)",
+      image: "https://images.unsplash.com/photo-1561361513-2d000a50f0dc?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 84,
+      topicId: "topik4",
+      arabic: "الْكُونْفُوشِيُّ",
+      latin: "Al-Kuunfuushiyyu",
+      indonesian: "Umat Khonghucu",
+      exampleArabic: "يَتَعَبَّدُ الْكُونْفُوشِيُّ فِي الْمَعْبَدِ.",
+      exampleIndo: "Umat Khonghucu beribadah di Klenteng.",
+      type: "Nomina (Isim)",
+      image: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 85,
+      topicId: "topik4",
+      arabic: "الْمَسْجِدُ",
+      latin: "Al-Masjidu",
+      indonesian: "Masjid (Tempat Ibadah Umat Islam)",
+      exampleArabic: "الْمَسْجِدُ مَكَانُ عِبَادَةِ الْمُسْلِمِينَ.",
+      exampleIndo: "Masjid adalah tempat ibadah umat Islam.",
+      type: "Nomina (Isim)",
+      image: "https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 86,
+      topicId: "topik4",
+      arabic: "الْكَنِيسَةُ",
+      latin: "Al-Kaniisatu",
+      indonesian: "Gereja (Tempat Ibadah Umat Kristen/Katolik)",
+      exampleArabic: "الْكَنِيسَةُ مَكَانُ عِبَادَةِ الْمَسِيحِيِّينَ.",
+      exampleIndo: "Gereja adalah tempat ibadah umat Kristen.",
+      type: "Nomina (Isim)",
+      image: "https://images.unsplash.com/photo-1548625361-1851214041b6?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 87,
+      topicId: "topik4",
+      arabic: "فُورَا",
+      latin: "Fuuraa",
+      indonesian: "Pura (Tempat Ibadah Umat Hindu)",
+      exampleArabic: "فُورَا مَكَانُ عِبَادَةِ الْهِنْدُوسِيِّينَ فِي بَالِي.",
+      exampleIndo: "Pura adalah tempat ibadah umat Hindu di Bali.",
+      type: "Nomina (Isim)",
+      image: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 88,
+      topicId: "topik4",
+      arabic: "فِهَارَا",
+      latin: "Fihaaraa",
+      indonesian: "Vihara (Tempat Ibadah Umat Buddha)",
+      exampleArabic: "فِهَارَا مَكَانُ عِبَادَةِ الْبُوذِيِّينَ.",
+      exampleIndo: "Vihara adalah tempat ibadah umat Buddha.",
+      type: "Nomina (Isim)",
+      image: "https://images.unsplash.com/photo-1561361513-2d000a50f0dc?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 89,
+      topicId: "topik4",
+      arabic: "الْمَعْبَدُ",
+      latin: "Al-Ma'badu",
+      indonesian: "Klenteng / Tempat Ibadah",
+      exampleArabic: "يَتَوَجَّهُ الْكُونْفُوشِيُّ إِلَى الْمَعْبَدِ.",
+      exampleIndo: "Umat Khonghucu menuju ke klenteng.",
+      type: "Nomina (Isim)",
+      image: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 90,
+      topicId: "topik4",
+      arabic: "التَّسَامُحُ",
+      latin: "At-Tasaamuhu",
+      indonesian: "Toleransi / Sikap Saling Menghormati",
+      exampleArabic: "التَّسَامُحُ مِفْتَاحُ السَّلاَمِ فِي الْمُجْتَمَعِ.",
+      exampleIndo: "Toleransi adalah kunci kedamaian dalam masyarakat.",
+      type: "Nomina (Isim)",
+      image: "https://images.unsplash.com/photo-1511632765486-a01980e01a18?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 91,
+      topicId: "topik4",
+      arabic: "بَانْتَجَاسِيلاَ",
+      latin: "Baantajaasiilaa",
+      indonesian: "Pancasila (Dasar Negara Indonesia)",
+      exampleArabic: "بَانْتَجَاسِيلاَ هُوَ أَسَاسُ الدَّوْلَةِ الإِنْدُونِيسِيَّةِ.",
+      exampleIndo: "Pancasila adalah dasar negara Indonesia.",
+      type: "Nomina (Isim)",
+      image: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 92,
+      topicId: "topik4",
+      arabic: "الْوَحْدَةُ",
+      latin: "Al-Wahdatu",
+      indonesian: "Persatuan / Kesatuan",
+      exampleArabic: "الْوَحْدَةُ تُقَوِّي الأُمَّةَ الإِنْدُونِيسِيَّةَ.",
+      exampleIndo: "Persatuan memperkuat bangsa Indonesia.",
+      type: "Nomina (Isim)",
+      image: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      id: 93,
+      topicId: "topik4",
+      arabic: "التَّنَوُّعُ",
+      latin: "At-Tanawwu'u",
+      indonesian: "Keberagaman / Keanekaragaman",
+      exampleArabic: "التَّنَوُّعُ فِي إِنْدُونِيسِيَا نِعْمَةٌ كَبِيرَةٌ.",
+      exampleIndo: "Keberagaman di Indonesia adalah nikmat yang besar.",
+      type: "Nomina (Isim)",
+      image: "https://images.unsplash.com/photo-1511632765486-a01980e01a18?q=80&w=400&auto=format&fit=crop"
+    }
+  ],
 
-وَهَذِهِ الْآيَاتُ هِيَ أَوَّلُ مَا نَزَلَ مِنَ الْقُرْآنِ عَلَى النَّبِيِّ مُحَمَّدٍ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ. وَاسْتَمَرَّ نُزُولُ الْقُرْآنِ الْكَرِيمِ عَلَى النَّبِيِّ ثَلَاثًا وَعِشْرِينَ سَنَةً :ثَلَاثَ عَشْرَةَ سَنَةً فِي مَكَّةَ وَعَشْرَ سَنَوَاتٍ فِي الْمَدِينَةِ.
+  qiraah: [
+    {
+      id: 1,
+      title: "القِرَاءَةُ الأُولَى: الذَّهَابُ إِلَى غَارِ فِيْنْدُوْل (Wisata ke Goa Pindul)",
+      topic: "السَّفَرُ وَالسِّيَاحَةُ",
+      level: "Kelas 11 MA - Bab 1",
+      arabicText: `أَنَا إِبْرِيْزَةُ، أَنَا طَالِبَةٌ فِي الصَّفِّ الحَادِيَ عَشَرَ مِنَ المَدْرَسَةِ الثَّانَوِيَّةِ الإِسْلَامِيَّةِ الحُكُوْمِيَّةِ 4 جُوْمْبَانْج. عِنْدِي جَدٌّ فِي سُوْكُوْهَارْجُوْ (Sukoharjo) جَاوَا الوُسْطَى. وَفِي أَيَّامِ العُطْلَةِ المَاضِيَةِ ذَهَبْتُ إِلَى بَيْتِ جَدِّي مَعَ أُسْرَتِي وَمَكَّثْنَا هُنَاكَ أَرْبَعَةَ أَيَّامٍ.
 
-صَارَ الْقُرْآنُ الْكَرِيمُ دُسْتُورًا لِلْمُسْلِمِينَ فِي حَيَاتِهِمْ. الْقُرْآنُ لَيْسَ لِلْهِدَايَةِ فَقَطْ، بَلْ هُوَ أَيْضًا لِلْإِلْهَامِ وَالْقُوَّةِ لَنَا .الْقُرْآنُ لَيْسَ لِلْقِرَاءَةِ فَقَطْ، بَلْ يُعْمَلُ بِهِ فِي الْحَيَاةِ الْيَوْمِيَّةِ .لَيْسَ فَقَطْ تُلْفَظُ حُرُوفُهُ، بَلْ يُفْهَمُ مَعْنَاهُ. هَيَّا نُطَبِّقُهُ فِي حَيَاتِنَا الْيَوْمِيَّةِ، فِي الْمُجْتَمَعِ، وَفِي حَيَاتِنَا كَأُمَّةٍ وَدَوْلَةٍ.
+اِسْتَعْدَدْنَا بِأَشْيَاءَ كَثِيْرَةٍ مِنَ المَلَابِسِ وَالأَطْعِمَةِ وَاللُّهْنَةِ وَبِطَاقَةِ المُرُوْرِ الإِلِكْتُرُونِيَّةِ وَغَيْرِ ذَلِك ثُمَّ رَكِبْنَا السَّيَّارَةَ فِي السَّاعَةِ السَّابِعَةِ صَبَاحًا وَوَصَلْنَا إِلَى بَيْتِ جَدِّي فِي السَّاعَةِ العَاشِرَةِ وَالنِّصْفِ. شَعَرَ جَدِّي بِسُرُوْرٍ لِوُصُوْلِنَا.
 
----
+ذَهَبْنَا إِلَى غَارِ فِيْنْدُوْل فِي اليَوْمِ الأَوَّلِ مِنَ العُطْلَةِ. بَيْتُ جَدِّي قَرِيْبٌ مِنْ غَارِ فِيْنْدُوْل. غَارُ فِيْنْدُوْل مَكَانٌ سِيَاحِيٌّ جَمِيْلٌ فِي غُوْنُوْنْج كِيْنْدُوْل (Gunung Kidul) يُوْكِيَاكِرْتَا. وَوَصَلْنَا هُنَاكَ بِسَلَامٍ بَعْدَ سَاعَةٍ وَنِصْفٍ بِالسَّيَّارَةِ.
 
-**عِيدُ الْفِطْرِ وَعِيدُ الْأَضْحَى**
+تَوَجَّهْنَا بَعْدَ ذَلِك إِلَى شُبَّاكِ التَّذَاكِرِ لِشِرَاءِ التَّذَاكِرِ. كَانَتِ التَّذْكِرَةُ بِخَمْسِيْنَ أَلْفَ رُوْبِيَّةٍ لِكُلِّ فَرْدٍ. ثُمَّ اسْتَخْدَمْنَا الإِطَارَاتِ وَالعَوَّامَةَ وَمَشَيْنَا بَعْدَ ذَلِك إِلَى مَكَانِ السِّيَاحَةِ وَدَخَلْنَا إِلَى الغَارِ وَاتَّبَعْنَا النَّهْرَ تَحْتَ الغَارِ مَعَ مُرْشِدِ السِّيَاحَةِ.
 
-لِلْمُسْلِمِينَ عِيدَانِ، هُمَا عِيدُ الْفِطْرِ فِي الْأَوَّلِ مِنْ شَهْرِ شَوَّالٍ، وَعِيدُ الْأَضْحَى فِي الْعَاشِرِ مِنْ شَهْرِ ذِي الْحِجَّةِ.
+ثُمَّ مَشَيْنَا عَلَى ضِفَّةِ نَهْرِ أُيُوْ، هُوَ نَهْرٌ قَرِيْبٌ مِنْ غَارِ فِيْنْدُوْل. لَعِبْنَا وَسَبَحْنَا فِي النَّهْرِ عَلَى بُعْدِ كِيْلُومِتْرٍ وَنِصْفٍ. وَفِي أَثْنَاءِ الطَّرِيْقِ شَاهَدْنَا المَنَاظِرَ الجَمِيْلَةَ مِنْ حُزُفٍ مُزْتَفِعٍ.
 
-فِي لَيْلَةِ الْعِيدِ، بَعْضٌ مِنَ الْمُسْلِمِينَ يَجْتَمِعُونَ مَعَ عَائِلَتِهِمْ فِي الْبَيْتِ. هُمْ يَتَكَلَّمُونَ وَيَتَبَادَلُونَ عَنْ الْقِصَصِ. هُمْ مَسْرُورُونَ بِمَجِيءِ الْعِيدِ. وَ بَعْضُهُمُ الْآخَرُ يُكَبِّرُونَ اللَّهَ فِي الْمَسَاجِدِ.
+هِوَايَتِي السِّيَاحَةُ، وَالذَّهَابُ إِلَى أَمَاكِنَ سِيَاحِيَّةٍ جَمِيْلَةٍ فِي إِندُونِيْسِيَا شَيْءٌ مُمْتِعٌ فِي حَيَاتِي. وَالذَّهَابُ إِلَيْهَا بَعْضُ مِمَّا أَمَرَ اللهُ بِهِ عَزَّ وَجَلَّ: (هُوَ الَّذِي جَعَلَ لَكُمُ الْأَرْضَ ذَلُولًا فَامْشُوا فِي مَنَاكِبِهَا وَكُلُوا مِنْ رِزْقِهِ وَإِلَيْهِ النُّشُورُ) وَهَذِهِ الأَمَاكِنُ السِّيَاحِيَّةُ آيَةٌ مِنْ آيَاتِ اللهِ، فَلَا بُدَّ لَنَا أَنْ نُحَافِظَ عَلَيْهَا.`,
+      indonesianText: `Saya Ibrizah, saya seorang siswi kelas 11 di MAN 4 Jombang. Saya memiliki kakek di Sukoharjo, Jawa Tengah. Pada hari-hari liburan lalu, saya pergi ke rumah kakek bersama keluarga saya dan kami tinggal di sana selama empat hari.
 
-وَفِي صَبَاحِ الْعِيدِ، هُمْ يَذْهَبُونَ إِلَى الْمَسَاجِدِ أَوْ فِي الْمَيَادِينِ لِصَلَاةِ الْعِيدِ. بَعْدَ صَلَاةِ الْعِيدِ، هُمْ يَزُورُونَ الْأَقَارِبَ وَالْجِيرَانَ لِيَصِلُوا الرَّحِمَ وَيَسْأَلُوا الْعَفْوَ مِنْهُمْ مِنَ الْخَطَأِ وَالتَّقْصِيرِ.
+Kami bersiap-siap dengan banyak hal seperti pakaian, makanan, oleh-oleh, kartu elektronik (pass/e-money), dan lain-lain. Kemudian kami naik mobil pada jam 07.00 pagi dan tiba di rumah kakek pada jam 10.30. Kakek merasa bahagia atas kedatangan kami.
 
-وَفِي عِيدِ الْأَضْحَى، بَعْدَ صَلَاةِ عِيدِ الْأَضْحَى، يَذْبَحُ الْمُسْلِمُونَ الْقَادِرُونَ الْأَضَاحِيَ تَقَرُّبًا إِلَى اللَّهِ، فَيَأْكُلُونَ مِنْ لَحْمِ الْأُضْحِيَّةِ، وَيُهْدُونَ مِنْهَا لِلْأَقَارِبِ وَالْأَصْدِقَاءِ، وَيَتَصَدَّقُونَ مِنْهَا عَلَى الْفُقَرَاءِ وَالْمَسَاكِينِ.
+Kami pergi ke Goa Pindul pada hari pertama liburan. Rumah kakek dekat dari Goa Pindul. Goa Pindul adalah tempat wisata yang indah di Gunung Kidul, Yogyakarta. Dan kami tiba di sana dengan selamat setelah perjalanan selama satu setengah jam menggunakan mobil.
 
-الْحِكَمُ الْمَأْخُوذَةُ مِنْ عِيدِ الْفِطْرِ وَ عِيدِ الْأَضْحَى مِنْهَا:
-١. يَأْتِي الْعِيدُ بِالْفَرَحِ وَالسَّعَادَةِ، وَأَيْضًا لِلتَّوَاصُلِ وَالتَّآخِي بَيْنَ النَّاسِ.
-٢. يُعَلِّمُ الصِّيَامُ وَالْأُضْحِيَّةُ لَنَا التَّعَاوُنَ وَالتَّقَاسُمَ.
-٣. أَنَّ فِي الْإِسْلَامِ، هُنَاكَ مُسَاوَاةٌ بَيْنَ النَّاسِ. لَهُمْ مَكَانَةٌ وَاحِدَةٌ فِي الْإِسْلَامِ، وَلَا يَفْضُلُ أَحَدٌ عَلَى الْآخَرِ إِلَّا بِالتَّقْوَى.
-٤. تُعَلِّمُنَا الْأُضْحِيَّةُ أَيْضًا الْإِخْلَاصَ فِي الْعِبَادَةِ.`,
-        paragraphs: [
-          {
-            arabic: "نَزَلَ الْقُرْآنُ عَلَى النَّبِيِّ مُحَمَّدٍ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ فِي غَارِ حِرَاءٍ، وَكَانَ عُمْرُهُ أَرْبَعِينَ سَنَةً. كَانَ النَّبِيُّ مُحَمَّدٌ يَخْلُو بِنَفْسِهِ فِي الْغَارِ وَيَتَعَبَّدُ اللَّهَ فِيهِ ، ثُمَّ نَزَلَ عَلَيْهِ جِبْرِيلُ بِالْوَحْيِ وَأَمَرَهُ بِالْقِرَاءَةِ. وَكَانَ ذَلِكَ فِي اللَّيْلَةِ السَّابِعَةِ عَشْرَةَ مِنْ شَهْرِ رَمَضَانَ.",
-            translation: "Al-Qur'an turun kepada Nabi Muhammad ﷺ di Gua Hira saat usia beliau 40 tahun. Nabi Muhammad biasa menyendiri di gua tersebut untuk beribadah kepada Allah, kemudian Malaikat Jibril turun membawa wahyu dan menyuruh beliau membaca. Peristiwa tersebut terjadi pada malam ke-17 bulan Ramadhan."
-          },
-          {
-            arabic: "قَالَ جِبْرِيلُ لِمُحَمَّدٍ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ :اقْرَأْ، فَقَالَ مُحَمَّدٌ :مَا أَنَا بِقَارِئٍ، (لِأَنَّ مُحَمَّدًا كَانَ أُمِّيًّا). فَقَالَ جِبْرِيلُ :اقْرَأْ، فَقَالَ مُحَمَّدٌ :مَا أَنَا بِقَارِئٍ. ثُمَّ قَالَ جِبْرِيلُ:",
-            translation: "Jibril berkata kepada Muhammad ﷺ: \"Bacalah!\", maka Muhammad menjawab: \"Aku tidak bisa membaca\" (karena Muhammad seorang yang ummi/tidak bisa membaca tulisan). Lalu Jibril berkata lagi: \"Bacalah!\", dan Muhammad menjawab: \"Aku tidak bisa membaca\". Kemudian Jibril berkata:"
-          },
-          {
-            arabic: "اقْرَأْ بِاسْمِ رَبِّكَ الَّذِي خَلَقَ (١) خَلَقَ الْإِنْسَانَ مِنْ عَلَقٍ (٢) اقْرَأْ وَرَبُّكَ الْأَكْرَمُ (٣) الَّذِي عَلَّمَ بِالْقَلَمِ (٤) عَلَّمَ الْإِنْسَانَ مَا لَمْ يَعْلَمْ (٥)",
-            translation: "Bacalah dengan (menyebut) nama Tuhanmu yang menciptakan (1). Dia telah menciptakan manusia dari segumpal darah (2). Bacalah, dan Tuhanmulah Yang Maha Mulia (3). Yang mengajar (manusia) dengan perantaraan kalam (4). Dia mengajarkan manusia apa yang tidak diketahuinya (5)."
-          },
-          {
-            arabic: "وَهَذِهِ الْآيَاتُ هِيَ أَوَّلُ مَا نَزَلَ مِنَ الْقُرْآنِ عَلَى النَّبِيِّ مُحَمَّدٍ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ. وَاسْتَمَرَّ نُزُولُ الْقُرْآنِ الْكَرِيمِ عَلَى النَّبِيِّ ثَلَاثًا وَعِشْرِينَ سَنَةً :ثَلَاثَ عَشْرَةَ سَنَةً فِي مَكَّةَ وَعَشْرَ سَنَوَاتٍ فِي الْمَدِينَةِ.",
-            translation: "Ayat-ayat ini adalah yang pertama kali turun dari Al-Qur'an kepada Nabi Muhammad ﷺ. Dan penurun Al-Qur'anul Karim kepada Nabi berlanjut selama 23 tahun: 13 tahun di Makkah dan 10 tahun di Madinah."
-          },
-          {
-            arabic: "صَارَ الْقُرْآنُ الْكَرِيمُ دُسْتُورًا لِلْمُسْلِمِينَ فِي حَيَاتِهِمْ. الْقُرْآنُ لَيْسَ لِلْهِدَايَةِ فَقَطْ، بَلْ هُوَ أَيْضًا لِلْإِلْهَامِ وَالْقُوَّةِ لَنَا .الْقُرْآنُ لَيْسَ لِلْقِرَاءَةِ فَقَطْ، بَلْ يُعْمَلُ بِهِ فِي الْحَيَاةِ الْيَوْمِيَّةِ .لَيْسَ فَقَطْ تُلْفَظُ حُرُوفُهُ، بَلْ يُفْهَمُ مَعْنَاهُ. هَيَّا نُطَبِّقُهُ فِي حَيَاتِنَا الْيَوْمِيَّةِ، فِي الْمُجْتَمَعِ، وَفِي حَيَاتِنَا كَأُمَّةٍ وَدَوْلَةٍ.",
-            translation: "Al-Qur'anul Karim menjadi pedoman hidup bagi umat Islam. Al-Qur'an bukan hanya untuk petunjuk, melainkan juga untuk inspirasi dan kekuatan bagi kita. Al-Qur'an bukan sekadar untuk dibaca, melainkan untuk diamalkan dalam kehidupan sehari-hari. Bukan hanya diucapkan huruf-hurufnya, tetapi difahami maknanya. Mari kita terapkan dalam kehidupan sehari-hari kita, di masyarakat, dan dalam kehidupan berbangsa serta bernegara."
-          },
-          {
-            arabic: "لِلْمُسْلِمِينَ عِيدَانِ، هُمَا عِيدُ الْفِطْرِ فِي الْأَوَّلِ مِنْ شَهْرِ شَوَّالٍ، وَعِيدُ الْأَضْحَى فِي الْعَاشِرِ مِنْ شَهْرِ ذِي الْحِجَّةِ.",
-            translation: "Bagi umat Islam ada dua hari raya, yaitu Hari Raya Idul Fitri pada tanggal 1 Syawwal, dan Hari Raya Idul Adha pada tanggal 10 Dzulhijjah."
-          },
-          {
-            arabic: "فِي لَيْلَةِ الْعِيدِ، بَعْضٌ مِنَ الْمُسْلِمِينَ يَجْتَمِعُونَ مَعَ عَائِلَتِهِمْ فِي الْبَيْتِ. هُمْ يَتَكَلَّمُونَ وَيَتَبَادَلُونَ عَنْ الْقِصَصِ. هُمْ مَسْرُورُونَ بِمَجِيءِ الْعِيدِ. وَ بَعْضُهُمُ الْآخَرُ يُكَبِّرُونَ اللَّهَ فِي الْمَسَاجِدِ.",
-            translation: "Pada malam Hari Raya, sebagian umat Islam berkumpul bersama keluarga di rumah. Mereka berbincang dan saling berbagi cerita. Mereka berbahagia dengan datangnya Hari Raya. Dan sebagian lainnya mengumandangkan takbir mengagungkan Allah di masjid-masjid."
-          },
-          {
-            arabic: "وَفِي صَبَاحِ الْعِيدِ، هُمْ يَذْهَبُونَ إِلَى الْمَسَاجِدِ أَوْ فِي الْمَيَادِينِ لِصَلَاةِ الْعِيدِ. بَعْدَ صَلَاةِ الْعِيدِ، هُمْ يَزُورُونَ الْأَقَارِبَ وَالْجِيرَانَ لِيَصِلُوا الرَّحِمَ وَيَسْأَلُوا الْعَفْوَ مِنْهُمْ مِنَ الْخَطَأِ وَالتَّقْصِيرِ.",
-            translation: "Dan pada pagi hari Hari Raya, mereka pergi ke masjid-masjid atau ke lapangan-lapangan untuk shalat Id. Setelah shalat Id, mereka mengunjungi kerabat dan tetangga untuk menyambung silaturahmi serta saling memohon maaf atas kekhilafan dan kekurangan."
-          },
-          {
-            arabic: "وَفِي عِيدِ الْأَضْحَى، بَعْدَ صَلَاةِ عِيدِ الْأَضْحَى، يَذْبَحُ الْمُسْلِمُونَ الْقَادِرُونَ الْأَضَاحِيَ تَقَرُّبًا إِلَى اللَّهِ، فَيَأْكُلُونَ مِنْ لَحْمِ الْأُضْحِيَّةِ، وَيُهْدُونَ مِنْهَا لِلْأَقَارِبِ وَالْأَصْدِقَاءِ، وَيَتَصَدَّقُونَ مِنْهَا عَلَى الْفُقَرَاءِ وَالْمَسَاكِينِ.",
-            translation: "Dan pada Hari Raya Idul Adha, setelah shalat Idul Adha, umat Islam yang mampu menyembelih hewan kurban untuk mendekatkan diri kepada Allah, lalu mereka memakan sebagian daging kurban, me-nugrahkan sebagian kepada kerabat dan teman, serta menyedekahkannya kepada fakir miskin."
-          },
-          {
-            arabic: "الْحِكَمُ الْمَأْخُوذَةُ مِنْ عِيدِ الْفِطْرِ وَ عِيدِ الْأَضْحَى مِنْهَا:\n١. يَأْتِي الْعِيدُ بِالْفَرَحِ وَالسَّعَادَةِ، وَأَيْضًا لِلتَّوَاصُلِ وَالتَّآخِي بَيْنَ النَّاسِ.\n٢. يُعَلِّمُ الصِّيَامُ وَالْأُضْحِيَّةُ لَنَا التَّعَاوُنَ وَالتَّقَاسُمَ.\n٣. أَنَّ فِي الْإِسْلَامِ، هُنَاكَ مُسَاوَاةٌ بَيْنَ النَّاسِ. لَهُمْ مَكَانَةٌ وَاحِدَةٌ فِي الْإِسْلَامِ، وَلَا يَفْضُلُ أَحَدٌ عَلَى الْآخَرِ إِلَّا بِالتَّقْوَى.\n٤. تُعَلِّمُنَا الْأُضْحِيَّةُ أَيْضًا الْإِخْلَاصَ فِي الْعِبَادَةِ.",
-            translation: "Hikmah yang dipetik dari Hari Raya Idul Fitri dan Idul Adha di antaranya: 1. Hari Raya membawa kegembiraan dan kebahagiaan, serta untuk silaturahmi dan persaudaraan sesama manusia. 2. Puasa dan Kurban mengajarkan kita tolong-menolong dan berbagi. 3. Bahwa dalam Islam ada kesetaraan antar manusia, mereka memiliki derajat yang sama dan tidak ada yang lebih mulia kecuali dengan ketakwaan. 4. Kurban juga mengajarkan keikhlasan dalam beribadah."
-          }
-        ]
-      },
-      mufrodat: [
-        { arabic: "غَارُ حِرَاءٍ", latin: "Gharu Hira'", indo: "Gua Hira", category: "الْقِرَاءَةُ - Tempat", icon: "fa-mountain" },
-        { arabic: "يَخْلُو بِنَفْسِهِ", latin: "Yakhlu bi nafsihi", indo: "Menyendiri / Berhalwat", category: "الْقِرَاءَةُ - Kata Kerja", icon: "fa-user-clock" },
-        { arabic: "يَتَعَبَّدُ", latin: "Yata'abbadu", indo: "Beribadah kepada Allah", category: "الْقِرَاءَةُ - Ibadah", icon: "fa-hands" },
-        { arabic: "جِبْرِيلُ بِالْوَحْيِ", latin: "Jibrilu bil Wahyi", indo: "Jibril membawa Wahyu", category: "الْقِرَاءَةُ - Agama", icon: "fa-scroll" },
-        { arabic: "شَهْرُ رَمَضَانَ", latin: "Syahru Ramadhan", indo: "Bulan Ramadhan", category: "الْقِرَاءَةُ - Waktu", icon: "fa-moon" },
-        { arabic: "اقْرَأْ", latin: "Iqra'", indo: "Bacalah! (Perintah Pertama)", category: "الْقِرَاءَةُ - Perintah", icon: "fa-book-open" },
-        { arabic: "عَلَقٌ", latin: "'Alaq", indo: "Segumpal Darah", category: "الْقِرَاءَةُ - Manusia", icon: "fa-heartbeat" },
-        { arabic: "الْقَلَمُ", latin: "Al-Qalam", indo: "Pena / Alat Tulis", category: "الْقِرَاءَةُ - Benda", icon: "fa-pen" },
-        { arabic: "دُسْتُورٌ", latin: "Dustur", indo: "Pedoman / Undang-undang Hidup", category: "الْقِرَاءَةُ - Konsep", icon: "fa-balance-scale" },
-        { arabic: "عِيدُ الْفِطْرِ", latin: "'Idul Fitri", indo: "Hari Raya Idul Fitri", category: "الْقِرَاءَةُ - Hari Raya", icon: "fa-star-and-crescent" },
-        { arabic: "عِيدُ الْأَضْحَى", latin: "'Idul Adha", indo: "Hari Raya Idul Adha", category: "الْقِرَاءَةُ - Hari Raya", icon: "fa-drumstick-bite" },
-        { arabic: "شَهْرُ شَوَّالٍ", latin: "Syahru Syawwal", indo: "Bulan Syawwal", category: "الْقِرَاءَةُ - Waktu", icon: "fa-calendar" },
-        { arabic: "شَهْرُ ذِي الْحِجَّةِ", latin: "Syahru Dzil Hijjah", indo: "Bulan Dzulhijjah", category: "الْقِرَاءَةُ - Waktu", icon: "fa-kaaba" },
-        { arabic: "يُكَبِّرُونَ اللَّهَ", latin: "Yukabbirunallah", indo: "Mengumandangkan Takbir", category: "الْقِرَاءَةُ - Ibadah", icon: "fa-volume-up" },
-        { arabic: "الْمَيَادِينُ", latin: "Al-Mayadin", indo: "Lapangan-lapangan", category: "الْقِرَاءَةُ - Tempat", icon: "fa-map-marked-alt" },
-        { arabic: "صِلَةُ الرَّحِمِ", latin: "Silaturrahim", indo: "Menyambung Silaturahmi", category: "الْقِرَاءَةُ - Akhlak", icon: "fa-hands-helping" },
-        { arabic: "يَذْبَحُ الْأَضَاحِيَ", latin: "Yazbahul Adhahiya", indo: "Menyembelih Hewan Kurban", category: "الْقِرَاءَةُ - Ibadah", icon: "fa-leaf" },
-        { arabic: "الْفُقَرَاءُ وَالْمَسَاكِينُ", latin: "Al-Fuqara' wal Masakin", indo: "Fakir Miskin", category: "الْقِرَاءَةُ - Orang", icon: "fa-hand-holding-heart" },
-        { arabic: "التَّعَاوُنُ وَالتَّقَاسُمُ", latin: "At-Ta'awunu wat Taqasum", indo: "Tolong-menolong & Berbagi", category: "الْقِرَاءَةُ - Akhlak", icon: "fa-share-alt" },
-        { arabic: "التَّقْوَى", latin: "At-Taqwa", indo: "Ketakwaan kepada Allah", category: "الْقِرَاءَةُ - Ibadah", icon: "fa-gem" }
+Setelah itu kami menuju ke loket tiket untuk membeli tiket. Harga tiket lima puluh ribu rupiah per orang. Kemudian kami menggunakan ban pelampung dan jaket pelampung, lalu kami berjalan kaki ke lokasi wisata dan masuk ke dalam gua serta menyusuri sungai di bawah gua bersama pemandu wisata.
+
+Kemudian kami berjalan di tepi Sungai Oya, yaitu sungai yang dekat dari Goa Pindul. Kami bermain dan berenang di sungai pada jarak satu setengah kilometer. Dan di tengah perjalanan kami menyaksikan pemandangan yang indah berupa tebing-tebing yang tinggi.
+
+Hobi saya adalah berwisata, dan pergi ke tempat-tempat wisata yang indah di Indonesia merupakan hal yang menyenangkan dalam hidupku. Pergi berwisata juga merupakan bagian dari apa yang diperintahkan Allah Azza wa Jalla: "Dialah yang menjadikan bumi untuk kamu yang mudah dijelajahi, maka jelajahilah di segala penjurunya dan makanlah sebagian dari rezeki-Nya. Dan hanya kepada-Nya lah kamu (kembali setelah) dibangkitkan" (QS. Al-Mulk: 15). Dan tempat-tempat wisata ini adalah tanda dari tanda-tanda kekuasaan Allah, maka kita wajib menjaganya.`,
+      vocabularyHighlights: [
+        { word: "غَارُ فِيْنْدُوْل", meaning: "Goa Pindul" },
+        { word: "شُبَّاكُ التَّذَاكِرِ", meaning: "Loket Tiket" },
+        { word: "مُرْشِدُ السِّيَاحَةِ", meaning: "Pemandu Wisata" },
+        { word: "ضِفَّةُ النَّهْرِ", meaning: "Tepi Sungai" }
       ],
-      hiwar: [
-        { speaker: "فَاطِمَةُ", role: "Siswi A", avatarIcon: "fa-user-astronaut", arabic: "مَتَى نَزَلَ الْقُرْآنُ لِلْمَرَّةِ الأُوْلَى يَا عَائِشَةُ؟", translation: "Kapan Al-Qur'an turun pertama kali wahai Aisyah?" },
-        { speaker: "عَائِشَةُ", role: "Siswi B", avatarIcon: "fa-user-nurse", arabic: "نَزَلَ فِي 17 مِنْ شَهْرِ رَمَضَانَ فِي غَارِ حِرَاءٍ.", translation: "Turun pada tanggal 17 bulan Ramadhan di Gua Hira." },
-        { speaker: "فَاطِمَةُ", role: "Siswi A", avatarIcon: "fa-user-astronaut", arabic: "كَمْ كَانَ عُمْرُ النَّبِيِّ عِنْدَمَا نَزَلَ عَلَيْهِ الْوَحْيُ؟", translation: "Berapa usia Nabi ketika wahyu turun kepada beliau?" },
-        { speaker: "عَائِشَةُ", role: "Siswi B", avatarIcon: "fa-user-nurse", arabic: "كَانَ عُمْرُهُ أَرْبَعِيْنَ سَنَةً.", translation: "Usia beliau saat itu adalah 40 tahun." },
-        { speaker: "فَاطِمَةُ", role: "Siswi A", avatarIcon: "fa-user-astronaut", arabic: "مَا هِيَ الآيَاتُ الأُوْلَى الَّتِي نَزَلَتْ؟", translation: "Apakah ayat-ayat pertama yang diturunkan?" },
-        { speaker: "عَائِشَةُ", role: "Siswi B", avatarIcon: "fa-user-nurse", arabic: "هِيَ الآيَاتُ الأُوْلَى مِنْ سُوْرَةِ الْعَلَقِ: اقْرَأْ بِاسْمِ رَبِّكَ الَّذِي خَلَقَ.", translation: "Yaitu ayat-ayat pertama dari Surah Al-Alaq: Bacalah dengan menyebut nama Tuhanmu." },
-        { speaker: "فَاطِمَةُ", role: "Siswi A", avatarIcon: "fa-user-astronaut", arabic: "كَمْ سَنَةً اسْتَمَرَّ نُزُوْلُ الْقُرْآنِ؟", translation: "Berapa tahunkah Al-Qur'an diturunkan secara berangsur-angsur?" },
-        { speaker: "عَائِشَةُ", role: "Siswi B", avatarIcon: "fa-user-nurse", arabic: "اسْتَمَرَّ ثَلَاثًا وَعِشْرِيْنَ سَنَةً: 13 فِي مَكَّةَ وَ10 فِي الْمَدِيْنَةِ.", translation: "Diturunkan selama 23 tahun: 13 tahun di Makkah dan 10 tahun di Madinah." },
-        { speaker: "فَاطِمَةُ", role: "Siswi A", avatarIcon: "fa-user-astronaut", arabic: "كَمْ عِيْدًا لِلْمُسْلِمِيْنَ فِي السَّنَةِ؟", translation: "Berapa hari rayakah bagi umat Islam dalam setahun?" },
-        { speaker: "عَائِشَةُ", role: "Siswi B", avatarIcon: "fa-user-nurse", arabic: "لِلْمُسْلِمِيْنَ عِيْدَانِ: عِيْدُ الْفِطْرِ وَعِيْدُ الأَضْحَى.", translation: "Bagi umat Islam ada dua hari raya: Idul Fitri dan Idul Adha." },
-        { speaker: "فَاطِمَةُ", role: "Siswi A", avatarIcon: "fa-user-astronaut", arabic: "مَتَى يَكُوْنُ عِيْدُ الْفِطْرِ؟", translation: "Kapan Hari Raya Idul Fitri dirayakan?" },
-        { speaker: "عَائِشَةُ", role: "Siswi B", avatarIcon: "fa-user-nurse", arabic: "يَكُوْنُ فِي الأَوَّلِ مِنْ شَهْرِ شَوَّالٍ.", translation: "Dirayakan pada tanggal 1 bulan Syawwal." },
-        { speaker: "فَاطِمَةُ", role: "Siswi A", avatarIcon: "fa-user-astronaut", arabic: "وَمَتَى يَكُوْنُ عِيْدُ الأَضْحَى؟", translation: "Dan kapan Hari Raya Idul Adha dirayakan?" },
-        { speaker: "عَائِشَةُ", role: "Siswi B", avatarIcon: "fa-user-nurse", arabic: "يَكُوْنُ فِي الْعَاشِرِ مِنْ شَهْرِ ذِي الْحِجَّةِ.", translation: "Dirayakan pada tanggal 10 bulan Dzulhijjah." },
-        { speaker: "فَاطِمَةُ", role: "Siswi A", avatarIcon: "fa-user-astronaut", arabic: "مَاذَا يَفْعَلُ الْمُسْلِمُوْنَ فِي صَبَاحِ الْعِيْدِ؟", translation: "Apa yang dilakukan umat Islam pada pagi hari Idul Fitri?" },
-        { speaker: "عَائِشَةُ", role: "Siswi B", avatarIcon: "fa-user-nurse", arabic: "يَذْهَبُوْنَ إِلَى الْمَسَاجِدِ لِصَلَاةِ الْعِيْدِ ثُمَّ يَزُوْرُوْنَ الأَقَارِبَ.", translation: "Mereka pergi ke masjid untuk shalat Id lalu mengunjungi kerabat." },
-        { speaker: "فَاطِمَةُ", role: "Siswi A", avatarIcon: "fa-user-astronaut", arabic: "مَاذَا يَذْبَحُ الْمُسْلِمُوْنَ فِي عِيْدِ الأَضْحَى؟", translation: "Apa yang disembelih umat Islam pada Idul Adha?" },
-        { speaker: "عَائِشَةُ", role: "Siswi B", avatarIcon: "fa-user-nurse", arabic: "يَذْبَحُ القَادِرُوْنَ الأُضْحِيَّةَ تَقَرُّبًا إِلَى اللَّهِ.", translation: "Umat yang mampu menyembelih hewan kurban untuk mendekatkan diri kepada Allah." },
-        { speaker: "فَاطِمَةُ", role: "Siswi A", avatarIcon: "fa-user-astronaut", arabic: "إِلَى مَنْ يُعْطَى لَحْمُ الأُضْحِيَّةِ؟", translation: "Kepada siapakah daging kurban diberikan?" },
-        { speaker: "عَائِشَةُ", role: "Siswi B", avatarIcon: "fa-user-nurse", arabic: "يُهْدَى لِلأَقَارِبِ وَيُتَصَدَّقُ مِنْهُ عَلَى الْفُقَرَاءِ وَالْمَسَاكِيْنِ.", translation: "Dihadiahkan kepada kerabat dan disedekahkan kepada fakir miskin." }
-      ],
-      qawaid: {
-        title: "لَا النَّاهِيَة وَ لَمْ النَّافِيَة",
-        explanation: "Pelajaran Qawa'id Bab 3 membahas kaidah penggunaan **لَمْ (Lam Nafi)** yang berarti <em>belum/tidak</em> dan **لَا (La Nahiyah)** yang berarti <em>jangan!</em>. Keduanya masuk kepada <em>Fi'il Mudhari'</em> dan menyebabkannya menjadi <strong>Majzum</strong> (Sukun pada huruf akhir, atau membuang huruf Nun ن).",
-        rulesTable: {
-          title: "لَا النَّاهِيَة وَ لَمْ النَّافِيَة",
-          reference: "(الشيخ مصطفى الغلاييني. جامع الدروس العربية. بيروت: دار الكتب العلمية، ٢٠١٢)",
-          sections: [
-            {
-              particle: "لَمْ",
-              particleName: "لَمْ النَّافِيَة (Belum/Tidak)",
-              examples: [
-                { arabicPlain: "يُعَلِّمْ عَزِيْزٌ الدَّرْسَ", targetVerb: "يُعَلِّمْ", restSentence: "عَزِيْزٌ الدَّرْسَ", latin: "Yu'allim 'Azizun ad-Darsa", indo: "Aziz belum mengajar pelajaran" },
-                { arabicPlain: "يَجْتَمِعُوا فِي قَاعَةِ الْمَدْرَسَةِ", targetVerb: "يَجْتَمِعُوا", restSentence: "فِي قَاعَةِ الْمَدْرَسَةِ", latin: "Yajtami'ū fī qā'atil madrasah", indo: "Mereka belum berkumpul di aula sekolah" },
-                { arabicPlain: "تَسْتَغْفِرِي اللهَ", targetVerb: "تَسْتَغْفِرِي", restSentence: "اللهَ", latin: "Tastaghfirī Allāh", indo: "Kamu (Pr) belum memohon ampun kepada Allah" },
-                { arabicPlain: "أَتَحَدَّثْ اللُّغَةَ الْعَرَبِيَّةَ", targetVerb: "أَتَحَدَّثْ", restSentence: "اللُّغَةَ الْعَرَبِيَّةَ", latin: "Atahaddats al-Lughatal 'Arabiyyah", indo: "Saya belum berbicara Bahasa Arab" }
-              ]
-            },
-            {
-              particle: "لَا",
-              particleName: "لَا النَّاهِيَة (Jangan!)",
-              examples: [
-                { arabicPlain: "تَجْلِسْ عَلَى الْكُرْسِيِّ، يَا عَلِيُّ.", targetVerb: "تَجْلِسْ", restSentence: "عَلَى الْكُرْسِيِّ، يَا عَلِيُّ.", latin: "Tajlis 'alāl kursiyyi, yā 'Alī", indo: "Jangan duduk di atas kursi, wahai Ali!" },
-                { arabicPlain: "تَتَكَلَّمُوا أَثْنَاءَ الدَّرْسِ، يَا أَوْلَادُ.", targetVerb: "تَتَكَلَّمُوا", restSentence: "أَثْنَاءَ الدَّرْسِ، يَا أَوْلَادُ.", latin: "Tatakallamū atsnā'ad darsi, yā aulād", indo: "Jangan berbicara saat pelajaran, wahai anak-anak!" },
-                { arabicPlain: "تَشْرَبِي الْخَمْرَ، يَا فَاطِمَةُ، إنَّهَا حَرَامٌ.", targetVerb: "تَشْرَبِي", restSentence: "الْخَمْرَ، يَا فَاطِمَةُ، إنَّهَا حَرَامٌ.", latin: "Tasyrabīl khamra, yā Fātimah, innahā harām", indo: "Jangan minum khamr, wahai Fatimah, sesungguhnya itu haram!" },
-                { arabicPlain: "تُشَاهِدَا تِلْكَ الْمُبَارَاةَ، يَا حَسَنُ وَحُسَيْنُ.", targetVerb: "تُشَاهِدَا", restSentence: "تِلْكَ الْمُبَارَاةَ، يَا حَسَنُ وَحُسَيْنُ.", latin: "Tusyāhidā tilkal mubārāh, yā Hasan wa Husain", indo: "Jangan kalian berdua menonton pertandingan itu, wahai Hasan & Husain!" }
-              ]
-            }
-          ]
+      questions: [
+        {
+          q: "مَنْ هِيَ إِبْرِيْزَةُ وَأَيْنَ تَدْرُسُ؟",
+          options: [
+            "طَالِبَةٌ فِي الصَّفِّ 11 فِي مَان 4 جُوْمْبَانْج",
+            "طَالِبَةٌ فِي الصَّفِّ 10 فِي مَان 1 بَوْنْتِيَانَاك",
+            "مُدَرِّسَةٌ فِي الْمَدْرَسَةِ",
+            "طَبِيبَةٌ فِي الْمُسْتَشْفَى"
+          ],
+          correct: 0,
+          explanation: "Sesuai paragraf pertama: أَنَا إِبْرِيْزَةُ، أَنَا طَالِبَةٌ فِي الصَّفِّ الحَادِيَ عَشَرَ مِنَ المَدْرَسَةِ الثَّانَوِيَّةِ الإِسْلَامِيَّةِ الحُكُوْمِيَّةِ 4 جُوْمْبَانْج"
         },
-        examples: [
-          { pattern: "Fi'il Mudhari' + لَمْ (Lam Nafi)", sample: "يُعَلِّمْ عَزِيْزٌ الدَّرْسَ", meaning: "Aziz belum mengajar pelajaran (Fi'il Mudhari' Majzum)" },
-          { pattern: "Fi'il Mudhari' + لَا (La Nahiyah)", sample: "لَا تَجْلِسْ عَلَى الْكُرْسِيِّ، يَا عَلِيُّ", meaning: "Jangan duduk di atas kursi, wahai Ali! (Larangan)" }
+        {
+          q: "كَمْ سِعْرُ تَذْكِرَةِ الدُّخُولِ إِلَى غَارِ فِيْنْدُوْل لِكُلِّ فَرْدٍ؟",
+          options: [
+            "خَمْسُونَ أَلْفَ رُوْبِيَّةٍ (50.000)",
+            "عِشْرُونَ أَلْفَ رُوْبِيَّةٍ (20.000)",
+            "مِئَةُ أَلْفِ رُوْبِيَّةٍ (100.000)",
+            "مَجَّانًا (Gratis)"
+          ],
+          correct: 0,
+          explanation: "Sesuai paragraf 4: كَانَتِ التَّذْكِرَةُ بِخَمْسِيْنَ أَلْفَ رُوْبِيَّةٍ لِكُلِّ فَرْدٍ"
+        },
+        {
+          q: "مَاذَا اسْتَخْدَمَتْ إِبْرِيْزَةُ وَأُسْرَتُهَا لِلتَّزَحْلُفِ فِي النَّهْرِ؟",
+          options: [
+            "الإِطَارَاتِ وَالعَوَّامَةَ (Ban & Jaket Pelampung)",
+            "الْقَارِبَ الْكَبِيرَ",
+            "الطَّائِرَةَ",
+            "الدَّرَّاجَةَ النَّارِيَّةَ"
+          ],
+          correct: 0,
+          explanation: "Sesuai paragraf 4: ثُمَّ اسْتَخْدَمْنَا الإِطَارَاتِ وَالعَوَّامَةَ"
+        }
+      ]
+    },
+    {
+      id: 2,
+      title: "القِرَاءَةُ الثَّانِيَةُ: رِحْلَةٌ شَاطِئِيَّةٌ (Wisata Pantai Losari)",
+      topic: "السَّفَرُ وَالسِّيَاحَةُ",
+      level: "Kelas 11 MA - Bab 1",
+      arabicText: `أَنَا مَرْوَانُ. عِنْدِي صَدِيْقٌ اِسْمُهُ سَلْمَانُ. نَحْنُ فِي مَدْرَسَةٍ وَاحِدَةٍ بِبَارِي بَارِي (Pare-pare). يُحِبُّ سَلْمَانُ السِّيَاحَةَ خَاصَّةً السِّيَاحَةَ المَائِيَّةَ.
+
+فِي يَوْمِ الأَحَدِ المَاضِي ذَهَبَ سَلْمَانُ مَعَ أُسْرَتِهِ إِلَى شَاطِئِ لُوسَارِي (Losari). وَهُوَ شَاطِئٌ مَشْهُوْرٌ فِي مَاكَاسَار (Makassar). هُمْ ذَهَبُوا إِلَى مَاكَاسَار صَبَاحًا. اِسْتَغْرَقَ الذَّهَابُ إِلَى مَاكَاسَار حَوَالَى ثَلَاثِ سَاعَاتٍ وَنِصْفٍ بِالسَّيَّارَةِ.
+
+وَبَعْدَ مَا وَصَلُوا هُنَاكَ بَسَطُوا الفِرَاشَ عَلَى الرِّمَالِ، شَاهَدُوا المَنَاظِرَ الجَمِيْلَةَ حَوْلَ الشَّاطِئِ. تَشَمَّسُوا وَلَعِبُوا فِي المِيَاهِ وَتَمَتَّعُوا بِأَمْوَاجِ البَحْرِ. وَهُنَاكَ كَثِيْرٌ مِنَ السُّيَّاحِ الَّذِيْنَ جَلَسُوا عَلَى الشَّاطِئِ. هُمْ أَكَلُوا المَأْكُوْلَاتِ الخَفِيْفَةَ وَكَذَلِك المَشْرُوْبَاتِ. وَهُمْ رَمَوْا النُّفَايَاتِ فِي صَنَادِيْقِ القُمَامَةِ المُخَصَّصَةِ.
+
+وَ فِي المَسَاءِ شَعَرَ سَلْمَانُ وَأُسْرَتُهُ بِالتَّعَبِ فَاسْتَرُاحُوا وَصَلَّوْا فِي مُصَلَّى قَرِيْبٍ مِنَ الشَّاطِئِ. وَرَجَعَ سَلْمَانُ وَأُسْرَتُهُ إِلَى بَارِي بَارِي (Pare-pare) مَسْرُوْرِيْنَ، وَ لَيْسَ ذَلِك بِسَبَبِ مَنَاظِرِ الشَّاطِئِ الجَمِيْلَةِ فَقَطْ، بَلْ لِأَنَّهُمْ سَاهَمُوا أَيْضًا فِي الحِفَاظِ عَلَى نَظَافَةِ بِيْئَةِ المَكَانِ السِّيَاحِيِّ.`,
+      indonesianText: `Saya Marwan. Saya memiliki seorang teman bernama Salman. Kami berada di satu sekolah di Parepare. Salman sangat menyukai wisata, khususnya wisata bahari/air.
+
+Pada hari Minggu yang lalu, Salman pergi bersama keluarganya ke Pantai Losari. Pantai tersebut adalah pantai terkenal di Makassar. Mereka pergi ke Makassar pada pagi hari. Perjalanan menuju Makassar memakan waktu sekitar tiga setengah jam menggunakan mobil.
+
+Setelah tiba di sana, mereka membentangkan matras/tikar di atas pasir, lalu mereka menyaksikan pemandangan yang indah di sekitar pantai. Mereka berjemur, bermain air, dan menikmati ombak laut. Di sana terdapat banyak wisatawan yang duduk di tepi pantai. Mereka menyantap makanan ringan dan minuman. Dan mereka membuang sampah pada kotak sampah yang telah disediakan.
+
+Pada sore hari, Salman dan keluarganya merasa lelah lalu mereka beristirahat dan melaksanakan shalat di mushalla dekat pantai. Salman dan keluarganya kembali ke Parepare dengan gembira, dan hal itu bukan hanya karena pemandangan pantai yang indah saja, melainkan karena mereka juga telah berkontribusi menjaga kebersihan lingkungan tempat wisata tersebut.`,
+      vocabularyHighlights: [
+        { word: "شَاطِئُ لُوسَارِي", meaning: "Pantai Losari" },
+        { word: "السِّيَاحَةَ المَائِيَّةَ", meaning: "Wisata Bahari / Air" },
+        { word: "بَسَطُوا الفِرَاشَ", meaning: "Membentangkan Matras" },
+        { word: "نَظَافَةِ بِيْئَةِ", meaning: "Kebersihan Lingkungan" }
+      ],
+      questions: [
+        {
+          q: "إِلَى أَيِّ شَاطِئٍ ذَهَبَ سَلْمَانُ مَعَ أُسْرَتِهِ؟",
+          options: [
+            "إِلَى شَاطِئِ لُوسَارِي فِي مَاكَاسَار",
+            "إِلَى غَارِ فِيْنْدُوْل فِي يُوْكِيَاكِرْتَا",
+            "إِلَى شَاطِئِ كُوتَا فِي بَالِي",
+            "إِلَى الْجَبَلِ فِي جَاوَا"
+          ],
+          correct: 0,
+          explanation: "Sesuai paragraf 2: ذَهَبَ سَلْمَانُ مَعَ أُسْرَتِهِ إِلَى شَاطِئِ لُوسَارِي فِي مَاكَاسَار"
+        },
+        {
+          q: "كَمْ سَاعَةً اسْتَغْرَقَ الذَّهَابُ مِنْ بَارِي بَارِي إِلَى مَاكَاسَار؟",
+          options: [
+            "ثَلَاثُ سَاعَاتٍ وَنِصْفٌ (3,5 jam)",
+            "سَاعَةٌ وَاحِدَةٌ (1 jam)",
+            "خَمْسُ سَاعَاتٍ (5 jam)",
+            "يَوْمٌ كَامِلٌ (1 hari full)"
+          ],
+          correct: 0,
+          explanation: "Sesuai paragraf 2: اِسْتَغْرَقَ الذَّهَابُ إِلَى مَاكَاسَار حَوَالَى ثَلَاثِ سَاعَاتٍ وَنِصْفٍ"
+        },
+        {
+          q: "أَيْنَ رَمَى سَلْمَانُ وَأُسْرَتُهُ النُّفَايَاتِ؟",
+          options: [
+            "فِي صَنَادِيْقِ القُمَامَةِ المُخَصَّصَةِ",
+            "فِي الْبَحْرِ",
+            "عَلَى الرِّمَالِ",
+            "فِي الشَّارِعِ"
+          ],
+          correct: 0,
+          explanation: "Sesuai paragraf 3: وَهُمْ رَمَوْا النُّفَايَاتِ فِي صَنَادِيْقِ القُمَامَةِ المُخَصَّصَةِ"
+        }
+      ]
+    },
+    {
+      id: 3,
+      title: "القِرَاءَةُ: هَيَّا نَعِيْشُ بِالصِّحَّةِ ١ (Mari Kita Hidup Sehat 1)",
+      topic: "الصِّحَّةُ",
+      level: "Kelas 11 MA - Bab 2",
+      arabicText: `نَبِيْلٌ وَ نَوْفَلٌ صَدِيْقَانِ. هُمَا يَعِيْشَانِ فِي قَرْيَةٍ صَغِيْرَةٍ، هُمَا يَتَعَلَّمَانِ فِي نَفْسِ المَدْرَسَةِ. نَبِيْلٌ وَ نَوْفَلٌ يُحِبَّانِ أَنْ يَعِيْشَا فِي صِحَّةٍ لِأَنَّهُمَا يَعْرِفَانِ أَنَّ الصِّحَّةَ أَمْرٌ مُهِمٌّ فِي حَيَاةِ الإِنْسَانِ.
+
+يُحِبُّ نَبِيْلٌ وَ نَوْفَلٌ أَنْ يَذْهَبَا إِلَى المَدْرَسَةِ بِالدَّرَّاجَةِ لِأَنَّ المَدْرَسَةَ بَعِيْدَةٌ عَنْ بَيْتِهِمَا. يَفْهَمُ نَبِيْلٌ وَ نَوْفَلٌ أَنَّ الذَّهَابَ إِلَى المَدْرَسَةِ أَوْ إِلَى مَكَانٍ آخَرَ بِالدَّرَّاجَةِ نَافِعٌ لِصِحَّةِ البَدَنِ. وَفِي المَدْرَسَةِ كَثِيْرٌ مِنَ الطُّلَّابِ الَّذِيْنَ يَذْهَبُوْنَ إِلَى المَدْرَسَةِ بِالدَّرَّاجَةِ أَيْضًا.
+
+وَفِي البَيْتِ يُحِبُّ نَبِيْلٌ وَ نَوْفَلٌ أَنْ يُمَارِسَا الرِّيَاضَةَ مِثْلَ الجَرْيِ وَكُرَةِ القَدَمِ وَالسِّبَاحَةِ وَغَيْرِ ذَلِك. هُمَا يَجْرِيَانِ كُلَّ صَبَاحٍ قَبْلَ الذَّهَابِ إِلَى المَدْرَسَةِ وَيَسْبَحَانِ مَرَّةً فِي الأُسْبُوْعِ يَوْمَ الأَحَدِ وَيَلْعَبَانِ كُرَةَ القَدَمِ فِي مَلْعَبِ القَرْيَةِ مَسَاءَ اليَوْمِ.
+
+يَهْتَمُّ الشَّخْصُ بِصِحَّتِهِ مِنْ خِلَالِ تَنَاوُلِ الأَطْعِمَةِ الضَّرُوْرِيَّةِ لِلصِّحَّةِ، وَيُحَافِظُ عَلَى سَلَامَتِهِ البَدَنِيَّةِ مِنْ خِلَالِ مُمَارَسَةِ الرِّيَاضَةِ بِانْتِظَامٍ. قَالَ الحُكَمَاءُ: الصِّحَّةُ تَاجٌ عَلَى رُؤُوْسِ الأَصِحَّاءِ لاَ يَعْرِفُهُ إِلاَّ المَرْضَى.`,
+      indonesianText: `Nabil dan Naufal adalah dua orang sahabat. Mereka berdua tinggal di sebuah desa kecil, dan mereka berdua belajar di sekolah yang sama. Nabil dan Naufal suka hidup sehat karena mereka berdua mengetahui bahwa kesehatan adalah hal yang sangat penting dalam kehidupan manusia.
+
+Nabil dan Naufal suka pergi ke sekolah naik sepeda karena sekolah terletak jauh dari rumah mereka berdua. Nabil dan Naufal memahami bahwa pergi ke sekolah atau ke tempat lain menggunakan sepeda bermanfaat untuk kesehatan tubuh. Dan di sekolah ada banyak siswa yang pergi ke sekolah menggunakan sepeda juga.
+
+Di rumah, Nabil dan Naufal suka berolahraga seperti lari, sepak bola, berenang, dan lain-lain. Mereka berdua lari pagi setiap hari sebelum berangkat ke sekolah, berenang seminggu sekali pada hari Minggu, dan bermain sepak bola di lapangan desa pada sore hari.
+
+Seseorang memperhatikan kesahatannya dengan cara mengonsumsi makanan yang penting bagi kesehatan, dan menjaga keselamatan fisiknya dengan cara berolahraga secara teratur. Hukama (orang-orang bijak/dokter) berkata: "Kesehatan adalah mahkota di atas kepala orang-orang yang sehat, yang tidak ada yang mengetahuinya kecuali orang-orang yang sakit".`,
+      vocabularyHighlights: [
+        { word: "هَيَّا نَعِيْشُ بِالصِّحَّةِ", meaning: "Mari Kita Hidup Sehat" },
+        { word: "بِالدَّرَّاجَةِ", meaning: "Naik Sepeda" },
+        { word: "مُمَارَسَةُ الرِّيَاضَةِ", meaning: "Berolahraga secara teratur" },
+        { word: "الصِّحَّةُ تَاجٌ", meaning: "Kesehatan adalah mahkota" }
+      ],
+      questions: [
+        {
+          q: "كَيْفَ يَذْهَبُ نَبِيْلٌ وَنَوْفَلٌ إِلَى الْمَدْرَسَةِ؟",
+          options: [
+            "بِالدَّرَّاجَةِ",
+            "بِالسَّيَّارَةِ",
+            "بِالْحَافِلَةِ",
+            "مَشْيًا عَلَى الأَقْدَامِ"
+          ],
+          correct: 0,
+          explanation: "Sesuai paragraf 2: يُحِبُّ نَبِيْلٌ وَنَوْفَلٌ أَنْ يَذْهَبَا إِلَى المَدْرَسَةِ بِالدَّرَّاجَةِ"
+        },
+        {
+          q: "مَتَى يَجْرِيَانِ نَبِيْلٌ وَنَوْفَلٌ كُلَّ يَوْمٍ؟",
+          options: [
+            "كُلَّ صَبَاحٍ قَبْلَ الذَّهَابِ إِلَى المَدْرَسَةِ",
+            "فِي اللَّيْلِ",
+            "فِي الظُّهْرِ",
+            "بَعْدَ النَّوْمِ"
+          ],
+          correct: 0,
+          explanation: "Sesuai paragraf 3: هُمَا يَجْرِيَانِ كُلَّ صَبَاحٍ قَبْلَ الذَّهَابِ إِلَى المَدْرَسَةِ"
+        },
+        {
+          q: "مَاذَا قَالَ الْحُكَمَاءُ عَنِ الصِّحَّةِ؟",
+          options: [
+            "الصِّحَّةُ تَاجٌ عَلَى رُؤُوْسِ الأَصِحَّاءِ لاَ يَعْرِفُهُ إِلاَّ المَرْضَى",
+            "الصِّحَّةُ لاَ تَفِيدُ شَيْئًا",
+            "الْمَالُ أَهَمُّ مِنَ الصِّحَّةِ",
+            "الصِّحَّةُ لِلأَطْفَالِ فَقَطْ"
+          ],
+          correct: 0,
+          explanation: "Sesuai paragraf 4: قَالَ الحُكَمَاءُ: الصِّحَّةُ تَاجٌ عَلَى رُؤُوْسِ الأَصِحَّاءِ لاَ يَعْرِفُهُ إِلاَّ المَرْضَى"
+        }
+      ]
+    },
+    {
+      id: 4,
+      title: "القِرَاءَةُ: هَيَّا نَعِيْشُ بِالصِّحَّةِ ٢ (Mari Kita Hidup Sehat 2)",
+      topic: "الصِّحَّةُ",
+      level: "Kelas 11 MA - Bab 2",
+      arabicText: `أَنَا أَيُّو وَعِنْدِي صَدِيْقَةٌ اِسْمُهَا رِيْتَا. هِيَ تَغِيْبُ عَنِ المَدْرَسَةِ مُنْذُ ثَلَاثِ أَيَّامٍ. فَأَذْهَبُ إِلَى بَيْتِهَا مَعَ صَدِيْقَاتِي لِزِيَارَتِهَا.
+
+تَقُوْلُ رِيْتَا أَنَّ ضَغْطَ دَمِهَا مُرْتَفِعٌ. هِيَ تَشْعُرُ بِالصُّدَاعِ وَأَلَمٍ فِي صَدْرِهَا وَعَدَمِ وُضُوْحِ رُؤْيَتِهَا. وَهِيَ تَذْهَبُ إِلَى الطَّبِيْبِ فَيَأْمُرُهَا الطَّبِيْبُ أَنْ تَستَلْقِيَ عَلَى السَّرِيْرِ وَيَفْحَصُهَا بِجِهَازِ قِيَاسِ ضَغْطِ الدَّمِ.
+
+تَشْرَحُ رِيْتَا أَنَّ الطَّبِيْبَ يَنْصَحُهَا أَنْ لاَ تَأْكُلَ الطَّعَامَ المَالِحَ أَوِ الحُلْوَ وَالطَّعَامَ المَقْلِيَّ وَاللُّحُوْمَ المُصَنَّعَةَ وَجِلْدَ الدَّجَاجِ وَغَيْرِ ذَلِك. وَيَأْمُرُ الطَّبِيْبُ أَنْ تَشْتَرِيَ الدَّوَاءَ فِي الصَّيْدَلِيَّةِ، وَ يَجِبُ عَلَيْهَا أَنْ تَتَنَاوَلَ الدَّوَاءَ مَرَّةً فِي اليَوْمِ.
+
+وَ يَقُوْلُ الطَّبِيْبُ أَنَّ هُنَاكَ كَثِيْرًا مِنَ الأَطْعِمَةِ الصِّحِّيَّةِ مِثْلَ الفَوَاكِهِ مِنَ الجُوَّافَةِ وَالمَوْزِ وَالبُرْتُقَالِ وَالخَضْرَوَاتِ وَالسَّمَكِ وَاللَّبَنِ المُصَفَّى بِلاَ سُكَّرٍ وَغَيْرِ ذَلِك. نَحْنُ نَرْجِعُ إِلَى البَيْتِ بَعْدَ ذَلِك. وَلاَ نُرِيْدُ أَنْ يُصِيْبَنَا أَيُّ مَرَضٍ مِثْلَ مَا أَصَابَ صَدِيْقَتَنَا رِيْتَا فَنَأْكُلُ كَثِيْرًا مِنَ الفَوَاكِهِ وَالخَضْرَوَاتِ.`,
+      indonesianText: `Saya Ayu dan saya memiliki teman bernama Rita. Dia tidak masuk sekolah sejak tiga hari yang lalu. Maka saya pergi ke rumahnya bersama teman-teman saya untuk menjenguknya.
+
+Rita bercerita bahwa tekanan darahnya tinggi. Dia merasakan pusing/sakit kepala, nyeri dada, dan pandangan kabur. Dia pergi ke dokter, lalu dokter menyuruhnya berbaring di atas ranjang dan memeriksanya menggunakan alat tensi tekanan darah.
+
+Rita menjelaskan bahwa dokter menasihatinya agar tidak memakan makanan asin atau manis, makanan gorengan, daging olahan, kulit ayam, dan lain-lain. Dan dokter memerintahkan untuk membeli obat di apotek, serta dia harus meminum obat sekali dalam sehari.
+
+Dan dokter berkata bahwa ada banyak makanan sehat seperti buah jambu klutuk, pisang, jeruk, sayur-sayuran, ikan, dan yogurt tanpa gula, dan lain-lain. Kami pun pulang ke rumah setelah itu. Dan kami tidak ingin terjangkit penyakit apa pun seperti yang dialami sahabat kami Rita, maka kami pun banyak mengonsumsi buah-buahan dan sayur-sayuran.`,
+      vocabularyHighlights: [
+        { word: "ضَغْطُ دَمِهَا مُرْتَفِعٌ", meaning: "Tekanan darahnya tinggi" },
+        { word: "جِهَازُ قِيَاسِ ضَغْطِ الدَّمِ", meaning: "Alat ukur tekanan darah (tensi)" },
+        { word: "الطَّعَامُ المَالِحُ", meaning: "Makanan Asin" },
+        { word: "اللَّبَنُ المُصَفَّى بِلاَ سُكَّرٍ", meaning: "Yogurt tanpa gula" }
+      ],
+      questions: [
+        {
+          q: "لِمَاذَا غَابَتْ رِيْتَا عَنِ الْمَدْرَسَةِ؟",
+          options: [
+            "لِأَنَّ ضَغْطَ دَمِهَا مُرْتَفِعٌ وَهِيَ مَرِيضَةٌ",
+            "لِأَنَّهَا ذَهَبَتْ إِلَى السُّوقِ",
+            "لِأَنَّهَا سَافَرَتْ إِلَى يُوْكِيَاكِرْتَا",
+            "لِأَنَّهَا تَلْعَبُ كُرَةَ الْقَدَمِ"
+          ],
+          correct: 0,
+          explanation: "Sesuai paragraf 2: تَقُوْلُ رِيْتَا أَنَّ ضَغْطَ دَمِهَا مُرْتَفِعٌ"
+        },
+        {
+          q: "مَاذَا نَصَحَ الطَّبِيبُ رِيْتَا أَنْ لاَ تَأْكُلَهُ؟",
+          options: [
+            "الطَّعَامَ المَالِحَ أَوِ الحُلْوَ وَالمَقْلِيَّ وَاللُّحُوْمَ المُصَنَّعَةَ",
+            "الفَوَاكِهَ وَالخَضْرَوَاتِ",
+            "السَّمَكَ وَاللَّبَنَ",
+            "الْمَاءَ الصَّافِيَ"
+          ],
+          correct: 0,
+          explanation: "Sesuai paragraf 3: يَنْصَحُهَا أَنْ لاَ تَأْكُلَ الطَّعَامَ المَالِحَ أَوِ الحُلْوَ وَالمَقْلِيَّ..."
+        },
+        {
+          q: "كَمْ مَرَّةً يَجِبُ عَلَى رِيْتَا تَنَاوُلُ الدَّوَاءِ فِي الْيَوْمِ؟",
+          options: [
+            "مَرَّةً وَاحِدَةً فِي الْيَوْمِ",
+            "ثَلاَثَ مَرَّاتٍ فِي الْيَوْمِ",
+            "خَمْسَ مَرَّاتٍ",
+            "لاَ تَتَنَاوَلُ الدَّوَاءَ"
+          ],
+          correct: 0,
+          explanation: "Sesuai paragraf 3: وَيَجِبُ عَلَيْهَا أَنْ تَتَنَاوَلَ الدَّوَاءَ مَرَّةً فِي اليَوْمِ"
+        }
+      ]
+    },
+    {
+      id: 5,
+      title: "القِرَاءَةُ الأولى: الْحَجُّ وَالْعُمْرَةُ (Haji dan Umrah)",
+      topic: "الحَجُّ وَالعُمْرَةُ",
+      level: "Kelas 11 MA - Bab 3",
+      arabicText: `أَنَا سَلْمَانُ، أَسْكُنُ فِي قَرْيَةٍ صَغِيْرَةٍ فِي سُورَابَايَا، عِنْدِي عَمٌّ اِسْمُهُ أَحْمَدُ، بَيْتُهُ قَرِيْبٌ مِنْ بَيْتِي. وَفِي السَّنَةِ الْمَاضِيَةِ زَارَ عَمِّي مَكَّةَ الْمُكَرَّمَةَ لِلأَدَاءِ الْحَجِّ وَالْعُمْرَةِ. وَأُرِيْدُ السَّمَاعَ إِلَى قِصَّتِهِ، سَائِلاً: يَا عَمِّي مَاذَا فَعَلَ النَّاسُ فِي مَنَاسِكِ الْحَجِّ وَالْعُمْرَةِ؟ وَأَجَابَ عَمِّي: إِذَا أَرَدْتَ الْحَجَّ وَالْعُمْرَةَ...
+
+١. احْرِمْ مِنَ الْمِيقَاتِ الْمُحَدَّدِ لِبِدَايَةِ مَنَاسِكِ الْحَجِّ وَالْعُمْرَةِ وَانْوِ بِالإِحْرَامِ.
+٢. اصْعَدْ إِلَى جَبَلِ عَرَفَةَ لِلْوُقُوفِ وَارْمِ الْجَمَرَاتِ الثَّلاَثَةِ فِي مِنًى.
+٣. طُفْ حَوْلَ الْكَعْبَةِ الْمُشَرَّفَةِ سَبْعَ مَرَّاتٍ.
+٤. اسْعَ بَيْنَ الصَّفَا وَالْمَرْوَةِ سَبْعَ مَرَّاتٍ.
+٥. تَحَلَّلْ بِحَلْقِ شَعْرِكَ أَوْ تَقْصِيرِهِ.
+
+سَمِعْتُ إِلَى قِصَّةِ عَمِّي بِكُلِّ اهْتِمَامٍ، ثُمَّ أَسْأَلُهُ لِلْمَرَّةِ الثَّانِيَةِ: يَا عَمِّي، مَاذَا يَجِبُ أَنْ نَتَذَكَّرَ فِي الْعُمْرَةِ؟ فَيَقُولُ: "أَوَّلاً اذْهَبْ لِلْعُمْرَةِ فِي أَيِّ وَقْتٍ مِنَ السَّنَةِ، ثَانِيًا احْرِصْ عَلَى أَدَاءِ مَنَاسِكِ الْعُمْرَةِ بِشَكْلٍ صَحِيْحٍ، وَثَالِثًا استَفِدْ مِنْ تَجْرِبَةِ الْعُمْرَةِ لِتَحْسِينِ حَيَاتِكَ الرُّوحِيَّةِ.
+وَأَمَّا الْحَجُّ فَهُوَ رُكْنٌ مِنْ أَرْكَانِ الإِسْلاَمِ الْخَمْسَةِ وَهُوَ وَاجِبٌ عَلَى الْمُسْلِمِينَ الْقَادِرِينَ عَلَيْهِ جَسَدِيًّا وَمَالِيًّا. لِذَا فَلْنُعِدَّ أَنْفُسَنَا عَلَى أَفْضَلِ وَجْهٍ مُمْكِنٍ. أَمَّا مَنْ لَمْ يَسْتَطِعْ، فَلاَ يَيْأَسْ، فَإِنَّ اللهَ عَلِيْمٌ بِنَوَايَا عِبَادِهِ وَسَعْيِهِمْ.`,
+      indonesianText: `Saya Salman, saya tinggal di sebuah desa kecil di Surabaya. Saya memiliki seorang paman bernama Ahmad, rumahnya dekat dari rumah saya. Pada tahun lalu, paman saya mengunjungi Makkah Al-Mukarramah untuk menunaikan ibadah haji dan umrah. Saya ingin mendengarkan kisahnya, lalu bertanya: "Wahai Pamanku, apa yang dilakukan orang-orang dalam manasik haji dan umrah?" Pamanku menjawab: "Jika kamu menginginkan haji dan umrah...
+
+1. Berihramlah dari miqat yang ditentukan sebagai awal manasik haji dan umrah dan berniatlah dengan ihram.
+2. Naiklah ke Jabal Arafah untuk wukuf dan lemparlah tiga jumrah di Mina.
+3. Bertawaflah mengelilingi Ka'bah Al-Musharrafah sebanyak 7 kali.
+4. Bersa'ilah antara Shafa dan Marwah sebanyak 7 kali.
+5. Bertahallullah dengan mencukur rambutmu atau memotongnya.
+
+Saya mendengarkan cerita pamanku dengan penuh perhatian, kemudian saya bertanya kepadanya untuk kedua kalinya: "Wahai pamanku, apa yang harus kita ingat dalam umrah?" Beliau menjawab: "Pertama, pergilah umrah kapan saja sepanjang tahun. Kedua, berusahalah menunaikan manasik umrah dengan cara yang benar. Dan ketiga, manfaatkan pengalaman umrah untuk memperbaiki kehidupan spiritualmu."
+
+Adapun haji, ia adalah rukun dari rukun Islam yang lima dan hukumnya wajib bagi umat Islam yang mampu secara fisik dan finansial. Oleh karena itu, marilah kita mempersiapkan diri sebaik mungkin. Adapun bagi yang belum mampu, janganlah berkecil hati, karena sesungguhnya Allah Maha Mengetahui niat-niat hamba-Nya dan usaha mereka.`,
+      vocabularyHighlights: [
+        { word: "أَحْرِمْ مِنَ الْمِيقَاتِ", meaning: "Berihramlah dari miqat" },
+        { word: "الْوُقُوفُ بِعَرَفَةَ", meaning: "Wukuf di Arafah" },
+        { word: "طُفْ حَوْلَ الْكَعْبَةِ", meaning: "Bertawaflah mengelilingi Ka'bah" },
+        { word: "تَحَلَّلْ بِحَلْقِ شَعْرِكَ", meaning: "Bertahallullah dengan mencukur rambut" }
+      ],
+      questions: [
+        {
+          q: "أَيْنَ يُحْرِمُ الْحَاجُّ أَوِ الْمُعْتَمِرُ؟",
+          options: [
+            "مِنَ الْمِيقَاتِ الْمُحَدَّدِ",
+            "مِنَ الْبَيْتِ",
+            "مِنَ الْمَطَارِ",
+            "مِنَ الْمَسْجِدِ النَّبَوِيِّ"
+          ],
+          correct: 0,
+          explanation: "Sesuai poin 1: أَحْرِمْ مِنَ الْمِيقَاتِ الْمُحَدَّدِ"
+        },
+        {
+          q: "كَمْ مَرَّةً يَطُوفُ الْحَاجُّ حَوْلَ الْكَعْبَةِ؟",
+          options: [
+            "سَبْعَ مَرَّاتٍ",
+            "ثَلاَثَ مَرَّاتٍ",
+            "خَمْسَ مَرَّاتٍ",
+            "مَرَّةً وَاحِدَةً"
+          ],
+          correct: 0,
+          explanation: "Sesuai poin 3: طُفْ حَوْلَ الْكَعْبَةِ الْمُشَرَّفَةِ سَبْعَ مَرَّاتٍ"
+        },
+        {
+          q: "عَلَى مَنْ يَجِبُ الْحَجُّ فِي الإِسْلاَمِ؟",
+          options: [
+            "عَلَى الْمُسْلِمِينَ الْقَادِرِينَ عَلَيْهِ جَسَدِيًّا وَمَالِيًّا",
+            "عَلَى كُلِّ فَقِيرٍ",
+            "عَلَى الأَطْفَالِ الصِّغَارِ",
+            "عَلَى مَنْ لاَ يَسْتَطِيعُ السَّفَرَ"
+          ],
+          correct: 0,
+          explanation: "Sesuai paragraf akhir: وَهُوَ وَاجِبٌ عَلَى الْمُسْلِمِينَ الْقَادِرِينَ عَلَيْهِ جَسَدِيًّا وَمَالِيًّا"
+        }
+      ]
+    },
+    {
+      id: 6,
+      title: "القِرَاءَةُ الثَّانِيَةُ: الْعُمْرَةُ فِي رَمَضَانَ (Umrah di Bulan Ramadan)",
+      topic: "الحَجُّ وَالعُمْرَةُ",
+      level: "Kelas 11 MA - Bab 3",
+      arabicText: `فَاتِحٌ : سَمِعْتُ أَنَّ الْعُمْرَةَ فِي رَمَضَانَ لَهَا فَضْلٌ كَبِيْرٌ، هَلْ هَذَا صَحِيْحٌ؟
+فَاطِمَةُ : نَعَمْ صَحِيْحٌ. قَالَ النَّبِيُّ صَلَّى اللهُ عَلَيْهِ وَسَلَّمَ: "عُمْرَةٌ فِي رَمَضَانَ تَعْدِلُ حَجَّةً"
+فَاتِحٌ : هَلْ هَذَا يَعْنِي أَنَّهَا تُبْدِلُ الْحَجَّ؟
+فَاطِمَةُ : لاَ، أَجْرُهَا يُعَادِلُ أَجْرَ الْحَجِّ لَكِنَّهَا لاَ تُبْدِلُ فَرِيْضَةَ الْحَجِّ.
+فَاتِحٌ : وَلِمَاذَا لَهَا فَضْلٌ كَبِيْرٌ فِي رَمَضَانَ؟
+فَاطِمَةُ : لِأَنَّ رَمَضَانَ شَهْرُ الْبَرَكَةِ. كُلُّ الْعِبَادَاتِ فِيْهِ مُضَاعَفَةُ الأَجْرِ. وَالْعُمْرَةُ تُقَرِّبُكَ إِلَى اللهِ وَتُكَفِّرُ الذُّنُوْبَ.
+فَاتِحٌ : هَذَا مُذْهِلٌ، سَأُفَكِّرُ جِدِّيًّا فِي أَدَاءِ الْعُمْرَةِ فِي رَمَضَانَ الْمُقْبِلِ إِنْ شَاءَ اللهُ.`,
+      indonesianText: `Fatih: Saya mendengar bahwa umrah di bulan Ramadan memiliki keutamaan yang sangat besar, apakah ini benar?
+Fatima: Ya, benar. Nabi SAW bersabda: "Umrah di bulan Ramadan nilainya setara dengan ibadah haji".
+Fatih: Apakah ini berarti umrah Ramadan dapat menggantikan kewajiban haji?
+Fatima: Tidak, pahalanya menyamai pahala haji tetapi tidak menggantikan kewajiban ibadah haji.
+Fatih: Mengapa umrah memiliki keutamaan besar di bulan Ramadan?
+Fatima: Karena Ramadan adalah bulan keberkahan. Semua ibadah di dalamnya dilipatgandakan pahalanya. Dan umrah mendekatkan dirimu kepada Allah serta menghapus dosa-dosa.
+Fatih: Ini sungguh luar biasa, saya akan berpikir serius untuk menunaikan umrah pada Ramadan mendatang, insya Allah.`,
+      vocabularyHighlights: [
+        { word: "عُمْرَةٌ فِي رَمَضَانَ تَعْدِلُ حَجَّةً", meaning: "Umrah Ramadan nilainya setara haji" },
+        { word: "أَجْرُهَا يُعَادِلُ أَجْرَ الْحَجِّ", meaning: "Pahala umrah menyamai pahala haji" },
+        { word: "مُضَاعَفَةُ الأَجْرِ", meaning: "Pahala yang dilipatgandakan" },
+        { word: "تُكَفِّرُ الذُّنُوْبَ", meaning: "Menghapus dosa-dosa" }
+      ],
+      questions: [
+        {
+          q: "مَاذَا قَالَ النَّبِيُّ صَلَّى اللهُ عَلَيْهِ وَسَلَّمَ عَنِ الْعُمْرَةِ فِي رَمَضَانَ؟",
+          options: [
+            "عُمْرَةٌ فِي رَمَضَانَ تَعْدِلُ حَجَّةً",
+            "الْعُمْرَةُ غَيْرُ مُسْتَحَبَّةٍ فِي رَمَضَانَ",
+            "الْعُمْرَةُ تُكَرَّهُ فِي رَمَضَانَ",
+            "لاَ فَضْلَ لِلْعُمْرَةِ فِي رَمَضَانَ"
+          ],
+          correct: 0,
+          explanation: "Sesuai sabda Nabi SAW: عُمْرَةٌ فِي رَمَضَانَ تَعْدِلُ حَجَّةً"
+        },
+        {
+          q: "هَلْ تُبْدِلُ عُمْرَةُ رَمَضَانَ فَرِيْضَةَ الْحَجِّ؟",
+          options: [
+            "لاَ، أَجْرُهَا يُعَادِلُ أَجْرَ الْحَجِّ لَكِنَّهَا لاَ تُبْدِلُ فَرِيْضَةَ الْحَجِّ",
+            "نَعَمْ، تُبْدِلُ فَرِيْضَةَ الْحَجِّ تَمَامًا",
+            "نَعَمْ، لِمَنْ كَانَ فَقِيرًا فَقَطْ",
+            "لاَ أَجْرَ لَهَا"
+          ],
+          correct: 0,
+          explanation: "Penjelasan Fatima: لاَ، أَجْرُهَا يُعَادِلُ أَجْرَ الْحَجِّ لَكِنَّهَا لاَ تُبْدِلُ فَرِيْضَةَ الْحَجِّ"
+        }
+      ]
+    },
+    {
+      id: 7,
+      title: "القِرَاءَةُ: الأَدْيَانُ فِي إِنْدُونِيسِيَا (Agama-agama di Indonesia)",
+      topic: "الأَدْيَانُ فِي إِنْدُونِيسِيَا",
+      level: "Kelas 11 MA - Bab 4",
+      arabicText: `خَالِدٌ تَاِجِرٌ مُسْلِمٌ، هُوَ يَسْكُنُ فِي جُومْبَانْج (Jombang)، بَيْتُهُ قَرِيبٌ مِنَ الْمَسْجِدِ، يَذْهَبُ خَالِدٌ إِلَى الْمَسْجِدِ كُلَّ يَوْمٍ لِلأَدَاءِ صَلَاةِ الْفَرْضِ. هُوَ مُسْلِمٌ مُطِيعٌ. وَالإِسْلَامُ هُوَ الدِّينُ الأَكْثَرُ انْتِشَارًا فِي إِندُونِيسِيَا حَيْثُ يَتْبَعُهُ حَوَالَى ٨٧,٢ % مِنَ السُّكَّانِ.
+
+لِخَالِدٍ جَارٌ اِسْمُهُ سُونَاَرْطُو. هُوَ جَارٌ بُوذِيٌّ. الْبُوذِيَّةُ هُوَ دِينٌ قَدِيمٌ فِي إِندُونِيسِيَا حَيْثُ يَتْبَعُهَا حَوَالَى ٠,٧ % مِنَ السُّكَّانِ. يَتَعَبَّدُ سُونَاَرْطُو فِي مَعْبَدٍ بَعِيدٍ عَنْ بَيْتِهِ يُسَمَّى بِمَعْبَدِ "هُوكْ لِيُؤْنْج كِيُؤْنْج" (Hok Liong Kiong). هُوَ مَعْبَدٌ جَمِيلٌ فِي وَسَطِ مَدِينَةِ جُومْبَانْج. يُزَيَّنُ الْمَعْبَدُ بِأَلْوَانٍ مُتَنَوِّعَةٍ مِنَ الأَحْمَرِ وَالأَصْفَرِ وَالأَخْضَرِ.
+
+لِخَالِدٍ جَارٌ آخَرُ اِسْمُهُ فْرَانْسِيسْكُوسْ، هُوَ جَارٌ بُرُوتِسْتَانِيٌّ. الْبُرُوتِسْتَانْتِيَّةُ هُوَ دِينٌ ثَالِثٌ أَكْبَرُ فِي إِندُونِيسِيَا حَيْثُ يَتْبَعُهَا حَوَالَى ٦,٩ % مِنَ السُّكَّانِ. يَتَعَبَّدُ فْرَانْسِيسْكُوسْ فِي الْكَنِيسَةِ فِي جُومْبَانْج.
+
+يَسْكُنُ خَالِدٌ وَسُونَاَرْطُو وَفْرَانْسِيسْكُوسْ فِي سِلْمٍ وَتَسَامُحٍ، وَيَحْتَرِمُ بَعْضُهُمْ بَعْضًا. فَالَتَّسَامُحُ هُوَ مَبْدَأٌ أَسَاسِيٌّ فِي إِندُونِيسِيَا، يُشَجِّعُ عَلَى الإِحْتِرَامِ الْمُتَبَادَلِ وَالتَّفَاهُمِ فِي الاِخْتِلَافِ بَيْنَ الْمُعْتَقَدَاتِ الدِّينِيَّةِ.
+وَالأَدْيَانُ الرَّسْمِيَّةُ فِي إِندُونِيسِيَا هِيَ: الإِسْلَامُ، وَالْكَاثُولِيكِيَّةُ، وَالْبُرُوتِسْتَانْتِيَّةُ، وَالْهِنْدُوسِيَّةُ، وَالْبُوذِيَّةُ، وَالْكُونْفُوشِيَّةُ.`,
+      indonesianText: `Khalid adalah seorang pedagang Muslim, ia tinggal di Jombang. Rumahnya dekat dari masjid. Khalid pergi ke masjid setiap hari untuk menunaikan shalat fardhu. Ia adalah seorang Muslim yang taat. Dan Islam adalah agama yang paling meluas penyebarannya di Indonesia di mana dianut oleh sekitar 87,2 % dari penduduk.
+
+Khalid memiliki seorang tetangga bernama Sunarto. Ia adalah tetangga seorang Buddhis. Agama Buddha adalah agama kuno di Indonesia di mana dianut oleh sekitar 0,7 % dari penduduk. Sunarto beribadah di sebuah klenteng/tempat ibadah yang jauh dari rumahnya bernama Klenteng "Hok Liong Kiong". Itu adalah tempat ibadah yang indah di pusat kota Jombang. Klenteng tersebut dihiasi dengan beraneka warna dari merah, kuning, dan hijau.
+
+Khalid memiliki tetangga lain bernama Fransiskus, ia adalah tetangga seorang Protestan. Agama Protestan adalah agama terbesar ketiga di Indonesia di mana dianut oleh sekitar 6,9 % dari penduduk. Fransiskus beribadah di gereja di Jombang.
+
+Khalid, Sunarto, dan Fransiskus tinggal dalam kedamaian dan toleransi, serta saling menghormati satu sama lain. Maka toleransi adalah prinsip mendasar di Indonesia, yang menggalakkan penghormatan timbal balik dan saling memahami dalam perbedaan antar keyakinan beragama.
+
+Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Buddha, dan Khonghucu.`,
+      vocabularyHighlights: [
+        { word: "الدِّينُ الأَكْثَرُ انْتِشَارًا", meaning: "Agama yang paling meluas penyebarannya" },
+        { word: "مَعْبَدُ هُوكْ لِيُؤْنْج كِيُؤْنْج", meaning: "Klenteng Hok Liong Kiong (Jombang)" },
+        { word: "سِلْمٍ وَتَسَامُحٍ", meaning: "Kedamaian dan toleransi" },
+        { word: "الإِحْتِرَامُ الْمُتَبَادَلُ", meaning: "Saling menghormati / Penghormatan timbal balik" }
+      ],
+      questions: [
+        {
+          q: "أَيْنَ يَسْكُنُ خَالِدٌ وَكَمْ نِسْبَةُ الْمُسْلِمِينَ فِي إِندُونِيسِيَا؟",
+          options: [
+            "يَسْكُنُ فِي جُومْبَانْج وَنِسْبَةُ الْمُسْلِمِينَ ٨٧,٢ %",
+            "يَسْكُنُ فِي سُورَابَايَا وَنِسْبَةُ الْمُسْلِمِينَ ٥٠ %",
+            "يَسْكُنُ فِي جَاكَرْتَا وَنِسْبَةُ الْمُسْلِمِينَ ١٠ %",
+            "يَسْكُنُ فِي بَالِي"
+          ],
+          correct: 0,
+          explanation: "Sesuai paragraf 1: يَسْكُنُ فِي جُومْبَانْج... حَيْثُ يَتْبَعُهُ حَوَالَى ٨٧,٢ %"
+        },
+        {
+          q: "مَا اسْمُ الْمَعْبَدِ الَّذِي يَتَعَبَّدُ فِيهِ سُونَاَرْطُو فِي جُومْبَانْج؟",
+          options: [
+            "مَعْبَدُ هُوكْ لِيُؤْنْج كِيُؤْنْج (Hok Liong Kiong)",
+            "فُورَا بَسَاكِيْه",
+            "الْمَسْجِدُ الْكَبِيرُ",
+            "كَنِيسَةُ جُومْبَانْج"
+          ],
+          correct: 0,
+          explanation: "Sesuai paragraf 2: يُسَمَّى بِمَعْبَدِ \"هُوكْ لِيُؤْنْج كِيُؤْنْج\" (Hok Liong Kiong)"
+        },
+        {
+          q: "مَا هِيَ الأَدْيَانُ الرَّسْمِيَّةُ فِي إِندُونِيسِيَا؟",
+          options: [
+            "الإِسْلَامُ، وَالْكَاثُولِيكِيَّةُ، وَالْبُرُوتِسْتَانْتِيَّةُ، وَالْهِنْدُوسِيَّةُ، وَالْبُوذِيَّةُ، وَالْكُونْفُوشِيَّةُ",
+            "الإِسْلَامُ فَقَطْ",
+            "الْبُوذِيَّةُ وَالْهِنْدُوسِيَّةُ فَقَطْ",
+            "ثَلاَثَةُ أَدْيَانٍ فَقَطْ"
+          ],
+          correct: 0,
+          explanation: "Sesuai paragraf akhir: وَالأَدْيَانُ الرَّسْمِيَّةُ فِي إِندُونِيسِيَا هِيَ: الإِسْلَامُ، وَالْكَاثُولِيكِيَّةُ، وَالْبُرُوتِسْتَانْتِيَّةُ، وَالْهِنْدُوسِيَّةُ، وَالْبُوذِيَّةُ، وَالْكُونْفُوشِيَّةُ."
+        }
+      ]
+    }
+  ],
+
+  kalam: [
+    {
+      id: 1,
+      title: "الحِوَارُ الأَوَّلُ : قَضَاءُ العُطْلَةِ (Percakapan 1: Mengisi Liburan)",
+      description: "Bab 1: Dialog antara Salim (سالم) dan Nabil (نبيل) mengenai pengalaman liburan ke rumah kakek di Sukoharjo.",
+      avatarBuyer: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=150&auto=format&fit=crop",
+      avatarSeller: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=150&auto=format&fit=crop",
+      dialogues: [
+        { speaker: "سَالِمٌ (Salim)", arabic: "السَّلَامُ عَلَيْكُمْ", indo: "Assalamu'alaikum" },
+        { speaker: "نَبِيْلٌ (Nabil)", arabic: "وَعَلَيْكُمُ السَّلَامُ وَرَحْمَةُ اللهِ", indo: "Wa'alaikumussalam warahmatullah" },
+        { speaker: "سَالِمٌ (Salim)", arabic: "أَيْنَ قَضَيْتَ أَيَّامَ العُطْلَةِ المَاضِيَةِ يَا نَبِيْلُ؟", indo: "Di mana kamu menghabiskan hari-hari liburan lalu, wahai Nabil?" },
+        { speaker: "نَبِيْلٌ (Nabil)", arabic: "قَضَيْتُهَا فِي بَيْتِ جَدِّي فِي سُوْكُوْهَارْجُوْ (Sukoharjo)", indo: "Saya menghabiskan liburan di rumah kakekku di Sukoharjo." },
+        { speaker: "سَالِمٌ (Salim)", arabic: "بِمَ وَمَتَى ذَهَبْتَ هُنَاكَ؟", indo: "Naik apa dan kapan kamu pergi ke sana?" },
+        { speaker: "نَبِيْلٌ (Nabil)", arabic: "ذَهَبْتُ هُنَاكَ بِالقِطَارِ فِي أُسْبُوْعَيْنِ مَاضِيَيْنِ", indo: "Saya pergi ke sana naik kereta api dua minggu yang lalu." },
+        { speaker: "سَالِمٌ (Salim)", arabic: "كَمْ يَوْمًا مَكَّثْتَ هُنَاكَ؟", indo: "Berapا hari kamu tinggal di sana?" },
+        { speaker: "نَبِيْلٌ (Nabil)", arabic: "مَكَّثْتُ هُنَاكَ ثَلَاثَةَ أَيَّامٍ", indo: "Saya tinggal di sana selama tiga hari." },
+        { speaker: "سَالِمٌ (Salim)", arabic: "عُطْلَةٌ سَعِيْدَةٌ", indo: "Selamat berlibur! / Semoga liburanmu menyenangkan." },
+        { speaker: "نَبِيْلٌ (Nabil)", arabic: "شُكْرًا", indo: "Terima kasih." }
+      ]
+    },
+    {
+      id: 2,
+      title: "الحِوَارُ الثَّانِي : زِيَارَةُ غَارِ فِيْنْدُوْل (Percakapan 2: Wisata Goa Pindul)",
+      description: "Bab 1: Dialog antara Fakhri (فخري) dan Naufal (نوفل) mengenai wisata susur gua (Goa Pindul) di Yogyakarta.",
+      avatarBuyer: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=150&auto=format&fit=crop",
+      avatarSeller: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?q=80&w=150&auto=format&fit=crop",
+      dialogues: [
+        { speaker: "فَخْرِي (Fakhri)", arabic: "مَاذَا فَعَلْتَ أَيَّامَ عُطْلَتِكَ يَا نَوْفَلُ؟", indo: "Apa yang kamu lakukan pada hari-hari liburanmu, wahai Naufal?" },
+        { speaker: "نَوْفَلٌ (Naufal)", arabic: "ذَهَبْتُ إِلَى غَارِ فِيْنْدُوْل (Goa Pindul) فِي يُوْكِيَاكِرْتَا", indo: "Saya pergi ke Goa Pindul di Yogyakarta." },
+        { speaker: "فَخْرِي (Fakhri)", arabic: "مَاذَا وَجَدْتَ هُنَاكَ؟", indo: "Apa yang kamu temukan di sana?" },
+        { speaker: "نَوْفَلٌ (Naufal)", arabic: "هُنَاكَ نَهْرٌ تَحْتَ الغَارِ حَوَالَى ٣٥٠ مِتْرًا وَعِرْضُهُ حَوَالَى خَمْسَةِ أَمْتَارٍ. وَفِي النَّهْرِ اسْتَطَاعَ النَّاسُ التَّزَحْلُفَ بِاسْتِخْدَامِ الإِطَارَاتِ. وَهُوَ مَشْهُوْرٌ بِأَنَّهُ مَكَانٌ سِيَاحِيٌّ جَمِيْلٌ فِي يُوْكِيَاكِرْتَا.", indo: "Di sana ada sungai di bawah gua sepanjang sekitar 350 meter dan lebarnya 5 meter. Di sungai orang-orang bisa susur sungai menggunakan ban pelampung. Tempat itu sangat terkenal sebagai wisata indah di Yogyakarta." },
+        { speaker: "فَخْرِي (Fakhri)", arabic: "لِمَاذَا ذَهَبْتَ هُنَاكَ؟", indo: "Mengapa kamu pergi ke sana?" },
+        { speaker: "نَوْفَلٌ (Naufal)", arabic: "لِأَنَّ بَيْتَ جَدِّي قَرِيْبٌ مِنْ غَارِ فِيْنْدُوْل. إِسْتَغْرَقَ الذَّهَابُ إِلَى هُنَاكَ حَوَالَى سَاعَةٍ وَاحِدَةٍ بِالسَّيَّارَةِ أَوْ بِالدَّرَّاجَةِ النَّارِيَّةِ.", indo: "Karena rumah kakekku dekat dari Goa Pindul. Perjalanan ke sana memakan waktu sekitar satu jam menggunakan mobil atau sepeda motor." },
+        { speaker: "فَخْرِي (Fakhri)", arabic: "بِكَمْ تَذْكِرَةُ الدُّخُوْلِ؟", indo: "Berapa harga tiket masuknya?" },
+        { speaker: "نَوْفَلٌ (Naufal)", arabic: "بِخَمْسِيْنَ أَلْفَ رُوْبِيَّةٍ", indo: "Lima puluh ribu rupiah." },
+        { speaker: "فَخْرِي (Fakhri)", arabic: "سِيَاحَةٌ رَائِعَةٌ وَمُمْتِعَةٌ", indo: "Wisata yang luar biasa dan sungguh menyenangkan!" },
+        { speaker: "نَوْفَلٌ (Naufal)", arabic: "شُكْرًا", indo: "Terima kasih." }
+      ]
+    },
+    {
+      id: 3,
+      title: "الحِوَارُ الثَّالِثُ : فِي الْمُسْتَشْفَى (Di Rumah Sakit)",
+      description: "Bab 2 (الصِّحَّةُ): Dialog antara Dokter Wanita (الطَّبِيبَةُ) dan Hasan (حَسَنٌ) saat konsultasi penyakit sakit kepala dan tekanan darah.",
+      avatarBuyer: "https://images.unsplash.com/photo-1594824813566-78a9c3621422?q=80&w=150&auto=format&fit=crop",
+      avatarSeller: "https://images.unsplash.com/photo-1537368910025-700350fe46c7?q=80&w=150&auto=format&fit=crop",
+      dialogues: [
+        { speaker: "الطَّبِيبَةُ (Dokter Wanita)", arabic: "السَّلاَمُ عَلَيْكُمْ، مَاذَا بِكَ يَا سَيِّدِي؟", indo: "Assalamu'alaikum, ada keluhan apa wahai Pak?" },
+        { speaker: "حَسَنٌ (Hasan)", arabic: "وَ عَلَيْكُمُ السَّلاَمُ وَرَحْمَةُ اللهِ، أَصَابَنِي الصُّدَاعُ.", indo: "Wa'alaikumussalam warahmatullah, saya merasa sakit kepala / pusing." },
+        { speaker: "الطَّبِيبَةُ (Dokter Wanita)", arabic: "كَمْ يَوْمًا تَشْعُرُ بِهِ؟", indo: "Sudah berapa hari Anda merasakannya?" },
+        { speaker: "حَسَنٌ (Hasan)", arabic: "مُنْذُ ثَلاَثَةِ أَيَّامٍ.", indo: "Sejak tiga hari yang lalu." },
+        { speaker: "الطَّبِيبَةُ (Dokter Wanita)", arabic: "تَفَضَّلْ، اسْتَلْقِ عَلَى السَّرِيرِ لِلْفَحْصِ.", indo: "Silakan berbaring di atas tempat tidur untuk pemeriksaan." },
+        { speaker: "حَسَنٌ (Hasan)", arabic: "حَسَنًا يَا سَيِّدَتِي.", indo: "Baik, Dok." },
+        { speaker: "الطَّبِيبَةُ (Dokter Wanita)", arabic: "ضَغْطُ دَمِكَ مُرْتَفِعٌ، عَلَيْكَ أَنْ تَجْتَنِبَ الأَطْعِمَةَ الْمَالِحَةَ وَالْحُلْوَةَ. هَذِهِ هِيَ الْوَصْفَةُ مِنِّي.", indo: "Tekanan darah Anda tinggi, Anda harus menghindari makanan asin dan manis. Ini dia resep obat dari saya." },
+        { speaker: "حَسَنٌ (Hasan)", arabic: "طَيِّبٌ، سَأَشْتَرِي الدَّوَاءَ فِي الصَّيْدَلِيَّةِ، شُكْرًا.", indo: "Baik, saya akan membeli obat di apotek, terima kasih." },
+        { speaker: "الطَّبِيبَةُ (Dokter Wanita)", arabic: "عَفْوًا، شَفَاكَ اللهُ.", indo: "Sama-sama, semoga Allah memberi Anda kesembuhan." }
+      ]
+    },
+    {
+      id: 4,
+      title: "الحِوَارُ الرَّابِعُ : فِي الصَّيْدَلِيَّةِ (Di Apotek)",
+      description: "Bab 2 (الصِّحَّةُ): Dialog antara Apoteker (الصَّيْدَلِيُّ) dan Pasien (الْمَرِيضُ) saat menebus resep obat untuk penyakit tekanan darah.",
+      avatarBuyer: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?q=80&w=150&auto=format&fit=crop",
+      avatarSeller: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?q=80&w=150&auto=format&fit=crop",
+      dialogues: [
+        { speaker: "الصَّيْدَلِيُّ (Apoteker)", arabic: "السَّلاَمُ عَلَيْكُمْ، أَيُّ خِدْمَةٍ؟", indo: "Assalamu'alaikum, ada yang bisa saya bantu?" },
+        { speaker: "الْمَرِيضُ (Pasien)", arabic: "وَ عَلَيْكُمُ السَّلاَمُ وَرَحْمَةُ اللهِ، أَنَا بِحَاجَةٍ إِلَى الدَّوَاءِ.", indo: "Wa'alaikumussalam warahmatullah, saya butuh obat." },
+        { speaker: "الصَّيْدَلِيُّ (Apoteker)", arabic: "أَيُّ مَرَضٍ أَصَابَكَ؟", indo: "Penyakit apa yang Anda alami?" },
+        { speaker: "الْمَرِيضُ (Pasien)", arabic: "ضَغْطُ الدَّمِ.", indo: "Tekanan darah tinggi." },
+        { speaker: "الصَّيْدَلِيُّ (Apoteker)", arabic: "حَسَنًا، أَيْنَ الْوَصْفَةُ الطِّبِّيَّةُ؟", indo: "Baik, mana resep dokternya?" },
+        { speaker: "الْمَرِيضُ (Pasien)", arabic: "هَذِهِ هِيَ الْوَصْفَةُ.", indo: "Ini resepnya." },
+        { speaker: "الصَّيْدَلِيُّ (Apoteker)", arabic: "هَلْ لَدَيْكَ أَيُّ حَسَاسِيَّةٍ مِنَ الأَدْوِيَةِ؟", indo: "Apakah Anda memiliki alergi terhadap obat-obatan?" },
+        { speaker: "الْمَرِيضُ (Pasien)", arabic: "لاَ، لاَ أَعْتَقِدُ ذَلِكَ.", indo: "Tidak, saya rasa tidak ada." },
+        { speaker: "الصَّيْدَلِيُّ (Apoteker)", arabic: "طَيِّبٌ، هَذَا هُوَ الدَّوَاءُ، يَجِبُ عَلَيْكَ تَنَاوُلُهُ مَرَّةً فِي الْيَوْمِ، أَتَمَنَّى لَكُمُ الشِّفَاءَ الْعَاجِلَ.", indo: "Baik, ini obatnya, Anda harus meminumnya sekali dalam sehari. Saya mendoakan semoga Anda lekas sembuh." },
+        { speaker: "الْمَرِيضُ (Pasien)", arabic: "شُكْرًا جَزِيلاً، أَتَمَنَّى لَكَ التَّوْفِيقَ فِي الْعَمَلِ.", indo: "Terima kasih banyak, semoga Anda sukses dalam bekerja." },
+        { speaker: "الصَّيْدَلِيُّ (Apoteker)", arabic: "لاَ شُكْرَ عَلَى الْوَاجِبِ.", indo: "Sama-sama, sudah menjadi kewajiban saya." }
+      ]
+    },
+    {
+      id: 5,
+      title: "الحِوَارُ الْخَامِسُ : الْكَعْبَةُ الْمُشَرَّفَةُ (Percakapan 1 Bab 3: Ka'bah Al-Musharrafah)",
+      description: "Bab 3 (الحَجُّ وَالعُمْرَةُ): Dialog antara Fakhri (فَخْرِي) dan Aisyah (عَائِشَةُ) mengenai keutamaan Ka'bah, kiblat umat Islam, dan tata cara tawaf di sekeliling Ka'bah.",
+      avatarBuyer: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=150&auto=format&fit=crop",
+      avatarSeller: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=150&auto=format&fit=crop",
+      dialogues: [
+        { speaker: "فَخْرِي (Fakhri)", arabic: "السَّلاَمُ عَلَيْكُمْ", indo: "Assalamu'alaikum." },
+        { speaker: "عَائِشَةُ (Aisyah)", arabic: "وَعَلَيْكُمُ السَّلاَمُ وَرَحْمَةُ اللهِ", indo: "Wa'alaikumussalam warahmatullah." },
+        { speaker: "فَخْرِي (Fakhri)", arabic: "هَلْ تَعْرِفِينَ أَنَّ الْكَعْبَةَ الْمُشَرَّفَةَ مَرْكَزُ عِبَادَةِ الْمُسْلِمِينَ؟", indo: "Apakah kamu tahu bahwa Ka'bah Al-Musharrafah adalah pusat ibadah umat Islam?" },
+        { speaker: "عَائِشَةُ (Aisyah)", arabic: "نَعَمْ عَرَفْتُهَا. نَتَوَجَّهُ إِلَى الْكَعْبَةِ الْمُشَرَّفَةِ فِي كُلِّ صَلاَةٍ لِأَنَّهَا قِبْلَةُ الْمُسْلِمِينَ.", indo: "Ya, saya mengetahuinya. Kita menghadap ke Ka'bah Al-Musharrafah dalam setiap shalat karena ia adalah kiblat umat Islam." },
+        { speaker: "فَخْرِي (Fakhri)", arabic: "وَمَاذَا يَنْبَغِي أَنْ نَفْعَلَ أَمَامَ الْكَعْبَةِ إِذَا كُنَّا فِي الْحَجِّ؟", indo: "Dan apa yang seyogyanya kita lakukan di depan Ka'bah jika kita sedang menunaikan ibadah haji?" },
+        { speaker: "عَائِشَةُ (Aisyah)", arabic: "تَوَجَّهْ إِلَى الْحَجَرِ الأَسْوَدِ وَاسْتَلِمْهُ بِيَدِكَ أَوْ أَشِرْ إِلَيْهِ.", indo: "Menghadaplah ke Hajar Aswad dan usap/sentuhlah dengan tanganmu atau berilah isyarat padanya." },
+        { speaker: "فَخْرِي (Fakhri)", arabic: "ثُمَّ مَاذَا؟", indo: "Lalu apa lagi?" },
+        { speaker: "عَائِشَةُ (Aisyah)", arabic: "طُفْ بِالْكَعْبَةِ سَبْعَةَ أَشْوَاطٍ، وَادْعُ اللهَ خِلاَلَ الطَّوَافِ.", indo: "Bertawaflah mengelilingi Ka'bah sebanyak 7 putaran, dan berdoalah kepada Allah selama tawaf." },
+        { speaker: "فَخْرِي (Fakhri)", arabic: "هَلْ هُنَاكَ شَيْءٌ مُهِمٌّ آخَرُ عَنِ الْكَعْبَةِ؟", indo: "Apakah ada hal penting lain tentang Ka'bah?" },
+        { speaker: "عَائِشَةُ (Aisyah)", arabic: "إِنَّهَا بَيْتُ اللهِ الْحَرَامُ وَأَوَّلُ بَيْتٍ وُضِعَ لِلنَّاسِ لِعِبَادَةِ اللهِ.", indo: "Sesungguhnya Ka'bah adalah Baitullah Al-Haram dan rumah pertama yang dibangun bagi manusia untuk beribadah kepada Allah." },
+        { speaker: "فَخْرِي (Fakhri)", arabic: "حَسَنًا.", indo: "Baiklah." }
+      ]
+    },
+    {
+      id: 6,
+      title: "الحِوَارُ السَّادِسُ : الْحَجَرُ الأَسْوَدُ (Percakapan 2 Bab 3: Hajar Aswad)",
+      description: "Bab 3 (الحَجُّ وَالعُمْرَةُ): Dialog antara Khalidah (خَالِدَةُ) dan Naufal (نَوْفَلٌ) mengenai tata cara mengusap/memberi isyarat pada Hajar Aswad serta sejarah keutamaannya.",
+      avatarBuyer: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=150&auto=format&fit=crop",
+      avatarSeller: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?q=80&w=150&auto=format&fit=crop",
+      dialogues: [
+        { speaker: "خَالِدَةُ (Khalidah)", arabic: "يَا نَوْفَلُ نَحْنُ قَرِيبُونَ مِنَ الْحَجَرِ الأَسْوَدِ، مَاذَا أَفْعَلُ؟", indo: "Wahai Naufal, kita sudah dekat dari Hajar Aswad, apa yang harus aku lakukan?" },
+        { speaker: "نَوْفَلٌ (Naufal)", arabic: "تَقَدَّمِي إِلَيْهِ وَاسْتَلِمِيهِ إِنِ اسْتَطَعْتِ، فَإِنْ لَمْ تَسْتَطِيعِي وَكُنْتِ بَعِيدَةً فَأَشِيرِي إِلَيْهِ بِيَدِكِ.", indo: "Majulah mendekatinya dan usaplah jika kamu mampu, namun jika kamu tidak mampu dan berada jauh, maka berilah isyarat melambaikan tanganmu ke arahnya." },
+        { speaker: "خَالِدَةُ (Khalidah)", arabic: "ثُمَّ مَاذَا أَفْعَلُ بَعْدَ ذَلِكَ؟", indo: "Lalu apa yang harus aku lakukan setelah itu?" },
+        { speaker: "نَوْفَلٌ (Naufal)", arabic: "تَابِعِي طَوَافَكِ وَادْعِي اللهَ بِمَا شِئْتِ.", indo: "Lanjutkan tawafmu dan berdoalah kepada Allah dengan doa apa pun yang kamu kehendaki." },
+        { speaker: "خَالِدَةُ (Khalidah)", arabic: "هَلْ هُنَاكَ شَيْءٌ آخَرُ عَنِ الْحَجَرِ الأَسْوَدِ؟", indo: "Apakah ada hal lain tentang Hajar Aswad?" },
+        { speaker: "نَوْفَلٌ (Naufal)", arabic: "تَذَكَّرِي أَنَّ الْحَجَرَ الأَسْوَدَ قِطْعَةٌ مِنَ الْجَنَّةِ. وَكَانَ نَاصِعَ الْبَيَاضِ عِنْدَمَا نَزَلَ إِلَى الأَرْضِ، وَلَكِنَّهُ اسْوَدَّ بِسَبَبِ خَطَايَا الْبَشَرِ.", indo: "Ingatlah bahwa Hajar Aswad adalah batu dari surga. Dulunya berwarna putih bersih ketika diturunkan ke bumi, akan tetapi ia menjadi hitam disebabkan dosa-dosa manusia." },
+        { speaker: "خَالِدَةُ (Khalidah)", arabic: "طَيِّبٌ يَا نَوْفَلُ.", indo: "Baik wahai Naufal." }
+      ]
+    },
+    {
+      id: 7,
+      title: "الحِوَارُ السَّابِعُ : تَنَوُّعُ الأَدْيَانِ فِي إِنْدُونِيسِيَا (Percakapan 1 Bab 4: Keberagaman Agama di Indonesia)",
+      description: "Bab 4 (الأَدْيَانُ فِي إِنْدُونِيسِيَا): Dialog antara Ruqayyah (رُقَيَّةُ) dan Ibrahim (إِبْرَاهِيمُ) mengenai keutamaan keberagaman agama di Indonesia, nilai Pancasila, dan toleransi beragama.",
+      avatarBuyer: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=150&auto=format&fit=crop",
+      avatarSeller: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=150&auto=format&fit=crop",
+      dialogues: [
+        { speaker: "رُقَيَّةُ (Ruqayyah)", arabic: "السَّلاَمُ عَلَيْكُمْ يَا إِبْرَاهِيمُ، كَيْفَ حَالُكَ الْيَوْمَ؟", indo: "Assalamu'alaikum wahai Ibrahim, bagaimana kabarmu hari ini?" },
+        { speaker: "إِبْرَاهِيمُ (Ibrahim)", arabic: "وَعَلَيْكُمُ السَّلاَمُ يَا رُقَيَّةُ، اَلْحَمْدُ لِلَّهِ، وَأَنْتِ كَيْفَ الْحَالُ؟", indo: "Wa'alaikumussalam wahai Ruqayyah, alhamdulillah. Dan kamu bagaimana kabarmu?" },
+        { speaker: "رُقَيَّةُ (Ruqayyah)", arabic: "بِخَيْرٍ وَالْحَمْدُ لِلَّهِ. كُنْتُ أُفَكِّرُ فِي تَنَوُّعِ الأَدْيَانِ فِي إِنْدُونِيسِيَا.", indo: "Baik, alhamdulillah. Saya tadi sedang memikirkan keberagaman agama di Indonesia." },
+        { speaker: "إِبْرَاهِيمُ (Ibrahim)", arabic: "نَعَمْ، إِنَّهُ أَمْرٌ رَائِعٌ. هُنَاكَ الْمُسْلِمُونَ وَالْمَسِيحِيُّونَ وَالْهِنْدُوسِيُّونَ وَالْبُوذِيُّونَ وَالْكُونْفُوشِيُّونَ يَعِيشُونَ فِي سَلاَمٍ.", indo: "Ya, itu adalah hal yang luar biasa. Di sana umat Islam, Kristen, Hindu, Buddha, dan Khonghucu hidup dalam kedamaian." },
+        { speaker: "رُقَيَّةُ (Ruqayyah)", arabic: "صَحِيحٌ، وَأَنَا مُعْجَبَةٌ جِدًّا بِكَيْفِيَّةِ احْتِرَامِ الْجَمِيعِ لِمُعْتَقَدَاتِ الآخَرِينَ.", indo: "Benar, dan saya sangat kagum dengan bagaimana semua orang menghormati keyakinan orang lain." },
+        { speaker: "إِبْرَاهِيمُ (Ibrahim)", arabic: "هَذَا جُزْءٌ مُهِمٌّ مِنْ قِيَمِ \"بَانْتَجَاسِيلاَ\"، حَيْثُ يُشَجِّعُ النَّاسُ عَلَى الْوَحْدَةِ فِي التَّنَوُّعِ.", indo: "Ini adalah bagian penting dari nilai-nilai \"Pancasila\", di mana mendorong masyarakat pada persatuan dalam keberagaman." },
+        { speaker: "رُقَيَّةُ (Ruqayyah)", arabic: "طَبْعًا، التَّسَامُحُ هُوَ مِفْتَاحُ السَّلاَمِ فِي مَجْتَمَعِنَا.", indo: "Tentu saja, toleransi adalah kunci kedamaian dalam masyarakat kita." }
+      ]
+    },
+    {
+      id: 8,
+      title: "الحِوَارُ الثَّامِنُ : مَكَانُ الْعِبَادَةِ (Percakapan 2 Bab 4: Tempat Ibadah & Toleransi)",
+      description: "Bab 4 (الأَدْيَانُ فِي إِنْدُونِيسِيَا): Dialog antara Marwan (مَرْوَانُ) dan Anisah (أَنِيْسَةُ) mengenai tempat-tempat ibadah (Vihara, Pura, Masjid) dan etika berhubungan dengan non-Muslim secara sosial.",
+      avatarBuyer: "https://images.unsplash.com/photo-1594824813566-78a9c3621422?q=80&w=150&auto=format&fit=crop",
+      avatarSeller: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=150&auto=format&fit=crop",
+      dialogues: [
+        { speaker: "مَرْوَانُ (Marwan)", arabic: "السَّلاَمُ عَلَيْكُمْ يَا أَنِيْسَةُ.", indo: "Assalamu'alaikum wahai Anisah." },
+        { speaker: "أَنِيْسَةُ (Anisah)", arabic: "وَعَلَيْكُمُ السَّلاَمُ وَرَحْمَةُ اللهِ.", indo: "Wa'alaikumussalam warahmatullah." },
+        { speaker: "مَرْوَانُ (Marwan)", arabic: "نَحْنُ الآنَ فِي مَكَانِ الْعِبَادَةِ، هَلْ عِنْدَكِ صَدِيْقٌ غَيْرُ مُسْلِمٍ؟", indo: "Kita sekarang berada di tempat ibadah, apakah kamu punya teman non-Muslim?" },
+        { speaker: "أَنِيْسَةُ (Anisah)", arabic: "نَعَمْ، عِنْدِي صَدِيْقٌ بُوذِيٌّ، هُوَ فِي سُورَابَايَا.", indo: "Ya, saya punya teman seorang Buddhis, dia berada di Surabaya." },
+        { speaker: "مَرْوَانُ (Marwan)", arabic: "أَيْنَ يَتَعَبَّدُ صَدِيْقُكِ؟", indo: "Di mana temanmu beribadah?" },
+        { speaker: "أَنِيْسَةُ (Anisah)", arabic: "هُوَ يَتَعَبَّدُ فِي فِهَارَا. وَأَنْتَ يَا مَرْوَانُ، هَلْ تَعْرِفُ أَيْنَ يَتَعَبَّدُ الْهِنْدُوسِيُّونَ؟", indo: "Dia beribadah di Vihara. Dan kamu wahai Marwan, apakah kamu tahu di mana umat Hindu beribadah?" },
+        { speaker: "مَرْوَانُ (Marwan)", arabic: "نَعَمْ عَرَفْتُ، هُمْ يَتَعَبَّدُونَ فِي فُورَا. كَيْفَ تُعَامِلِينَ صَدِيْقَكِ الْبُوذِيَّ؟", indo: "Ya saya tahu, mereka beribadah di Pura. Bagaimana kamu bersikap kepada temanmu yang Buddhis?" },
+        { speaker: "أَنِيْسَةُ (Anisah)", arabic: "أَحْتَرِمُهُ احْتِرَامًا جَيِّدًا، حَيْثُ أُشَارِكُهُ فِي الْمُعَامَلَةِ الاِجْتِمَاعِيَّةِ وَلاَ فِي الدِّينِيَّةِ.", indo: "Saya menghormatinya dengan sangat baik, di mana saya berinteraksi dengannya dalam urusan sosial masyarakat dan tidak dalam urusan agama (akidah)." },
+        { speaker: "مَرْوَانُ (Marwan)", arabic: "أَحْسَنْتِ يَا أَنِيْسَةُ، هَذَا هُوَ التَّسَامُحُ فِي الدِّينِ.", indo: "Bagus sekali wahai Anisah, inilah toleransi dalam beragama." }
+      ]
+    }
+  ],
+
+  qawaid: [
+    {
+      id: 1,
+      title: "1. تَصْرِيفُ الأَفْعَالِ الْمَاضِيَةِ (Taṣrīf Lugawī Fi'il Māḍy)",
+      subtitle: "Perubahan Kata Kerja Lampau (Fi'il Maadhy) Berdasarkan 14 Dhamir (Kata Ganti)",
+      summary: "Fi'il Māḍy adalah kata kerja yang menunjukkan perbuatan atau peristiwa yang telah lampau. Perubahan kata kerja ini disesuaikan dengan 14 Dhamīr (kata ganti orang) dalam ilmu Sharaf.",
+      tableHeader: ["الضَّمَائِرُ (Dhamir)", "مَكَثَ (Tinggal)", "فَرَّ (Lari)", "قَالَ (Berkata)", "بَاعَ (Menjual)", "تَلَا (Membaca)", "خَشِيَ (Takut)", "شَوَى (Membakar)"],
+      tableRows: [
+        ["هُوَ (Dia Lk 1)", "مَكَثَ", "فَرَّ", "قَالَ", "بَاعَ", "تَلَا", "خَشِيَ", "شَوَى"],
+        ["هُمَا (Dia Lk 2)", "مَكَثَا", "فَرَّا", "قَالَا", "بَاعَا", "تَلَوَا", "خَشِيَا", "شَوَيَا"],
+        ["هُمْ (Mereka Lk)", "مَكَّثُوا", "فَرُّوا", "قَالُوا", "بَاعُوا", "تَلَوْا", "خَشُوا", "شَوَوْا"],
+        ["هِيَ (Dia Pr 1)", "مَكَّثَتْ", "فَرَّتْ", "قَالَتْ", "بَاعَتْ", "تَلَتْ", "خَشِيَتْ", "شَوَتْ"],
+        ["هُمَا (Dia Pr 2)", "مَكَّثَتَا", "فَرَّتَا", "قَالَتَا", "بَاعَتَا", "تَلَتَا", "خَشِيَتَا", "شَوَتَا"],
+        ["هُنَّ (Mereka Pr)", "مَكَّثْنَ", "فَرَرْنَ", "قُلْنَ", "بِعْنَ", "تَلَوْنَ", "خَشِينَ", "شَوَيْنَا"],
+        ["أَنْتَ (Kamu Lk)", "مَكَّثْتَ", "فَرَرْتَ", "قُلْتَ", "بِعْتَ", "تَلَوْتَ", "خَشِيتَ", "شَوَيْتَ"],
+        ["أَنْتُمَا (Kalian Lk 2)", "مَكَّثْتُمَا", "فَرَرْتُمَا", "قُلْتُمَا", "بِعْتُمَا", "تَلَوْتُمَا", "خَشِيتُمَا", "شَوَيْتُمَا"],
+        ["أَنْتُمْ (Kalian Lk 3+)", "مَكَّثْتُمْ", "فَرَرْتُمْ", "قُلْتُمْ", "بِعْتُمْ", "تَلَوْتُمْ", "خَشِيتُمْ", "شَوَيْتُمْ"],
+        ["أَنْتِ (Kamu Pr)", "مَكَّثْتِ", "فَرَرْتِ", "قُلْتِ", "بِعْتِ", "تَلَوْتِ", "خَشِيتِ", "شَوَيْتِ"],
+        ["أَنْتُمَا (Kalian Pr 2)", "مَكَّثْتُمَا", "فَرَرْتُمَا", "قُلْتُمَا", "بِعْتُمَا", "تَلَوْتُمَا", "خَشِيتُمَا", "شَوَيْتُمَا"],
+        ["أَنْتُنَّ (Kalian Pr 3+)", "مَكَّثْتُنَّ", "فَرَرْتُنَّ", "قُلْتُنَّ", "بِعْتُنَّ", "تَلَوْتُنَّ", "خَشِيتُنَّ", "شَوَيْتُنَّ"],
+        ["أَنَا (Saya)", "مَكَّثْتُ", "فَرَرْتُ", "قُلْتُ", "بِعْتُ", "تَلَوْتُ", "خَشِيتُ", "شَوَيْتُ"],
+        ["نَحْنُ (Kami/Kita)", "مَكَّثْنَا", "فَرَرْنَا", "قُلْنَا", "بِعْنَا", "تَلَوْنَا", "خَشِينَا", "شَوَيْنَا"]
+      ],
+      notes: [
+        "1. Perhatikan perubahan kata kerja di atas. Yang tertera dalam tabel adalah Taṣrīf Lugawī Fi'il Māḍy.",
+        "2. Fi'il Māḍy adalah kata kerja yang menunjukkan perbuatan yang telah dikerjakan atau peristiwa yang terjadi sebelum dibicarakan.",
+        "3. Ilmu Sharaf memperhatikan perubahan kata kerja lampau disesuaikan dengan ḍamīr (kata ganti).",
+        "4. Keterangan waktu yang mengharuskan penggunaan Fi'il Māḍy: فِي اليَوْمِ المَاضِي / الأُسْبُوْعِ المَاضِي / الشَّهْرِ المَاضِي / السَّنَةِ المَاضِيَةِ (hari/minggu/bulan/tahun lalu), لَيْلَةَ البَارِحَةِ (tadi malam), هَذَا الصَّبَاحَ (tadi pagi)."
+      ]
+    },
+    {
+      id: 2,
+      title: "2. تَصْرِيفُ الأَفْعَالِ الْمُضَارِعَةِ (Taṣrīf Lugawī Fi'il Muḍāri' - Bab 2)",
+      subtitle: "Perubahan Kata Kerja Sekarang / Yang Akan Datang (Fi'il Mudhari') Berdasarkan 14 Dhamir",
+      summary: "Fi'il Muḍāri' adalah kata kerja yang menunjukkan suatu perbuatan yang sedang atau akan dilakukan. Perubahan kata kerja ini (Taṣrīf Lugawī) disesuaikan dengan 14 Dhamīr (kata ganti orang) dalam ilmu Sharaf.",
+      tableHeader: ["الضَّمَائِرُ (Dhamir)", "يَشْرَبُ (Minum)", "يَشْعُرُ (Merasa)", "يَقُولُ (Berkata)", "يَسِيرُ (Berjalan)", "يَدْعُو (Mendoakan)", "يَجْرِي (Berlari)", "يَخْشَى (Takut)"],
+      tableRows: [
+        ["هُوَ (Dia Lk 1)", "يَشْرَبُ", "يَشْعُرُ", "يَقُولُ", "يَسِيرُ", "يَدْعُو", "يَجْرِي", "يَخْشَى"],
+        ["هُمَا (Dia Lk 2)", "يَشْرَبَانِ", "يَشْعُرَانِ", "يَقُولاَنِ", "يَسِيرَانِ", "يَدْعُوَانِ", "يَجْرِيَانِ", "يَخْشَيَانِ"],
+        ["هُمْ (Mereka Lk)", "يَشْرَبُونَ", "يَشْعُرُونَ", "يَقُولُونَ", "يَسِيرُونَ", "يَدْعُونَ", "يَجْرُونَ", "يَخْشَوْنَ"],
+        ["هِيَ (Dia Pr 1)", "تَشْرَبُ", "تَشْعُرُ", "تَقُولُ", "تَسِيرُ", "تَدْعُو", "تَجْرِي", "تَخْشَى"],
+        ["هُمَا (Dia Pr 2)", "تَشْرَبَانِ", "تَشْعُرَانِ", "تَقُولاَنِ", "تَسِيرَانِ", "تَدْعُوَانِ", "تَجْرِيَانِ", "تَخْشَيَانِ"],
+        ["هُنَّ (Mereka Pr)", "يَشْرَبْنَ", "يَشْعُرْنَ", "يَقُلْنَ", "يَسِرْنَ", "يَدْعُونَ", "يَجْرِينَ", "يَخْشَيْنَ"],
+        ["أَنْتَ (Kamu Lk)", "تَشْرَبُ", "تَشْعُرُ", "تَقُولُ", "تَسِيرُ", "تَدْعُو", "تَجْرِي", "تَخْشَى"],
+        ["أَنْتُمَا (Kalian Lk 2)", "تَشْرَبَانِ", "تَشْعُرَانِ", "تَقُولاَنِ", "تَسِيرَانِ", "تَدْعُوَانِ", "تَجْرِيَانِ", "تَخْشَيَانِ"],
+        ["أَنْتُمْ (Kalian Lk 3+)", "تَشْرَبُونَ", "تَشْعُرُونَ", "تَقُولُونَ", "تَسِيرُونَ", "تَدْعُونَ", "تَجْرُونَ", "تَخْشَوْنَ"],
+        ["أَنْتِ (Kamu Pr)", "تَشْرَبِينَ", "تَشْعُرِينَ", "تَقُولِينَ", "تَسِيرِينَ", "تَدْعِينَ", "تَجْرِينَ", "تَخْشَيْنَ"],
+        ["أَنْتُمَا (Kalian Pr 2)", "تَشْرَبَانِ", "تَشْعُرَانِ", "تَقُولاَنِ", "تَسِيرَانِ", "تَدْعُوَانِ", "تَجْرِيَانِ", "تَخْشَيَانِ"],
+        ["أَنْتُنَّ (Kalian Pr 3+)", "تَشْرَبْنَ", "تَشْعُرْنَ", "تَقُلْنَ", "تَسِرْنَ", "تَدْعُونَ", "تَجْرِينَ", "تَخْشَيْنَ"],
+        ["أَنَا (Saya)", "أَشْرَبُ", "أَشْعُرُ", "أَقُولُ", "أَسِيرُ", "أَدْعُو", "أَجْرِي", "أَخْشَى"],
+        ["نَحْنُ (Kami/Kita)", "نَشْرَبُ", "نَشْعُرُ", "نَقُولُ", "نَسِيرُ", "نَدْعُو", "نَجْرِي", "نَخْشَى"]
+      ],
+      notes: [
+        "1. Perhatikan perubahan kata di atas. Yang tertera dalam tabel adalah Taṣrīf Lugawī Fi'il Muḍāri'.",
+        "2. Fi'il Muḍāri' adalah kata yang menunjukkan perbuatan yang sedang atau akan dilakukan (present / future tense).",
+        "3. Ilmu Sharaf memperhatikan perubahan kata kerja sekarang/yang akan datang disesuaikan dengan ḍamīr (kata ganti).",
+        "4. Keterangan waktu yang biasa digunakan dengan Fi'il Muḍāri': الآنَ (sekarang), فِي الْيَوْمِ الآتِي / فِي الأُسْبُوعِ الآتِي (di hari/minggu mendatang), فِي الشَّهْرِ الْقَادِمِ / فِي السَّنَةِ الْقَادِمَةِ (di bulan/tahun depan).",
+        "5. Perubahan huruf di awal Fi'il Muḍāri' menggunakan huruf Mudhara'ah (أَ - نَ - يَ - تَ) disingkat أَنَيْتُ."
+      ]
+    },
+    {
+      id: 3,
+      title: "3. تَصْرِيفُ الأَفْعَالِ الأَمْرِيَّةِ (Taṣrīf Lugawī Fi'il 'Amr - Bab 3)",
+      subtitle: "Perubahan Kata Kerja Perintah (Fi'il 'Amr) Berdasarkan 6 Dhamir Mukhāṭab",
+      summary: "Fi'il 'Amr adalah kata kerja yang digunakan untuk memberikan perintah atau permohonan. Perubahan kata kerja ini (Taṣrīf Lugawī) disesuaikan dengan 6 Dhamīr Mukhāṭab (kata ganti orang kedua).",
+      tableHeader: ["الضَّمَائِرُ (Dhamir)", "اكْتُبْ (Tulislah)", "افْتَحْ (Bukalah)", "اجْلِسْ (Duduklah)", "استَأْذِنْ (Minta Izin)", "احْسِنْ (Berbuat Baik)", "تَفَضَّلْ (Silakan)", "فَكِّرْ (Berpikirlah)"],
+      tableRows: [
+        ["أَنْتَ (Kamu Lk 1)", "اكْتُبْ", "افْتَحْ", "اجْلِسْ", "استَأْذِنْ", "احْسِنْ", "تَفَضَّلْ", "فَكِّرْ"],
+        ["أَنْتُمَا (Kalian Lk 2)", "اكْتُبَا", "افْتَحَا", "اجْلِسَا", "استَأْذِنَا", "احْسِنَا", "تَفَضَّلاَ", "فَكِّرَا"],
+        ["أَنْتُمْ (Kalian Lk 3+)", "اكْتُبُوا", "افْتَحُوا", "اجْلِسُوا", "استَأْذِنُوا", "احْسِنُوا", "تَفَضَّلُوا", "فَكِّرُوا"],
+        ["أَنْتِ (Kamu Pr 1)", "اكْتُبِي", "افْتَحِي", "اجْلِسِي", "استَأْذِنِي", "احْسِنِي", "تَفَضَّلِي", "فَكِّرِي"],
+        ["أَنْتُمَا (Kalian Pr 2)", "اكْتُبَا", "افْتَحَا", "اجْلِسَا", "استَأْذِنَا", "احْسِنَا", "تَفَضَّلاَ", "فَكِّرَا"],
+        ["أَنْتُنَّ (Kalian Pr 3+)", "اكْتُبْنَ", "افْتَحْنَ", "اجْلِسْنَ", "استَأْذِنَّ", "احْسِنَّ", "تَفَضَّلْنَ", "فَكِّرْنَ"]
+      ],
+      notes: [
+        "a. Yang tertera dalam tabel adalah Taṣrīf Lugawī Fi'il 'Amr.",
+        "b. Ilmu Sharaf memperhatikan perubahan kata kerja perintah (Fi'il 'Amr) disesuaikan dengan ḍamīr. Kata ganti yang digunakan hanya kata ganti orang kedua (ḍamīr mukhāṭab) yaitu: أَنْتَ - أَنْتُمَا - أَنْتُمْ - أَنْتِ - أَنْتُمَا - أَنْتُنَّ.",
+        "c. Fi'il 'Amr ḍamīr antumā baik untuk laki-laki maupun perempuan tidak ada perbedaan (keduanya menggunakan akhiran Alif 'ا'). Kita membedakannya dalam konteks kalimat.",
+        "5. Ketentuan Munādā (kata sesudah huruf nidā' 'يَا', 'أَيُّهَا', atau 'يَا أَيُّهَا'):",
+        "  - Munādā dibaca marfū' (Dhammah) apabila berupa isim 'alam mufrad (nama orang tunggal), contoh: يَا زَيْدُ",
+        "  - Munādā dibaca manṣūb (Fathah) apabila berupa muḍāf atau menyerupai muḍāf, contoh: يَا عَبْدَ اللهِ, يَا طَالِعًا جَبَلاً"
+      ]
+    },
+    {
+      id: 4,
+      title: "4. النَّعْتُ وَالْمَنْعُوتُ (Kaidah Na'at & Man'ut - Bab 4)",
+      subtitle: "Jenis-jenis Na'at (Kata Sifat / Keterangan) beserta Pengertian dan Contohnya",
+      summary: "Na'at (Sifat) adalah kata yang mengikuti Isim sebelumnya (Man'ut) untuk menjelaskan sifat atau keadaannya. Terbagi menjadi 5 jenis: Na'at Haqiqi/Mufrad, Na'at Sababi, Na'at Jumlah Ismiyah, Na'at Jumlah Fi'liyah, dan Na'at Syibhil Jumlah.",
+      tableHeader: ["No", "Jenis / Macam Na'at", "Pengertian", "Contoh Kalimat"],
+      tableRows: [
+        [
+          "1",
+          "Na'at Haqiqi / Na'at Mufrad",
+          "Na'at yang menjelaskan man'ūt yang sesuai dalam hal nakirah, ma'rifat, muḍakkar, muannaś, mufrad, taśniyah, dan jama'.",
+          "• يَجِبُ عَلَى الْمُسْلِمِينَ أَنْ يَجْتَنِبُوا الأَعْمَالَ السَّيِّئَةَ.\n• يُحِبُّ الْمُدَرِّسُ الطَّالِبَاتِ النَّشِيطَاتِ."
         ],
-        exercises: [
-          {
-            id: 1,
-            instruction: "Susun kata-kata berikut menjadi kalimat larangan sesuai tabel!",
-            words: ["يَا", "عَلِيُّ", "تَجْلِسْ", "الْكُرْسِيِّ", "عَلَى", "لَا"],
-            correctOrder: ["لَا", "تَجْلِسْ", "عَلَى", "الْكُرْسِيِّ", "يَا", "عَلِيُّ"],
-            arabicSentence: "لَا تَجْلِسْ عَلَى الْكُرْسِيِّ يَا عَلِيُّ"
-          },
-          {
-            id: 2,
-            instruction: "Susun kata-kata berikut menjadi kalimat penafian (Lam Nafi)!",
-            words: ["الدَّرْسَ", "عَزِيْزٌ", "يُعَلِّمْ", "لَمْ"],
-            correctOrder: ["لَمْ", "يُعَلِّمْ", "عَزِيْزٌ", "الدَّرْسَ"],
-            arabicSentence: "لَمْ يُعَلِّمْ عَزِيْزٌ الدَّرْسَ"
-          },
-          {
-            id: 3,
-            instruction: "Susun kata-kata berikut menjadi larangan berbicara saat pelajaran!",
-            words: ["أَثْنَاءَ", "الدَّرْسِ", "تَتَكَلَّمُوا", "أَوْلَادُ", "يَا", "لَا"],
-            correctOrder: ["لَا", "تَتَكَلَّمُوا", "أَثْنَاءَ", "الدَّرْسِ", "يَا", "أَوْلَادُ"],
-            arabicSentence: "لَا تَتَكَلَّمُوا أَثْنَاءَ الدَّرْسِ يَا أَوْلَادُ"
-          }
+        [
+          "2",
+          "Na'at Sababi",
+          "Na'at yang menjelaskan sifat bagi isim yang mempunyai hubungan atau ikatan dengan man'ūtnya.",
+          "• يَخْرُجُ مِنْ بُطُونِهَا شَرَابٌ مُخْتَلِفٌ أَلْوَانُهُ (النحل: ٦٩)\n• أَكْرَمْتُ الطَّالِبَ الْحَسَنَ خُلُقُهُ."
+        ],
+        [
+          "3",
+          "Na'at Jumlah Ismiyah",
+          "Na'at yang terdiri dari jumlah ismiyah (mubtada' – khabar).",
+          "• تَرَكَ الشَّافِعِيُّ مُؤَلَّفَاتٍ نَفْعُهَا عَظِيمٌ."
+        ],
+        [
+          "4",
+          "Na'at Jumlah Fi'liyah",
+          "Na'at yang terdiri dari jumlah fi'liyah (Fi'il - fa'il - maf'ul).",
+          "• خَلَّفَ الشَّافِعِيُّ مَذْهَبًا يَحْتَرِمُهُ الْمُسْلِمُونَ جَمِيعًا."
+        ],
+        [
+          "5",
+          "Na'at Syibhil Jumlah",
+          "Na'at yang menyerupai kalimat, tetapi bukan jumlah mufidah (kalimat yang lengkap). Na'at ini biasanya terdiri dari jar-majrur atau kata keterangan (ẓarf) dan muḍāf ilaih.",
+          "• وَضَعَ الشَّافِعِيُّ كُتُبًا فِي الْفِقْهِ.\n• رَأَيْتُ طَائِرًا فَوْقَ الشَّجَرَةِ."
         ]
-      }
+      ],
+      notes: [
+        "1. Na'at Haqiqi (Mufrad) wajib mengikuti Man'ut dalam 4 hal: (a) Mu'rab/I'rab (Rafa', Nasab, Jar), (b) Jenis (Mudzakkar/Muannats), (c) Jumlah (Mufrad, Tatsniyah, Jamak), (d) Kejelasan (Nakirah/Ma'rifah). Contoh: (الأَعْمَالَ ⬅️ السَّيِّئَةَ) & (الطَّالِبَاتِ ⬅️ النَّشِيطَاتِ).",
+        "2. Na'at Sababi selalu berbentuk Mufrad dan ikrabnya mengikuti Man'ut sebelumnya, namun jenis gender (Mudzakkar/Muannats) mengikuti Isim sesudahnya. Contoh: (الطَّالِبَ ⬅️ الْحَسَنَ خُلُقُهُ).",
+        "3. Na'at Jumlah Ismiyah, Fi'liyah, dan Syibhul Jumlah: (مُؤَلَّفَاتٍ ⬅️ نَفْعُهَا عَظِيمٌ), (مَذْهَبًا ⬅️ يَحْتَرِمُهُ الْمُسْلِمُونَ), (طَائِرًا ⬅️ فَوْقَ الشَّجَرَةِ). Syarat Man'ut-nya wajib berupa Isim Nakirah."
+      ]
+    },
+    {
+      id: 5,
+      title: "5. الإِضَافَةُ: الْمُضَافُ وَالْمُضَافُ إِلَيْهِ (Kaidah Iḍāfah - Muḍāf & Muḍāf Ilaih - Bab 4)",
+      subtitle: "Penggabungan Dua Kata Membentuk Satu Pengertian (Mudhaf & Mudhaf Ilaih)",
+      summary: "Iḍāfah (إِضَافَةٌ) adalah gabungan dua kata isim atau lebih yang membentuk satu kesatuan makna. Kata pertama disebut Muḍāf (مُضَافٌ) dan kata kedua disebut Muḍāf Ilaih (مُضَافٌ إِلَيْهِ).",
+      tableHeader: ["No", "مُضَافٌ (Muḍāf)", "مُضَافٌ إِلَيْهِ (Muḍāf Ilaih)", "Makna Tersirat (Pengandaian)"],
+      tableRows: [
+        [
+          "1",
+          "مَكْرُ",
+          "اللَّيْلِ",
+          "مَكْرٌ فِي اللَّيْلِ (Tipu daya DI DALAM malam - Makna فِي)"
+        ],
+        [
+          "2",
+          "كِتَابُ",
+          "مُحَمَّدٍ",
+          "كِتَابٌ لِمُحَمَّدٍ (Kitab MILIK Muhammad - Makna لِ)"
+        ],
+        [
+          "3",
+          "إِنَاءُ",
+          "زُجَاجٍ",
+          "إِنَاءٌ مِنْ زُجَاجٍ (Wadah DARI kaca - Makna مِنْ)"
+        ],
+        [
+          "4",
+          "رَسُولُ",
+          "اللهِ",
+          "رَسُولٌ لِلَّهِ (Utusan Allah / Milik Allah)"
+        ],
+        [
+          "5",
+          "شَدِيدُ",
+          "الْعِقَابِ",
+          "شَدِيدُ الْعِقَابِ (Sangat keras siksaan-Nya)"
+        ],
+        [
+          "6",
+          "كِتَابَ",
+          "اللُّغَةِ الْعَرَبِيَّةِ",
+          "كِتَابُ اللُّغَةِ (Buku Bahasa Arab)"
+        ]
+      ],
+      notes: [
+        "1. Iḍāfah adalah dua kata yang digabung menjadi satu membentuk satu pengertian. Satu berfungsi sebagai muḍāf dan satunya lagi berfungsi sebagai muḍāf ilaih.",
+        "2. I'rāb muḍāf mengikuti kedudukannya dalam kalimat (bisa Marfu', Mansub, atau Majrur), sedangkan Muḍāf ilaih dibaca majrūr (Kasrah/Yaa) selamanya.",
+        "3. Muḍāf TIDAK BOLEH menggunakan Alif Lam (ال) dan TIDAK BOLEH di-tanwin.",
+        "4. Iḍāfah mengira-ngirakan 3 makna huruf jar: (a) فِي (di dalam) contoh مَكْرُ اللَّيْلِ, (b) لِ (milik/kepunyaan) contoh كِتَابُ مُحَمَّدٍ, (c) مِنْ (terbuat dari) contoh إِنَاءُ زُجَاجٍ."
+      ]
     }
   ],
 
-  // --------------------------------------------------------------------------
-  // Bank Soal Maharah Istima' (20 Soal PER BAB = 60 Soal Total Full Bahasa Arab)
-  // --------------------------------------------------------------------------
-  istimaBank: [
-    // === BAB 1 ISTIMA' (SOAL 1 - 20) ===
-    {
-      id: 1, chapterId: 1, typeTag: "تَحْلِيْلُ الْمَكَانِ وَالْـمَوْقِفِ",
-      audioText: "التَّلَامِيْذُ يَحْتَفِلُوْنَ بِسَنَةٍ هِجْرِيَّةٍ جَدِيْدَةٍ فِي مَلْعَبِ الْمَدْرَسَةِ، التَّلَامِيْذُ فِي الْيَمِيْنِ وَالتِّلْمِيْذَاتُ فِي الْيَسَارِ",
-      question: "أَيْنَ يَجْتَمِعُ التَّلَامِيْذُ لِلِاحْتِفَالِ بِسَنَةٍ هِجْرِيَّةٍ جَدِيْدَةٍ، وَكَيْفَ يَجْلِسُونَ؟",
-      options: ["فِي الْمَسْجِدِ، يَجْلِسُ التَّلَامِيْذُ وَالتِّلْمِيْذَاتُ مُخْتَلِطِيْنَ", "فِي مَلْعَبِ الْمَدْرَسَةِ، التَّلَامِيْذُ فِي الْيَمِيْنِ وَالتِّلْمِيْذَاتُ فِي الْيَسَارِ", "فِي الْفَصْلِ مَعَ الأُسْتَاذِ مُحَمَّدِ نَبِيْلٍ", "فِي مَكْتَبَةِ الْمَدْرَسَةِ"],
-      correct: 1, explanation: "الْإِجَابَةُ الصَّحِيْحَةُ هِيَ: 'فِي مَلْعَبِ الْمَدْرَسَةِ، التَّلَامِيْذُ فِي الْيَمِيْنِ وَالتِّلْمِيْذَاتُ فِي الْيَسَارِ'."
-    },
-    {
-      id: 2, chapterId: 1, typeTag: "تَحْلِيْلُ التَّضْحِيَةِ (HOTS)",
-      audioText: "هَاجَرَ الرَّسُوْلُ وَأَصْحَابُهُ مِنْ مَكَّةَ إِلَى الْمَدِينَةِ وَتَرَكُوا وَطَنَهُمْ وَأَمْوَالَهُمْ وَتِجَارَتَهُمْ",
-      question: "لِمَاذَا كَانَتْ تَضْحِيَةُ الصَّحَابَةِ فِي الْهِجْرَةِ عَظِيْمَةً جِدًّا؟",
-      options: ["لِأَنَّهُمْ يَبْحَثُونَ عَنْ مَكَانٍ لِلْعُطْلَةِ", "لِأَنَّهُمْ تَرَكُوا وَطَنَهُمْ وَبُيُوتَهُمْ وَأَمْوَالَهُمْ وَتِجَارَتَهُمْ دِفَاعًا عَنِ الإِيْمَانِ", "لِأَنَّهُمْ أَرَادُوا التِّجَارَةَ الرَّابِحَةَ فِي الْمَدِيْنَةِ", "لِأَنَّ مَكَّةَ لَمْ تَعُدْ صَالِحَةً لِلْعَيْشِ"],
-      correct: 1, explanation: "تَرَكَ الصَّحَابَةُ وَطَنَهُمْ وَأَمْوَالَهُمْ فِي مَكَّةَ نُصْرَةً لِلَّهِ وَرَسُوْلِهِ."
-    },
-    {
-      id: 3, chapterId: 1, typeTag: "تَقْيِيْمُ الْجُمَلِ (الصَّوَاب/الْخَطَأ)",
-      audioText: "حَاوَلَ الْكُفَّارُ أَنْ يَقْتُلُوا النَّبِيَّ وَلَكِنَّ اللَّهَ حَفِظَ النَّبِيَّ وَنَجَّاهُ فِي الْهِجْرَةِ",
-      question: "أَيُّ جُمْلَةٍ مِنَ الْجُمَلِ الآتِيَةِ هِيَ الجُمْلَةُ الصَّحِيْحَةُ عَنِ الْهِجْرَةِ؟",
-      options: ["نَجَحَ الْكُفَّارُ فِي مَنْعِ الرَّسُوْلِ مِنَ الْهِجْرَةِ", "هَاجَرَ النَّبِيُّ بِمُفْرَدِهِ بِدُوْنِ أَصْحَابِهِ", "حَاوَلَ الْكُفَّارُ قَتْلَ النَّبِيِّ، وَلَكِنَّ اللَّهَ حَفِظَهُ وَنَجَّاهُ حَتَّى وَصَلَ إِلَى الْمَدِيْنَةِ سَالِمًا", "هَاجَرَ النَّبِيُّ خَوْفًا مِنَ الْكُفَّارِ"],
-      correct: 2, explanation: "النَّصُّ الصَّوْتِيُّ يُؤَكِّدُ: 'وَلَكِنَّ اللَّهَ حَفِظَ النَّبِيَّ وَنَجَّاهُ'."
-    },
-    {
-      id: 4, chapterId: 1, typeTag: "تَفْكِيْرٌ نَاقِدٌ (التَّقْوِيْمُ)",
-      audioText: "أَوَّلُ مَنْ وَضَعَ التَّقْوِيْمَ الْهِجْرِيَّ هُوَ عُمَرُ بْنُ الْخَطَّابِ رَضِيَ اللَّهُ عَنْهُ",
-      question: "مَنْ هُوَ أَوَّلُ مَنْ وَضَعَ التَّقْوِيْمَ الْهِجْرِيَّ فِي التَّارِيْخِ الإِسْلَامِيِّ؟",
-      options: ["أَبُو بَكْرٍ الصِّدِّيْقُ رَضِيَ اللَّهُ عَنْهُ", "عُمَرُ بْنُ الْخَطَّابِ رَضِيَ اللَّهُ عَنْهُ", "عُثْمَانُ بْنُ عَفَّانَ رَضِيَ اللَّهُ عَنْهُ", "عَلِيُّ بْنُ أَبِي طَالِبٍ رَضِيَ اللَّهُ عَنْهُ"],
-      correct: 1, explanation: "عُمَرُ بْنُ الْخَطَّابِ رَضِيَ اللَّهُ عَنْهُ هُوَ أَوَّلُ مَنْ وَضَعَ التَّقْوِيْمَ الْهِجْرِيَّ."
-    },
-    {
-      id: 5, chapterId: 1, typeTag: "التَّطْبِيْقُ المَعَاصِرُ",
-      audioText: "يُمْكِنُنَا تَطْبِيْقُ الْهِجْرَةِ بِاسْتِخْدَامِ الْهَاتِفِ لِوَسَائِلِ التَّوَاصُلِ الاِجْتِمَاعِيِّ بِحِكْمَةٍ",
-      question: "كَيْفَ نُطَبِّقُ مَعْنَى الْهِجْرَةِ فِي عَصْرِ التِّكْنُولُوجِيَا الْحَدِيْثَةِ؟",
-      options: ["بِتَرْكِ اسْتِخْدَامِ الْهَاتِفِ نِهَائِيًّا", "بِاسْتِخْدَامِ الْهَاتِفِ وَوَسَائِلِ التَّوَاصُلِ الاِجْتِمَاعِيِّ بِحِكْمَةٍ لِلتَّعَلُّمِ وَالدَّعْوَةِ", "بِشِرَاءِ هَاتِفٍ جَدِيْدٍ كُلَّ سَنَةٍ هِجْرِيَّةٍ", "بِمَسْحِ جَمِيْعِ التَّطْبِيْقَاتِ فِي الْهَاتِفِ"],
-      correct: 1, explanation: "تَطْبِيْقُ الْهِجْرَةِ مَعْنَاهُ اسْتِخْدَامُ الْهَاتِفِ بِحِكْمَةٍ فِي الأَنْشِطَةِ النَّافِعَةِ."
-    },
-    {
-      id: 6, chapterId: 1, typeTag: "تَحْلِيْلُ الأَفْعَالِ المَمْنُوْعَةِ",
-      audioText: "لَا يَجُوْزُ لَنَا اسْتِخْدَامُ التِّكْنُولُوجِيَا فَقَطْ لِلتَّصْوِيْرِ الذَّاتِيِّ وَنَشْرِ hoax",
-      question: "مَا هُوَ الِاسْتِخْدَامُ الَّذِي لَا يَجُوْزُ لَنَا فِي اسْتِعْمَالِ الْهَاتِفِ؟",
-      options: ["قِرَاءَةُ الْكُتُبِ وَالدُّرُوْسِ الإِلِكْتَرُونِيَّةِ", "اسْتِخْدَامُهُ فَقَطْ لِلتَّصْوِيْرِ الذَّاتِيِّ (selfie) وَنَشْرِ الأخْبَارِ الْكَاذِبَةِ (hoax)", "الاِسْتِمَاعُ إِلَى الْمُحَاضَرَةِ الدِّيْنِيَّةِ", "التَّوَاصُلُ مَعَ الأَقَارِبِ"],
-      correct: 1, explanation: "النَّصُّ يَحُثُّ عَلَى مَنْعِ اسْتِخْدَامِ الْهَاتِفِ لِلتَّصْوِيْرِ الذَّاتِيِّ وَنَشْرِ الْأَكَاذِيْبِ."
-    },
-    {
-      id: 7, chapterId: 1, typeTag: "تَكْمِيْلُ الْجُمْلَةِ",
-      audioText: "هُمْ يَسْتَمِعُوْنَ إِلَى الْمُحَاضَرَةِ الدِّيْنِيَّةِ الَّتِي يُلْقِيْهَا الأُسْتَاذُ مُحَمَّدُ نَبِيْلُ",
-      question: "أَكْمِلِ الْجُمْلَةَ الآتِيَةَ: 'هُمْ ... إِلَى الْمُحَاضَرَةِ الدِّيْنِيَّةِ'",
-      options: ["يَكْتُبُوْنَ", "يَسْتَمِعُوْنَ", "يَأْكُلُوْنَ", "يَنَامُوْنَ"],
-      correct: 1, explanation: "الْفِعْلُ الصَّحِيْحُ هُوَ 'يَسْتَمِعُوْنَ'."
-    },
-    {
-      id: 8, chapterId: 1, typeTag: "تَحْلِيْلُ الْمَعَانِي",
-      audioText: "كَانَتِ الْهِجْرَةُ حَادِثَةً عَظِيْمَةً فِي التَّارِيْخِ الإِسْلَامِيِّ",
-      question: "مَا مَعْنَى كَلِمَةِ 'حَادِثَةً عَظِيْمَةً' فِي النَّصِّ؟",
-      options: ["كَارِثَةً شَدِيْدَةً", "حَدَثًا مَجِيْدًا وَتَارِيْخِيًّا كَبِيْرًا", "حَادِثَةً عَادِيَّةً يَوْمِيَّةً", "قِصَّةً خَيَالِيَّةً"],
-      correct: 1, explanation: "'حَادِثَةً عَظِيْمَةً' تَعْنِي حَدَثًا مَجِيْدًا وَمُهِمًّا."
-    },
-    {
-      id: 9, chapterId: 1, typeTag: "تَحْلِيْلُ الأَهْدَافِ",
-      audioText: "يَجِبُ عَلَيْنَا أَنْ نَسْتَعْمِلَ التِّكْنُولُوجِيَا فِي الأَنْشِطَةِ النَّافِعَةِ مِثْلَ الدَّعْوَةِ وَالتَّعَلُّمِ",
-      question: "مَا هُمَا النَّشَاطَانِ النَّافِعَانِ الْمَذْكُوْرَانِ فِي الاِسْتِمَاعِ؟",
-      options: ["اللَّعِبُ وَالتَّسَوُّقُ", "الدَّعْوَةُ وَالتَّعَلُّمُ", "التَّصْوِيْرُ وَمُشَاهَدَةُ الأَفْلَامِ", "النَّوْمُ وَالرَّاحَةُ"],
-      correct: 1, explanation: "النَّشَاطَانِ الْـمَذْكُوْرَانِ هُمَا: 'الدَّعْوَةُ وَالتَّعَلُّمُ'."
-    },
-    {
-      id: 10, chapterId: 1, typeTag: "تَحْلِيْلُ النَّتِيْجَةِ",
-      audioText: "وَجَعَلَهُمْ يَصِلُوْنَ إِلَى الْمَدِيْنَةِ سَالِمِيْنَ",
-      question: "كَيْفَ وَصَلَ الرَّسُوْلُ وَأَصْحَابُهُ إِلَى الْمَدِيْنَةِ بَعْدَ الْهِجْرَةِ؟",
-      options: ["وَصَلُوا مَجْرُوحِيْنَ", "وَصَلُوا ضَائِعِيْنَ فِي الصَّحْرَاءِ", "وَصَلُوا إِلَى الْمَدِيْنَةِ سَالِمِيْنَ", "رَجَعُوا إِلَى مَكَّةَ"],
-      correct: 2, explanation: "وَصَلَ الرَّسُوْلُ وَأَصْحَابُهُ إِلَى الْمَدِيْنَةِ سَالِمِيْنَ بِحِفْظِ اللَّهِ."
-    },
-    {
-      id: 11, chapterId: 1, typeTag: "تَحْلِيْلُ زَمَنِ الْحَدَثِ",
-      audioText: "اليَوْمَ هُوَ الأَوَّلُ مِنْ شَهْرِ مُحَرَّمٍ",
-      question: "فِي أَيِّ يَوْمٍ يَحْتَفِلُ التَّلَامِيْذُ بِالسَّنَةِ الْهِجْرِيَّةِ الْجَدِيْدَةِ؟",
-      options: ["فِي الأَوَّلِ مِنْ شَهْرِ مُحَرَّمٍ", "فِي 10 ذِي الْحِجَّةِ", "فِي 17 رَمَضَانَ", "فِي 1 شَوَّالٍ"],
-      correct: 0, explanation: "يَحْتَفِلُ التَّلَامِيْذُ فِي 'الأَوَّلِ مِنْ شَهْرِ مُحَرَّمٍ'."
-    },
-    {
-      id: 12, chapterId: 1, typeTag: "تَحْلِيْلُ اسْمِ الْمُحَاضِرِ",
-      audioText: "هُمْ يَسْتَمِعُوْنَ إِلَى الْمُحَاضَرَةِ الدِّيْنِيَّةِ الَّتِي يُلْقِيْهَا الأُسْتَاذُ مُحَمَّدُ نَبِيْلُ",
-      question: "مَنِ الَّذِي أَلْقَى الْمُحَاضَرَةَ الدِّيْنِيَّةَ لِلتَّلَامِيْذِ؟",
-      options: ["الأُسْتَاذُ إِدْرِيْسُ", "الأُسْتَاذُ مُحَمَّدُ نَبِيْلُ", "الأُسْتَاذُ عُمَرُ", "الأُسْتَاذُ حَسَنُ"],
-      correct: 1, explanation: "أَلْقَى الْمُحَاضَرَةَ 'الأُسْتَاذُ مُحَمَّدُ نَبِيْلُ'."
-    },
-    {
-      id: 13, chapterId: 1, typeTag: "تَحْلِيْلُ وِجْهَةِ الْهِجْرَةِ",
-      audioText: "تَحَدَّثَ الأُسْتَاذُ عَنْ هِجْرَةِ الرَّسُوْلِ مِنْ مَكَّةَ إِلَى الْمَدِيْنَةِ",
-      question: "إِلَى أَيْنَ هَاجَرَ الرَّسُوْلُ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ مِنْ مَكَّةَ؟",
-      options: ["إِلَى الطَّائِفِ", "إِلَى الشَّامِ", "إِلَى الْمَدِيْنَةِ", "إِلَى الْيَمَنِ"],
-      correct: 2, explanation: "هَاجَرَ الرَّسُوْلُ 'إِلَى الْمَدِيْنَةِ'."
-    },
-    {
-      id: 14, chapterId: 1, typeTag: "تَحْلِيْلُ نِيَّةِ الْكُفَّارِ",
-      audioText: "حَاوَلَ الْكُفَّارُ أَنْ يَقْتُلُوا النَّبِيَّ وَيَمْنَعُوا أَصْحَابَهُ مِنَ الْهِجْرَةِ",
-      question: "مَاذَا حَاوَلَ الْكُفَّارُ أَنْ يَفْعَلُوا لِلنَّبِيِّ عِنْدَ الْهِجْرَةِ؟",
-      options: ["مُسَاعَدَتَهُ", "قَتْلَهُ وَمَنْعَهُ مَعَ أَصْحَابِهِ مِنَ الْهِجْرَةِ", "إِعْطَاءَهُ الهَدَايَا", "السَّفَرَ مَعَهُ"],
-      correct: 1, explanation: "حَاوَلَ الْكُفَّارُ 'أَنْ يَقْتُلُوا النَّبِيَّ وَيَمْنَعُوا أَصْحَابَهُ'."
-    },
-    {
-      id: 15, chapterId: 1, typeTag: "تَحْلِيْلُ أَوَّلِ يَوْمٍ فِي التَّقْوِيْمِ",
-      audioText: "جَعَلَ الْمُسْلِمُوْنَ يَوْمَ الْهِجْرَةِ أَوَّلَ يَوْمٍ فِي تَقْوِيْمِ الْعَامِ الْهِجْرِيِّ",
-      question: "مَاذَا جَعَلَ الْمُسْلِمُوْنَ يَوْمَ الْهِجْرَةِ فِي التَّقْوِيْمِ؟",
-      options: ["أَوَّلَ يَوْمٍ فِي تَقْوِيْمِ الْعَامِ الْهِجْرِيِّ", "آخِرَ يَوْمٍ فِي السَّنَةِ", "عُطْلَةً صَيْفِيَّةً", "يَوْمَ التِّجَارَةِ"],
-      correct: 0, explanation: "جَعَلُوهُ 'أَوَّلَ يَوْمٍ فِي تَقْوِيْمِ الْعَامِ الْهِجْرِيِّ'."
-    },
-    {
-      id: 16, chapterId: 1, typeTag: "تَحْلِيْلُ وَسِيْلَةِ التَّوَاصُلِ",
-      audioText: "يُمْكِنُنَا تَطْبِيْقُ الْهِجْرَةِ بِاسْتِخْدَامِ الْهَاتِفِ لِوَسَائِلِ التَّوَاصُلِ الاِجْتِمَاعِيِّ",
-      question: "مَا هِيَ الآلَةُ الْمَذْكُوْرَةُ فِي التَّطْبِيْقِ الْمَعَاصِرِ لِلْهِجْرَةِ؟",
-      options: ["التِّلْفَازُ", "الْهَاتِفُ (Smartphone)", "الرَّادِيُو", "السَّيَّارَةُ"],
-      correct: 1, explanation: "الآلَةُ الْمَذْكُوْرَةُ هِيَ 'الْهَاتِفُ'."
-    },
-    {
-      id: 17, chapterId: 1, typeTag: "تَحْلِيْلُ صِفَةِ الِاسْتِخْدَامِ",
-      audioText: "بِاسْتِخْدَامِ الْهَاتِفِ لِوَسَائِلِ التَّوَاصُلِ الاِجْتِمَاعِيِّ بِحِكْمَةٍ",
-      question: "كَيْفَ يَجِبُ اسْتِخْدَامُ وَسَائِلِ التَّوَاصُلِ الاِجْتِمَاعِيِّ؟",
-      options: ["بِغَضَبٍ", "بِحِكْمَةٍ", "بِإِسْرَافٍ", "بِلا عَقْلٍ"],
-      correct: 1, explanation: "يَجِبُ اسْتِخْدَامُهَا 'بِحِكْمَةٍ'."
-    },
-    {
-      id: 18, chapterId: 1, typeTag: "تَحْلِيْلُ مَنْعِ الإِشَاعَاتِ",
-      audioText: "لَا يَجُوْزُ نَشْرُ hoax وَغَيْرِ ذَلِك",
-      question: "مَا مَعْنَى 'hoax' الْمَمْنُوْعُ نَشْرُهُ فِي الإِسْلَامِ؟",
-      options: ["الأَخْبَارُ الصَّادِقَةُ", "الأَخْبَارُ الْكَاذِبَةُ وَالإِشَاعَاتُ", "الدُّرُوْسُ الْعِلْمِيَّةُ", "الأَحَادِيْثُ النَّبَوِيَّةُ"],
-      correct: 1, explanation: "'hoax' هِيَ الأَخْبَارُ الْكَاذِبَةُ وَالإِشَاعَاتُ."
-    },
-    {
-      id: 19, chapterId: 1, typeTag: "تَحْلِيْلُ الْجِنْسِ فِي الْجُلُوْسِ",
-      audioText: "التَّلَامِيْذُ فِي الْيَمِيْنِ وَالتِّلْمِيْذَاتُ فِي الْيَسَارِ",
-      question: "أَيْنَ تَجْلِسُ التِّلْمِيْذَاتُ (Murid Perempuan) فِي المَلْعَبِ؟",
-      options: ["فِي الْيَمِيْنِ", "فِي الْجُزْءِ الْيَسَارِ", "فِي الْوَسَطِ", "خَلْفَ المَلْعَبِ"],
-      correct: 1, explanation: "تَجْلِسُ التِّلْمِيْذَاتُ فِي 'الْجُزْءِ الْيَسَارِ'."
-    },
-    {
-      id: 20, chapterId: 1, typeTag: "تَحْلِيْلُ حِفْظِ اللَّهِ",
-      audioText: "وَلَكِنَّ اللَّهَ حَفِظَ النَّبِيَّ وَنَجَّاهُ",
-      question: "مَنْ الَّذِي حَفِظَ النَّبِيَّ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ فِي الْهِجْرَةِ؟",
-      options: ["مَلِكُ مَكَّةَ", "اللَّهُ سُبْحَانَهُ وَتَعَالَى", "أَهْلُ الطَّائِفِ", "جِيْرَانُهُ"],
-      correct: 1, explanation: "اللَّهُ سُبْحَانَهُ وَتَعَالَى هُوَ الَّذِي حَفِظَهُ وَنَجَّاهُ."
-    },
-
-    // === BAB 2 ISTIMA' (SOAL 21 - 40) ===
-    {
-      id: 21, chapterId: 2, typeTag: "تَحْلِيْلُ سَبَبِ الْيُتْمِ",
-      audioText: "وُلِدَ الرَّسُولُ يَتِيمًا فَقَدْ تُوُفِّيَ أَبُوهُ وَهُوَ فِي بَطْنِ أُمِّهِ",
-      question: "لِمَاذَا وُلِدَ النَّبِيُّ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ يَتِيْمًا؟",
-      options: ["لِأَنَّ أُمَّهُ تُوُفِّيَتْ حِيْنَ وِلَادَتِهِ", "لِأَنَّ أَبَاهُ عَبْدَ اللَّهِ تُوُفِّيَ وَهُوَ فِي بَطْنِ أُمِّهِ", "لِأَنَّ جَدَّهُ تَرَكَهُ فِي الصَّحْرَاءِ", "لِأَنَّ أَبَاهُ كَانَ مُسَافِرًا"],
-      correct: 1, explanation: "تُوُفِّيَ أَبُوْهُ عَبْدُ اللَّهِ وَالنَّبِيُّ مَا زَالَ فِي بَطْنِ أُمِّهِ."
-    },
-    {
-      id: 22, chapterId: 2, typeTag: "التَّرْتِيْبُ الزَّمَنِيُّ (HOTS)",
-      audioText: "تُوُفِّيَتْ أُمُّهُ وَكَانَ عُمْرُهُ سِتَّ سِنِينَ فَرَبَّاهُ جَدُّهُ ثُمَّ عَمُّهُ أَبُو طَالِبٍ وَكَانَ عُمْرُهُ ثَمَانِيَ سِنِينَ",
-      question: "مَا هُوَ التَّرْتِيْبُ الصَّحِيْحُ لِمَنْ رَبَّى النَّبِيَّ بَعْدَ وَفَاةِ أُمِّهِ آَمِنَةَ؟",
-      options: ["رَبَّاهُ عَمُّهُ أَبُو طَالِبٍ أَوَّلًا ثُمَّ جَدُّهُ عَبْدُ الْمُطَّلِبِ", "رَبَّاهُ جَدُّهُ عَبْدُ الْمُطَّلِبِ (من 6-8 سِنِيْنَ) ثُمَّ عَمُّهُ أَبُو طَالِبٍ (من 8 سِنِيْنَ)", "رَبَّاهُ خَدِيْجَةُ رَضِيَ اللَّهُ عَنْهَا", "رَبَّاهُ أَبُو بَكْرٍ الصِّدِّيْقُ"],
-      correct: 1, explanation: "رَبَّاهُ جَدُّهُ عَبْدُ الْمُطَّلِبِ ثُمَّ عَمُّهُ أَبُو طَالِبٍ."
-    },
-    {
-      id: 23, chapterId: 2, typeTag: "تَحْلِيْلُ الْقُدْوَةِ فِي الْعَمَلِ",
-      audioText: "فِي الصِّغَرِ عَمِلَ مُحَمَّدٌ فِي رِعَايَةِ الْغَنَمِ ثُمَّ ذَهَبَ إِلَى الشَّامِ لِلْتِّجَارَةِ",
-      question: "مَا هِيَ الْحِكْمَةُ وَالأَخْلَاقُ المَأْخُوذَةُ مِنْ عَمَلِ النَّبِيِّ فِي رِعَايَةِ الْغَنَمِ وَالتِّجَارَةِ؟",
-      options: ["تَعَلُّمُ الصَّبْرِ، وَالأَمَانَةِ، وَالْقِيَادَةِ، وَالاِعْتِمَادِ عَلَى النَّفْسِ", "جَمْعُ الأَمْوَالِ الْكَثِيْرَةِ فَقَطْ", "تَجَنُّبُ الِاعْتِمَادِ عَلَى الآخَرِيْنَ بِلا عَمَلٍ", "الْكَسَلُ عَنِ الْعَمَلِ"],
-      correct: 0, explanation: "رِعَايَةُ الْغَنَمِ وَالتِّجَارَةُ تُمَرِّنُ عَلَى الصَّبْرِ وَالأَمَانَةِ وَالْقِيَادَةِ."
-    },
-    {
-      id: 24, chapterId: 2, typeTag: "تَحْلِيْلُ الأَعْدَادِ وَالفَرْقِ",
-      audioText: "تَزَوَّجَ خَدِيجَةَ وَكَانَ عُمْرُهُ خَمْسًا وَعِشْرِينَ سَنَةً وَعُمْرُهَا أَرْبَعِينَ سَنَةً",
-      question: "كَمْ كَانَ الْفَرْقُ بَيْنَ عُمْرِ النَّبِيِّ وَعُمْرِ خَدِيْجَةَ عِنْدَ زَوَاجِهِمَا؟",
-      options: ["5 سَنَوَاتٍ", "10 سَنَوَاتٍ", "15 سَنَةً (النَّبِيُّ 25 سَنَةً، خَدِيْجَةُ 40 سَنَةً)", "20 سَنَةً"],
-      correct: 2, explanation: "40 سَنَةً - 25 سَنَةً = 15 سَنَةً."
-    },
-    {
-      id: 25, chapterId: 2, typeTag: "نُقْطَةُ التَّحَوُّلِ فِي النُّبُوَّةِ",
-      audioText: "وَلَمَّا بَلَغَ عُمْرُهُ أَرْبَعِينَ سَنَةً بَعَثَ اللَّهُ مُحَمَّدًا نَبِيًّا وَرَسُولًا",
-      question: "مَا هُوَ الْحَدَثُ الْعَظِيْمُ الَّذِي حَدَثَ عِنْدَمَا بَلَغَ عُمْرُ النَّبِيِّ 40 سَنَةً؟",
-      options: ["سَافَرَ إِلَى الشَّامِ لِلتِّجَارَةِ", "بَعَثَهُ اللَّهُ نَبِيًّا وَرَسُوْلًا", "هَاجَرَ إِلَى الْمَدِيْنَةِ", "تُوُفِّيَ جَدُّهُ عَبْدُ الْمُطَّلِبِ"],
-      correct: 1, explanation: "فِي عُمْرِ 40 سَنَةً بَعَثَ اللَّهُ مُحَمَّدًا نَبِيًّا وَرَسُوْلًا."
-    },
-    {
-      id: 26, chapterId: 2, typeTag: "تَحْلِيْلُ عَامِ الْحُزْنِ (HOTS)",
-      audioText: "تُوُفِّيَ عَمُّهُ أَبُو طَالِبٍ وَكَانَ عُمْرُهُ خَمْسِينَ سَنَةً ثُمَّ تُوُفِّيَتْ مِنْ بَعْدِهِ زَوْجَتُهُ خَدِيجَةُ",
-      question: "لِمَاذَا كَانَتْ وَفَاةُ أَبِي طَالِبٍ وَخَدِيْجَةَ رَضِيَ اللَّهُ عَنْهَا اِخْتِبَارًا شَدِيْدًا فِي الدَّعْوَةِ؟",
-      options: ["لِأَنَّهُمَا كَانَا المَلْجَأَ وَالحَامِيَ وَالنَّاصِرَ الأَوَّلَ لِلدَّعْوَةِ فِي مَكَّةَ", "لِأَنَّ مَكَّةَ احْتَرَقَتْ", "لِأَنَّ الأَمْوَالَ انْتَهَتْ", "لِأَنَّ الْمُسْلِمِيْنَ تَرَكُوا الإِسْلَامَ"],
-      correct: 0, explanation: "أَبُو طَالِبٍ كَانَ يَحْمِي النَّبِيَّ وَخَدِيْجَةُ كَانَتْ تُعِيْنُهُ بِنَفْسِهَا وَمَالِهَا."
-    },
-    {
-      id: 27, chapterId: 2, typeTag: "تَقْيِيْمُ اسْتِجَابَةِ الدَّعْوَةِ",
-      audioText: "خَرَجَ الرَّسُولُ مَعَ أَصْحَابِهِ إِلَى الطَّائِفِ يَدْعُو أَهْلَهَا إِلَى الْإِسْلَامِ فَلَمْ يُسْلِمُوا",
-      question: "كَيْفَ كَانَتِ اسْتِجَابَةُ أَهْلِ الطَّائِفِ لِدَعْوَةِ الرَّسُوْلِ فِي ذَلِكَ الْوَقْتِ؟",
-      options: ["أَسْلَمَ جَمِيْعُ أَهْلِ الطَّائِفِ فَوْرًا", "رَفَضُوا الدَّعْوَةَ وَلَمْ يُسْلِمُوا فِي ذَلِكَ الْوَقْتِ", "أَعْطَوْا النَّبِيَّ هَدَايَا كَثِيْرَةً", "هَاجَرُوا مَعَهُ إِلَى الْمَدِيْنَةِ"],
-      correct: 1, explanation: "النَّصُّ الصَّوْتِيُّ يَقُوْلُ: 'فَلَمْ يُسْلِمُوا'."
-    },
-    {
-      id: 28, chapterId: 2, typeTag: "تَحْلِيْلُ حَادِثَةِ الإِسْرَاءِ",
-      audioText: "أَسْرَى اللَّهُ بِرَسُولِهِ لَيْلًا مِنَ الْمَسْجِدِ الْحَرَامِ إِلَى الْمَسْجِدِ الْأَقْصَى وَإِلَى السَّمَوَاتِ فِي الْمِعْرَاجِ",
-      question: "مَا هُمَا الْمَسْجِدَانِ المَذْكُوْرَانِ فِي حَادِثَةِ الإِسْرَاءِ وَالْمِعْرَاجِ؟",
-      options: ["الْمَسْجِدُ الْحَرَامُ (فِي مَكَّةَ) وَالْمَسْجِدُ الأَقْصَى (فِي فِلَسْطِيْنَ)", "الْمَسْجِدُ النَّبَوِيُّ وَمَسْجِدُ قُبَاءَ", "مَسْجِدُ القِبْلَتَيْنِ وَمَسْجِدُ التَّقْوَى", "الْمَسْجِدُ الْحَرَامُ وَالْمَسْجِدُ النَّبَوِيُّ"],
-      correct: 0, explanation: "الإِسْرَاءُ كَانَ مِنَ الْمَسْجِدِ الْحَرَامِ إِلَى الْمَسْجِدِ الأَقْصَى."
-    },
-    {
-      id: 29, chapterId: 2, typeTag: "تَحْلِيْلُ الْعُمْرِ وَالتَّارِيْخِ",
-      audioText: "وَوَفَاتُهُ فِي الثَّانِي عَشَرَ مِنْ شَهْرِ رَبِيعٍ الأَوَّلِ وَكَانَ عُمْرُهُ ثَلَاثًا وَسِتِّينَ سَنَةً",
-      question: "كَمْ كَانَ عُمْرُ النَّبِيِّ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ عِنْدَ وَفَاتِهِ فِي 12 رَبِيْعِ الأَوَّلِ؟",
-      options: ["50 سَنَةً", "53 سَنَةً", "60 سَنَةً", "63 سَنَةً (ثَلَاثًا وَسِتِّينَ سَنَةً)"],
-      correct: 3, explanation: "تُوُفِّيَ النَّبِيُّ وَعُمْرُهُ 63 سَنَةً ('ثَلَاثًا وَسِتِّينَ سَنَةً')."
-    },
-    {
-      id: 30, chapterId: 2, typeTag: "تَحْلِيْلُ الأخْلَاقِ النَّبَوِيَّةِ",
-      audioText: "الْحِكَمُ الْمَأْخُوذَةُ مِنْ ذِكْرَى مَوْلِدِ النَّبِيِّ: التَّخَلُّقُ بِأَخْلَاقِ الرَّسُولِ وَاتِّبَاعُ سُنَنِهِ",
-      question: "مَا هُوَ الدَّلِيْلُ الْحَقِيْقِيُّ عَلَى حُبِّ النَّبِيِّ فِي حَيَاتِنَا الْيَوْمِيَّةِ؟",
-      options: ["التَّخَلُّقُ بِأَخْلَاقِ الرَّسُوْلِ وَاتِّبَاعُ سُنَنِهِ وَنَشْرُ الْخَيْرِ بَيْنَ النَّاسِ", "الاِحْتِفَالُ بِدُوْنِ تَغْيِيْرِ السُّلُوْكِ", "حِفْظُ الأَسْمَاءِ فَقَطْ", "قِرَاءَةُ الْكُتُبِ بِدُوْنِ الْعَمَلِ بِهَا"],
-      correct: 0, explanation: "الْحِكْمَةُ الْحَقِيْقِيَّةُ هِيَ التَّخَلُّقُ بِأَخْلَاقِهِ وَاتِّبَاعُ سُنَنِهِ."
-    },
-    {
-      id: 31, chapterId: 2, typeTag: "تَحْلِيْلُ يَوْمِ الْمَوْلِدِ",
-      audioText: "قَدْ وُلِدَ فِي يَوْمِ الاثْنَيْنِ فِي عَامِ الْفِيلِ 12 رَبِيعِ الأَوَّلِ",
-      question: "فِي أَيِّ يَوْمٍ وَشَهْرٍ وُلِدَ النَّبِيُّ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ؟",
-      options: ["يَوْمِ الاثْنَيْنِ، 12 رَبِيْعِ الأَوَّلِ", "يَوْمِ الْجُمُعَةِ، 17 رَمَضَانَ", "يَوْمِ الأَحَدِ، 1 شَوَّالٍ", "يَوْمِ الثُّلَاثَاءِ، 10 ذِي الْحِجَّةِ"],
-      correct: 0, explanation: "وُلِدَ فِي 'يَوْمِ الاثْنَيْنِ، 12 رَبِيْعِ الأَوَّلِ'."
-    },
-    {
-      id: 32, chapterId: 2, typeTag: "تَحْلِيْلُ اسْمِ الأَبِ وَالأُمِّ",
-      audioText: "اسْمُ أَبِيهِ عَبْدُ اللَّهِ بْنُ عَبْدِ الْمُطَّلِبِ وَأُمُّهُ آمِنَةُ بِنْتُ وَهْبٍ",
-      question: "مَا اسْمُ أَبِي النَّبِيِّ وَأُمِّهِ؟",
-      options: ["أَبُوْهُ عَبْدُ اللَّهِ وَأُمُّهُ آَمِنَةُ", "أَبُوْهُ أَبُو طَالِبٍ وَأُمُّهُ خَدِيْجَةُ", "أَبُوْهُ عَبْدُ الْمُطَّلِبِ وَأُمُّهُ حَلِيْمَةُ", "أَبُوْهُ حَمْزَةُ وَأُمُّهُ فَاطِمَةُ"],
-      correct: 0, explanation: "أَبُوْهُ 'عَبْدُ اللَّهِ' وَأُمُّهُ 'آَمِنَةُ بِنْتُ وَهْبٍ'."
-    },
-    {
-      id: 33, chapterId: 2, typeTag: "تَحْلِيْلُ عُمْرِ النَّبِيِّ حِيْنَ تُوُفِّيَتْ أُمُّهُ",
-      audioText: "تُوُفِّيَتْ أُمُّهُ وَكَانَ عُمْرُهُ سِتَّ سِنِينَ",
-      question: "كَمْ كَانَ عُمْرُ النَّبِيِّ عِنْدَمَا تُوُفِّيَتْ أُمُّهُ آَمِنَةُ؟",
-      options: ["4 سِنِيْنَ", "6 سِنِيْنَ (سِتَّ سِنِينَ)", "8 سِنِيْنَ", "10 سِنِيْنَ"],
-      correct: 1, explanation: "تُوُفِّيَتْ أُمُّهُ وَكَانَ عُمْرُهُ 'سِتَّ سِنِينَ'."
-    },
-    {
-      id: 34, chapterId: 2, typeTag: "تَحْلِيْلُ عُمْرِ النَّبِيِّ حِيْنَ تُوُفِّيَ جَدُّهُ",
-      audioText: "وَلَمَّا تُوُفِّيَ جَدُّهُ عَبْدُ الْمُطَّلِبِ رَبَّاهُ عَمُّهُ وَكَانَ عُمْرُهُ ثَمَانِيَ سِنِينَ",
-      question: "كَمْ كَانَ عُمْرُ النَّبِيِّ حِيْنَ تُوُفِّيَ جَدُّهُ عَبْدُ الْمُطَّلِبِ؟",
-      options: ["6 سِنِيْنَ", "8 سِنِيْنَ (ثَمَانِيَ سِنِينَ)", "12 سَنَةً", "25 سَنَةً"],
-      correct: 1, explanation: "تُوُفِّيَ جَدُّهُ وَكَانَ عُمْرُهُ 'ثَمَانِيَ سِنِينَ'."
-    },
-    {
-      id: 35, chapterId: 2, typeTag: "تَحْلِيْلُ عُمْرِ خَدِيْجَةَ عِنْدَ الزَّوَاجِ",
-      audioText: "وَكَانَ عُمْرُهَا أَرْبَعِينَ سَنَةً",
-      question: "كَمْ كَانَ عُمْرُ خَدِيْجَةَ رَضِيَ اللَّهُ عَنْهَا عِنْدَمَا تَزَوَّجَتْ بِالنَّبِيِّ؟",
-      options: ["25 سَنَةً", "30 سَنَةً", "40 سَنَةً (أَرْبَعِينَ سَنَةً)", "50 سَنَةً"],
-      correct: 2, explanation: "كَانَ عُمْرُ خَدِيْجَةَ 'أَرْبَعِينَ سَنَةً'."
-    },
-    {
-      id: 36, chapterId: 2, typeTag: "تَحْلِيْلُ عُمْرِ أَبِي طَالِبٍ عِنْدَ وَفَاتِهِ",
-      audioText: "تُوُفِّيَ عَمُّهُ أَبُو طَالِبٍ وَكَانَ عُمْرُهُ خَمْسِينَ سَنَةً",
-      question: "كَمْ كَانَ عُمْرُ النَّبِيِّ عِنْدَمَا تُوُفِّيَ عَمُّهُ أَبُو طَالِبٍ؟",
-      options: ["40 سَنَةً", "50 سَنَةً (خَمْسِينَ سَنَةً)", "53 سَنَةً", "63 سَنَةً"],
-      correct: 1, explanation: "كَانَ عُمْرُ النَّبِيِّ عِنْدَ وَفَاةِ عَمِّهِ 'خَمْسِينَ سَنَةً'."
-    },
-    {
-      id: 37, chapterId: 2, typeTag: "تَحْلِيْلُ عُمْرِ النَّبِيِّ عِنْدَ الْهِجْرَةِ",
-      audioText: "وَكَانَتْ هِجْرَتُهُ فِي السَّنَةِ الثَّالِثَةِ وَالْخَمْسِينَ مِنْ عُمْرِهِ",
-      question: "كَمْ كَانَ عُمْرُ النَّبِيِّ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ عِنْدَ الْهِجْرَةِ؟",
-      options: ["40 سَنَةً", "50 سَنَةً", "53 سَنَةً (الثَّالِثَةِ وَالْخَمْسِينَ)", "63 سَنَةً"],
-      correct: 2, explanation: "كَانَتْ هِجْرَتُهُ فِي السَّنَةِ 'الثَّالِثَةِ وَالْخَمْسِينَ مِنْ عُمْرِهِ'."
-    },
-    {
-      id: 38, chapterId: 2, typeTag: "تَحْلِيْلُ سَنَةِ الْوَفَاةِ الْهِجْرِيَّةِ",
-      audioText: "وَوَفَاتُهُ فِي السَّنَةِ الْحَادِيَةِ عَشْرَةَ لِلْهِجْرَةِ",
-      question: "فِي أَيِّ سَنَةٍ هِجْرِيَّةٍ تُوُفِّيَ النَّبِيُّ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ؟",
-      options: ["فِي السَّنَةِ 11 لِلْهِجْرَةِ", "فِي السَّنَةِ 1 لِلْهِجْرَةِ", "فِي السَّنَةِ 53 لِلْهِجْرَةِ", "فِي السَّنَةِ 100 لِلْهِجْرَةِ"],
-      correct: 0, explanation: "تُوُفِّيَ فِي السَّنَةِ 'الْحَادِيَةِ عَشْرَةَ (11) لِلْهِجْرَةِ'."
-    },
-    {
-      id: 39, chapterId: 2, typeTag: "تَحْلِيْلُ اسْمِ الْمُحَاضِرِ فِي الْبَابِ 2",
-      audioText: "هُمْ يَسْتَمِعُونَ إِلَى مُحَاضَرَةٍ دِينِيَّةٍ أَلْقَاهَا الْأُسْتَاذُ مُحَمَّدُ إِدْرِيسُ",
-      question: "مَنِ الَّذِي أَلْقَى الْمُحَاضَرَةَ فِي ذِكْرَى مَوْلِدِ الرَّسُوْلِ؟",
-      options: ["الأُسْتَاذُ مُحَمَّدُ نَبِيْلُ", "الأُسْتَاذُ مُحَمَّدُ إِدْرِيسُ", "الأُسْتَاذُ عُمَرُ", "الأُسْتَاذُ عَلِيٌّ"],
-      correct: 1, explanation: "أَلْقَى الْمُحَاضَرَةَ 'الأُسْتَاذُ مُحَمَّدُ إِدْرِيسُ'."
-    },
-    {
-      id: 40, chapterId: 2, typeTag: "تَحْلِيْلُ عُنْوَانِ الْمُحَاضَرَةِ",
-      audioText: "وَتَحَدَّثَ الْأُسْتَاذُ عَنْ سِيرَةِ النَّبِيِّ مُنْذُ وِلَادَتِهِ إِلَى وَفَاتِهِ",
-      question: "مَا هُوَ عُنْوَانُ الْمُحَاضَرَةِ الدِّيْنِيَّةِ فِي الْبَابِ الثَّانِي؟",
-      options: ["سِيْرَةُ النَّبِيِّ مُنْذُ وِلَادَتِهِ إِلَى وَفَاتِهِ", "الْهِجْرَةُ النَّبَوِيَّةُ", "نُزُوْلُ الْقُرْآنِ", "فَضْلُ عِيْدِ الْفِطْرِ"],
-      correct: 0, explanation: "العُنْوَانُ هُوَ: 'سِيْرَةُ النَّبِيِّ مُنْذُ وِلَادَتِهِ إِلَى وَفَاتِهِ'."
-    },
-
-    // === BAB 3 ISTIMA' (SOAL 41 - 60) ===
-    {
-      id: 41, chapterId: 3, typeTag: "تَحْلِيْلُ الدَّوَافِعِ فِي غَارِ حِرَاءٍ (HOTS)",
-      audioText: "كَانَ النَّبِيُّ مُحَمَّدٌ يَخْلُو بِنَفْسِهِ فِي غَارِ حِرَاءٍ وَيَتَعَبَّدُ اللَّهَ فِيهِ",
-      question: "لِمَاذَا كَانَ النَّبِيُّ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ يَخْلُو بِنَفْسِهِ فِي غَارِ حِرَاءٍ قَبْلَ النُّبُوَّةِ؟",
-      options: ["لِلْعِبَادَةِ وَالتَّفَكُّرِ فِي خَلْقِ اللَّهِ وَالابْتِعَادِ عَنْ عِبَادَةِ الأَوْثَانِ فِي مَكَّةَ", "لِأَنَّهُ لَمْ يَكُنْ لَدَيْهِ بَيْتٌ فِي مَكَّةَ", "هَرَبًا مِنَ النَّاسِ بِسَبَبِ الدُّيُونِ", "لِلِاسْتِرَاحَةِ مِنَ التِّجَارَةِ"],
-      correct: 0, explanation: "كَانَ النَّبِيُّ يَخْلُو فِي الْغَارِ لِيَتَعَبَّدَ اللَّهَ وَيَتَفَكَّرَ فِي مَلَكُوْتِ السَّمَاوَاتِ."
-    },
-    {
-      id: 42, chapterId: 3, typeTag: "تَحْلِيْلُ أُمِّيَّةِ النَّبِيِّ",
-      audioText: "قَالَ جِبْرِيلُ :اقْرَأْ، فَقَالَ مُحَمَّدٌ :مَا أَنَا بِقَارِئٍ لِأَنَّ مُحَمَّدًا كَانَ أُمِّيًّا",
-      question: "مَا هِيَ الدَّلَالَةُ العَظِيْمَةُ عِنْدَمَا قَالَ النَّبِيُّ 'مَا أَنَا بِقَارِئٍ' لِأَنَّهُ كَانَ أُمِّيًّا؟",
-      options: ["تَأْكِيْدُ أَنَّ الْقُرْآنَ مَوْحِيٌّ كَامِلًا مِنَ اللَّهِ، وَلَيْسَ مِنْ صُنْعِ أَوْ قِرَاءَةِ مُحَمَّدٍ", "أَنَّ النَّبِيَّ لَمْ يُرِدْ القِرَاءَةَ", "أَنَّ الظَّلَامَ كَانَ شَدِيْدًا فِي الْغَارِ", "أَنَّهُ لَمْ تَكُنْ هُنَاك كُتُبٌ فِي مَكَّةَ"],
-      correct: 0, explanation: "أُمِّيَّةُ النَّبِيِّ دَلِيْلٌ قَاطِعٌ عَلَى أَنَّ الْقُرْآنَ وَحْيٌ مِنَ اللَّهِ."
-    },
-    {
-      id: 43, chapterId: 3, typeTag: "تَحْلِيْلُ أَوَّلِ الْوَحْيِ",
-      audioText: "اقْرَأْ بِاسْمِ رَبِّكَ الَّذِي خَلَقَ... الَّذِي عَلَّمَ بِالْقَلَمِ... عَلَّمَ الْإِنْسَانَ مَا لَمْ يَعْلَمْ",
-      question: "مَا هُوَ الأَمْرُ الأَوَّلُ وَالأَسَاسِيُّ الَّذِي نَزَلَ بِهِ الْوَحْيُ عَلَى النَّبِيِّ فِي سُوْرَةِ الْعَلَقِ؟",
-      options: ["الأَمْرُ بِالْقِرَاءَةِ وَالتَّعَلُّمِ وَالْعِلْمِ بِاسْمِ اللَّهِ", "الأَمْرُ بِجَمْعِ الأَمْوَالِ", "الأَمْرُ بِالسَّفَرِ إِلَى الْمَدِيْنَةِ", "الأَمْرُ بِبِنَاءِ الْمَسَاجِدِ"],
-      correct: 0, explanation: "أَوَّلُ أَمْرٍ نَزَلَ فِي الْقُرْآنِ هُوَ: 'اقْرَأْ بِاسْمِ رَبِّكَ الَّذِي خَلَقَ'."
-    },
-    {
-      id: 44, chapterId: 3, typeTag: "حِكْمَةُ نُزُوْلِ الْقُرْآنِ مَفْرُوقًا",
-      audioText: "وَاسْتَمَرَّ نُزُولُ الْقُرْآنِ ثَلَاثًا وَعِشْرِينَ سَنَةً: ثَلَاثَ عَشْرَةَ سَنَةً فِي مَكَّةَ وَعَشْرَ سَنَوَاتٍ فِي الْمَدِينَةِ",
-      question: "كَمْ سَنَةً اسْتَمَرَّ نُزُوْلُ الْقُرْآنِ الْكَرِيْمِ عَلَى النَّبِيِّ مُحَمَّدٍ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ؟",
-      options: ["10 سَنَوَاتٍ", "13 سَنَةً", "23 سَنَةً (13 فِي مَكَّةَ وَ10 فِي الْمَدِينَةِ)", "40 سَنَةً"],
-      correct: 2, explanation: "اسْتَمَرَّ نُزُوْلُ الْقُرْآنِ 23 سَنَةً."
-    },
-    {
-      id: 45, chapterId: 3, typeTag: "تَقْيِيْمُ مَوَاقِفِ الـمُسْلِمِيْنَ مِنَ الْقُرْآنِ",
-      audioText: "الْقُرْآنُ لَيْسَ لِلْقِرَاءَةِ فَقَطْ بَلْ يُعْمَلُ بِهِ فِي الْحَيَاةِ الْيَوْمِيَّةِ",
-      question: "مَا هُوَ المَوْقِفُ الصَّحِيْحُ الَّذِي يَجِبُ عَلَى الْمُسْلِمِ اتِّخَاذُهُ نَحْوَ الْقُرْآنِ الْكَرِيْمِ؟",
-      options: ["قِرَاءَةُ حُرُوْفِهِ فَقَطْ دُوْنَ فَهْمِ الْمَعْنَى", "فَهْمُ مَعَانِيْهِ وَالْعَمَلُ بِهِ فِي الْحَيَاةِ الْيَوْمِيَّةِ فِي الْمُجْتَمَعِ وَالدَّوْلَةِ", "وَضْعُهُ فِي الرَّفِّ كَزِيْنَةٍ لِلْبَيْتِ", "قِرَاءَتُهُ فِي شَهْرِ رَمَضَانَ فَقَطْ"],
-      correct: 1, explanation: "الْقُرْآنُ 'لَيْسَ لِلْقِرَاءَةِ فَقَطْ، بَلْ يُعْمَلُ بِهِ فِي الْحَيَاةِ الْيَوْمِيَّةِ'."
-    },
-    {
-      id: 46, chapterId: 3, typeTag: "تَحْقِيْقُ مَوَاعِيْدِ الأَعْيَادِ",
-      audioText: "لِلْمُسْلِمِينَ عِيدَانِ: عِيدُ الْفِطْرِ فِي الْأَوَّلِ مِنْ شَهْرِ شَوَّالٍ وَعِيدُ الْأَضْحَى فِي الْعَاشِرِ مِنْ شَهْرِ ذِي الْحِجَّةِ",
-      question: "مَتَى يَكُوْنُ عِيْدُ الْفِطْرِ وَعِيْدُ الأَضْحَى فِي التَّقْوِيْمِ الْهِجْرِيِّ؟",
-      options: ["عِيْدُ الْفِطْرِ فِي 10 ذِي الْحِجَّةِ، وَعِيْدُ الأَضْحَى فِي 1 شَوَّالٍ", "عِيْدُ الْفِطْرِ فِي 1 شَوَّالٍ، وَعِيْدُ الأَضْحَى فِي 10 ذِي الْحِجَّةِ", "كِلَا العِيْدَيْنِ فِي شَهْرِ رَمَضَانَ", "عِيْدُ الْفِطْرِ فِي 17 رَمَضَانَ"],
-      correct: 1, explanation: "عِيْدُ الْفِطْرِ فِي 1 شَوَّالٍ وَعِيْدُ الأَضْحَى فِي 10 ذِي الْحِجَّةِ."
-    },
-    {
-      id: 47, chapterId: 3, typeTag: "تَحْلِيْلُ صِلَةِ الرَّحِمِ",
-      audioText: "بَعْدَ صَلَاةِ الْعِيدِ هُمْ يَزُورُونَ الْأَقَارِبَ وَالْجِيرَانَ لِيَصِلُوا الرَّحِمَ وَيَسْأَلُوا الْعَفْوَ",
-      question: "مَاذَا يَفْعَلُ الْمُسْلِمُوْنَ بَعْدَ أَدَاءِ صَلَاةِ الْعِيْدِ فِي صَبَاحِ الْعِيْدِ؟",
-      options: ["يَزُوْرُوْنَ الأَقَارِبَ وَالْجِيْرَانَ لِصِلَةِ الرَّحِمِ وَطَلَبِ الْعَفْوِ عَنِ الْأَخْطَاءِ", "يَرْجِعُوْنَ لِلنَّوْمِ فَوْرًا", "يُسَافِرُوْنَ لِلْعَمَلِ فِي الْمَكَاتِبِ", "يَتَشَاجَرُوْنَ مَعَ الْجِيْرَانِ"],
-      correct: 0, explanation: "يَزُورُونَ الأَقَارِبَ لِيَصِلُوا الرَّحِمَ وَيَسْأَلُوا الْعَفْوَ."
-    },
-    {
-      id: 48, chapterId: 3, typeTag: "تَحْلِيْلُ تَوْزِيْعِ الأُضْحِيَّةِ",
-      audioText: "فَيَأْكُلُونَ مِنْ لَحْمِ الْأُضْحِيَّةِ وَيُهْدُونَ مِنْهَا لِلْأَقَارِبِ وَيَتَصَدَّقُونَ مِنْهَا عَلَى الْفُقَرَاءِ",
-      question: "كَيْفَ يُوَزَّعُ لَحْمُ الأُضْحِيَّةِ فِي عِيْدِ الأَضْحَى كَمَا ذُكِرَ فِي الاِسْتِمَاعِ؟",
-      options: ["يُبَاعُ كُلُّ اللَّحْمِ فِي السُّوْقِ", "يَأْكُلُوْنَ مِنْهُ، وَيُهْدُوْنَ لِلأَقَارِبِ، وَيَتَصَدَّقُوْنَ عَلَى الْفُقَرَاءِ وَالْمَسَاكِيْنِ", "يُحْفَظُ فِي الثَّلَّاجَةِ لِلْعَائِلَةِ فَقَطْ", "يُعْطَى لِلأَغْنِيَاءِ فَقَطْ"],
-      correct: 1, explanation: "تَوْزِيْعُ الأُضْحِيَّةِ: لِلأَكْلِ، وَالإِهْدَاءِ لِلأَقَارِبِ، وَالصَّدَقَةِ عَلَى الفُقَرَاءِ."
-    },
-    {
-      id: 49, chapterId: 3, typeTag: "تَفْكِيْرٌ نَاقِدٌ (المُسَاوَاةُ)",
-      audioText: "فِي الْإِسْلَامِ مُسَاوَاةٌ بَيْنَ النَّاسِ لَا يَفْضُلُ أَحَدٌ عَلَى الْآخَرِ إِلَّا بِالتَّقْوَى",
-      question: "مَا هُوَ الْمِقْيَاسُ الوَحِيْدُ لِلأَفْضَلِيَّةِ وَالْكَرَامَةِ بَيْنَ النَّاسِ فِي الإِسْلَامِ؟",
-      options: ["الْكَثْرَةُ فِي الأَمْوَالِ وَالمَنَاصِبِ", "النَّسَبُ وَلَوْنُ الْبَشَرَةِ", "التَّقْوَى وَالْعَمَلُ الصَّالِحُ (التَّقْوَى)", "الْجَمَالُ وَالْقُوَّةُ الْبَدَنِيَّةُ"],
-      correct: 2, explanation: "مِقْيَاسُ الأَفْضَلِيَّةِ فِي الإِسْلَامِ هُوَ: 'التَّقْوَى'."
-    },
-    {
-      id: 50, chapterId: 3, typeTag: "تَحْلِيْلُ الأخْلَاقِ فِي الأُضْحِيَّةِ",
-      audioText: "تُعَلِّمُنَا الْأُضْحِيَّةُ أَيْضًا الْإِخْلَاصَ فِي الْعِبَادَةِ وَالتَّعَاوُنَ وَالتَّقَاسُمَ",
-      question: "مَا هِيَ الْقِيَمُ الأَخْلَاقِيَّةُ الَّتِي تُعَلِّمُنَا إِيَّاهَا عِبَادَةُ الأُضْحِيَّةِ؟",
-      options: ["الإِخْلَاصُ فِي الْعِبَادَةِ، وَالتَّعَاوُنُ، وَالتَّقَاسُمُ بَيْنَ النَّاسِ", "التَّكَبُّرُ وَالرِّيَاءُ", "البُخْلُ وَالشُّحُّ", "المُنَافَسَةُ فِي الشُّهْرَةِ"],
-      correct: 0, explanation: "تُعَلِّمُنَا الأُضْحِيَّةُ: 'الإِخْلَاصَ، وَالتَّعَاوُنَ، وَالتَّقَاسُمَ'."
-    },
-    {
-      id: 51, chapterId: 3, typeTag: "تَحْلِيْلُ عُمْرِ النَّبِيِّ حِيْنَ نَزَلَ الْقُرْآنُ",
-      audioText: "نَزَلَ الْقُرْآنُ عَلَى النَّبِيِّ فِي غَارِ حِرَاءٍ وَكَانَ عُمْرُهُ أَرْبَعِينَ سَنَةً",
-      question: "كَمْ كَانَ عُمْرُ النَّبِيِّ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ عِنْدَمَا نَزَلَ عَلَيْهِ الْقُرْآنُ فِي غَارِ حِرَاءٍ؟",
-      options: ["25 سَنَةً", "30 سَنَةً", "40 سَنَةً (أَرْبَعِينَ سَنَةً)", "50 سَنَةً"],
-      correct: 2, explanation: "نَزَلَ الْقُرْآنُ وَكَانَ عُمْرُهُ 'أَرْبَعِينَ سَنَةً'."
-    },
-    {
-      id: 52, chapterId: 3, typeTag: "تَحْلِيْلُ اسْمِ الْمَلَكِ المَوْحِيِّ",
-      audioText: "ثُمَّ نَزَلَ عَلَيْهِ جِبْرِيلُ بِالْوَحْيِ وَأَمَرَهُ بِالْقِرَاءَةِ",
-      question: "مَنِ الْمَلَكُ الَّذِي نَزَلَ بِالْوَحْيِ عَلَى النَّبِيِّ فِي غَارِ حِرَاءٍ؟",
-      options: ["الْمَلَكُ مِيْكَائِيْلُ", "الْمَلَكُ جِبْرِيْلُ عَلَيْهِ السَّلَامُ", "الْمَلَكُ إِسْرَافِيْلُ", "الْمَلَكُ عِزْرَائِيْلُ"],
-      correct: 1, explanation: "نَزَلَ عَلَيْهِ 'جِبْرِيلُ بِالْوَحْيِ'."
-    },
-    {
-      id: 53, chapterId: 3, typeTag: "تَحْلِيْلُ عَدَدِ السَّنَوَاتِ فِي مَكَّةَ وَالْمَدِينَةِ",
-      audioText: "ثَلَاثَ عَشْرَةَ سَنَةً فِي مَكَّةَ وَعَشْرَ سَنَوَاتٍ فِي الْمَدِينَةِ",
-      question: "كَمْ سَنَةً نَزَلَ الْقُرْآنُ فِي مَكَّةَ وَكَمْ سَنَةً فِي الْمَدِيْنَةِ؟",
-      options: ["13 فِي مَكَّةَ وَ10 فِي الْمَدِينَةِ", "10 فِي مَكَّةَ وَ13 فِي الْمَدِينَةِ", "20 فِي مَكَّةَ وَ3 فِي الْمَدِينَةِ", "5 فِي مَكَّةَ وَ5 فِي الْمَدِينَةِ"],
-      correct: 0, explanation: "نَزَلَ '13 سَنَةً فِي مَكَّةَ وَ10 سَنَوَاتٍ فِي الْمَدِينَةِ'."
-    },
-    {
-      id: 54, chapterId: 3, typeTag: "تَحْلِيْلُ الْقُرْآنِ كَدُسْتُوْرٍ",
-      audioText: "صَارَ الْقُرْآنُ الْكَرِيمُ دُسْتُورًا لِلْمُسْلِمِينَ فِي حَيَاتِهِمْ",
-      question: "مَاذَا صَارَ الْقُرْآنُ الْكَرِيْمُ لِلْمُسْلِمِيْنَ فِي حَيَاتِهِمْ؟",
-      options: ["دُسْتُورًا وَمَنْهَجًا لِلْحَيَاةِ", "كِتَابَ قِصَصٍ قَدِيْمَةٍ", "كِتَابًا لِلْمَكْتَبَةِ فَقَطْ", "جَرِيْدَةً يَوْمِيَّةً"],
-      correct: 0, explanation: "صَارَ الْقُرْآنُ 'دُسْتُورًا لِلْمُسْلِمِينَ فِي حَيَاتِهِمْ'."
-    },
-    {
-      id: 55, chapterId: 3, typeTag: "تَحْلِيْلُ لَيْلَةِ الْعِيْدِ",
-      audioText: "فِي لَيْلَةِ الْعِيدِ يَتَكَلَّمُونَ وَيُكَبِّرُونَ اللَّهَ فِي الْمَسَاجِدِ",
-      question: "مَاذَا يَفْعَلُ الْمُسْلِمُوْنَ فِي لَيْلَةِ الْعِيْدِ فِي الْمَسَاجِدِ؟",
-      options: ["يُكَبِّرُونَ اللَّهَ فِي الْمَسَاجِدِ (التَّكْبِيْرُ)", "يَنَامُوْنَ خَارِجَ الْمَسْجِدِ", "يَلْعَبُوْنَ كُرَةَ الْقَدَمِ", "يُغْلِقُوْنَ الْمَسَاجِدَ"],
-      correct: 0, explanation: "يُكَبِّرُونَ اللَّهَ فِي الْمَسَاجِدِ فِي لَيْلَةِ الْعِيْدِ."
-    },
-    {
-      id: 56, chapterId: 3, typeTag: "تَحْلِيْلُ مَكَانِ صَلَاةِ الْعِيْدِ",
-      audioText: "هُمْ يَذْهَبُونَ إِلَى الْمَسَاجِدِ أَوْ فِي الْمَيَادِينِ لِصَلَاةِ الْعِيدِ",
-      question: "أَيْنَ يُؤَدِّي الْمُسْلِمُوْنَ صَلَاةَ الْعِيْدِ فِي صَبَاحِ الْعِيْدِ؟",
-      options: ["فِي الْمَسَاجِدِ أَوْ فِي الْمَيَادِينِ (الْمَلْعَبِ/الْمَيْدَانِ)", "فِي الْبُيُوْتِ فَقَطْ", "فِي الأَسْوَاقِ", "فِي الْمَكَاتِبِ"],
-      correct: 0, explanation: "يُؤَدُّوْنَهَا 'فِي الْمَسَاجِدِ أَوْ فِي الْمَيَادِينِ'."
-    },
-    {
-      id: 57, chapterId: 3, typeTag: "تَحْلِيْلُ مَنِ الَّذِي يَذْبَحُ الأُضْحِيَّةَ",
-      audioText: "يَذْبَحُ الْمُسْلِمُونَ الْقَادِرُونَ الْأَضَاحِيَ",
-      question: "مَنِ الَّذِي يَذْبَحُ الأُضْحِيَّةَ فِي عِيْدِ الأَضْحَى؟",
-      options: ["الْمُسْلِمُونَ الْقَادِرُونَ", "الأَطْفَالُ الصِّغَارُ", "كُلُّ إِنسَانٍ وَلَوْ كَانَ فَقِيْرًا جِدًّا", "غَيْرُ الْمُسْلِمِيْنَ"],
-      correct: 0, explanation: "يَذْبَحُ الأُضْحِيَّةَ 'الْمُسْلِمُونَ الْقَادِرُونَ'."
-    },
-    {
-      id: 58, chapterId: 3, typeTag: "تَحْلِيْلُ شَهْرِ عِيْدِ الْفِطْرِ",
-      audioText: "عِيدُ الْفِطْرِ فِي الْأَوَّلِ مِنْ شَهْرِ شَوَّالٍ",
-      question: "مَا اسْمُ الشَّهْرِ الَّذِي يَقَعُ فِيْهِ عِيْدُ الْفِطْرِ؟",
-      options: ["شَهْرُ رَمَضَانَ", "شَهْرُ شَوَّالٍ", "شَهْرُ مُحَرَّمٍ", "شَهْرُ رَبِيْعِ الأَوَّلِ"],
-      correct: 1, explanation: "يَقَعُ عِيْدُ الْفِطْرِ فِي 'شَهْرِ شَوَّالٍ'."
-    },
-    {
-      id: 59, chapterId: 3, typeTag: "تَحْلِيْلُ شَهْرِ عِيْدِ الأَضْحَى",
-      audioText: "عِيدُ الْأَضْحَى فِي الْعَاشِرِ مِنْ شَهْرِ ذِي الْحِجَّةِ",
-      question: "مَا اسْمُ الشَّهْرِ الَّذِي يَقَعُ فِيْهِ عِيْدُ الأَضْحَى؟",
-      options: ["شَهْرُ ذِي الْحِجَّةِ", "شَهْرُ رَمَضَانَ", "شَهْرُ شَعْبَانَ", "شَهْرُ صَفَرٍ"],
-      correct: 0, explanation: "يَقَعُ عِيْدُ الأَضْحَى فِي 'شَهْرِ ذِي الْحِجَّةِ'."
-    },
-    {
-      id: 60, chapterId: 3, typeTag: "تَحْلِيْلُ شُعُوْرِ الْمُسْلِمِيْنَ بِالْعِيْدِ",
-      audioText: "هُمْ مَسْرُورُونَ بِمَجِيءِ الْعِيدِ",
-      question: "كَيْفَ يَكُوْنُ شُعُوْرُ الْمُسْلِمِيْنَ عِنْدَ مَجِيْءِ الْعِيْدِ؟",
-      options: ["مَسْرُورُونَ وَسُعَدَاءُ (Bahagia/Gembira)", "حَزِيْنُوْنَ", "غَاضِبُوْنَ", "خَائِفُوْنَ"],
-      correct: 0, explanation: "شُعُوْرُهُمْ: 'مَسْرُورُونَ بِمَجِيءِ الْعِيدِ'."
-    }
-  ],
-
-  // Comprehensive Evaluation Quiz Questions (30 Questions Full Arabic)
-  evaluationQuiz: [
-    // --- BAB 1 QUESTIONS (1-10) ---
-    {
-      id: 1, chapterId: 1, skill: "المُفْرَدَاتُ",
-      question: "مَا مَعْنَى كَلِمَةِ 'مَلْعَبُ الْمَدْرَسَةِ' فِي اللُّغَةِ الإِينْدُونِيْسِيَّةِ؟",
-      options: ["Perpustakaan Sekolah", "Lapangan Sekolah", "Ruang Guru", "Laboratorium Sekolah"],
-      correct: 1, explanation: "'مَلْعَبُ الْمَدْرَسَةِ' تَعْنِي Lapangan Sekolah."
-    },
-    {
-      id: 2, chapterId: 1, skill: "مَهَارَةُ الْقِرَاءَةِ",
-      question: "مَنْ هُوَ الصَّحَابِيُّ الَّذِي وَضَعَ التَّقْوِيْمَ الْهِجْرِيَّ لأَوَّلِ مَرَّةٍ؟",
-      options: ["أَبُو بَكْرٍ الصِّدِّيْقُ رَضِيَ اللَّهُ عَنْهُ", "عُمَرُ بْنُ الْخَطَّابِ رَضِيَ اللَّهُ عَنْهُ", "عُثْمَانُ بْنُ عَفَّانَ رَضِيَ اللَّهُ عَنْهُ", "عَلِيُّ بْنُ أَبِي طَالِبٍ رَضِيَ اللَّهُ عَنْهُ"],
-      correct: 1, explanation: "أَوَّلُ مَنْ وَضَعَ التَّقْوِيْمَ الْهِجْرِيَّ هُوَ عُمَرُ بْنُ الْخَطَّابِ رَضِيَ اللَّهُ عَنْهُ."
-    },
-    {
-      id: 3, chapterId: 1, skill: "مَهَارَةُ الْكِتَابَةِ (القَوَاعِدُ)",
-      question: "اخْتَرِ الْفِعْلَ الْمُضَارِعَ الصَّحِيْحَ لِلضَّمِيْرِ 'التَّلَامِيْذُ' (هُمْ):",
-      options: ["يَجْلِسُ", "يَجْلِسُوْنَ", "تَجْلِسْنَ", "جَلَسَ"],
-      correct: 1, explanation: "لِلْجَمْعِ الْمُذَكَّرِ (التَّلَامِيْذُ) يَكُوْنُ الْفِعْلُ: 'يَجْلِسُوْنَ'."
-    },
-    {
-      id: 4, chapterId: 1, skill: "مَهَارَةُ الْقِرَاءَةِ",
-      question: "كَيْفَ يَسْتَعْمِلُ التَّلَامِيْذُ التِّكْنُولُوجِيَا بِحِكْمَةٍ كَمَا فِي النَّصِّ؟",
-      options: ["فِي التَّصْوِيْرِ الذَّاتِيِّ فَقَطْ", "فِي نَشْرِ الأخْبَارِ الكَاذِبَةِ (hoax)", "فِي الأَنْشِطَةِ النَّافِعَةِ مِثْلَ الدَّعْوَةِ وَالتَّعَلُّمِ", "فِي اللَّعِبِ كُلَّ الْوَقْتِ"],
-      correct: 2, explanation: "يَجِبُ اسْتِعْمَالُ التِّكْنُولُوجِيَا فِي 'الأَنْشِطَةِ النَّافِعَةِ مِثْلَ الدَّعْوَةِ وَالتَّعَلُّمِ'."
-    },
-    {
-      id: 5, chapterId: 1, skill: "مَهَارَةُ الْكَلَامِ",
-      question: "أَكْمِلِ الْحِوَارَ: 'أَحْمَدُ: مَاذَا يَفْعَلُ التَّلَامِيْذُ؟ -- حَسَنٌ: هُمْ ... بِسَنَةٍ هِجْرِيَّةٍ جَدِيْدَةٍ'",
-      options: ["يَأْكُلُوْنَ", "يَحْتَفِلُوْنَ", "يَنَامُوْنَ", "يَكْتُبُوْنَ"],
-      correct: 1, explanation: "الْكَلِمَةُ الصَّحِيْحَةُ هِيَ: 'يَحْتَفِلُوْنَ'."
-    },
-    {
-      id: 6, chapterId: 1, skill: "مَهَارَةُ الإِسْتِمَاعِ",
-      question: "أَيْنَ يَحْتَفِلُ التَّلَامِيْذُ بِالسَّنَةِ الْهِجْرِيَّةِ الْجَدِيْدَةِ فِي الاِسْتِمَاعِ؟",
-      options: ["فِي الْمَسْجِدِ", "فِي مَلْعَبِ الْمَدْرَسَةِ", "فِي الْفَصْلِ", "فِي الْبَيْتِ"],
-      correct: 1, explanation: "يَحْتَفِلُ التَّلَامِيْذُ 'فِي مَلْعَبِ الْمَدْرَسَةِ'."
-    },
-    {
-      id: 7, chapterId: 1, skill: "المُفْرَدَاتُ",
-      question: "مَا هِيَ التَّرْجَمَةُ الْعَرَبِيَّةُ الصَّحِيْحَةُ لِكَلِمَةِ 'Media Sosial'؟",
-      options: ["وَسَائِلُ التَّوَاصُلِ الاِجْتِمَاعِيِّ", "التَّصْوِيْرُ الذَّاتِيُّ", "تَقْوِيْمُ الْعَامِ", "الْمُحَاضَرَةُ الدِّيْنِيَّةُ"],
-      correct: 0, explanation: "'وَسَائِلُ التَّوَاصُلِ الاِجْتِمَاعِيِّ' تَعْنِي Media Sosial."
-    },
-    {
-      id: 8, chapterId: 1, skill: "مَهَارَةُ الْكِتَابَةِ (القَوَاعِدُ)",
-      question: "حَوِّلِ الْفِعْلَ الْمَاضِيَ 'هَاجَرَ' لِلضَّمِيْرِ 'هُمْ':",
-      options: ["هَاجَرَتْ", "هَاجَرُوا", "هَاجَرْنَ", "هَاجَرْتَ"],
-      correct: 1, explanation: "لِلضَّمِيْرِ هُمْ يَكُوْنُ الْفِعْلُ: 'هَاجَرُوا'."
-    },
-    {
-      id: 9, chapterId: 1, skill: "مَهَارَةُ الْقِرَاءَةِ",
-      question: "مَاذَا تَرَكَ الرَّسُوْلُ وَأَصْحَابُهُ فِي مَكَّةَ عِنْدَ الْهِجْرَةِ؟",
-      options: ["بُيُوتَهُمْ فَقَطْ", "وَطَنَهُمْ وَبُيُوتَهُمْ وَأَمْوَالَهُمْ وَتِجَارَتَهُمْ", "مَلابِسَهُمْ وَأَكْلَهُمْ فَقَطْ", "لَمْ يَتْرُكُوا شَيْئًا"],
-      correct: 1, explanation: "تَرَكُوا 'وَطَنَهُمْ وَبُيُوتَهُمْ وَأَمْوَالَهُمْ وَتِجَارَتَهُمْ فِي مَكَّةَ'."
-    },
-    {
-      id: 10, chapterId: 1, skill: "مَهَارَةُ الْكِتَابَةِ",
-      question: "اخْتَرِ التَّرْتِيْبَ الصَّحِيْحَ لِلْجُمْلَةِ: 'Muharram adalah bulan pertama'",
-      options: ["شَهْرُ مُحَرَّمٍ هُوَ الشَّهْرُ الأَوَّلُ", "الأَوَّلُ شَهْرُ هُوَ مُحَرَّمٍ", "هُوَ مُحَرَّمٍ الشَّهْرُ الأَوَّلُ", "شَهْرُ الأَوَّلُ مُحَرَّمٍ هُوَ"],
-      correct: 0, explanation: "التَّرْتِيْبُ الصَّحِيْحُ: 'شَهْرُ مُحَرَّمٍ هُوَ الشَّهْرُ الأَوَّلُ'."
-    },
-
-    // --- BAB 2 QUESTIONS (11-20) ---
-    {
-      id: 11, chapterId: 2, skill: "مَهَارَةُ الْقِرَاءَةِ",
-      question: "كَمْ كَانَ عُمْرُ النَّبِيِّ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ عِنْدَمَا بَعَثَهُ اللَّهُ نَبِيًّا وَرَسُولًا؟",
-      options: ["25 سَنَةً", "40 سَنَةً", "50 سَنَةً", "63 سَنَةً"],
-      correct: 1, explanation: "بَلَغَ عُمْرُهُ 'أَرْبَعِينَ سَنَةً' عِنْدَمَا بَعَثَهُ اللَّهُ نَبِيًّا."
-    },
-    {
-      id: 12, chapterId: 2, skill: "مَهَارَةُ الْكَلَامِ",
-      question: "أَكْمِلِ الْحِوَارَ: 'عُمَر: مَتَى وُلِدَ النَّبِيُّ؟ -- عَلِيّ: وُلِدَ فِي يَوْمِ ... فِي عَامِ الْفِيلِ'",
-      options: ["الأَحَدِ", "الاثْنَيْنِ", "الْجُمُعَةِ", "الأَرْبِعَاءِ"],
-      correct: 1, explanation: "وُلِدَ النَّبِيُّ فِي يَوْمِ 'الاثْنَيْنِ'."
-    },
-    {
-      id: 13, chapterId: 2, skill: "المُفْرَدَاتُ",
-      question: "مَا مَعْنَى كَلِمَةِ 'رِعَايَةُ الْغَنَمِ' فِي اللُّغَةِ الإِينْدُونِيْسِيَّةِ؟",
-      options: ["Perdagangan", "Menggembala Kambing", "Berhijrah", "Ceramah Agama"],
-      correct: 1, explanation: "'رِعَايَةُ الْغَنَمِ' تَعْنِي Menggembala Kambing."
-    },
-    {
-      id: 14, chapterId: 2, skill: "مَهَارَةُ الْقِرَاءَةِ",
-      question: "مَنْ هِيَ أَوَّلُ امْرَأَةٍ آمَنَتْ بِاللَّهِ وَرَسُوْلِهِ وَصَدَّقَتْ نُبُوَّتَهُ؟",
-      options: ["آَمِنَةُ بِنْتُ وَهْبٍ", "خَدِيْجَةُ بِنْتُ خُوَيْلِدٍ رَضِيَ اللَّهُ عَنْهَا", "عَائِشَةُ بِنْتُ أَبِي بَكْرٍ", "فَاطِمَةُ الزَّهْرَاءُ"],
-      correct: 1, explanation: "أَوَّلُ امْرَأَةٍ آمَنَتْ بِاللَّهِ وَرَسُوْلِهِ هِيَ خَدِيْجَةُ رَضِيَ اللَّهُ عَنْهَا."
-    },
-    {
-      id: 15, chapterId: 2, skill: "مَهَارَةُ الْكِتَابَةِ (القَوَاعِدُ)",
-      question: "كَيْفَ نَكْتُبُ عُمْرَ وَفَاةِ النَّبِيِّ (63 سَنَةً) بِاللُّغَةِ الْعَرَبِيَّةِ؟",
-      options: ["خَمْسًا وَعِشْرِينَ سَنَةً", "أَرْبَعِينَ سَنَةً", "ثَلَاثًا وَسِتِّينَ سَنَةً", "خَمْسِينَ سَنَةً"],
-      correct: 2, explanation: "63 سَنَةً تُكْتَبُ: 'ثَلَاثًا وَسِتِّينَ سَنَةً'."
-    },
-    {
-      id: 16, chapterId: 2, skill: "مَهَارَةُ الْقِرَاءَةِ",
-      question: "مَنْ رَبَّى النَّبِيَّ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ بَعْدَ وَفَاةِ أُمِّهِ آَمِنَةَ؟",
-      options: ["عَمُّهُ أَبُو طَالِبٍ", "جَدُّهُ عَبْدُ الْمُطَّلِبِ", "حَلِيْمَةُ السَّعْدِيَّةُ", "أَبُو بَكْرٍ الصِّدِّيْقُ"],
-      correct: 1, explanation: "رَبَّاهُ 'جَدُّهُ عَبْدُ الْمُطَّلِبِ' عِنْدَمَا كَانَ عُمْرُهُ سِتَّ سِنِيْنَ."
-    },
-    {
-      id: 17, chapterId: 2, skill: "مَهَارَةُ الإِسْتِمَاعِ",
-      question: "إِلَى أَيْنَ ذَهَبَ مُحَمَّدٌ مَعَ عَمِّهِ أَبِي طَالِبٍ لِلتِّجَارَةِ فِي الصِّغَرِ؟",
-      options: ["إِلَى الْمَدِيْنَةِ", "إِلَى الشَّامِ", "إِلَى الْيَمَنِ", "إِلَى مِصْرَ"],
-      correct: 1, explanation: "ذَهَبَ 'إِلَى الشَّامِ' مَعَ عَمِّهِ أَبِي طَالِبٍ لِلتِّجَارَةِ."
-    },
-    {
-      id: 18, chapterId: 2, skill: "المُفْرَدَاتُ",
-      question: "مَا مَعْنَى مُصْطَلَحِ 'عَامُ الْفِيلِ' فِي التَّارِيْخِ؟",
-      options: ["Tahun Hijrah", "Tahun Gajah", "Tahun Kesedihan", "Tahun Kemenangan"],
-      correct: 1, explanation: "'عَامُ الْفِيلِ' يَعْنِي Tahun Gajah."
-    },
-    {
-      id: 19, chapterId: 2, skill: "مَهَارَةُ الْقِرَاءَةِ",
-      question: "مَا اسْمُ الْحَادِثَةِ الَّتِي أَسْرَى اللَّهُ بِهَا بِرَسُوْلِهِ لَيْلًا إِلَى الْمَسْجِدِ الأَقْصَى وَالسَّمَاوَاتِ؟",
-      options: ["الْهِجْرَةُ", "الإِسْرَاءُ وَالْمِعْرَاجُ", "نُزُولُ الْقُرْآنِ", "فَتْحُ مَكَّةَ"],
-      correct: 1, explanation: "تِلْكُ الْحَادِثَةُ هِيَ: 'الإِسْرَاءُ وَالْمِعْرَاجُ'."
-    },
-    {
-      id: 20, chapterId: 2, skill: "مَهَارَةُ الْكَلَامِ",
-      question: "مَا هِيَ الْحِكَمُ الْمَأْخُوذَةُ مِنْ ذِكْرَى مَوْلِدِ النَّبِيِّ كَمَا فِي النَّصِّ؟",
-      options: ["جَمْعُ الأَمْوَالِ", "تَزِيْدُ الْحُبَّ لِلنَّبِيِّ وَاتِّبَاعُ سُنَنِهِ وَالتَّخَلُّقُ بِأَخْلَاقِهِ وَنَشْرُ الْخَيْرَاتِ", "اللَّعِبُ مَعَ الأَصْدِقَاءِ", "السَّفَرُ لِلْعُطْلَةِ"],
-      correct: 1, explanation: "الْحِكْمَةُ هِيَ: 'تَزِيْدُ الْحُبَّ لِلنَّبِيِّ، التَّخَلُّقُ بِأَخْلَاقِ الرَّسُولِ، اِتِّبَاعُ سُنَنِ الرَّسُولِ، نَشْرُ الْخَيْرَاتِ'."
-    },
-
-    // --- BAB 3 QUESTIONS (21-30) ---
-    {
-      id: 21, chapterId: 3, skill: "مَهَارَةُ الإِسْتِمَاعِ",
-      question: "أَيْنَ نَزَلَ الْقُرْآنُ الْكَرِيْمُ عَلَى النَّبِيِّ مُحَمَّدٍ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ لأَوَّلِ مَرَّةٍ؟",
-      options: ["فِي الْمَسْجِدِ الْحَرَامِ", "فِي غَارِ حِرَاءٍ", "فِي الْمَسْجِدِ النَّبَوِيِّ", "فِي الطَّائِفِ"],
-      correct: 1, explanation: "نَزَلَ الْقُرْآنُ 'فِي غَارِ حِرَاءٍ'."
-    },
-    {
-      id: 22, chapterId: 3, skill: "مَهَارَةُ الْقِرَاءَةِ",
-      question: "فِي أَيِّ لَيْلَةٍ نَزَلَ الْقُرْآنُ عَلَى النَّبِيِّ فِي شَهْرِ رَمَضَانَ؟",
-      options: ["فِي اللَّيْلَةِ الأُوْلَى", "فِي اللَّيْلَةِ السَّابِعَةِ عَشْرَةَ (17)", "فِي اللَّيْلَةِ العِشْرِيْنَ", "فِي اللَّيْلَةِ الثَّلَاثِيْنَ"],
-      correct: 1, explanation: "نَزَلَ 'فِي اللَّيْلَةِ السَّابِعَةِ عَشْرَةَ مِنْ شَهْرِ رَمَضَانَ'."
-    },
-    {
-      id: 23, chapterId: 3, skill: "مَهَارَةُ الْقِرَاءَةِ",
-      question: "مَتَى يَحْتَفِلُ الْمُسْلِمُوْنَ بِعِيْدِ الْفِطْرِ الْمُبَارَكِ؟",
-      options: ["فِي 1 مُحَرَّمٍ", "فِي 17 رَمَضَانَ", "فِي الأَوَّلِ مِنْ شَهْرِ شَوَّالٍ", "فِي 10 ذِي الْحِجَّةِ"],
-      correct: 2, explanation: "عِيْدُ الْفِطْرِ فِي 'الأَوَّلِ مِنْ شَهْرِ شَوَّالٍ'."
-    },
-    {
-      id: 24, chapterId: 3, skill: "مَهَارَةُ الْكِتَابَةِ (القَوَاعِدُ)",
-      question: "مَا هِيَ الآيَةُ الأُوْلَى مِنْ سُوْرَةِ الْعَلَقِ الَّتِي نَزَلَتْ فِي غَارِ حِرَاءٍ؟",
-      options: ["اقْرَأْ بِاسْمِ رَبِّكَ الَّذِي خَلَقَ", "خَلَقَ الْإِنْسَانَ مِنْ عَلَقٍ", "اقْرَأْ وَرَبُّكَ الْأَكْرَمُ", "الَّذِي عَلَّمَ بِالْقَلَمِ"],
-      correct: 0, explanation: "الآيَةُ الأُوْلَى هِيَ: 'اقْرَأْ بِاسْمِ رَبِّكَ الَّذِي خَلَقَ'."
-    },
-    {
-      id: 25, chapterId: 3, skill: "المُفْرَدَاتُ",
-      question: "مَا مَعْنَى كَلِمَةِ 'الأُضْحِيَّةُ' فِي الْعِيْدِ؟",
-      options: ["Pakaian Idul Fitri", "Hewan Kurban", "Zakat Fitrah", "Makanan Manis"],
-      correct: 1, explanation: "'الأُضْحِيَّةُ' تَعْنِي Hewan Kurban."
-    },
-    {
-      id: 26, chapterId: 3, skill: "مَهَارَةُ الْقِرَاءَةِ",
-      question: "كَمْ سَنَةً اسْتَمَرَّ نُزُوْلُ الْقُرْآنِ الْكَرِيْمِ عَلَى النَّبِيِّ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ؟",
-      options: ["10 سَنَوَاتٍ", "13 سَنَةً", "23 سَنَةً (13 فِي مَكَّةَ وَ10 فِي الْمَدِينَةِ)", "40 سَنَةً"],
-      correct: 2, explanation: "اسْتَمَرَّ نُزُوْلُ الْقُرْآنِ 'ثَلَاثًا وَعِشْرِينَ سَنَةً'."
-    },
-    {
-      id: 27, chapterId: 3, skill: "مَهَارَةُ الْكَلَامِ",
-      question: "مَاذَا يَفْعَلُ الْمُسْلِمُوْنَ بَعْدَ صَلَاةِ عِيْدِ الْفِطْرِ كَمَا فِي النَّصِّ؟",
-      options: ["يَنَامُوْنَ كُلَّ النَّهَارِ", "يَزُورُونَ الْأَقَارِبَ وَالْجِيرَانَ لِيَصِلُوا الرَّحِمَ وَيَسْأَلُوا الْعَفْوَ", "يُسَافِرُوْنَ لِلْعَمَلِ", "يَبْقَوْنَ بِمُفْرَدِهِمْ"],
-      correct: 1, explanation: "يَزُورُونَ 'الْأَقَارِبَ وَالْجِيرَانَ لِيَصِلُوا الرَّحِمَ'."
-    },
-    {
-      id: 28, chapterId: 3, skill: "مَهَارَةُ الْكِتَابَةِ (القَوَاعِدُ)",
-      question: "مَا هِيَ الكَلِمَةُ الَّتِي تُفِيْدُ النَّهْيَ (Larangan) فِي لَا النَّاهِيَةِ؟",
-      options: ["لَمْ يُعَلِّمْ", "لَا تَجْلِسْ", "اقْرَأْ", "نَزَلَ"],
-      correct: 1, explanation: "'لَا تَجْلِسْ' هِيَ لَا النَّاهِيَةُ (Larangan)."
-    },
-    {
-      id: 29, chapterId: 3, skill: "مَهَارَةُ الإِسْتِمَاعِ",
-      question: "فِي أَيِّ يَوْمٍ يَكُوْنُ عِيْدُ الأَضْحَى الْمُبَارَكُ؟",
-      options: ["فِي 1 شَوَّالٍ", "فِي الْعَاشِرِ مِنْ شَهْرِ ذِي الْحِجَّةِ (10)", "فِي 17 رَمَضَانَ", "فِي 12 رَبِيْعِ الأَوَّلِ"],
-      correct: 1, explanation: "عِيْدُ الأَضْحَى فِي 'الْعَاشِرِ مِنْ شَهْرِ ذِي الْحِجَّةِ'."
-    },
-    {
-      id: 30, chapterId: 3, skill: "مَهَارَةُ الْقِرَاءَةِ",
-      question: "مَا هِيَ الْحِكْمَةُ الرَّئِيْسِيَّةُ مِنْ عِبَادَةِ الأُضْحِيَّةِ كَمَا فِي النَّصِّ؟",
-      options: ["التَّفَاخُرُ بِالأَمْوَالِ", "الإِخْلَاصُ فِي الْعِبَادَةِ وَالتَّعَاوُنُ وَالتَّقَاسُمُ بَيْنَ النَّاسِ", "طَلَبُ الثَّنَاءِ مِنَ النَّاسِ", "جَمْعُ اللُّحُوْمِ فِي الْبَيْتِ"],
-      correct: 1, explanation: "تُعَلِّمُنَا الأُضْحِيَّةُ: 'الْإِخْلَاصَ فِي الْعِبَادَةِ وَالتَّعَاوُنَ وَالتَّقَاسُمَ'."
+  quiz: [
+    {
+      id: 1,
+      question: "مَا مَعْنَى كَلِمَة 'السُّوقُ التَّقْلِيدِيُّ' فِي اللُّغَةِ الإِنْدُونِيسِيَّةِ؟",
+      options: ["Supermarket / Mall", "Pasar Tradisional", "Rumah Sakit", "Bandara Udara"],
+      correct: 1,
+      explanation: "السُّوقُ التَّقْلِيدِيُّ artinya adalah Pasar Tradisional."
+    },
+    {
+      id: 2,
+      question: "عَيِّنِ الْجُمْلَةَ الْفِعْلِيَّةَ الصَّحِيحَةَ مِمَّا يَلِي:",
+      options: [
+        "الطَّالِبُ يَشْتَرِي الْكِتَابَ",
+        "يَشْتَرِي الطَّالِبُ الْكِتَابَ",
+        "الْكِتَابَ يَشْتَرِي الطَّالِبُ",
+        "فِي السُّوقِ الطَّالِبُ"
+      ],
+      correct: 1,
+      explanation: "Jumlah Fi'liyyah diawali oleh kata kerja (Fi'il), yaitu: يَشْتَرِي الطَّالِبُ الْكِتَابَ."
+    },
+    {
+      id: 3,
+      question: "أَكْمِلْ الْجُمْلَةَ: \"أَشْتَرِي الدَّوَاءَ مِنَ ... \"",
+      options: ["الْمَطَارِ", "السُّوقِ", "الصَّيْدَلِيَّةِ", "الْمَدْرَسَةِ"],
+      correct: 2,
+      explanation: "Obat (الدَّوَاءَ) dibeli di Apotek (الصَّيْدَلِيَّةِ)."
+    },
+    {
+      id: 4,
+      question: "مَا صِيغَةُ فِعْلِ الأَمْرِ لِلضَّمِيرِ (أَنْتَ) مِنْ فِعْلِ \"فَحَصَ - يَفْحَصُ\"؟",
+      options: ["إِفْحَصِي", "إِفْحَصوا", "إِفْحَصْ", "لاَ تَفْحَصْ"],
+      correct: 2,
+      explanation: "Fi'il Amr untuk أَنْتَ berakhiran sukun: إِفْحَصْ !"
+    },
+    {
+      id: 5,
+      question: "مَنْ هُوَ مُصَمِّمُ وَمَالِكُ هَذِهِ الْمَادَّةِ التَّعْلِيمِيَّةِ؟",
+      options: [
+        "Yosi, S. Ag, M. Pd. (MAN 1 Pontianak)",
+        "Ahmad, S. Pd. (MAN 2 Jakarta)",
+        "Fatimah, M. Ag. (MTsN 1 Surabaya)",
+        "Ustadz Syarif (Ponpes Pontianak)"
+      ],
+      correct: 0,
+      explanation: "Pemilik dan penyusun media pembelajaran ini adalah Ibu/Bapak Yosi, S. Ag, M. Pd. dari MAN 1 Pontianak."
     }
   ]
 };

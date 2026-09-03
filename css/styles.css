@@ -1,0 +1,275 @@
+@import url('https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Aref+Ruqaa+Ink:wght@400;700&family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@400;600;700;800&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap');
+
+:root {
+  --primary-emerald: #0C3B2E;
+  --primary-emerald-dark: #07271E;
+  --primary-emerald-light: #145241;
+  --accent-lime: #C6F235;
+  --accent-lime-hover: #b3df24;
+  --bg-app: #F5F7F3;
+  --card-white: #FFFFFF;
+  --card-mint: #EBF5E9;
+  --text-dark: #0D1F17;
+  --text-muted: #4B6358;
+  --border-soft: #E2ECDE;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background-color: var(--bg-app);
+  color: var(--text-dark);
+  overflow-x: hidden;
+}
+
+/* Typography Customization */
+.font-arabic {
+  font-family: 'Amiri', 'Cairo', serif;
+  direction: rtl;
+  text-align: right;
+  line-height: 1.8;
+}
+
+.font-diwani {
+  font-family: 'Aref Ruqaa', 'Amiri', 'Cairo', serif;
+  direction: rtl;
+  text-align: right;
+  line-height: 1.9;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  text-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.font-arabic-title {
+  font-family: 'Cairo', sans-serif;
+  direction: rtl;
+}
+
+/* Custom Theme Utility Classes */
+.bg-emerald-main {
+  background-color: var(--primary-emerald);
+}
+
+.bg-emerald-dark {
+  background-color: var(--primary-emerald-dark);
+}
+
+.text-emerald-main {
+  color: var(--primary-emerald);
+}
+
+.bg-lime-accent {
+  background-color: var(--accent-lime);
+}
+
+.text-lime-accent {
+  color: var(--accent-lime);
+}
+
+.bg-card-mint {
+  background-color: var(--card-mint);
+}
+
+.border-soft {
+  border-color: var(--border-soft);
+}
+
+/* UI Cards and Animations */
+.card-modern {
+  background-color: var(--card-white);
+  border: 1px solid var(--border-soft);
+  border-radius: 1.5rem;
+  box-shadow: 0 10px 30px -10px rgba(12, 59, 46, 0.05);
+  transition: all 0.3s ease;
+}
+
+.card-modern:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 35px -10px rgba(12, 59, 46, 0.1);
+}
+
+/* Hamburger Drawer Overlay */
+.drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(7, 39, 30, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 9998;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.drawer-backdrop.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.drawer-content {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  max-width: 380px;
+  background-color: var(--primary-emerald);
+  color: #ffffff;
+  z-index: 9999;
+  transform: translateX(100%);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: -10px 0 40px rgba(0, 0, 0, 0.35);
+  display: flex;
+  flex-direction: column;
+}
+
+.drawer-backdrop.active + .drawer-content,
+.drawer-content.open {
+  transform: translateX(0) !important;
+}
+
+/* Nav item styles inside Hamburger Drawer */
+.drawer-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.85rem 1.25rem;
+  border-radius: 1rem;
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.drawer-nav-item:hover, .drawer-nav-item.active {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--accent-lime);
+}
+
+.drawer-nav-item.active {
+  background-color: var(--accent-lime);
+  color: var(--primary-emerald);
+}
+
+/* Mufrodat Flip Card */
+.flip-card {
+  perspective: 1000px;
+  height: 280px;
+}
+
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-style: preserve-3d;
+  cursor: pointer;
+}
+
+.flip-card.flipped .flip-card-inner {
+  transform: rotateY(180deg);
+}
+
+.flip-card-front, .flip-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  border-radius: 1.5rem;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.flip-card-front {
+  background-color: var(--card-white);
+  border: 1px solid var(--border-soft);
+}
+
+.flip-card-back {
+  background: linear-gradient(135deg, var(--primary-emerald) 0%, #155744 100%);
+  color: white;
+  transform: rotateY(180deg);
+}
+
+/* Custom Audio Waves Animation */
+.audio-wave {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  height: 18px;
+}
+
+.audio-wave span {
+  display: block;
+  width: 3px;
+  background-color: currentColor;
+  border-radius: 3px;
+  animation: audioPulse 1.2s ease-in-out infinite alternate;
+}
+
+.audio-wave span:nth-child(1) { height: 60%; animation-delay: 0.1s; }
+.audio-wave span:nth-child(2) { height: 100%; animation-delay: 0.3s; }
+.audio-wave span:nth-child(3) { height: 40%; animation-delay: 0.2s; }
+.audio-wave span:nth-child(4) { height: 80%; animation-delay: 0.4s; }
+
+@keyframes audioPulse {
+  0% { transform: scaleY(0.3); }
+  100% { transform: scaleY(1); }
+}
+
+/* Badge Highlight pill */
+.badge-lime {
+  background-color: var(--accent-lime);
+  color: var(--primary-emerald);
+  font-weight: 700;
+  padding: 0.35rem 0.85rem;
+  border-radius: 9999px;
+  font-size: 0.8rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+/* Active tab button styling */
+.nav-tab-btn {
+  padding: 0.55rem 1.1rem;
+  border-radius: 9999px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  transition: all 0.2s ease;
+  color: var(--text-muted);
+  white-space: nowrap;
+  flex-shrink: 0;
+  border: 1px solid transparent;
+}
+
+.nav-tab-btn:hover {
+  background-color: rgba(12, 59, 46, 0.08);
+  color: var(--primary-emerald);
+}
+
+.nav-tab-btn.active {
+  background-color: var(--primary-emerald);
+  color: #ffffff;
+  border-color: var(--primary-emerald);
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F0F4EC;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #C2D4BD;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-emerald);
+}
