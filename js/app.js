@@ -293,13 +293,33 @@ document.addEventListener('DOMContentLoaded', () => {
             <span class="badge-lime mb-2">${item.level}</span>
             <h3 class="text-2xl font-bold text-emerald-950">${item.title}</h3>
           </div>
-          <div class="flex items-center gap-2">
+          <div class="flex items-center gap-2 flex-wrap" id="audio-controls-${item.id}">
             <button 
-              onclick="window.speakArabic(\`${item.arabicText.replace(/`/g, '\\`').replace(/\n/g, ' ')}\`)" 
-              class="px-4 py-2 bg-emerald-main text-white rounded-full text-sm font-semibold flex items-center gap-2 hover:bg-emerald-dark transition-all shadow-md"
+              id="btn-play-${item.id}"
+              onclick="window.playQiraah(${item.id}, \`${item.arabicText.replace(/`/g, '\\`').replace(/\n/g, ' ')}\`)" 
+              class="px-4 py-2 bg-emerald-main text-white rounded-full text-xs md:text-sm font-semibold flex items-center gap-2 hover:bg-emerald-dark transition-all shadow-md"
+              title="Putar Narasi Audio"
             >
               <i data-lucide="play-circle" class="w-4 h-4 text-lime-accent"></i>
-              Dengar Narasi
+              <span>Dengar Narasi</span>
+            </button>
+            <button 
+              id="btn-pause-${item.id}"
+              onclick="window.pauseQiraah(${item.id})" 
+              class="px-4 py-2 bg-amber-500 text-white rounded-full text-xs md:text-sm font-semibold flex items-center gap-2 hover:bg-amber-600 transition-all shadow-md hidden"
+              title="Jeda (Pause) Sementara"
+            >
+              <i data-lucide="pause-circle" class="w-4 h-4 text-white"></i>
+              <span>Jeda</span>
+            </button>
+            <button 
+              id="btn-stop-${item.id}"
+              onclick="window.stopQiraah(${item.id})" 
+              class="px-4 py-2 bg-rose-600 text-white rounded-full text-xs md:text-sm font-semibold flex items-center gap-2 hover:bg-rose-700 transition-all shadow-md hidden"
+              title="Hentikan Narasi"
+            >
+              <i data-lucide="stop-circle" class="w-4 h-4 text-white"></i>
+              <span>Stop</span>
             </button>
           </div>
         </div>
@@ -516,7 +536,102 @@ document.addEventListener('DOMContentLoaded', () => {
     if (window.lucide) lucide.createIcons();
   }
 
-  // --- TTS SPEECH SYNTHESIS ENGINE ---
+  // --- TTS SPEECH SYNTHESIS ENGINE & CONTROLS ---
+  let currentActiveAudioId = null;
+
+  window.playQiraah = function(id, text) {
+    if (!('speechSynthesis' in window)) {
+      alert("Maaf, peramban Anda belum mendukung fitur pengucapan audio (Web Speech API).");
+      return;
+    }
+
+    const synth = window.speechSynthesis;
+
+    // If currently paused on the same card, resume reading!
+    if (synth.paused && currentActiveAudioId === id) {
+      synth.resume();
+      updateAudioUI(id, 'playing');
+      return;
+    }
+
+    // Cancel any ongoing speech
+    synth.cancel();
+    currentActiveAudioId = id;
+
+    const cleanText = text.replace(/<\/?[^>]+(>|$)/g, "");
+    const utterance = new SpeechSynthesisUtterance(cleanText);
+    utterance.lang = 'ar-SA';
+    utterance.rate = 0.85;
+
+    const voices = synth.getVoices();
+    const arabicVoice = voices.find(v => v.lang.startsWith('ar'));
+    if (arabicVoice) utterance.voice = arabicVoice;
+
+    utterance.onstart = () => updateAudioUI(id, 'playing');
+    utterance.onend = () => {
+      currentActiveAudioId = null;
+      updateAudioUI(id, 'stopped');
+    };
+    utterance.onerror = () => {
+      currentActiveAudioId = null;
+      updateAudioUI(id, 'stopped');
+    };
+
+    synth.speak(utterance);
+    updateAudioUI(id, 'playing');
+  };
+
+  window.pauseQiraah = function(id) {
+    const synth = window.speechSynthesis;
+    if (synth.speaking && !synth.paused) {
+      synth.pause();
+      updateAudioUI(id, 'paused');
+    }
+  };
+
+  window.stopQiraah = function(id) {
+    const synth = window.speechSynthesis;
+    synth.cancel();
+    currentActiveAudioId = null;
+    updateAudioUI(id, 'stopped');
+  };
+
+  function updateAudioUI(id, audioState) {
+    document.querySelectorAll('[id^="btn-play-"]').forEach(btn => {
+      btn.innerHTML = `<i data-lucide="play-circle" class="w-4 h-4 text-lime-accent"></i><span>Dengar Narasi</span>`;
+      btn.classList.remove('bg-emerald-800');
+      btn.classList.add('bg-emerald-main');
+    });
+    document.querySelectorAll('[id^="btn-pause-"]').forEach(btn => btn.classList.add('hidden'));
+    document.querySelectorAll('[id^="btn-stop-"]').forEach(btn => btn.classList.add('hidden'));
+
+    if (id === null || audioState === 'stopped') return;
+
+    const playBtn = document.getElementById(`btn-play-${id}`);
+    const pauseBtn = document.getElementById(`btn-pause-${id}`);
+    const stopBtn = document.getElementById(`btn-stop-${id}`);
+
+    if (audioState === 'playing') {
+      if (playBtn) {
+        playBtn.innerHTML = `<i data-lucide="volume-2" class="w-4 h-4 text-lime-accent animate-pulse"></i><span>Memutar...</span>`;
+        playBtn.classList.remove('bg-emerald-main');
+        playBtn.classList.add('bg-emerald-800');
+      }
+      if (pauseBtn) pauseBtn.classList.remove('hidden');
+      if (stopBtn) stopBtn.classList.remove('hidden');
+    } else if (audioState === 'paused') {
+      if (playBtn) {
+        playBtn.innerHTML = `<i data-lucide="play" class="w-4 h-4 text-lime-accent"></i><span>Lanjutkan</span>`;
+        playBtn.classList.remove('bg-emerald-800');
+        playBtn.classList.add('bg-emerald-main');
+      }
+      if (pauseBtn) pauseBtn.classList.add('hidden');
+      if (stopBtn) stopBtn.classList.remove('hidden');
+    }
+
+    if (window.lucide) lucide.createIcons();
+  }
+
   window.speakArabic = function(text, onEndCallback) {
     if (!('speechSynthesis' in window)) {
       alert("Maaf, peramban Anda belum mendukung fitur pengucapan audio (Web Speech API).");
