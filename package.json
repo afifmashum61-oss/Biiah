@@ -1,9 +1,6 @@
 {
-  "name": "arobiyatuna",
+  "name": "lughotuna",
   "version": "1.0.0",
-  "description": "Media Pembelajaran Bahasa Arab Interaktif",
-  "main": "index.html",
-  "scripts": {
-    "build": "echo Static Site Ready"
-  }
+  "private": true,
+  "description": "Media Pembelajaran Bahasa Arab Interaktif Kelas 11 MA - Yosi, S. Ag, M. Pd."
 }

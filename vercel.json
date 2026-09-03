@@ -1,9 +1,10 @@
 {
+  "version": 2,
   "cleanUrls": true,
-  "rewrites": [
+  "builds": [
     {
-      "source": "/((?!css/|js/|.*\\..*).*)",
-      "destination": "/index.html"
+      "src": "**/*",
+      "use": "@vercel/static"
     }
   ]
 }
