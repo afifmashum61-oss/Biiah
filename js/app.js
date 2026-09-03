@@ -306,7 +306,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         <!-- Reading Content Box -->
         <div class="bg-card-mint/60 border border-emerald-900/10 rounded-2xl p-6 md:p-8 mb-6">
-          <div class="font-arabic text-2xl md:text-3xl leading-loose text-emerald-950 text-justify mb-6 select-text">
+          <div class="font-arabic qiraah-text text-2xl md:text-3xl text-emerald-950 text-justify mb-6 select-text">
             ${item.arabicText.replace(/\n\n/g, '<br><br>')}
           </div>
 
