@@ -13,6 +13,7 @@
   let selectedAnswers = [];
   let currentQuestions = [];
   let selectedBab = 'all'; // 'all', 'topik1', 'topik2', 'topik3', 'topik4'
+  let selectedModel = 'all'; // 'all', 'model1', 'model2'
   let gameMode = 'kahoot'; // 'kahoot' or 'practice'
   
   // Timer & Audio
@@ -41,7 +42,6 @@
     const now = ctx.currentTime;
 
     if (type === 'correct') {
-      // Arpeggio C Major (C5 - E5 - G5 - C6)
       [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
@@ -55,7 +55,6 @@
         osc.stop(now + i * 0.08 + 0.25);
       });
     } else if (type === 'wrong') {
-      // Sawtooth Low Buzzer
       [220, 196].forEach((freq, i) => {
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
@@ -69,7 +68,6 @@
         osc.stop(now + i * 0.12 + 0.25);
       });
     } else if (type === 'tick') {
-      // Woodblock Click
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
       osc.type = 'sine';
@@ -81,7 +79,6 @@
       osc.start(now);
       osc.stop(now + 0.05);
     } else if (type === 'fanfare') {
-      // Victory Fanfare
       const notes = [523.25, 659.25, 783.99, 1046.50, 1318.51];
       notes.forEach((freq, i) => {
         const osc = ctx.createOscillator();
@@ -107,18 +104,23 @@
     selectedAnswers = [];
     clearInterval(timerInterval);
 
-    // Filter questions by Bab
-    if (selectedBab === 'all') {
-      currentQuestions = [...ARABIC_DATA.quiz];
-    } else {
-      currentQuestions = ARABIC_DATA.quiz.filter(q => q.babId === selectedBab);
-    }
+    // Filter questions by Bab & Model
+    currentQuestions = ARABIC_DATA.quiz.filter(q => {
+      const babMatch = (selectedBab === 'all' || q.babId === selectedBab);
+      const modelMatch = (selectedModel === 'all' || q.modelId === selectedModel);
+      return babMatch && modelMatch;
+    });
 
     renderQuizStep();
   };
 
   window.setQuizBab = function(babId) {
     selectedBab = babId;
+    window.initQuiz();
+  };
+
+  window.setQuizModel = function(modelId) {
+    selectedModel = modelId;
     window.initQuiz();
   };
 
@@ -209,12 +211,18 @@
       'topik4': 'BAB 4: Agama di Indonesia (الأَدْيَانُ فِي إِنْدُونِيسِيَا)'
     };
 
+    const modelTitleMap = {
+      'all': 'Semua Model Soal',
+      'model1': 'Model 1: Mufrodat & Qira\'ah',
+      'model2': 'Model 2: Qawa\'id & Tata Bahasa'
+    };
+
     container.innerHTML = `
       <div class="card-modern p-6 md:p-8">
         <!-- Controls & Filter Header -->
         <div class="flex flex-wrap items-center justify-between gap-4 mb-6 border-b border-soft pb-4">
           <div>
-            <span class="badge-lime text-xs">${babTitleMap[selectedBab]}</span>
+            <span class="badge-lime text-xs">${babTitleMap[selectedBab]} • ${modelTitleMap[selectedModel]}</span>
             <h3 class="text-2xl font-bold text-emerald-950 mt-1">Game Kuis Interaktif Bahasa Arab</h3>
           </div>
 
@@ -248,12 +256,38 @@
         </div>
 
         <!-- Bab Selection Tabs -->
-        <div class="flex items-center gap-2 overflow-x-auto pb-3 mb-6 no-scrollbar">
+        <div class="flex items-center gap-2 overflow-x-auto pb-3 mb-4 no-scrollbar">
           <button onclick="window.setQuizBab('all')" class="nav-tab-btn text-xs ${selectedBab === 'all' ? 'active' : ''}">Semua Bab (80 Soal)</button>
           <button onclick="window.setQuizBab('topik1')" class="nav-tab-btn text-xs ${selectedBab === 'topik1' ? 'active' : ''}">Bab 1 (Wisata)</button>
           <button onclick="window.setQuizBab('topik2')" class="nav-tab-btn text-xs ${selectedBab === 'topik2' ? 'active' : ''}">Bab 2 (Kesehatan)</button>
           <button onclick="window.setQuizBab('topik3')" class="nav-tab-btn text-xs ${selectedBab === 'topik3' ? 'active' : ''}">Bab 3 (Haji & Umrah)</button>
           <button onclick="window.setQuizBab('topik4')" class="nav-tab-btn text-xs ${selectedBab === 'topik4' ? 'active' : ''}">Bab 4 (Agama & Kebangsaan)</button>
+        </div>
+
+        <!-- Quiz Model Selector Bar -->
+        <div class="flex items-center gap-2 mb-6 bg-emerald-50/70 p-2.5 rounded-2xl border border-emerald-200 flex-wrap">
+          <span class="text-xs font-bold text-emerald-950 px-2 flex items-center gap-1">
+            <i data-lucide="layers" class="w-4 h-4 text-emerald-700"></i>
+            Model Kuis Bab:
+          </span>
+          <button 
+            onclick="window.setQuizModel('all')" 
+            class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${selectedModel === 'all' ? 'bg-emerald-main text-white shadow-sm' : 'bg-white text-emerald-950 hover:bg-emerald-100 border border-emerald-300'}"
+          >
+            Semua Model
+          </button>
+          <button 
+            onclick="window.setQuizModel('model1')" 
+            class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${selectedModel === 'model1' ? 'bg-emerald-main text-white shadow-sm' : 'bg-white text-emerald-950 hover:bg-emerald-100 border border-emerald-300'}"
+          >
+            🎴 Model 1: Mufrodat & Qira'ah
+          </button>
+          <button 
+            onclick="window.setQuizModel('model2')" 
+            class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${selectedModel === 'model2' ? 'bg-emerald-main text-white shadow-sm' : 'bg-white text-emerald-950 hover:bg-emerald-100 border border-emerald-300'}"
+          >
+            ✍️ Model 2: Qawa'id & Tata Bahasa
+          </button>
         </div>
 
         <!-- Score & Stats Bar -->

@@ -1831,7 +1831,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "Bandara Udara"
     ],
     "correct": 1,
-    "explanation": "السُّوقُ التَّقْلِيدِيُّ artinya adalah Pasar Tradisional."
+    "explanation": "السُّوقُ التَّقْلِيدِيُّ artinya adalah Pasar Tradisional.",
+    "modelId": "model1"
   },
   {
     "id": 2,
@@ -1844,7 +1845,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "فِي السُّوقِ الطَّالِبُ"
     ],
     "correct": 1,
-    "explanation": "Jumlah Fi'liyyah diawali oleh kata kerja (Fi'il), yaitu: يَشْتَرِي الطَّالِبُ الْكِتَابَ."
+    "explanation": "Jumlah Fi'liyyah diawali oleh kata kerja (Fi'il), yaitu: يَشْتَرِي الطَّالِبُ الْكِتَابَ.",
+    "modelId": "model2"
   },
   {
     "id": 3,
@@ -1857,7 +1859,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "فِي السُّوقِ"
     ],
     "correct": 1,
-    "explanation": "Stasiun Kereta Api dalam bahasa Arab adalah الْمَحَطَّةُ."
+    "explanation": "Stasiun Kereta Api dalam bahasa Arab adalah الْمَحَطَّةُ.",
+    "modelId": "model1"
   },
   {
     "id": 4,
@@ -1870,7 +1873,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "Tempat Parkir"
     ],
     "correct": 1,
-    "explanation": "شُبَّاكُ التَّذَاكِرِ artinya adalah Loket Tiket."
+    "explanation": "شُبَّاكُ التَّذَاكِرِ artinya adalah Loket Tiket.",
+    "modelId": "model1"
   },
   {
     "id": 5,
@@ -1883,7 +1887,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "فِي الشَّارِعِ"
     ],
     "correct": 0,
-    "explanation": "Bandara Udara tempat naik pesawat adalah الْمَطَارُ."
+    "explanation": "Bandara Udara tempat naik pesawat adalah الْمَطَارُ.",
+    "modelId": "model1"
   },
   {
     "id": 6,
@@ -1896,7 +1901,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "ذَهَبُوا"
     ],
     "correct": 1,
-    "explanation": "Fi'il Madhy untuk damir أَنَا berakhiran Tuu: ذَهَبْتُ (Saya telah pergi)."
+    "explanation": "Fi'il Madhy untuk damir أَنَا berakhiran Tuu: ذَهَبْتُ (Saya telah pergi).",
+    "modelId": "model2"
   },
   {
     "id": 7,
@@ -1909,7 +1915,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "رَكِبَا"
     ],
     "correct": 2,
-    "explanation": "Fi'il Madhy untuk damir نَحْنُ berakhiran Naa: رَكِبْنَا (Kami telah naik)."
+    "explanation": "Fi'il Madhy untuk damir نَحْنُ berakhiran Naa: رَكِبْنَا (Kami telah naik).",
+    "modelId": "model2"
   },
   {
     "id": 8,
@@ -1922,7 +1929,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "وَصَلْنَ"
     ],
     "correct": 2,
-    "explanation": "Fi'il Madhy untuk damir هُمْ berakhiran Waw Alif: وَصَلُوا."
+    "explanation": "Fi'il Madhy untuk damir هُمْ berakhiran Waw Alif: وَصَلُوا.",
+    "modelId": "model2"
   },
   {
     "id": 9,
@@ -1935,7 +1943,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "سَافَرْنَ"
     ],
     "correct": 0,
-    "explanation": "Fi'il Madhy untuk damir أَنْتِ berakhiran Ti: سَافَرْتِ."
+    "explanation": "Fi'il Madhy untuk damir أَنْتِ berakhiran Ti: سَافَرْتِ.",
+    "modelId": "model2"
   },
   {
     "id": 10,
@@ -1948,7 +1957,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "دَخَلَتْ"
     ],
     "correct": 1,
-    "explanation": "Fi'il Madhy untuk damir هُنَّ berakhiran Nun sukun fathah: دَخَلْنَ."
+    "explanation": "Fi'il Madhy untuk damir هُنَّ berakhiran Nun sukun fathah: دَخَلْنَ.",
+    "modelId": "model2"
   },
   {
     "id": 11,
@@ -1961,7 +1971,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "إِلَى الْمُسْتَشْفَى"
     ],
     "correct": 1,
-    "explanation": "Sesuai Qiraah 1 Bab 1: ذَهَبَتْ إِبْرِيْزَةُ إِلَى غَارِ فِيْنْدُوْل."
+    "explanation": "Sesuai Qiraah 1 Bab 1: ذَهَبَتْ إِبْرِيْزَةُ إِلَى غَارِ فِيْنْدُوْل.",
+    "modelId": "model1"
   },
   {
     "id": 12,
@@ -1974,7 +1985,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "بِالطَّائِرَةِ"
     ],
     "correct": 1,
-    "explanation": "Sesuai Qiraah 1: رَكِبْنَا السَّيَّارَةَ فِي السَّاعَةِ السَّابِعَةِ صَبَاحًا."
+    "explanation": "Sesuai Qiraah 1: رَكِبْنَا السَّيَّارَةَ فِي السَّاعَةِ السَّابِعَةِ صَبَاحًا.",
+    "modelId": "model1"
   },
   {
     "id": 13,
@@ -1987,7 +1999,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "خَمْسَةٌ وَعِشْرُونَ أَلْفًا"
     ],
     "correct": 1,
-    "explanation": "Sesuai Qiraah 1: كَانَتِ التَّذْكِرَةُ بِخَمْسِينَ أَلْفَ رُوبِيَّةٍ لِكُلِّ فَرْدٍ."
+    "explanation": "Sesuai Qiraah 1: كَانَتِ التَّذْكِرَةُ بِخَمْسِينَ أَلْفَ رُوبِيَّةٍ لِكُلِّ فَرْدٍ.",
+    "modelId": "model1"
   },
   {
     "id": 14,
@@ -2000,7 +2013,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "فِي بَالِي"
     ],
     "correct": 1,
-    "explanation": "Sesuai Qiraah 2 Bab 1: Pantai Losari berada di kota Makassar."
+    "explanation": "Sesuai Qiraah 2 Bab 1: Pantai Losari berada di kota Makassar.",
+    "modelId": "model1"
   },
   {
     "id": 15,
@@ -2013,7 +2027,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "فِي الْقَاهِرَةِ"
     ],
     "correct": 0,
-    "explanation": "Sesuai Hiwar 1 Bab 1: قَضَيْتُهَا فِي بَيْتِ جَدِّي فِي سُوْكُوْهَارْجُوْ."
+    "explanation": "Sesuai Hiwar 1 Bab 1: قَضَيْتُهَا فِي بَيْتِ جَدِّي فِي سُوْكُوْهَارْجُوْ.",
+    "modelId": "model1"
   },
   {
     "id": 16,
@@ -2026,7 +2041,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "مُفْرَدًا"
     ],
     "correct": 1,
-    "explanation": "Sesuai Hiwar 2 Bab 1: ذَهَبْتُ هُنَاكَ مَعَ أُسْرَتِي."
+    "explanation": "Sesuai Hiwar 2 Bab 1: ذَهَبْتُ هُنَاكَ مَعَ أُسْرَتِي.",
+    "modelId": "model1"
   },
   {
     "id": 17,
@@ -2039,7 +2055,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "Uang Saku"
     ],
     "correct": 1,
-    "explanation": "جَوَازُ السَّفَرِ artinya Paspor Perjalanan."
+    "explanation": "جَوَازُ السَّفَرِ artinya Paspor Perjalanan.",
+    "modelId": "model1"
   },
   {
     "id": 18,
@@ -2052,7 +2069,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "Penginapan"
     ],
     "correct": 0,
-    "explanation": "مُرْشِدُ السِّيَاحَةِ artinya Pemandu Wisata."
+    "explanation": "مُرْشِدُ السِّيَاحَةِ artinya Pemandu Wisata.",
+    "modelId": "model1"
   },
   {
     "id": 19,
@@ -2065,7 +2083,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "Air Terjun"
     ],
     "correct": 1,
-    "explanation": "شَاطِئُ الْبَحْرِ artinya Pantai Laut."
+    "explanation": "شَاطِئُ الْبَحْرِ artinya Pantai Laut.",
+    "modelId": "model1"
   },
   {
     "id": 20,
@@ -2078,7 +2097,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "Kereta Cepat"
     ],
     "correct": 1,
-    "explanation": "حَافِلَةٌ سِيَاحِيَّةٌ artinya Bus Pariwisata."
+    "explanation": "حَافِلَةٌ سِيَاحِيَّةٌ artinya Bus Pariwisata.",
+    "modelId": "model1"
   },
   {
     "id": 21,
@@ -2091,7 +2111,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "الْمَدْرَسَةِ"
     ],
     "correct": 2,
-    "explanation": "Obat dibeli di Apotek (الصَّيْدَلِيَّةِ)."
+    "explanation": "Obat dibeli di Apotek (الصَّيْدَلِيَّةِ).",
+    "modelId": "model1"
   },
   {
     "id": 22,
@@ -2104,7 +2125,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "الْمُعَلِّمُ"
     ],
     "correct": 1,
-    "explanation": "Dokter (الطَّبِيبُ) memeriksa pasien."
+    "explanation": "Dokter (الطَّبِيبُ) memeriksa pasien.",
+    "modelId": "model1"
   },
   {
     "id": 23,
@@ -2117,7 +2139,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "Batuk"
     ],
     "correct": 1,
-    "explanation": "صُدَاعٌ artinya Sakit Kepala."
+    "explanation": "صُدَاعٌ artinya Sakit Kepala.",
+    "modelId": "model1"
   },
   {
     "id": 24,
@@ -2130,7 +2153,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "Diare"
     ],
     "correct": 1,
-    "explanation": "حُمَّى artinya Demam Tinggi."
+    "explanation": "حُمَّى artinya Demam Tinggi.",
+    "modelId": "model1"
   },
   {
     "id": 25,
@@ -2143,7 +2167,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "الخَادِمَةُ"
     ],
     "correct": 0,
-    "explanation": "Perawat perempuan adalah الْمُمَرِّضَةُ."
+    "explanation": "Perawat perempuan adalah الْمُمَرِّضَةُ.",
+    "modelId": "model1"
   },
   {
     "id": 26,
@@ -2156,7 +2181,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "يَشْرَبُونَ"
     ],
     "correct": 1,
-    "explanation": "Fi'il Mudhari' damir أَنَا: أَشْرَبُ."
+    "explanation": "Fi'il Mudhari' damir أَنَا: أَشْرَبُ.",
+    "modelId": "model2"
   },
   {
     "id": 27,
@@ -2169,7 +2195,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "يَلْعَبُونَ"
     ],
     "correct": 2,
-    "explanation": "Fi'il Mudhari' damir نَحْنُ: نَلْعَبُ."
+    "explanation": "Fi'il Mudhari' damir نَحْنُ: نَلْعَبُ.",
+    "modelId": "model2"
   },
   {
     "id": 28,
@@ -2182,7 +2209,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "تَذْهَبْنَ"
     ],
     "correct": 1,
-    "explanation": "Fi'il Mudhari' damir أَنْتُمْ: تَذْهَبُونَ."
+    "explanation": "Fi'il Mudhari' damir أَنْتُمْ: تَذْهَبُونَ.",
+    "modelId": "model2"
   },
   {
     "id": 29,
@@ -2195,7 +2223,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "نَفْحَصُ"
     ],
     "correct": 1,
-    "explanation": "Fi'il Mudhari' damir هِيَ: تَفْحَصُ."
+    "explanation": "Fi'il Mudhari' damir هِيَ: تَفْحَصُ.",
+    "modelId": "model2"
   },
   {
     "id": 30,
@@ -2208,7 +2237,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "تَأْكُلُ"
     ],
     "correct": 0,
-    "explanation": "Fi'il Mudhari' damir أَنْتِ: تَأْكُلِينَ."
+    "explanation": "Fi'il Mudhari' damir أَنْتِ: تَأْكُلِينَ.",
+    "modelId": "model2"
   },
   {
     "id": 31,
@@ -2221,7 +2251,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "الصِّحَّةُ لِلأَطْفَالِ فَقَطْ"
     ],
     "correct": 0,
-    "explanation": "Kesehatan adalah mahkota di atas kepala orang sehat."
+    "explanation": "Kesehatan adalah mahkota di atas kepala orang sehat.",
+    "modelId": "model1"
   },
   {
     "id": 32,
@@ -2234,7 +2265,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "يَشْرَبَانِ الْقَهْوَةَ"
     ],
     "correct": 1,
-    "explanation": "Nabil & Naufal berlari setiap pagi (يَجْرِيَانِ)."
+    "explanation": "Nabil & Naufal berlari setiap pagi (يَجْرِيَانِ).",
+    "modelId": "model1"
   },
   {
     "id": 33,
@@ -2247,7 +2279,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "لاَ أَحَدَ"
     ],
     "correct": 0,
-    "explanation": "Teman-temannya (صَدِيقَاتُهَا) menjenguk Rita."
+    "explanation": "Teman-temannya (صَدِيقَاتُهَا) menjenguk Rita.",
+    "modelId": "model1"
   },
   {
     "id": 34,
@@ -2260,7 +2293,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "لاَ يَشْعُرُ بِشَيْءٍ"
     ],
     "correct": 1,
-    "explanation": "Pasien merasa sakit perut hebat (أَلَمٌ شَدِيدٌ)."
+    "explanation": "Pasien merasa sakit perut hebat (أَلَمٌ شَدِيدٌ).",
+    "modelId": "model1"
   },
   {
     "id": 35,
@@ -2273,7 +2307,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "الْكِتَابَ"
     ],
     "correct": 0,
-    "explanation": "Dokter memberikan resep obat (وَصْفَةُ الطَّبِيبِ)."
+    "explanation": "Dokter memberikan resep obat (وَصْفَةُ الطَّبِيبِ).",
+    "modelId": "model1"
   },
   {
     "id": 36,
@@ -2286,7 +2321,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "Sakit Mata"
     ],
     "correct": 1,
-    "explanation": "السُّكَّرِيُّ artinya Diabetes."
+    "explanation": "السُّكَّرِيُّ artinya Diabetes.",
+    "modelId": "model1"
   },
   {
     "id": 37,
@@ -2299,7 +2335,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "Membaca Buku"
     ],
     "correct": 1,
-    "explanation": "الرِّيَاضَةُ artinya Olahraga."
+    "explanation": "الرِّيَاضَةُ artinya Olahraga.",
+    "modelId": "model1"
   },
   {
     "id": 38,
@@ -2312,7 +2349,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "Minuman Manis"
     ],
     "correct": 1,
-    "explanation": "وَجَبَةٌ غِذَائِيَّةٌ مُتَوَازِنَةٌ artinya Makanan Bergizi Seimbang."
+    "explanation": "وَجَبَةٌ غِذَائِيَّةٌ مُتَوَازِنَةٌ artinya Makanan Bergizi Seimbang.",
+    "modelId": "model1"
   },
   {
     "id": 39,
@@ -2325,7 +2363,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "الْبَعِيدِ"
     ],
     "correct": 1,
-    "explanation": "Fi'il Mudhari' menunjukkan perbuatan masa sekarang/nanti."
+    "explanation": "Fi'il Mudhari' menunjukkan perbuatan masa sekarang/nanti.",
+    "modelId": "model2"
   },
   {
     "id": 40,
@@ -2338,7 +2377,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "فِي السُّوقِ"
     ],
     "correct": 0,
-    "explanation": "Dokter bekerja di rumah sakit (الْمُسْتَشْفَى) atau klinik."
+    "explanation": "Dokter bekerja di rumah sakit (الْمُسْتَشْفَى) atau klinik.",
+    "modelId": "model1"
   },
   {
     "id": 41,
@@ -2351,7 +2391,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "مَكَانٌ فِي مِنًى"
     ],
     "correct": 0,
-    "explanation": "Ka'bah adalah Kiblat Umat Islam."
+    "explanation": "Ka'bah adalah Kiblat Umat Islam.",
+    "modelId": "model1"
   },
   {
     "id": 42,
@@ -2364,7 +2405,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "رَمْيُ الْجَمَرَاتِ"
     ],
     "correct": 0,
-    "explanation": "Tawaf adalah mengelilingi Ka'bah 7 putaran."
+    "explanation": "Tawaf adalah mengelilingi Ka'bah 7 putaran.",
+    "modelId": "model1"
   },
   {
     "id": 43,
@@ -2377,7 +2419,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "ذَبْحُ الْهَدْيِ"
     ],
     "correct": 0,
-    "explanation": "Sa'i adalah berjalan antara Safa dan Marwah 7 kali."
+    "explanation": "Sa'i adalah berjalan antara Safa dan Marwah 7 kali.",
+    "modelId": "model1"
   },
   {
     "id": 44,
@@ -2390,7 +2433,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "الْمَبِيتُ فِي مُزْدَلِفَةَ"
     ],
     "correct": 0,
-    "explanation": "Tahallul adalah memotong/mencukur rambut."
+    "explanation": "Tahallul adalah memotong/mencukur rambut.",
+    "modelId": "model1"
   },
   {
     "id": 45,
@@ -2403,7 +2447,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "الصَّلاَةُ فِي الْمَسْجِدِ"
     ],
     "correct": 0,
-    "explanation": "Ihram adalah niat haji/umrah berpakaian ihram."
+    "explanation": "Ihram adalah niat haji/umrah berpakaian ihram.",
+    "modelId": "model1"
   },
   {
     "id": 46,
@@ -2416,7 +2461,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "لاَ تَكْتُبْ"
     ],
     "correct": 1,
-    "explanation": "Fi'il Amr untuk أَنْتَ: اكْتُبْ."
+    "explanation": "Fi'il Amr untuk أَنْتَ: اكْتُبْ.",
+    "modelId": "model2"
   },
   {
     "id": 47,
@@ -2429,7 +2475,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "افْتَحْنَ"
     ],
     "correct": 2,
-    "explanation": "Fi'il Amr untuk أَنْتُمْ: افْتَحُوا."
+    "explanation": "Fi'il Amr untuk أَنْتُمْ: افْتَحُوا.",
+    "modelId": "model2"
   },
   {
     "id": 48,
@@ -2442,7 +2489,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "اجْلِسْنَ"
     ],
     "correct": 1,
-    "explanation": "Fi'il Amr untuk أَنْتِ: اجْلِسِي."
+    "explanation": "Fi'il Amr untuk أَنْتِ: اجْلِسِي.",
+    "modelId": "model2"
   },
   {
     "id": 49,
@@ -2455,7 +2503,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "فَكِّرِي"
     ],
     "correct": 2,
-    "explanation": "Fi'il Amr untuk أَنْتُنَّ: فَكِّرْنَ."
+    "explanation": "Fi'il Amr untuk أَنْتُنَّ: فَكِّرْنَ.",
+    "modelId": "model2"
   },
   {
     "id": 50,
@@ -2468,7 +2517,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "السُّكُونِ"
     ],
     "correct": 0,
-    "explanation": "Munada nama tunggal dibaca Dhammah: يَا زَيْدُ."
+    "explanation": "Munada nama tunggal dibaca Dhammah: يَا زَيْدُ.",
+    "modelId": "model2"
   },
   {
     "id": 51,
@@ -2481,7 +2531,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "الْجَزْمُ"
     ],
     "correct": 0,
-    "explanation": "Munada mudhaf dibaca Mansub/Fathah: يَا عَبْدَ اللهِ."
+    "explanation": "Munada mudhaf dibaca Mansub/Fathah: يَا عَبْدَ اللهِ.",
+    "modelId": "model2"
   },
   {
     "id": 52,
@@ -2494,7 +2545,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "مُفْرَدًا"
     ],
     "correct": 0,
-    "explanation": "Salman berhaji bersama pamannya Ahmad."
+    "explanation": "Salman berhaji bersama pamannya Ahmad.",
+    "modelId": "model1"
   },
   {
     "id": 53,
@@ -2507,7 +2559,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "فِي الطَّائِفِ"
     ],
     "correct": 0,
-    "explanation": "Wukuf dilakukan di Arafah (عَرَفَاتٌ)."
+    "explanation": "Wukuf dilakukan di Arafah (عَرَفَاتٌ).",
+    "modelId": "model1"
   },
   {
     "id": 54,
@@ -2520,7 +2573,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "لاَ فَضْلَ لِلْعُمْرَةِ فِي رَمَضَانَ"
     ],
     "correct": 0,
-    "explanation": "Umrah di bulan Ramadan setara pahala haji."
+    "explanation": "Umrah di bulan Ramadan setara pahala haji.",
+    "modelId": "model1"
   },
   {
     "id": 55,
@@ -2533,7 +2587,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "فِي الْقَاهِرَةِ"
     ],
     "correct": 0,
-    "explanation": "Ka'bah di Masjidil Haram, Makkah."
+    "explanation": "Ka'bah di Masjidil Haram, Makkah.",
+    "modelId": "model1"
   },
   {
     "id": 56,
@@ -2546,7 +2601,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "أَخْضَرُ"
     ],
     "correct": 0,
-    "explanation": "Hajar Aswad dulunya putih bersih (نَاصِعُ الْبَيَاضِ)."
+    "explanation": "Hajar Aswad dulunya putih bersih (نَاصِعُ الْبَيَاضِ).",
+    "modelId": "model1"
   },
   {
     "id": 57,
@@ -2559,7 +2615,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "فِي الْمَدِينَةِ"
     ],
     "correct": 0,
-    "explanation": "Lempar jumrah dilakukan di Mina (مِنًى)."
+    "explanation": "Lempar jumrah dilakukan di Mina (مِنًى).",
+    "modelId": "model1"
   },
   {
     "id": 58,
@@ -2572,7 +2629,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "بِئْرُ زَمْزَمَ"
     ],
     "correct": 0,
-    "explanation": "Maqam Ibrahim adalah pijakan Nabi Ibrahim AS."
+    "explanation": "Maqam Ibrahim adalah pijakan Nabi Ibrahim AS.",
+    "modelId": "model1"
   },
   {
     "id": 59,
@@ -2585,7 +2643,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "كُلِّ الضَّمَائِرِ"
     ],
     "correct": 0,
-    "explanation": "Fi'il Amr hanya untuk 6 Dhamir Mukhatab."
+    "explanation": "Fi'il Amr hanya untuk 6 Dhamir Mukhatab.",
+    "modelId": "model2"
   },
   {
     "id": 60,
@@ -2598,7 +2657,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "مَطَارُ جُدَّةَ"
     ],
     "correct": 0,
-    "explanation": "Miqat Makani adalah batas lokasi ber-ihram."
+    "explanation": "Miqat Makani adalah batas lokasi ber-ihram.",
+    "modelId": "model1"
   },
   {
     "id": 61,
@@ -2611,7 +2671,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "٧ أَدْيَانٍ"
     ],
     "correct": 2,
-    "explanation": "Ada 6 agama resmi di Indonesia."
+    "explanation": "Ada 6 agama resmi di Indonesia.",
+    "modelId": "model1"
   },
   {
     "id": 62,
@@ -2624,7 +2685,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "فِهَارَا"
     ],
     "correct": 0,
-    "explanation": "Tempat ibadah Islam adalah Masjid."
+    "explanation": "Tempat ibadah Islam adalah Masjid.",
+    "modelId": "model1"
   },
   {
     "id": 63,
@@ -2637,7 +2699,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "فُورَا"
     ],
     "correct": 0,
-    "explanation": "Tempat ibadah Kristen/Katolik adalah Gereja (الْكَنِيسَةُ)."
+    "explanation": "Tempat ibadah Kristen/Katolik adalah Gereja (الْكَنِيسَةُ).",
+    "modelId": "model1"
   },
   {
     "id": 64,
@@ -2650,7 +2713,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "الْكَنِيسَةُ"
     ],
     "correct": 0,
-    "explanation": "Tempat ibadah Hindu adalah Pura (فُورَا)."
+    "explanation": "Tempat ibadah Hindu adalah Pura (فُورَا).",
+    "modelId": "model1"
   },
   {
     "id": 65,
@@ -2663,7 +2727,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "الْكَنِيسَةُ"
     ],
     "correct": 0,
-    "explanation": "Tempat ibadah Buddha adalah Vihara (فِهَارَا)."
+    "explanation": "Tempat ibadah Buddha adalah Vihara (فِهَارَا).",
+    "modelId": "model1"
   },
   {
     "id": 66,
@@ -2676,7 +2741,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "فُورَا"
     ],
     "correct": 0,
-    "explanation": "Tempat ibadah Khonghucu adalah Klenteng (الْمَعْبَدُ)."
+    "explanation": "Tempat ibadah Khonghucu adalah Klenteng (الْمَعْبَدُ).",
+    "modelId": "model1"
   },
   {
     "id": 67,
@@ -2689,7 +2755,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "Perdebatan"
     ],
     "correct": 0,
-    "explanation": "التَّسَامُحُ artinya Toleransi."
+    "explanation": "التَّسَامُحُ artinya Toleransi.",
+    "modelId": "model1"
   },
   {
     "id": 68,
@@ -2702,7 +2769,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "عَمَلَةٌ نَقْدِيَّةٌ"
     ],
     "correct": 0,
-    "explanation": "Pancasila adalah Dasar Negara Indonesia."
+    "explanation": "Pancasila adalah Dasar Negara Indonesia.",
+    "modelId": "model1"
   },
   {
     "id": 69,
@@ -2715,7 +2783,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "يَجِبُ"
     ],
     "correct": 0,
-    "explanation": "السَّيِّئَةَ adalah Na'at."
+    "explanation": "السَّيِّئَةَ adalah Na'at.",
+    "modelId": "model2"
   },
   {
     "id": 70,
@@ -2728,7 +2797,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "نَعْتُ شِبْهِ الْجُمْلَةِ"
     ],
     "correct": 0,
-    "explanation": "نَفْعُهَا عَظِيمٌ adalah Na'at Jumlah Ismiyah."
+    "explanation": "نَفْعُهَا عَظِيمٌ adalah Na'at Jumlah Ismiyah.",
+    "modelId": "model2"
   },
   {
     "id": 71,
@@ -2741,7 +2811,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "نَعْتُ شِبْهِ الْجُمْلَةِ"
     ],
     "correct": 0,
-    "explanation": "يَحْتَرِمُهُ الْمُسْلِمُونَ adalah Na'at Jumlah Fi'liyah."
+    "explanation": "يَحْتَرِمُهُ الْمُسْلِمُونَ adalah Na'at Jumlah Fi'liyah.",
+    "modelId": "model2"
   },
   {
     "id": 72,
@@ -2754,7 +2825,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "نَعْتُ جُمْلَةٍ فِعْلِيَّةٍ"
     ],
     "correct": 0,
-    "explanation": "فَوْقَ الشَّجَرَةِ adalah Na'at Syibhil Jumlah."
+    "explanation": "فَوْقَ الشَّجَرَةِ adalah Na'at Syibhil Jumlah.",
+    "modelId": "model2"
   },
   {
     "id": 73,
@@ -2767,7 +2839,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "النَّعْتُ وَالْمَنْعُوتُ"
     ],
     "correct": 0,
-    "explanation": "Idhafah = Mudhaf + Mudhaf Ilaih."
+    "explanation": "Idhafah = Mudhaf + Mudhaf Ilaih.",
+    "modelId": "model2"
   },
   {
     "id": 74,
@@ -2780,7 +2853,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "الْمَجْزُومُ"
     ],
     "correct": 0,
-    "explanation": "Mudhaf Ilaih selalu Majrur."
+    "explanation": "Mudhaf Ilaih selalu Majrur.",
+    "modelId": "model2"
   },
   {
     "id": 75,
@@ -2793,7 +2867,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "الضَّمِيرُ"
     ],
     "correct": 0,
-    "explanation": "Mudhaf tidak boleh ber-AL dan Tanwin."
+    "explanation": "Mudhaf tidak boleh ber-AL dan Tanwin.",
+    "modelId": "model2"
   },
   {
     "id": 76,
@@ -2806,7 +2881,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "فِي جَاكَرْتَا"
     ],
     "correct": 0,
-    "explanation": "Khalid dkk tinggal di Jombang."
+    "explanation": "Khalid dkk tinggal di Jombang.",
+    "modelId": "model1"
   },
   {
     "id": 77,
@@ -2819,7 +2895,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "٠,٧ %"
     ],
     "correct": 0,
-    "explanation": "Islam 87,2 %."
+    "explanation": "Islam 87,2 %.",
+    "modelId": "model1"
   },
   {
     "id": 78,
@@ -2832,7 +2909,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "كَنِيسَةُ جُومْبَانْج"
     ],
     "correct": 0,
-    "explanation": "Klenteng Hok Liong Kiong Jombang."
+    "explanation": "Klenteng Hok Liong Kiong Jombang.",
+    "modelId": "model1"
   },
   {
     "id": 79,
@@ -2845,7 +2923,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "السَّلاَمُ"
     ],
     "correct": 0,
-    "explanation": "Bhinneka Tunggal Ika."
+    "explanation": "Bhinneka Tunggal Ika.",
+    "modelId": "model1"
   },
   {
     "id": 80,
@@ -2858,7 +2937,8 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
       "Ustadz Syarif (Ponpes Pontianak)"
     ],
     "correct": 0,
-    "explanation": "Penyusun: Yosi, S. Ag, M. Pd. (MAN 1 Pontianak)."
+    "explanation": "Penyusun: Yosi, S. Ag, M. Pd. (MAN 1 Pontianak).",
+    "modelId": "model1"
   }
 ]
 };
