@@ -1820,50 +1820,1045 @@ Dan agama-agama resmi di Indonesia yaitu: Islam, Katolik, Protestan, Hindu, Budd
   ],
 
   quiz: [
-    {
-      id: 1,
-      question: "مَا مَعْنَى كَلِمَة 'السُّوقُ التَّقْلِيدِيُّ' فِي اللُّغَةِ الإِنْدُونِيسِيَّةِ؟",
-      options: ["Supermarket / Mall", "Pasar Tradisional", "Rumah Sakit", "Bandara Udara"],
-      correct: 1,
-      explanation: "السُّوقُ التَّقْلِيدِيُّ artinya adalah Pasar Tradisional."
-    },
-    {
-      id: 2,
-      question: "عَيِّنِ الْجُمْلَةَ الْفِعْلِيَّةَ الصَّحِيحَةَ مِمَّا يَلِي:",
-      options: [
-        "الطَّالِبُ يَشْتَرِي الْكِتَابَ",
-        "يَشْتَرِي الطَّالِبُ الْكِتَابَ",
-        "الْكِتَابَ يَشْتَرِي الطَّالِبُ",
-        "فِي السُّوقِ الطَّالِبُ"
-      ],
-      correct: 1,
-      explanation: "Jumlah Fi'liyyah diawali oleh kata kerja (Fi'il), yaitu: يَشْتَرِي الطَّالِبُ الْكِتَابَ."
-    },
-    {
-      id: 3,
-      question: "أَكْمِلْ الْجُمْلَةَ: \"أَشْتَرِي الدَّوَاءَ مِنَ ... \"",
-      options: ["الْمَطَارِ", "السُّوقِ", "الصَّيْدَلِيَّةِ", "الْمَدْرَسَةِ"],
-      correct: 2,
-      explanation: "Obat (الدَّوَاءَ) dibeli di Apotek (الصَّيْدَلِيَّةِ)."
-    },
-    {
-      id: 4,
-      question: "مَا صِيغَةُ فِعْلِ الأَمْرِ لِلضَّمِيرِ (أَنْتَ) مِنْ فِعْلِ \"فَحَصَ - يَفْحَصُ\"؟",
-      options: ["إِفْحَصِي", "إِفْحَصوا", "إِفْحَصْ", "لاَ تَفْحَصْ"],
-      correct: 2,
-      explanation: "Fi'il Amr untuk أَنْتَ berakhiran sukun: إِفْحَصْ !"
-    },
-    {
-      id: 5,
-      question: "مَنْ هُوَ مُصَمِّمُ وَمَالِكُ هَذِهِ الْمَادَّةِ التَّعْلِيمِيَّةِ؟",
-      options: [
-        "Yosi, S. Ag, M. Pd. (MAN 1 Pontianak)",
-        "Ahmad, S. Pd. (MAN 2 Jakarta)",
-        "Fatimah, M. Ag. (MTsN 1 Surabaya)",
-        "Ustadz Syarif (Ponpes Pontianak)"
-      ],
-      correct: 0,
-      explanation: "Pemilik dan penyusun media pembelajaran ini adalah Ibu/Bapak Yosi, S. Ag, M. Pd. dari MAN 1 Pontianak."
-    }
-  ]
+  {
+    "id": 1,
+    "babId": "topik1",
+    "question": "مَا مَعْنَى كَلِمَة (السُّوقُ التَّقْلِيدِيُّ) فِي اللُّغَةِ الإِنْدُونِيسِيَّةِ؟",
+    "options": [
+      "Supermarket / Mall",
+      "Pasar Tradisional",
+      "Rumah Sakit",
+      "Bandara Udara"
+    ],
+    "correct": 1,
+    "explanation": "السُّوقُ التَّقْلِيدِيُّ artinya adalah Pasar Tradisional."
+  },
+  {
+    "id": 2,
+    "babId": "topik1",
+    "question": "عَيِّنِ الْجُمْلَةَ الْفِعْلِيَّةَ الصَّحِيحَةَ مِمَّا يَلِي:",
+    "options": [
+      "الطَّالِبُ يَشْتَرِي الْكِتَابَ",
+      "يَشْتَرِي الطَّالِبُ الْكِتَابَ",
+      "الْكِتَابَ يَشْتَرِي الطَّالِبُ",
+      "فِي السُّوقِ الطَّالِبُ"
+    ],
+    "correct": 1,
+    "explanation": "Jumlah Fi'liyyah diawali oleh kata kerja (Fi'il), yaitu: يَشْتَرِي الطَّالِبُ الْكِتَابَ."
+  },
+  {
+    "id": 3,
+    "babId": "topik1",
+    "question": "أَيْنَ نَرْكَبُ الْقِطَارَ لِلذَّهَابِ إِلَى مَدِينَةٍ أُخْرَى؟",
+    "options": [
+      "فِي الْمَطَارِ",
+      "فِي الْمَحَطَّةِ",
+      "فِي الْمِينَاءِ",
+      "فِي السُّوقِ"
+    ],
+    "correct": 1,
+    "explanation": "Stasiun Kereta Api dalam bahasa Arab adalah الْمَحَطَّةُ."
+  },
+  {
+    "id": 4,
+    "babId": "topik1",
+    "question": "مَا مَعْنَى كَلِمَة (شُبَّاكُ التَّذَاكِرِ)؟",
+    "options": [
+      "Pintu Masuk",
+      "Loket Pembelian Tiket",
+      "Ruang Tunggu",
+      "Tempat Parkir"
+    ],
+    "correct": 1,
+    "explanation": "شُبَّاكُ التَّذَاكِرِ artinya adalah Loket Tiket."
+  },
+  {
+    "id": 5,
+    "babId": "topik1",
+    "question": "أَيْنَ نَرْكَبُ الطَّائِرَةَ لِلسَّفَرِ الْبَعِيدِ؟",
+    "options": [
+      "فِي الْمَطَارِ",
+      "فِي الْمَحَطَّةِ",
+      "فِي الْمَوْقِفِ",
+      "فِي الشَّارِعِ"
+    ],
+    "correct": 0,
+    "explanation": "Bandara Udara tempat naik pesawat adalah الْمَطَارُ."
+  },
+  {
+    "id": 6,
+    "babId": "topik1",
+    "question": "مَا صِيغَةُ الْفِعْلِ الْمَاضِي لِلضَّمِيرِ (أَنَا) مِنْ فِعْلِ (ذَهَبَ)؟",
+    "options": [
+      "ذَهَبْتَ",
+      "ذَهَبْتُ",
+      "ذَهَبْنَا",
+      "ذَهَبُوا"
+    ],
+    "correct": 1,
+    "explanation": "Fi'il Madhy untuk damir أَنَا berakhiran Tuu: ذَهَبْتُ (Saya telah pergi)."
+  },
+  {
+    "id": 7,
+    "babId": "topik1",
+    "question": "مَا صِيغَةُ الْفِعْلِ الْمَاضِي لِلضَّمِيرِ (نَحْنُ) مِنْ فِعْلِ (رَكِبَ)؟",
+    "options": [
+      "رَكِبْتُ",
+      "رَكِبْتُمْ",
+      "رَكِبْنَا",
+      "رَكِبَا"
+    ],
+    "correct": 2,
+    "explanation": "Fi'il Madhy untuk damir نَحْنُ berakhiran Naa: رَكِبْنَا (Kami telah naik)."
+  },
+  {
+    "id": 8,
+    "babId": "topik1",
+    "question": "مَا صِيغَةُ الْفِعْلِ الْمَاضِي لِلضَّمِيرِ (هُمْ) مِنْ فِعْلِ (وَصَلَ)؟",
+    "options": [
+      "وَصَلَتْ",
+      "وَصَلْنَا",
+      "وَصَلُوا",
+      "وَصَلْنَ"
+    ],
+    "correct": 2,
+    "explanation": "Fi'il Madhy untuk damir هُمْ berakhiran Waw Alif: وَصَلُوا."
+  },
+  {
+    "id": 9,
+    "babId": "topik1",
+    "question": "مَا صِيغَةُ الْفِعْلِ الْمَاضِي لِلضَّمِيرِ (أَنْتِ) مِنْ فِعْلِ (سَافَرَ)؟",
+    "options": [
+      "سَافَرْتِ",
+      "سَافَرْتَ",
+      "سَافَرْتُ",
+      "سَافَرْنَ"
+    ],
+    "correct": 0,
+    "explanation": "Fi'il Madhy untuk damir أَنْتِ berakhiran Ti: سَافَرْتِ."
+  },
+  {
+    "id": 10,
+    "babId": "topik1",
+    "question": "مَا صِيغَةُ الْفِعْلِ الْمَاضِي لِلضَّمِيرِ (هُنَّ) مِنْ فِعْلِ (دَخَلَ)؟",
+    "options": [
+      "دَخَلُوا",
+      "دَخَلْنَ",
+      "دَخَلْتُنَّ",
+      "دَخَلَتْ"
+    ],
+    "correct": 1,
+    "explanation": "Fi'il Madhy untuk damir هُنَّ berakhiran Nun sukun fathah: دَخَلْنَ."
+  },
+  {
+    "id": 11,
+    "babId": "topik1",
+    "question": "أَيْنَ ذَهَبَتْ إِبْرِيْزَةُ وَأُسْرَتُهَا فِي الْعُطْلَةِ الْمَاضِيَةِ؟",
+    "options": [
+      "إِلَى شَاطِئِ كُوتَا",
+      "إِلَى غَارِ فِيْنْدُوْل",
+      "إِلَى الْمَطَارِ",
+      "إِلَى الْمُسْتَشْفَى"
+    ],
+    "correct": 1,
+    "explanation": "Sesuai Qiraah 1 Bab 1: ذَهَبَتْ إِبْرِيْزَةُ إِلَى غَارِ فِيْنْدُوْل."
+  },
+  {
+    "id": 12,
+    "babId": "topik1",
+    "question": "بِمَ ذَهَبَتْ إِبْرِيْزَةُ إِلَى بَيْتِ جَدِّهَا فِي سُوْكُوْهَارْجُوْ؟",
+    "options": [
+      "بِالْقِطَارِ",
+      "بِالسَّيَّارَةِ",
+      "بِالدَّرَّاجَةِ",
+      "بِالطَّائِرَةِ"
+    ],
+    "correct": 1,
+    "explanation": "Sesuai Qiraah 1: رَكِبْنَا السَّيَّارَةَ فِي السَّاعَةِ السَّابِعَةِ صَبَاحًا."
+  },
+  {
+    "id": 13,
+    "babId": "topik1",
+    "question": "كَمْ كَانَتْ تَذْكِرَةُ الدُّخُولِ إِلَى غَارِ فِيْنْدُوْل لِكُلِّ فَرْدٍ؟",
+    "options": [
+      "عَشْرَةُ آلاَفِ رُوبِيَّةٍ",
+      "خَمْسُونَ أَلْفَ رُوبِيَّةٍ",
+      "مِئَةُ أَلْفِ رُوبِيَّةٍ",
+      "خَمْسَةٌ وَعِشْرُونَ أَلْفًا"
+    ],
+    "correct": 1,
+    "explanation": "Sesuai Qiraah 1: كَانَتِ التَّذْكِرَةُ بِخَمْسِينَ أَلْفَ رُوبِيَّةٍ لِكُلِّ فَرْدٍ."
+  },
+  {
+    "id": 14,
+    "babId": "topik1",
+    "question": "أَيْنَ يَقَعُ شَاطِئُ لُوسَارِي (Losari) الْجَمِيلُ؟",
+    "options": [
+      "فِي يُوكْيَاكَرْتَا",
+      "فِي مَكَّاسَار (Makassar)",
+      "فِي جُومْبَانْج",
+      "فِي بَالِي"
+    ],
+    "correct": 1,
+    "explanation": "Sesuai Qiraah 2 Bab 1: Pantai Losari berada di kota Makassar."
+  },
+  {
+    "id": 15,
+    "babId": "topik1",
+    "question": "أَيْنَ قَضَى نَبِيلٌ أَيَّامَ الْعُطْلَةِ الْمَاضِيَةِ فِي الْحِوَارِ؟",
+    "options": [
+      "فِي بَيْتِ جَدِّهِ فِي سُوكُوهَارْجُو",
+      "فِي غَارِ فِيْنْدُوْل",
+      "فِي الْمَدْرَسَةِ",
+      "فِي الْقَاهِرَةِ"
+    ],
+    "correct": 0,
+    "explanation": "Sesuai Hiwar 1 Bab 1: قَضَيْتُهَا فِي بَيْتِ جَدِّي فِي سُوْكُوْهَارْجُوْ."
+  },
+  {
+    "id": 16,
+    "babId": "topik1",
+    "question": "مَعَ مَنْ ذَهَبَ فَاخِرٌ إِلَى غَارِ فِيْنْدُوْل؟",
+    "options": [
+      "مَعَ أَصْدِقَائِهِ",
+      "مَعَ أُسْرَتِهِ",
+      "مَعَ مُعَلِّمِهِ",
+      "مُفْرَدًا"
+    ],
+    "correct": 1,
+    "explanation": "Sesuai Hiwar 2 Bab 1: ذَهَبْتُ هُنَاكَ مَعَ أُسْرَتِي."
+  },
+  {
+    "id": 17,
+    "babId": "topik1",
+    "question": "مَا مَعْنَى كَلِمَة (جَوَازُ السَّفَرِ)؟",
+    "options": [
+      "KTP / Kartu Identitas",
+      "Paspor Perjalanan",
+      "Tiket Kereta",
+      "Uang Saku"
+    ],
+    "correct": 1,
+    "explanation": "جَوَازُ السَّفَرِ artinya Paspor Perjalanan."
+  },
+  {
+    "id": 18,
+    "babId": "topik1",
+    "question": "مَا مَعْنَى كَلِمَة (مُرْشِدُ السِّيَاحَةِ)؟",
+    "options": [
+      "Pemandu Wisata (Tour Guide)",
+      "Sopir Bus",
+      "Penjual Tiket",
+      "Penginapan"
+    ],
+    "correct": 0,
+    "explanation": "مُرْشِدُ السِّيَاحَةِ artinya Pemandu Wisata."
+  },
+  {
+    "id": 19,
+    "babId": "topik1",
+    "question": "مَا مَعْنَى كَلِمَة (شَاطِئُ الْبَحْرِ)؟",
+    "options": [
+      "Pegunungan",
+      "Pantai Laut",
+      "Danau",
+      "Air Terjun"
+    ],
+    "correct": 1,
+    "explanation": "شَاطِئُ الْبَحْرِ artinya Pantai Laut."
+  },
+  {
+    "id": 20,
+    "babId": "topik1",
+    "question": "مَا مَعْنَى كَلِمَة (حَافِلَةٌ سِيَاحِيَّةٌ)؟",
+    "options": [
+      "Sepeda Motor",
+      "Bus Pariwisata",
+      "Kapal Laut",
+      "Kereta Cepat"
+    ],
+    "correct": 1,
+    "explanation": "حَافِلَةٌ سِيَاحِيَّةٌ artinya Bus Pariwisata."
+  },
+  {
+    "id": 21,
+    "babId": "topik2",
+    "question": "أَكْمِلْ الْجُمْلَةَ: (أَشْتَرِي الدَّوَاءَ مِنَ ... )",
+    "options": [
+      "الْمَطَارِ",
+      "السُّوقِ",
+      "الصَّيْدَلِيَّةِ",
+      "الْمَدْرَسَةِ"
+    ],
+    "correct": 2,
+    "explanation": "Obat dibeli di Apotek (الصَّيْدَلِيَّةِ)."
+  },
+  {
+    "id": 22,
+    "babId": "topik2",
+    "question": "يَفْحَصُ الْمَرِيضَ فِي الْمُسْتَشْفَى ...",
+    "options": [
+      "الْمُهَنْدِسُ",
+      "الطَّبِيبُ",
+      "الفَلاَّحُ",
+      "الْمُعَلِّمُ"
+    ],
+    "correct": 1,
+    "explanation": "Dokter (الطَّبِيبُ) memeriksa pasien."
+  },
+  {
+    "id": 23,
+    "babId": "topik2",
+    "question": "مَا مَعْنَى كَلِمَة (صُدَاعٌ) فِي اللُّغَةِ الإِنْدُونِيسِيَّةِ؟",
+    "options": [
+      "Sakit Gigi",
+      "Sakit Kepala / Pusing",
+      "Sakit Perut",
+      "Batuk"
+    ],
+    "correct": 1,
+    "explanation": "صُدَاعٌ artinya Sakit Kepala."
+  },
+  {
+    "id": 24,
+    "babId": "topik2",
+    "question": "مَا مَعْنَى كَلِمَة (حُمَّى) فِي الأَمْرَاضِ؟",
+    "options": [
+      "Flu / Pilek",
+      "Demam / Panas Tinggi",
+      "Sesak Napas",
+      "Diare"
+    ],
+    "correct": 1,
+    "explanation": "حُمَّى artinya Demam Tinggi."
+  },
+  {
+    "id": 25,
+    "babId": "topik2",
+    "question": "تُسَاعِدُ الطَّبِيبَ فِي الْعِيَادَةِ وَالْمُسْتَشْفَى ...",
+    "options": [
+      "الْمُمَرِّضَةُ",
+      "الْمُدَرِّسَةُ",
+      "الْمُوَظَّفَةُ",
+      "الخَادِمَةُ"
+    ],
+    "correct": 0,
+    "explanation": "Perawat perempuan adalah الْمُمَرِّضَةُ."
+  },
+  {
+    "id": 26,
+    "babId": "topik2",
+    "question": "مَا صِيغَةُ الْفِعْلِ الْمُضَارِعِ لِلضَّمِيرِ (أَنَا) مِنْ فِعْلِ (شَرِبَ - يَشْرَبُ)؟",
+    "options": [
+      "تَشْرَبُ",
+      "أَشْرَبُ",
+      "نَشْرَبُ",
+      "يَشْرَبُونَ"
+    ],
+    "correct": 1,
+    "explanation": "Fi'il Mudhari' damir أَنَا: أَشْرَبُ."
+  },
+  {
+    "id": 27,
+    "babId": "topik2",
+    "question": "مَا صِيغَةُ الْفِعْلِ الْمُضَارِعِ لِلضَّمِيرِ (نَحْنُ) مِنْ فِعْلِ (لَعِبَ - يَلْعَبُ)؟",
+    "options": [
+      "أَلْعَبُ",
+      "تَلْعَبُ",
+      "نَلْعَبُ",
+      "يَلْعَبُونَ"
+    ],
+    "correct": 2,
+    "explanation": "Fi'il Mudhari' damir نَحْنُ: نَلْعَبُ."
+  },
+  {
+    "id": 28,
+    "babId": "topik2",
+    "question": "مَا صِيغَةُ الْفِعْلِ الْمُضَارِعِ لِلضَّمِيرِ (أَنْتُمْ) مِنْ فِعْلِ (ذَهَبَ - يَذْهَبُ)؟",
+    "options": [
+      "تَذْهَبِينَ",
+      "تَذْهَبُونَ",
+      "يَذْهَبُونَ",
+      "تَذْهَبْنَ"
+    ],
+    "correct": 1,
+    "explanation": "Fi'il Mudhari' damir أَنْتُمْ: تَذْهَبُونَ."
+  },
+  {
+    "id": 29,
+    "babId": "topik2",
+    "question": "مَا صِيغَةُ الْفِعْلِ الْمُضَارِعِ لِلضَّمِيرِ (هِيَ) مِنْ فِعْلِ (فَحَصَ - يَفْحَصُ)؟",
+    "options": [
+      "يَفْحَصُ",
+      "تَفْحَصُ",
+      "أَفْحَصُ",
+      "نَفْحَصُ"
+    ],
+    "correct": 1,
+    "explanation": "Fi'il Mudhari' damir هِيَ: تَفْحَصُ."
+  },
+  {
+    "id": 30,
+    "babId": "topik2",
+    "question": "مَا صِيغَةُ الْفِعْلِ الْمُضَارِعِ لِلضَّمِيرِ (أَنْتِ) مِنْ فِعْلِ (أَكَلَ - يَأْكُلُ)؟",
+    "options": [
+      "تَأْكُلِينَ",
+      "تَأْكُلُونَ",
+      "يَأْكُلْنَ",
+      "تَأْكُلُ"
+    ],
+    "correct": 0,
+    "explanation": "Fi'il Mudhari' damir أَنْتِ: تَأْكُلِينَ."
+  },
+  {
+    "id": 31,
+    "babId": "topik2",
+    "question": "مَاذَا قَالَ الْحُكَمَاءُ عَنِ الصِّحَّةِ فِي قِرَاءَةِ بَابِ 2؟",
+    "options": [
+      "الصِّحَّةُ تَاجٌ عَلَى رُؤُوسِ الأَصِحَّاءِ لاَ يَعْرِفُهُ إِلاَّ الْمَرْضَى",
+      "الصِّحَّةُ لاَ تَفِيدُ شَيْئًا",
+      "الْمَالُ أَهَمُّ مِنَ الصِّحَّةِ",
+      "الصِّحَّةُ لِلأَطْفَالِ فَقَطْ"
+    ],
+    "correct": 0,
+    "explanation": "Kesehatan adalah mahkota di atas kepala orang sehat."
+  },
+  {
+    "id": 32,
+    "babId": "topik2",
+    "question": "مَاذَا يَفْعَلُ نَبِيلٌ وَنَوْفَلٌ كُلَّ صَبَاحٍ لِلْحِفَاظِ عَلَى الصِّحَّةِ؟",
+    "options": [
+      "يَنَامَانِ طَوِيلاً",
+      "يَجْرِيَانِ كُلَّ صَبَاحٍ",
+      "يَأْكُلاَنِ الْحَلْوَى",
+      "يَشْرَبَانِ الْقَهْوَةَ"
+    ],
+    "correct": 1,
+    "explanation": "Nabil & Naufal berlari setiap pagi (يَجْرِيَانِ)."
+  },
+  {
+    "id": 33,
+    "babId": "topik2",
+    "question": "مَنْ زَارَتْ رِيتَا فِي الْمُسْتَشْفَى عِنْدَمَا كَانَتْ مَرِيضَةً؟",
+    "options": [
+      "صَدِيقَاتُهَا",
+      "مُعَلِّمُهَا",
+      "جَارُهَا",
+      "لاَ أَحَدَ"
+    ],
+    "correct": 0,
+    "explanation": "Teman-temannya (صَدِيقَاتُهَا) menjenguk Rita."
+  },
+  {
+    "id": 34,
+    "babId": "topik2",
+    "question": "بِمَ يَشْعُرُ الْمَرِيضُ فِي مَعِدَتِهِ عِنْدَمَا يَذْهَبُ إِلَى الطَّبِيبِ؟",
+    "options": [
+      "يَشْعُرُ بِالْفَرَحِ",
+      "يَشْعُرُ بِأَلَمٍ شَدِيدٍ",
+      "يَشْعُرُ بِالْجُوعِ",
+      "لاَ يَشْعُرُ بِشَيْءٍ"
+    ],
+    "correct": 1,
+    "explanation": "Pasien merasa sakit perut hebat (أَلَمٌ شَدِيدٌ)."
+  },
+  {
+    "id": 35,
+    "babId": "topik2",
+    "question": "مَاذَا يُعْطِي الطَّبِيبُ لِلْمَرِيضِ لِشِرَاءِ الدَّوَاءِ مِنَ الصَّيْدَلِيَّةِ؟",
+    "options": [
+      "وَصْفَةَ الطَّبِيبِ",
+      "تَذْكِرَةَ السَّفَرِ",
+      "بِطَاقَةَ الدُّخُولِ",
+      "الْكِتَابَ"
+    ],
+    "correct": 0,
+    "explanation": "Dokter memberikan resep obat (وَصْفَةُ الطَّبِيبِ)."
+  },
+  {
+    "id": 36,
+    "babId": "topik2",
+    "question": "مَا مَعْنَى كَلِمَة (السُّكَّرِيُّ) فِي الأَمْرَاضِ؟",
+    "options": [
+      "Penyakit Jantung",
+      "Penyakit Gula / Diabetes",
+      "Penyakit Paru-paru",
+      "Sakit Mata"
+    ],
+    "correct": 1,
+    "explanation": "السُّكَّرِيُّ artinya Diabetes."
+  },
+  {
+    "id": 37,
+    "babId": "topik2",
+    "question": "مَا مَعْنَى كَلِمَة (الرِّيَاضَةُ) فِي حَيَاتِنَا؟",
+    "options": [
+      "Pelajaran Matematika",
+      "Olahraga Olah Tubuh",
+      "Seni Musik",
+      "Membaca Buku"
+    ],
+    "correct": 1,
+    "explanation": "الرِّيَاضَةُ artinya Olahraga."
+  },
+  {
+    "id": 38,
+    "babId": "topik2",
+    "question": "مَا مَعْنَى كَلِمَة (وَجَبَةٌ غِذَائِيَّةٌ مُتَوَازِنَةٌ)؟",
+    "options": [
+      "Makanan Ringan",
+      "Menu Makanan Bergizi Seimbang",
+      "Makanan Cepat Saji",
+      "Minuman Manis"
+    ],
+    "correct": 1,
+    "explanation": "وَجَبَةٌ غِذَائِيَّةٌ مُتَوَازِنَةٌ artinya Makanan Bergizi Seimbang."
+  },
+  {
+    "id": 39,
+    "babId": "topik2",
+    "question": "الْفِعْلُ الْمُضَارِعُ يَدُلُّ عَلَى الْحَدَثِ فِي الزَّمَنِ...",
+    "options": [
+      "الْمَاضِي فَقَطْ",
+      "الْحَاضِرِ أَوِ الْمُسْتَقْبَلِ",
+      "الأَمْرِ فَقَطْ",
+      "الْبَعِيدِ"
+    ],
+    "correct": 1,
+    "explanation": "Fi'il Mudhari' menunjukkan perbuatan masa sekarang/nanti."
+  },
+  {
+    "id": 40,
+    "babId": "topik2",
+    "question": "أَيْنَ يَعْمَلُ الطَّبِيبُ وَالْمُمَرِّضَةُ لِعِلاَجِ الْمَرْضَى؟",
+    "options": [
+      "فِي الْمُسْتَشْفَى أَوِ الْعِيَادَةِ",
+      "فِي الْمَطَارِ",
+      "فِي الْمَحَطَّةِ",
+      "فِي السُّوقِ"
+    ],
+    "correct": 0,
+    "explanation": "Dokter bekerja di rumah sakit (الْمُسْتَشْفَى) atau klinik."
+  },
+  {
+    "id": 41,
+    "babId": "topik3",
+    "question": "مَا هِيَ الْكَعْبَةُ الْمُشَرَّفَةُ فِي مَكَّةَ الْمُكَرَّمَةِ؟",
+    "options": [
+      "قِبْلَةُ الْمُسْلِمِينَ فِي الصَّلاَةِ",
+      "مَسْجِدٌ فِي الْمَدِينَةِ",
+      "جَبَلٌ فِي عَرَفَاتٍ",
+      "مَكَانٌ فِي مِنًى"
+    ],
+    "correct": 0,
+    "explanation": "Ka'bah adalah Kiblat Umat Islam."
+  },
+  {
+    "id": 42,
+    "babId": "topik3",
+    "question": "مَا مَعْنَى (الطَّوَافُ) فِي الْحَجِّ وَالْعُمْرَةِ؟",
+    "options": [
+      "الدَّوَرَانُ حَوْلَ الْكَعْبَةِ سَبْعَةَ أَشْوَاطٍ",
+      "الْمَشْيُ بَيْنَ الصَّفَا وَالْمَرْوَةِ",
+      "الْوُقُوفُ بِعَرَفَةَ",
+      "رَمْيُ الْجَمَرَاتِ"
+    ],
+    "correct": 0,
+    "explanation": "Tawaf adalah mengelilingi Ka'bah 7 putaran."
+  },
+  {
+    "id": 43,
+    "babId": "topik3",
+    "question": "مَا مَعْنَى (السَّعْيُ) فِي الْمَنَاسِكِ؟",
+    "options": [
+      "الْمَشْيُ بَيْنَ الصَّفَا وَالْمَرْوَةِ سَبْعَةَ أَشْوَاطٍ",
+      "الدَّوَرَانُ حَوْلَ الْكَعْبَةِ",
+      "حَلْقُ الشَّعْرِ",
+      "ذَبْحُ الْهَدْيِ"
+    ],
+    "correct": 0,
+    "explanation": "Sa'i adalah berjalan antara Safa dan Marwah 7 kali."
+  },
+  {
+    "id": 44,
+    "babId": "topik3",
+    "question": "مَا مَعْنَى (التَّحَلُّلُ) بَعْدَ أَدَاءِ الْمَنَاسِكِ؟",
+    "options": [
+      "قَصُّ الشَّعْرِ أَوْ حَلْقُهُ",
+      "لُبْسُ مَلاَبِسِ الإِحْرَامِ",
+      "قِرَاءَةُ التَّلْبِيَةِ",
+      "الْمَبِيتُ فِي مُزْدَلِفَةَ"
+    ],
+    "correct": 0,
+    "explanation": "Tahallul adalah memotong/mencukur rambut."
+  },
+  {
+    "id": 45,
+    "babId": "topik3",
+    "question": "مَا هُوَ الإِحْرَامُ فِي الْحَجِّ وَالْعُمْرَةِ؟",
+    "options": [
+      "نِيَّةُ الدُّخُولِ فِي النُّسُكِ مَعَ لُبْسِ مَلاَبِسِ الإِحْرَامِ",
+      "الرُّجُوعُ إِلَى الْوَطَنِ",
+      "شُرْبُ مَاءِ زَمْزَمَ",
+      "الصَّلاَةُ فِي الْمَسْجِدِ"
+    ],
+    "correct": 0,
+    "explanation": "Ihram adalah niat haji/umrah berpakaian ihram."
+  },
+  {
+    "id": 46,
+    "babId": "topik3",
+    "question": "مَا صِيغَةُ فِعْلِ الأَمْرِ لِلضَّمِيرِ (أَنْتَ) مِنْ فِعْلِ (كَتَبَ - يَكْتُبُ)؟",
+    "options": [
+      "اكْتُبِي",
+      "اكْتُبْ",
+      "اكْتُبُوا",
+      "لاَ تَكْتُبْ"
+    ],
+    "correct": 1,
+    "explanation": "Fi'il Amr untuk أَنْتَ: اكْتُبْ."
+  },
+  {
+    "id": 47,
+    "babId": "topik3",
+    "question": "مَا صِيغَةُ فِعْلِ الأَمْرِ لِلضَّمِيرِ (أَنْتُمْ) مِنْ فِعْلِ (فَتَحَ - يَفْتَحُ)؟",
+    "options": [
+      "افْتَحْ",
+      "افْتَحِي",
+      "افْتَحُوا",
+      "افْتَحْنَ"
+    ],
+    "correct": 2,
+    "explanation": "Fi'il Amr untuk أَنْتُمْ: افْتَحُوا."
+  },
+  {
+    "id": 48,
+    "babId": "topik3",
+    "question": "مَا صِيغَةُ فِعْلِ الأَمْرِ لِلضَّمِيرِ (أَنْتِ) مِنْ فِعْلِ (جَلَسَ - يَجْلِسُ)؟",
+    "options": [
+      "اجْلِسْ",
+      "اجْلِسِي",
+      "اجْلِسُوا",
+      "اجْلِسْنَ"
+    ],
+    "correct": 1,
+    "explanation": "Fi'il Amr untuk أَنْتِ: اجْلِسِي."
+  },
+  {
+    "id": 49,
+    "babId": "topik3",
+    "question": "مَا صِيغَةُ فِعْلِ الأَمْرِ لِلضَّمِيرِ (أَنْتُنَّ) مِنْ فِعْلِ (فَكَّرَ - يُفَكِّرُ)؟",
+    "options": [
+      "فَكِّرْ",
+      "فَكِّرُوا",
+      "فَكِّرْنَ",
+      "فَكِّرِي"
+    ],
+    "correct": 2,
+    "explanation": "Fi'il Amr untuk أَنْتُنَّ: فَكِّرْنَ."
+  },
+  {
+    "id": 50,
+    "babId": "topik3",
+    "question": "إِذَا كَانَ الْمُنَادَى اسْمَ عَلَمٍ مُفْرَدًا (مِثْلُ: يَا زَيْدُ)، فَإِنَّهُ يُبْنَى عَلَى...",
+    "options": [
+      "الضَّمِّ",
+      "الْفَتْحِ",
+      "الْكَسْرِ",
+      "السُّكُونِ"
+    ],
+    "correct": 0,
+    "explanation": "Munada nama tunggal dibaca Dhammah: يَا زَيْدُ."
+  },
+  {
+    "id": 51,
+    "babId": "topik3",
+    "question": "إِذَا كَانَ الْمُنَادَى مُضَافًا (مِثْلُ: يَا عَبْدَ اللهِ)، فَإِنَّ حُكْمَهُ...",
+    "options": [
+      "النَّصْبُ (Mansub / Fathah)",
+      "الرَّفْعُ",
+      "الْجَرُّ",
+      "الْجَزْمُ"
+    ],
+    "correct": 0,
+    "explanation": "Munada mudhaf dibaca Mansub/Fathah: يَا عَبْدَ اللهِ."
+  },
+  {
+    "id": 52,
+    "babId": "topik3",
+    "question": "مَعَ مَنْ ذَهَبَ سَلْمَانُ لِلأَدَاءِ مَنَاسِكِ الْحَجِّ فِي القِرَاءَةِ؟",
+    "options": [
+      "مَعَ عَمِّهِ أَحْمَدَ",
+      "مَعَ أُسْرَتِهِ",
+      "مَعَ صَدِيقِهِ",
+      "مُفْرَدًا"
+    ],
+    "correct": 0,
+    "explanation": "Salman berhaji bersama pamannya Ahmad."
+  },
+  {
+    "id": 53,
+    "babId": "topik3",
+    "question": "أَيْنَ يَقِفُ الْحُجَّاجُ فِي الْيَوْمِ التَّاسِعِ مِنْ ذِي الْحِجَّةِ؟",
+    "options": [
+      "فِي عَرَفَاتٍ",
+      "فِي الْمَدِينَةِ",
+      "فِي جُدَّةَ",
+      "فِي الطَّائِفِ"
+    ],
+    "correct": 0,
+    "explanation": "Wukuf dilakukan di Arafah (عَرَفَاتٌ)."
+  },
+  {
+    "id": 54,
+    "babId": "topik3",
+    "question": "مَاذَا قَالَ النَّبِيُّ صَلَّى اللهُ عَلَيْهِ وَسَلَّمَ عَنِ الْعُمْرَةِ فِي رَمَضَانَ؟",
+    "options": [
+      "عُمْرَةٌ فِي رَمَضَانَ تَعْدِلُ حَجَّةً",
+      "الْعُمْرَةُ غَيْرُ مُسْتَحَبَّةٍ فِي رَمَضَانَ",
+      "الْعُمْرَةُ تُكَرَّهُ فِي رَمَضَانَ",
+      "لاَ فَضْلَ لِلْعُمْرَةِ فِي رَمَضَانَ"
+    ],
+    "correct": 0,
+    "explanation": "Umrah di bulan Ramadan setara pahala haji."
+  },
+  {
+    "id": 55,
+    "babId": "topik3",
+    "question": "أَيْنَ تَقَعُ الْكَعْبَةُ الْمُشَرَّفَةُ؟",
+    "options": [
+      "فِي الْمَسْجِدِ الْحَرَامِ بِمَكَّةَ الْمُكَرَّمَةِ",
+      "فِي الْمَسْجِدِ النَّبَوِيِّ",
+      "فِي الْمَسْجِدِ الأَقْصَى",
+      "فِي الْقَاهِرَةِ"
+    ],
+    "correct": 0,
+    "explanation": "Ka'bah di Masjidil Haram, Makkah."
+  },
+  {
+    "id": 56,
+    "babId": "topik3",
+    "question": "مَا لَوْنُ الْحَجَرِ الأَسْوَدِ حِينَ نَزَلَ مِنَ الْجَنَّةِ كَمَا فِي الْحِوَارِ؟",
+    "options": [
+      "نَاصِعُ الْبَيَاضِ",
+      "أَسْوَدُ قَاتِمٌ",
+      "أَحْمَرُ",
+      "أَخْضَرُ"
+    ],
+    "correct": 0,
+    "explanation": "Hajar Aswad dulunya putih bersih (نَاصِعُ الْبَيَاضِ)."
+  },
+  {
+    "id": 57,
+    "babId": "topik3",
+    "question": "أَيْنَ يَقُومُ الْحُجَّاجُ بِرَمْيِ الْجَمَرَاتِ؟",
+    "options": [
+      "فِي مِنًى",
+      "فِي عَرَفَةَ",
+      "فِي الْمَطَارِ",
+      "فِي الْمَدِينَةِ"
+    ],
+    "correct": 0,
+    "explanation": "Lempar jumrah dilakukan di Mina (مِنًى)."
+  },
+  {
+    "id": 58,
+    "babId": "topik3",
+    "question": "مَا هُوَ مَقَامُ إِبْرَاهِيمَ فِي الْمَسْجِدِ الْحَرَامِ؟",
+    "options": [
+      "الْمَكَانُ الَّذِي وَقَفَ عَلَيْهِ إِبْرَاهِيمُ عِنْدَ بِنَاءِ الْكَعْبَةِ",
+      "قَبْرُ إِبْرَاهِيمَ",
+      "جَبَلٌ كَبِيرٌ",
+      "بِئْرُ زَمْزَمَ"
+    ],
+    "correct": 0,
+    "explanation": "Maqam Ibrahim adalah pijakan Nabi Ibrahim AS."
+  },
+  {
+    "id": 59,
+    "babId": "topik3",
+    "question": "فِعْلُ الأَمْرِ يُصَاغُ فَقَطْ لِـ...",
+    "options": [
+      "ضَمَائِرِ الْمُخَاطَبِ",
+      "ضَمَائِرِ الْغَائِبِ",
+      "ضَمَائِرِ الْمُتَكَلِّمِ",
+      "كُلِّ الضَّمَائِرِ"
+    ],
+    "correct": 0,
+    "explanation": "Fi'il Amr hanya untuk 6 Dhamir Mukhatab."
+  },
+  {
+    "id": 60,
+    "babId": "topik3",
+    "question": "مَا مَعْنَى (الْمِيقَاتُ الْمَكَانِيُّ) فِي الْحَجِّ؟",
+    "options": [
+      "الْمَكَانُ الَّذِي يُحْرِمُ مِنْهُ الْحَاجُّ أَوْ الْمُعْتَمِرُ",
+      "وَقْتُ صَلاَةِ الْعِيدِ",
+      "فُنْدُقُ الْحُجَّاجِ",
+      "مَطَارُ جُدَّةَ"
+    ],
+    "correct": 0,
+    "explanation": "Miqat Makani adalah batas lokasi ber-ihram."
+  },
+  {
+    "id": 61,
+    "babId": "topik4",
+    "question": "كَمْ عَدَدُ الأَدْيَانِ الرَّسْمِيَّةِ فِي إِنْدُونِيسِيَا؟",
+    "options": [
+      "٤ أَدْيَانٍ",
+      "٥ أَدْيَانٍ",
+      "٦ أَدْيَانٍ",
+      "٧ أَدْيَانٍ"
+    ],
+    "correct": 2,
+    "explanation": "Ada 6 agama resmi di Indonesia."
+  },
+  {
+    "id": 62,
+    "babId": "topik4",
+    "question": "مَا هُوَ مَكَانُ عِبَادَةِ الْمُسْلِمِينَ؟",
+    "options": [
+      "الْمَسْجِدُ",
+      "الْكَنِيسَةُ",
+      "فُورَا",
+      "فِهَارَا"
+    ],
+    "correct": 0,
+    "explanation": "Tempat ibadah Islam adalah Masjid."
+  },
+  {
+    "id": 63,
+    "babId": "topik4",
+    "question": "مَا هُوَ مَكَانُ عِبَادَةِ الْمَسِيحِيِّينَ (الْكَاثُولِيكِ وَالْبُرُوتِسْتَانْتِ)؟",
+    "options": [
+      "الْكَنِيسَةُ",
+      "الْمَسْجِدُ",
+      "الْمَعْبَدُ",
+      "فُورَا"
+    ],
+    "correct": 0,
+    "explanation": "Tempat ibadah Kristen/Katolik adalah Gereja (الْكَنِيسَةُ)."
+  },
+  {
+    "id": 64,
+    "babId": "topik4",
+    "question": "مَا هُوَ مَكَانُ عِبَادَةِ الْهِنْدُوسِيِّينَ فِي بَالِي وَغَيْرِهَا؟",
+    "options": [
+      "فُورَا",
+      "فِهَارَا",
+      "الْمَسْجِدُ",
+      "الْكَنِيسَةُ"
+    ],
+    "correct": 0,
+    "explanation": "Tempat ibadah Hindu adalah Pura (فُورَا)."
+  },
+  {
+    "id": 65,
+    "babId": "topik4",
+    "question": "مَا هُوَ مَكَانُ عِبَادَةِ الْبُوذِيِّينَ؟",
+    "options": [
+      "فِهَارَا",
+      "فُورَا",
+      "الْمَسْجِدُ",
+      "الْكَنِيسَةُ"
+    ],
+    "correct": 0,
+    "explanation": "Tempat ibadah Buddha adalah Vihara (فِهَارَا)."
+  },
+  {
+    "id": 66,
+    "babId": "topik4",
+    "question": "مَا هُوَ مَكَانُ عِبَادَةِ الْكُونْفُوشِيِّينَ؟",
+    "options": [
+      "الْمَعْبَدُ",
+      "الْمَسْجِدُ",
+      "الْكَنِيسَةُ",
+      "فُورَا"
+    ],
+    "correct": 0,
+    "explanation": "Tempat ibadah Khonghucu adalah Klenteng (الْمَعْبَدُ)."
+  },
+  {
+    "id": 67,
+    "babId": "topik4",
+    "question": "مَا مَعْنَى كَلِمَة (التَّسَامُحُ) فِي الْمُجْتَمَعِ؟",
+    "options": [
+      "Toleransi / Saling Menghormati",
+      "Perselisihan",
+      "Perpisahan",
+      "Perdebatan"
+    ],
+    "correct": 0,
+    "explanation": "التَّسَامُحُ artinya Toleransi."
+  },
+  {
+    "id": 68,
+    "babId": "topik4",
+    "question": "مَا هُوَ (بَانْتَجَاسِيلاَ) فِي إِنْدُونِيسِيَا؟",
+    "options": [
+      "أَسَاسُ الدَّوْلَةِ الإِـنْدُونِيسِيَّةِ",
+      "اسْمُ مَدِينَةٍ",
+      "اسْمُ جَبَلٍ",
+      "عَمَلَةٌ نَقْدِيَّةٌ"
+    ],
+    "correct": 0,
+    "explanation": "Pancasila adalah Dasar Negara Indonesia."
+  },
+  {
+    "id": 69,
+    "babId": "topik4",
+    "question": "فِي جُمْلَةِ (يَجِبُ عَلَى الْمُسْلِمِينَ أَنْ يَجْتَنِبُوا الأَعْمَالَ السَّيِّئَةَ)، أَيْنَ النَّعْتُ؟",
+    "options": [
+      "السَّيِّئَةَ",
+      "الأَعْمَالَ",
+      "الْمُسْلِمِينَ",
+      "يَجِبُ"
+    ],
+    "correct": 0,
+    "explanation": "السَّيِّئَةَ adalah Na'at."
+  },
+  {
+    "id": 70,
+    "babId": "topik4",
+    "question": "مَا نَوْعُ النَّعْتِ فِي جُمْلَةِ (تَرَكَ الشَّافِعِيُّ مُؤَلَّفَاتٍ نَفْعُهَا عَظِيمٌ)؟",
+    "options": [
+      "نَعْتُ جُمْلَةٍ إِسْمِيَّةٍ",
+      "نَعْتٌ مُفْرَدٌ",
+      "نَعْتُ جُمْلَةٍ فِعْلِيَّةٍ",
+      "نَعْتُ شِبْهِ الْجُمْلَةِ"
+    ],
+    "correct": 0,
+    "explanation": "نَفْعُهَا عَظِيمٌ adalah Na'at Jumlah Ismiyah."
+  },
+  {
+    "id": 71,
+    "babId": "topik4",
+    "question": "مَا نَوْعُ النَّعْتِ فِي جُمْلَةِ (خَلَّفَ الشَّافِعِيُّ مَذْهَبًا يَحْتَرِمُهُ الْمُسْلِمُونَ)؟",
+    "options": [
+      "نَعْتُ جُمْلَةٍ فِعْلِيَّةٍ",
+      "نَعْتٌ مُفْرَدٌ",
+      "نَعْتُ جُمْلَةٍ إِسْمِيَّةٍ",
+      "نَعْتُ شِبْهِ الْجُمْلَةِ"
+    ],
+    "correct": 0,
+    "explanation": "يَحْتَرِمُهُ الْمُسْلِمُونَ adalah Na'at Jumlah Fi'liyah."
+  },
+  {
+    "id": 72,
+    "babId": "topik4",
+    "question": "مَا نَوْعُ النَّعْتِ فِي جُمْلَةِ (رَأَيْتُ طَائِرًا فَوْقَ الشَّجَرَةِ)؟",
+    "options": [
+      "نَعْتُ شِبْهِ الْجُمْلَةِ",
+      "نَعْتٌ مُفْرَدٌ",
+      "نَعْتُ جُمْلَةٍ إِسْمِيَّةٍ",
+      "نَعْتُ جُمْلَةٍ فِعْلِيَّةٍ"
+    ],
+    "correct": 0,
+    "explanation": "فَوْقَ الشَّجَرَةِ adalah Na'at Syibhil Jumlah."
+  },
+  {
+    "id": 73,
+    "babId": "topik4",
+    "question": "تَتَكَوَّنُ الإِضَافَةُ مِنْ رُكْنَيْنِ هُمَا...",
+    "options": [
+      "الْمُضَافُ وَالْمُضَافُ إِلَيْهِ",
+      "الْفِعْلُ وَالْفَاعِلُ",
+      "الْمُبْتَدَأُ وَالْخَبَرُ",
+      "النَّعْتُ وَالْمَنْعُوتُ"
+    ],
+    "correct": 0,
+    "explanation": "Idhafah = Mudhaf + Mudhaf Ilaih."
+  },
+  {
+    "id": 74,
+    "babId": "topik4",
+    "question": "مَا حُكْمُ الْمُضَافِ إِلَيْهِ دَائِمًا فِي الإِعْرَابِ؟",
+    "options": [
+      "الْمَجْرُورُ",
+      "الْمَرْفُوعُ",
+      "الْمَنْصُوبُ",
+      "الْمَجْزُومُ"
+    ],
+    "correct": 0,
+    "explanation": "Mudhaf Ilaih selalu Majrur."
+  },
+  {
+    "id": 75,
+    "babId": "topik4",
+    "question": "شَرْطُ الْمُضَافِ أَنْ لاَ يَكُونَ فِيهِ...",
+    "options": [
+      "أَلْفُ اللاَّمْ (ال) وَالتَّنْوِينُ",
+      "الْحَرَكَةُ",
+      "الْحُرُوفُ",
+      "الضَّمِيرُ"
+    ],
+    "correct": 0,
+    "explanation": "Mudhaf tidak boleh ber-AL dan Tanwin."
+  },
+  {
+    "id": 76,
+    "babId": "topik4",
+    "question": "أَيْنَ يَسْكُنُ خَالِدٌ وَسُونَاَرْطُو وَفْرَانْسِيسْكُوسْ فِي نَصِّ الْقِرَاءَةِ؟",
+    "options": [
+      "فِي جُومْبَانْج",
+      "فِي سُورَابَايَا",
+      "فِي بَالِي",
+      "فِي جَاكَرْتَا"
+    ],
+    "correct": 0,
+    "explanation": "Khalid dkk tinggal di Jombang."
+  },
+  {
+    "id": 77,
+    "babId": "topik4",
+    "question": "كَمْ نِسْبَةُ الْمُسْلِمِينَ فِي إِنْدُونِيسِيَا حَسَبَ نَصِّ الْقِرَاءَةِ؟",
+    "options": [
+      "٨٧,٢ %",
+      "٥٠ %",
+      "٦,٩ %",
+      "٠,٧ %"
+    ],
+    "correct": 0,
+    "explanation": "Islam 87,2 %."
+  },
+  {
+    "id": 78,
+    "babId": "topik4",
+    "question": "مَا اسْمُ الْمَعْبَدِ الَّذِي يَتَعَبَّدُ فِيهِ سُونَاَرْطُو فِي جُومْبَانْج؟",
+    "options": [
+      "مَعْبَدُ هُوكْ لِيُؤْنْج كِيُؤْنْج",
+      "فُورَا بَسَاكِيْه",
+      "الْمَسْجِدُ الْكَبِيرُ",
+      "كَنِيسَةُ جُومْبَانْج"
+    ],
+    "correct": 0,
+    "explanation": "Klenteng Hok Liong Kiong Jombang."
+  },
+  {
+    "id": 79,
+    "babId": "topik4",
+    "question": "مَا هُوَ شِعَارُ إِنْدُونِيسِيَا فِي التَّنَوُّعِ الدِّينِيِّ وَالثَّقَافِيِّ؟",
+    "options": [
+      "الْوَحْدَةُ فِي التَّنَوُّعِ",
+      "التَّنَوُّعُ فَقَطْ",
+      "الإِسْلَامُ فَقَطْ",
+      "السَّلاَمُ"
+    ],
+    "correct": 0,
+    "explanation": "Bhinneka Tunggal Ika."
+  },
+  {
+    "id": 80,
+    "babId": "topik4",
+    "question": "مَنْ هُوَ مُصَمِّمُ وَمُؤَلِّفُ هَذِهِ الْمَادَّةِ التَّعْلِيمِيَّةِ التَّفَاعُلِيَّةِ؟",
+    "options": [
+      "Yosi, S. Ag, M. Pd. (MAN 1 Pontianak)",
+      "Ahmad, S. Pd. (MAN 2 Jakarta)",
+      "Fatimah, M. Ag. (MTsN 1 Surabaya)",
+      "Ustadz Syarif (Ponpes Pontianak)"
+    ],
+    "correct": 0,
+    "explanation": "Penyusun: Yosi, S. Ag, M. Pd. (MAN 1 Pontianak)."
+  }
+]
 };

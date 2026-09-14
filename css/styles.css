@@ -278,5 +278,14 @@ body {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--primary-emerald);
+  background: #0C3B2E;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
