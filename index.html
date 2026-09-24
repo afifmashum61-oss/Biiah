@@ -174,21 +174,21 @@
   <!-- Slide-Over Hamburger Navigation Drawer -->
   <div id="drawer-overlay" class="fixed inset-0 z-40 bg-emerald-950/40 backdrop-blur-sm hidden transition-opacity"></div>
   
-  <aside id="nav-drawer" class="fixed top-0 right-0 z-50 h-full w-80 sm:w-96 bg-white shadow-2xl transition-transform duration-300 transform translate-x-full flex flex-col border-l border-emerald-100">
+  <aside id="nav-drawer" class="fixed top-0 right-0 z-50 h-full w-[64vw] max-w-[250px] sm:w-80 sm:max-w-none bg-white shadow-2xl transition-transform duration-300 transform translate-x-full flex flex-col border-l border-emerald-100">
     <!-- Drawer Header -->
-    <div class="p-6 bg-gradient-to-br from-emerald-900 via-emerald-800 to-teal-900 text-white flex items-center justify-between relative overflow-hidden">
-      <div class="relative z-10">
-        <span class="text-[10px] uppercase font-bold text-emerald-300 tracking-wider">Menu Pembelajaran Bahasa Arab</span>
-        <h3 class="text-2xl font-bold font-arabic">الحفاظ على البيئة</h3>
-        <p class="text-xs text-emerald-200">Bahasa Arab Kelas 9 MTs</p>
+    <div class="p-3.5 sm:p-5 bg-gradient-to-br from-emerald-900 via-emerald-800 to-teal-900 text-white flex items-center justify-between relative overflow-hidden">
+      <div class="relative z-10 min-w-0 pr-2">
+        <span class="text-[9px] sm:text-[10px] uppercase font-bold text-emerald-300 tracking-wider block truncate">Menu Pembelajaran</span>
+        <h3 class="text-lg sm:text-2xl font-bold font-arabic whitespace-nowrap">الحفاظ على البيئة</h3>
+        <p class="text-[11px] sm:text-xs text-emerald-200">Kelas 9 MTs</p>
       </div>
-      <button id="close-drawer-btn" class="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-all relative z-10">
-        <i class="fa-solid fa-xmark text-lg"></i>
+      <button id="close-drawer-btn" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-all relative z-10 shrink-0">
+        <i class="fa-solid fa-xmark text-base sm:text-lg"></i>
       </button>
     </div>
 
     <!-- Drawer Navigation Items -->
-    <div class="flex-1 overflow-y-auto p-6 space-y-2" id="drawer-nav-items">
+    <div class="flex-1 overflow-y-auto p-3 sm:p-5 space-y-1.5 sm:space-y-2" id="drawer-nav-items">
       <!-- Dynamic Nav Items via JS -->
     </div>
 
