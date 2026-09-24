@@ -99,12 +99,50 @@ document.addEventListener('DOMContentLoaded', () => {
   const hamburgerBtn = document.getElementById('hamburger-btn');
   const closeDrawerBtn = document.getElementById('close-drawer-btn');
 
-  // Initialize Robust Arabic Multi-Layer Audio Engine
+  // Initialize High-Performance Arabic Audio Engine (Desktop & Mobile Optimized)
   const synth = window.speechSynthesis;
   let cachedVoices = [];
   let activeAudio = null;
   let audioQueue = [];
   let isPlayingAudio = false;
+  const audioCache = new Map(); // In-memory cache for ultra-fast instant replay
+
+  // Audio gesture unlocker for Mobile (iOS Safari & Android Chrome)
+  let audioUnlocked = false;
+  function unlockMobileAudio() {
+    if (audioUnlocked) return;
+    audioUnlocked = true;
+
+    // 1. Unlock HTML5 Audio via silent buffer
+    try {
+      const silent = new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA');
+      silent.volume = 0.01;
+      const p = silent.play();
+      if (p !== undefined) {
+        p.then(() => {
+          silent.pause();
+          silent.currentTime = 0;
+        }).catch(() => {});
+      }
+    } catch (e) {}
+
+    // 2. Prime Web Speech Synthesis on iOS Safari
+    if (synth) {
+      try {
+        const dummy = new SpeechSynthesisUtterance(' ');
+        dummy.volume = 0.01;
+        dummy.rate = 2;
+        synth.speak(dummy);
+      } catch (e) {}
+    }
+
+    window.removeEventListener('touchstart', unlockMobileAudio);
+    window.removeEventListener('touchend', unlockMobileAudio);
+    window.removeEventListener('click', unlockMobileAudio);
+  }
+  window.addEventListener('touchstart', unlockMobileAudio, { passive: true, once: true });
+  window.addEventListener('touchend', unlockMobileAudio, { passive: true, once: true });
+  window.addEventListener('click', unlockMobileAudio, { passive: true, once: true });
 
   function loadVoices() {
     if (synth) {
@@ -128,7 +166,6 @@ document.addEventListener('DOMContentLoaded', () => {
       try {
         activeAudio.pause();
         activeAudio.currentTime = 0;
-        activeAudio.src = '';
       } catch (e) {}
       activeAudio = null;
     }
@@ -160,14 +197,17 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function splitArabicSentences(text) {
-    const clean = text.replace(/[•١٢٣]/g, ' ').trim();
-    const rawChunks = clean.split(/[\.\!\?؟\n\:\;]+/).map(s => s.trim()).filter(s => s.length > 0);
+    if (!text) return [];
+    // Clean string but preserve authentic Arabic diacritics / tashkeel
+    const clean = text.replace(/[\u060C\u061F\.\,\:\;\!\?\"\'\(\)]/g, ' ').trim();
+    // Split on Arabic and standard sentence delimiters
+    const rawChunks = text.split(/[\.\!\?\n\:\;\u061F]+/).map(s => s.trim()).filter(s => s.length > 0);
     const result = [];
     for (const chunk of rawChunks) {
       if (chunk.length <= 160) {
         result.push(chunk);
       } else {
-        const parts = chunk.split(/[\،\,]+/).map(s => s.trim()).filter(s => s.length > 0);
+        const parts = chunk.split(/[\u060C\,]+/).map(s => s.trim()).filter(s => s.length > 0);
         for (const p of parts) {
           if (p.length <= 160) {
             result.push(p);
@@ -187,34 +227,81 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
     }
-    return result.length > 0 ? result : [clean.substring(0, 160)];
+    return result.length > 0 ? result : [text.substring(0, 160)];
+  }
+
+  function prefetchAudio(text) {
+    if (!text || !text.trim()) return;
+    try {
+      const clean = text.replace(/[\u060C\u061F\.\,\:\;\!\?\"\'\(\)]/g, ' ').trim();
+      const chunk = clean.substring(0, 160);
+      const cacheKey = `${chunk}_${state.audioSpeed || 0.85}`;
+      if (audioCache.has(cacheKey)) return;
+      const ttsUrl = `/api/tts?q=${encodeURIComponent(chunk)}&tl=ar`;
+      const audio = new Audio();
+      audio.preload = 'auto';
+      audio.src = ttsUrl;
+      audioCache.set(cacheKey, audio);
+    } catch (e) {}
   }
 
   function playSingleChunk(chunk, onEnded) {
     if (!isPlayingAudio) return;
 
-    const ttsUrl = `/api/tts?q=${encodeURIComponent(chunk)}&tl=ar`;
-    const audio = new Audio();
-    activeAudio = audio;
-    audio.playbackRate = state.audioSpeed || 0.85;
+    const clean = chunk.replace(/[\u060C\u061F\.\,\:\;\!\?\"\'\(\)]/g, ' ').trim();
+    if (!clean) {
+      if (onEnded) onEnded();
+      return;
+    }
+
+    const cacheKey = `${clean}_${state.audioSpeed || 0.85}`;
+    let audio = audioCache.get(cacheKey);
 
     let hasEnded = false;
+    let fallbackTimeout = null;
+
     const finish = () => {
+      if (fallbackTimeout) clearTimeout(fallbackTimeout);
       if (hasEnded) return;
       hasEnded = true;
       if (onEnded) onEnded();
     };
 
+    if (!audio) {
+      const ttsUrl = `/api/tts?q=${encodeURIComponent(clean)}&tl=ar`;
+      audio = new Audio(ttsUrl);
+      audioCache.set(cacheKey, audio);
+    } else {
+      audio.currentTime = 0;
+    }
+
+    activeAudio = audio;
+    audio.playbackRate = state.audioSpeed || 0.85;
+
     audio.onended = finish;
     audio.onerror = () => {
-      speakWithWebSpeech(chunk, finish);
+      console.warn("Audio proxy failed, switching to instant WebSpeech fallback");
+      if (fallbackTimeout) clearTimeout(fallbackTimeout);
+      speakWithWebSpeech(clean, finish);
     };
 
-    audio.src = ttsUrl;
-    audio.play().catch(err => {
-      console.warn("Audio play() error, switching to WebSpeech fallback:", err);
-      speakWithWebSpeech(chunk, finish);
-    });
+    // Fast fallback timer: If audio doesn't start within 1.2s, fallback immediately to WebSpeech
+    fallbackTimeout = setTimeout(() => {
+      if (audio.paused && !hasEnded) {
+        console.warn("Audio timeout (1.2s), falling back to WebSpeech");
+        try { audio.pause(); } catch(e) {}
+        speakWithWebSpeech(clean, finish);
+      }
+    }, 1200);
+
+    const playPromise = audio.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(err => {
+        console.warn("Audio play() blocked/failed, switching to WebSpeech:", err);
+        if (fallbackTimeout) clearTimeout(fallbackTimeout);
+        speakWithWebSpeech(clean, finish);
+      });
+    }
   }
 
   function speakWithWebSpeech(cleanText, onEnded) {
@@ -255,8 +342,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  function speakArabic(text, customRate) {
+  function speakArabic(text, customRate, callerBtn) {
     if (!text || text.trim() === '') return;
+
+    // Ensure mobile audio is primed on every speak click
+    unlockMobileAudio();
 
     if (isPlayingAudio) {
       stopArabicAudio();
@@ -266,6 +356,14 @@ document.addEventListener('DOMContentLoaded', () => {
     stopArabicAudio();
     isPlayingAudio = true;
     updateAudioUI(true);
+
+    // Instant visual click feedback if button element provided
+    if (callerBtn && callerBtn.classList) {
+      callerBtn.classList.add('scale-95', 'ring-2', 'ring-emerald-400');
+      setTimeout(() => {
+        callerBtn.classList.remove('scale-95', 'ring-2', 'ring-emerald-400');
+      }, 300);
+    }
 
     const chunks = splitArabicSentences(text);
     audioQueue = [...chunks];
@@ -277,7 +375,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       const nextChunk = audioQueue.shift();
       playSingleChunk(nextChunk, () => {
-        setTimeout(playNext, 250);
+        setTimeout(playNext, 180);
       });
     }
 
@@ -286,6 +384,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   window.speakArabic = speakArabic;
   window.stopArabicAudio = stopArabicAudio;
+  window.prefetchAudio = prefetchAudio;
 
   // Drawer Controls
   function toggleDrawer(open) {
