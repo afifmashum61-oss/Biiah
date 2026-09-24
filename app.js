@@ -906,7 +906,7 @@ document.addEventListener('DOMContentLoaded', () => {
               <div class="flip-card-inner">
                 
                 <!-- FRONT SIDE OF FLIP CARD -->
-                <div class="flip-card-front bg-white p-4 border border-emerald-100 shadow-md hover:shadow-xl transition-all flex flex-col justify-between">
+                <div class="flip-card-front bg-white p-4 border border-emerald-100 shadow-md hover:shadow-xl transition-shadow rounded-[2rem] flex flex-col justify-between">
                   <!-- Header: Category & Audio Button -->
                   <div class="flex items-center justify-between z-10 mb-2">
                     <span class="px-3 py-1 bg-emerald-50 text-emerald-800 rounded-full text-[11px] font-bold border border-emerald-100">
@@ -935,7 +935,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
 
                 <!-- BACK SIDE OF FLIP CARD -->
-                <div class="flip-card-back bg-gradient-to-br from-emerald-900 via-emerald-800 to-teal-900 p-6 text-white shadow-2xl flex flex-col justify-between border border-emerald-700">
+                <div class="flip-card-back bg-gradient-to-br from-emerald-900 via-emerald-800 to-teal-900 p-6 text-white shadow-2xl rounded-[2rem] flex flex-col justify-between border border-emerald-700">
                   <div>
                     <div class="flex items-center justify-between mb-3 border-b border-emerald-700/60 pb-3">
                       <span class="px-3 py-1 bg-white/20 backdrop-blur-md text-emerald-200 rounded-full text-[10px] font-bold">
