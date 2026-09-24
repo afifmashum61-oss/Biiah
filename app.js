@@ -488,8 +488,9 @@ document.addEventListener('DOMContentLoaded', () => {
               <i class="fa-solid fa-leaf text-emerald-400"></i>
               <span>الوحدة الرابعة: الحفاظ على البيئة</span>
             </div>
-            <h1 class="text-xl sm:text-3xl lg:text-4xl font-extrabold mb-2.5 sm:mb-3 leading-snug break-words">
-              Selamat Datang, <span class="text-emerald-300 font-bold">${state.currentUser.name}</span>!
+            <h1 class="text-lg sm:text-2xl lg:text-3xl font-extrabold mb-2.5 sm:mb-3 leading-snug">
+              <span class="text-white block sm:inline">Selamat Datang, </span>
+              <span class="text-emerald-300 font-bold inline-block whitespace-nowrap sm:inline">${state.currentUser.name}!</span>
             </h1>
             <p class="text-emerald-100 text-xs sm:text-sm lg:text-base mb-5 sm:mb-6 leading-relaxed">
               Media pembelajaran Bahasa Arab interaktif untuk memahami pentingnya menjaga dan melestarikan lingkungan (<span dir="rtl" class="font-arabic font-semibold">الحفاظ على البيئة</span>) serta menguasai <span dir="rtl" class="font-arabic font-semibold">فِعْلُ الأَمْرِ</span> dan <span dir="rtl" class="font-arabic font-semibold">فِعْلُ النَّهْيِ</span>.
