@@ -327,25 +327,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (navItemsContainer) {
       let navs = [
-        { id: 'dashboard', icon: 'fa-home', label: 'Dashboard Utama' },
-        { id: 'mufradat', icon: 'fa-layer-group', label: 'المفردات (Kosakata & Audio)' },
-        { id: 'istima', icon: 'fa-headphones', label: 'مهارة الاستماع (Menyimak Audio)' },
-        { id: 'qiraah', icon: 'fa-book-open', label: 'مهارة القراءة (Membaca Teks)' },
-        { id: 'qawaid', icon: 'fa-spell-check', label: 'القواعد (Tata Bahasa Arab)' },
-        { id: 'dialogue', icon: 'fa-comments', label: 'الحوار (Percakapan)' },
-        { id: 'quiz', icon: 'fa-pen-to-square', label: 'التدريبات (Kuis Interaktif)' },
-        { id: 'duelgame', icon: 'fa-bolt', label: '⚡ DUEL ADU CEPAT (1v1 Fast Quiz Duel)' }
+        { id: 'dashboard', icon: 'fa-home', label: 'الرئيسية' },
+        { id: 'mufradat', icon: 'fa-layer-group', label: 'المفردات' },
+        { id: 'istima', icon: 'fa-headphones', label: 'مهارة الاستماع' },
+        { id: 'qiraah', icon: 'fa-book-open', label: 'مهارة القراءة' },
+        { id: 'qawaid', icon: 'fa-spell-check', label: 'القواعد' },
+        { id: 'dialogue', icon: 'fa-comments', label: 'الحوار' },
+        { id: 'quiz', icon: 'fa-pen-to-square', label: 'التدريبات' },
+        { id: 'duelgame', icon: 'fa-bolt', label: 'مُبَارَزَةُ السَّرِيعَةِ' }
       ];
 
       if (state.currentUser && state.currentUser.role === 'guru') {
-        navs.push({ id: 'students', icon: 'fa-chart-user', label: 'Monitoring & Nilai Siswa' });
-        navs.push({ id: 'settings', icon: 'fa-gear', label: 'Pengaturan & Kelola Akun' });
+        navs.push({ id: 'students', icon: 'fa-chart-user', label: 'مُتَابَعَةُ الطُّلَّابِ' });
+        navs.push({ id: 'settings', icon: 'fa-gear', label: 'إِعْدَادَاتُ الْحِسَابِ' });
       }
 
       navItemsContainer.innerHTML = navs.map(item => `
         <button data-view="${item.id}" class="nav-item-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${state.currentView === item.id ? 'bg-emerald-700 text-white shadow-md' : 'text-emerald-900 hover:bg-emerald-50'}">
           <i class="fa-solid ${item.icon} w-5 text-center ${state.currentView === item.id ? 'text-white' : 'text-emerald-600'}"></i>
-          <span>${item.label}</span>
+          <span class="font-arabic font-bold text-base">${item.label}</span>
         </button>
       `).join('') + `
         <div class="pt-4 mt-4 border-t border-emerald-100">
