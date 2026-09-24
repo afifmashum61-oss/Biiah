@@ -311,9 +311,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (userBadge) {
       if (state.currentUser) {
         userBadge.innerHTML = `
-          <div class="flex items-center gap-2 bg-emerald-50 text-emerald-800 border border-emerald-200 px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium">
+          <div class="hidden md:flex items-center gap-2 bg-emerald-50 text-emerald-800 border border-emerald-200 px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium shadow-2xs">
             <span class="w-2.5 h-2.5 rounded-full ${state.currentUser.role === 'guru' ? 'bg-amber-500' : 'bg-emerald-500'} animate-pulse"></span>
-            <span>${state.currentUser.name} (${state.currentUser.role === 'guru' ? 'Guru' : 'Siswa'})</span>
+            <span class="truncate max-w-[150px] lg:max-w-none">${state.currentUser.name} (${state.currentUser.role === 'guru' ? 'Guru' : 'Siswa'})</span>
+          </div>
+          <div class="flex md:hidden items-center gap-1.5 bg-emerald-50 text-emerald-800 border border-emerald-200 px-2.5 py-1 rounded-full text-[11px] font-bold shadow-2xs">
+            <span class="w-2 h-2 rounded-full ${state.currentUser.role === 'guru' ? 'bg-amber-500' : 'bg-emerald-500'}"></span>
+            <span>${state.currentUser.role === 'guru' ? 'Guru' : 'Siswa'}</span>
           </div>
         `;
       } else {
@@ -477,25 +481,25 @@ document.addEventListener('DOMContentLoaded', () => {
     return `
       <div class="space-y-8">
         <!-- Hero Banner with Arch Frame & Saymana aesthetic -->
-        <div class="relative bg-gradient-to-r from-emerald-900 via-emerald-800 to-teal-800 rounded-[2.5rem] p-6 sm:p-10 text-white overflow-hidden shadow-2xl border border-emerald-700">
-          <div class="absolute right-0 top-0 bottom-0 w-1/3 bg-[url('https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=600&q=80')] bg-cover bg-center opacity-20 mix-blend-overlay"></div>
+        <div class="relative bg-gradient-to-r from-emerald-900 via-emerald-800 to-teal-800 rounded-2xl sm:rounded-3xl lg:rounded-[2.5rem] p-5 sm:p-8 lg:p-10 text-white overflow-hidden shadow-xl sm:shadow-2xl border border-emerald-700">
+          <div class="absolute right-0 top-0 bottom-0 w-1/2 sm:w-1/3 bg-[url('https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=600&q=80')] bg-cover bg-center opacity-15 sm:opacity-20 mix-blend-overlay pointer-events-none"></div>
           <div class="relative z-10 max-w-2xl">
-            <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-3.5 py-1 rounded-full text-xs font-semibold text-emerald-200 mb-4 border border-white/10 font-arabic">
+            <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-3 py-1 rounded-full text-xs font-semibold text-emerald-200 mb-3 sm:mb-4 border border-white/10 font-arabic">
               <i class="fa-solid fa-leaf text-emerald-400"></i>
               <span>الوحدة الرابعة: الحفاظ على البيئة</span>
             </div>
-            <h1 class="text-3xl sm:text-5xl font-extrabold mb-3 leading-tight">
-              Selamat Datang, <span class="text-emerald-300 font-arabic">${state.currentUser.name}</span>!
+            <h1 class="text-xl sm:text-3xl lg:text-4xl font-extrabold mb-2.5 sm:mb-3 leading-snug break-words">
+              Selamat Datang, <span class="text-emerald-300 font-bold">${state.currentUser.name}</span>!
             </h1>
-            <p class="text-emerald-100 text-sm sm:text-base mb-6 leading-relaxed">
-              Media pembelajaran Bahasa Arab interaktif untuk memahami pentingnya menjaga dan melestarikan lingkungan (الحفاظ على البيئة) serta menguasai فِعْلُ الأَمْرِ dan فِعْلُ النَّهْيِ.
+            <p class="text-emerald-100 text-xs sm:text-sm lg:text-base mb-5 sm:mb-6 leading-relaxed">
+              Media pembelajaran Bahasa Arab interaktif untuk memahami pentingnya menjaga dan melestarikan lingkungan (<span dir="rtl" class="font-arabic font-semibold">الحفاظ على البيئة</span>) serta menguasai <span dir="rtl" class="font-arabic font-semibold">فِعْلُ الأَمْرِ</span> dan <span dir="rtl" class="font-arabic font-semibold">فِعْلُ النَّهْيِ</span>.
             </p>
-            <div class="flex flex-wrap gap-3">
-              <button onclick="document.querySelector('[data-view=mufradat]').click()" class="px-6 py-3 bg-emerald-400 hover:bg-emerald-300 text-emerald-950 font-bold rounded-2xl shadow-lg transition-all flex items-center gap-2">
+            <div class="flex flex-col sm:flex-row gap-2.5 sm:gap-3">
+              <button onclick="document.querySelector('[data-view=mufradat]').click()" class="w-full sm:w-auto px-5 sm:px-6 py-2.5 sm:py-3 bg-emerald-400 hover:bg-emerald-300 text-emerald-950 font-bold rounded-xl sm:rounded-2xl shadow-lg transition-all flex items-center justify-center gap-2 text-xs sm:text-sm">
                 <span>Mulai Belajar المفردات</span>
                 <i class="fa-solid fa-arrow-right"></i>
               </button>
-              <button onclick="document.querySelector('[data-view=quiz]').click()" class="px-6 py-3 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-2xl backdrop-blur-md border border-white/20 transition-all flex items-center gap-2">
+              <button onclick="document.querySelector('[data-view=quiz]').click()" class="w-full sm:w-auto px-5 sm:px-6 py-2.5 sm:py-3 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-xl sm:rounded-2xl backdrop-blur-md border border-white/20 transition-all flex items-center justify-center gap-2 text-xs sm:text-sm">
                 <i class="fa-solid fa-pen-nib"></i>
                 <span>Ikuti Kuis</span>
               </button>
@@ -503,45 +507,45 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
         </div>
 
-        <!-- Quick Stats Cards -->
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          <div class="bg-white p-5 rounded-2xl shadow-sm border border-emerald-100 flex items-center gap-4">
-            <div class="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-xl font-bold">
+        <!-- Quick Stats Cards (Mobile Responsive) -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-4">
+          <div class="bg-white p-3.5 sm:p-5 rounded-xl sm:rounded-2xl shadow-sm border border-emerald-100 flex items-center gap-2.5 sm:gap-4 min-w-0">
+            <div class="w-9 h-9 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-base sm:text-xl font-bold flex-shrink-0">
               <i class="fa-solid fa-book font-arabic"></i>
             </div>
-            <div>
-              <div class="text-2xl font-bold text-emerald-950">${ARABIC_DATA.vocabularies.length}</div>
-              <div class="text-xs text-emerald-600 font-medium">Total المفردات</div>
+            <div class="min-w-0">
+              <div class="text-lg sm:text-2xl font-bold text-emerald-950 truncate">${ARABIC_DATA.vocabularies.length}</div>
+              <div class="text-[10px] sm:text-xs text-emerald-600 font-medium truncate">Total المفردات</div>
             </div>
           </div>
 
-          <div class="bg-white p-5 rounded-2xl shadow-sm border border-emerald-100 flex items-center gap-4">
-            <div class="w-12 h-12 rounded-xl bg-teal-100 text-teal-700 flex items-center justify-center text-xl font-bold">
+          <div class="bg-white p-3.5 sm:p-5 rounded-xl sm:rounded-2xl shadow-sm border border-emerald-100 flex items-center gap-2.5 sm:gap-4 min-w-0">
+            <div class="w-9 h-9 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-teal-100 text-teal-700 flex items-center justify-center text-base sm:text-xl font-bold flex-shrink-0">
               <i class="fa-solid fa-file-lines"></i>
             </div>
-            <div>
-              <div class="text-2xl font-bold text-emerald-950">3</div>
-              <div class="text-xs text-emerald-600 font-medium">Paragraf القراءة</div>
+            <div class="min-w-0">
+              <div class="text-lg sm:text-2xl font-bold text-emerald-950 truncate">3</div>
+              <div class="text-[10px] sm:text-xs text-emerald-600 font-medium truncate">Paragraf القراءة</div>
             </div>
           </div>
 
-          <div class="bg-white p-5 rounded-2xl shadow-sm border border-emerald-100 flex items-center gap-4">
-            <div class="w-12 h-12 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center text-xl font-bold">
+          <div class="bg-white p-3.5 sm:p-5 rounded-xl sm:rounded-2xl shadow-sm border border-emerald-100 flex items-center gap-2.5 sm:gap-4 min-w-0">
+            <div class="w-9 h-9 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center text-base sm:text-xl font-bold flex-shrink-0">
               <i class="fa-solid fa-question"></i>
             </div>
-            <div>
-              <div class="text-2xl font-bold text-emerald-950">${ARABIC_DATA.quizzes.length}</div>
-              <div class="text-xs text-emerald-600 font-medium">Soal Kuis Interaktif</div>
+            <div class="min-w-0">
+              <div class="text-lg sm:text-2xl font-bold text-emerald-950 truncate">${ARABIC_DATA.quizzes.length}</div>
+              <div class="text-[10px] sm:text-xs text-emerald-600 font-medium truncate">Soal Kuis Interaktif</div>
             </div>
           </div>
 
-          <div class="bg-white p-5 rounded-2xl shadow-sm border border-emerald-100 flex items-center gap-4">
-            <div class="w-12 h-12 rounded-xl bg-emerald-700 text-white flex items-center justify-center text-xl font-bold">
+          <div class="bg-white p-3.5 sm:p-5 rounded-xl sm:rounded-2xl shadow-sm border border-emerald-100 flex items-center gap-2.5 sm:gap-4 min-w-0">
+            <div class="w-9 h-9 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-emerald-700 text-white flex items-center justify-center text-base sm:text-xl font-bold flex-shrink-0">
               <i class="fa-solid fa-trophy"></i>
             </div>
-            <div>
-              <div class="text-2xl font-bold text-emerald-950">${isGuru ? state.students.length : (state.quizSubmitted ? state.quizScore + ' Pts' : 'Belum')}</div>
-              <div class="text-xs text-emerald-600 font-medium">${isGuru ? 'Siswa Terdaftar' : 'Skor Kuis Anda'}</div>
+            <div class="min-w-0">
+              <div class="text-lg sm:text-2xl font-bold text-emerald-950 truncate">${isGuru ? state.students.length : (state.quizSubmitted ? state.quizScore + ' Pts' : 'Belum')}</div>
+              <div class="text-[10px] sm:text-xs text-emerald-600 font-medium truncate">${isGuru ? 'Siswa Terdaftar' : 'Skor Kuis Anda'}</div>
             </div>
           </div>
         </div>
@@ -556,47 +560,47 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
 
           <!-- Perintah / Misi Pembelajaran untuk Siswa -->
-          <div class="bg-gradient-to-r from-emerald-50 via-teal-50/80 to-emerald-100/70 border-2 border-emerald-300/80 rounded-3xl p-5 sm:p-6 shadow-sm">
-            <div class="flex items-start gap-4">
-              <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-600 to-teal-700 text-white flex items-center justify-center text-xl shadow-md flex-shrink-0">
+          <div class="bg-gradient-to-r from-emerald-50 via-teal-50/80 to-emerald-100/70 border-2 border-emerald-300/80 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-sm">
+            <div class="flex items-start gap-3 sm:gap-4">
+              <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-gradient-to-br from-emerald-600 to-teal-700 text-white flex items-center justify-center text-base sm:text-xl shadow-md flex-shrink-0">
                 <i class="fa-solid fa-bullhorn"></i>
               </div>
-              <div class="flex-1 space-y-2.5">
-                <div class="flex flex-wrap items-center gap-2">
-                  <span class="px-3 py-1 bg-emerald-600 text-white text-xs font-extrabold rounded-full tracking-wide uppercase shadow-sm">
+              <div class="flex-1 space-y-2 min-w-0">
+                <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                  <span class="px-2.5 py-0.5 sm:px-3 sm:py-1 bg-emerald-600 text-white text-[11px] sm:text-xs font-extrabold rounded-full tracking-wide uppercase shadow-sm">
                     <i class="fa-solid fa-tasks mr-1"></i> Perintah Siswa
                   </span>
-                  <span class="text-xs font-bold text-emerald-900 font-arabic bg-emerald-200/70 px-3 py-1 rounded-full">
+                  <span class="text-[11px] sm:text-xs font-bold text-emerald-900 font-arabic bg-emerald-200/70 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full">
                     مَهَمَّةُ التَّعَلُّمِ وَالتَّحَدِّيَاتِ
                   </span>
                 </div>
-                <h3 class="text-base sm:text-lg font-bold text-emerald-950">
+                <h3 class="text-sm sm:text-lg font-bold text-emerald-950 leading-snug">
                   Instruksi: Selesaikan Seluruh Tantangan di Setiap Menu Modul Pembelajaran!
                 </h3>
                 <p class="text-xs sm:text-sm text-emerald-800 leading-relaxed font-medium">
                   Kepada seluruh siswa, silakan pelajari secara tuntas dan selesaikan tantangan pada setiap menu modul di bawah ini:
                 </p>
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2.5 pt-1">
-                  <div class="flex items-center gap-2 p-2.5 bg-white/90 rounded-xl border border-emerald-200/80 text-xs text-emerald-900 font-medium shadow-2xs">
-                    <i class="fa-solid fa-circle-check text-emerald-600 text-sm"></i>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2 sm:gap-2.5 pt-1">
+                  <div class="flex items-center gap-2 p-2 sm:p-2.5 bg-white/90 rounded-xl border border-emerald-200/80 text-xs text-emerald-900 font-medium shadow-2xs">
+                    <i class="fa-solid fa-circle-check text-emerald-600 text-sm flex-shrink-0"></i>
                     <span>1. Hafalkan <strong>المفردات</strong></span>
                   </div>
-                  <div class="flex items-center gap-2 p-2.5 bg-white/90 rounded-xl border border-emerald-200/80 text-xs text-emerald-900 font-medium shadow-2xs">
-                    <i class="fa-solid fa-circle-check text-emerald-600 text-sm"></i>
+                  <div class="flex items-center gap-2 p-2 sm:p-2.5 bg-white/90 rounded-xl border border-emerald-200/80 text-xs text-emerald-900 font-medium shadow-2xs">
+                    <i class="fa-solid fa-circle-check text-emerald-600 text-sm flex-shrink-0"></i>
                     <span>2. Tuntaskan <strong>الاستماع</strong></span>
                   </div>
-                  <div class="flex items-center gap-2 p-2.5 bg-white/90 rounded-xl border border-emerald-200/80 text-xs text-emerald-900 font-medium shadow-2xs">
-                    <i class="fa-solid fa-circle-check text-emerald-600 text-sm"></i>
+                  <div class="flex items-center gap-2 p-2 sm:p-2.5 bg-white/90 rounded-xl border border-emerald-200/80 text-xs text-emerald-900 font-medium shadow-2xs">
+                    <i class="fa-solid fa-circle-check text-emerald-600 text-sm flex-shrink-0"></i>
                     <span>3. Pahami <strong>القراءة</strong></span>
                   </div>
-                  <div class="flex items-center gap-2 p-2.5 bg-white/90 rounded-xl border border-emerald-200/80 text-xs text-emerald-900 font-medium shadow-2xs">
-                    <i class="fa-solid fa-circle-check text-emerald-600 text-sm"></i>
+                  <div class="flex items-center gap-2 p-2 sm:p-2.5 bg-white/90 rounded-xl border border-emerald-200/80 text-xs text-emerald-900 font-medium shadow-2xs">
+                    <i class="fa-solid fa-circle-check text-emerald-600 text-sm flex-shrink-0"></i>
                     <span>4. Kuasai <strong>القواعد</strong></span>
                   </div>
                 </div>
-                <div class="flex items-center gap-2 text-xs text-emerald-700 pt-1 font-semibold">
-                  <i class="fa-solid fa-star text-amber-500"></i>
-                  <span>Lanjutkan juga tantangan <strong>الحوار (Percakapan)</strong>, <strong>Kuis Kahoot</strong>, dan <strong>Duel 1v1</strong> untuk mengumpulkan skor maksimal!</span>
+                <div class="flex items-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs text-emerald-700 pt-1 font-semibold">
+                  <i class="fa-solid fa-star text-amber-500 flex-shrink-0"></i>
+                  <span>Lanjutkan juga tantangan <strong>الحوار (Percakapan)</strong>, <strong>Kuis Kahoot</strong>, dan <strong>Duel 1v1</strong> untuk skor maksimal!</span>
                 </div>
               </div>
             </div>
@@ -978,7 +982,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return `
       <div class="space-y-8 max-w-5xl mx-auto">
         <!-- Main Card Container -->
-        <div class="bg-white rounded-[2.5rem] p-6 sm:p-10 border border-emerald-100 shadow-sm space-y-6">
+        <div class="bg-white rounded-2xl sm:rounded-3xl lg:rounded-[2.5rem] p-4 sm:p-8 lg:p-10 border border-emerald-100 shadow-sm space-y-5 sm:space-y-6">
           
           <!-- Header Banner -->
           <div class="border-b border-emerald-100 pb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -1327,7 +1331,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return `
       <div class="space-y-8 max-w-5xl mx-auto">
         <!-- Main Card Container -->
-        <div class="bg-white rounded-[2.5rem] p-6 sm:p-10 border border-emerald-100 shadow-sm space-y-6">
+        <div class="bg-white rounded-2xl sm:rounded-3xl lg:rounded-[2.5rem] p-4 sm:p-8 lg:p-10 border border-emerald-100 shadow-sm space-y-5 sm:space-y-6">
           
           <!-- Header Banner -->
           <div class="border-b border-emerald-100 pb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">

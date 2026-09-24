@@ -140,25 +140,25 @@
 
   <!-- Top Navigation Header -->
   <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-emerald-100 shadow-sm">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-2">
       
       <!-- Brand Logo -->
-      <div class="flex items-center gap-3">
-        <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-800 via-emerald-600 to-teal-600 text-white flex items-center justify-center text-xl shadow-lg shadow-emerald-700/20 border border-emerald-500/30">
+      <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
+        <div class="w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-gradient-to-tr from-emerald-800 via-emerald-600 to-teal-600 text-white flex items-center justify-center text-base sm:text-xl shadow-md shadow-emerald-700/20 border border-emerald-500/30 flex-shrink-0">
           <i class="fa-solid fa-seedling"></i>
         </div>
-        <div>
-          <h1 class="font-bold text-xl sm:text-2xl text-emerald-950 font-arabic">الحفاظ على البيئة</h1>
+        <div class="min-w-0">
+          <h1 class="font-bold text-base sm:text-xl md:text-2xl text-emerald-950 font-arabic whitespace-nowrap">الحفاظ على البيئة</h1>
         </div>
       </div>
 
       <!-- Header Right Controls -->
-      <div class="flex items-center gap-3">
+      <div class="flex items-center gap-2 sm:gap-3 flex-shrink-0">
         <!-- Active User Badge -->
         <div id="header-user-badge"></div>
 
         <!-- Hamburger Button (Tombol Humberger UI) -->
-        <button id="hamburger-btn" aria-label="Buka Menu" class="group flex items-center gap-2 px-3.5 py-2.5 bg-emerald-800 hover:bg-emerald-900 text-white rounded-2xl shadow-md transition-all active:scale-95">
+        <button id="hamburger-btn" aria-label="Buka Menu" class="group flex items-center gap-1.5 sm:gap-2 px-3 py-2 sm:px-3.5 sm:py-2.5 bg-emerald-800 hover:bg-emerald-900 text-white rounded-xl sm:rounded-2xl shadow-md transition-all active:scale-95">
           <span class="text-xs font-bold hidden sm:inline pl-1">Menu</span>
           <div class="w-6 h-5 flex flex-col justify-between items-center py-0.5">
             <span class="w-5 h-0.5 bg-white rounded-full transition-transform group-hover:scale-x-110"></span>
@@ -200,7 +200,7 @@
   </aside>
 
   <!-- Main Content View Area -->
-  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <main class="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8">
     <div id="app-content">
       <!-- Rendered dynamically by app.js -->
     </div>
