@@ -343,15 +343,15 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       navItemsContainer.innerHTML = navs.map(item => `
-        <button data-view="${item.id}" class="nav-item-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${state.currentView === item.id ? 'bg-emerald-700 text-white shadow-md' : 'text-emerald-900 hover:bg-emerald-50'}">
-          <i class="fa-solid ${item.icon} w-5 text-center ${state.currentView === item.id ? 'text-white' : 'text-emerald-600'}"></i>
-          <span class="font-arabic font-bold text-base">${item.label}</span>
+        <button data-view="${item.id}" class="nav-item-btn w-full flex items-center justify-end gap-3 px-4 py-3 rounded-xl font-medium transition-all ${state.currentView === item.id ? 'bg-emerald-700 text-white shadow-md' : 'text-emerald-900 hover:bg-emerald-50'}">
+          <span class="font-arabic font-bold text-base text-right">${item.label}</span>
+          <i class="fa-solid ${item.icon} w-6 text-center shrink-0 ${state.currentView === item.id ? 'text-white' : 'text-emerald-600'}"></i>
         </button>
       `).join('') + `
         <div class="pt-4 mt-4 border-t border-emerald-100">
-          <button id="logout-btn" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-red-600 hover:bg-red-50 transition-all">
-            <i class="fa-solid fa-right-from-bracket w-5 text-center"></i>
-            <span>Keluar (Logout)</span>
+          <button id="logout-btn" class="w-full flex items-center justify-end gap-3 px-4 py-3 rounded-xl font-medium text-red-600 hover:bg-red-50 transition-all">
+            <span class="text-sm font-semibold">تسجيل الخروج (Logout)</span>
+            <i class="fa-solid fa-right-from-bracket w-6 text-center shrink-0"></i>
           </button>
         </div>
       `;
