@@ -1,5 +1,215 @@
 // App logic for Media Pembelajaran Bahasa Arab Kelas 9: الحفاظ على البيئة
 
+// Ultra-Responsive Native Arabic Speech Engine (Desktop & Mobile Optimized)
+(function() {
+  const synth = window.speechSynthesis;
+  let cachedVoices = [];
+  let currentUtterance = null; // Retain reference to prevent iOS Safari GC bug
+  let audioQueue = [];
+  let isPlayingAudio = false;
+
+  function loadVoices() {
+    if (synth) {
+      try {
+        const v = synth.getVoices();
+        if (v && v.length > 0) cachedVoices = v;
+      } catch (e) {}
+    }
+  }
+
+  if (synth) {
+    loadVoices();
+    if (synth.onvoiceschanged !== undefined) {
+      synth.onvoiceschanged = loadVoices;
+    }
+  }
+
+  function getBestArabicVoice() {
+    const voices = (cachedVoices && cachedVoices.length > 0) ? cachedVoices : (synth ? synth.getVoices() : []);
+    if (!voices || voices.length === 0) return null;
+    // 1. Prioritize Saudi standard Fusha (ar-SA)
+    let v = voices.find(v => v.lang && (v.lang === 'ar-SA' || v.lang === 'ar_SA'));
+    // 2. Any Arabic regional voice (ar-EG, ar-AE, etc.)
+    if (!v) v = voices.find(v => v.lang && v.lang.toLowerCase().startsWith('ar'));
+    // 3. Voice with Arabic in name
+    if (!v) v = voices.find(v => v.name && (v.name.toLowerCase().includes('arab') || v.name.includes('العربية')));
+    return v;
+  }
+
+  // Pre-unlock audio on mobile touch (iOS Safari & Android Chrome)
+  let audioUnlocked = false;
+  function unlockMobileAudio() {
+    if (audioUnlocked) return;
+    audioUnlocked = true;
+    if (synth) {
+      try {
+        const dummy = new SpeechSynthesisUtterance(' ');
+        dummy.volume = 0.01;
+        synth.speak(dummy);
+      } catch (e) {}
+    }
+  }
+  window.addEventListener('touchstart', unlockMobileAudio, { passive: true, once: true });
+  window.addEventListener('touchend', unlockMobileAudio, { passive: true, once: true });
+  window.addEventListener('click', unlockMobileAudio, { passive: true, once: true });
+
+  function stopArabicAudio() {
+    isPlayingAudio = false;
+    audioQueue = [];
+    if (synth) {
+      try {
+        synth.cancel();
+      } catch (e) {}
+    }
+    currentUtterance = null;
+    updateAudioUI(false);
+  }
+
+  function updateAudioUI(playing) {
+    const playAllBtn = document.getElementById('play-qiraah-all-btn');
+    if (playAllBtn) {
+      if (playing) {
+        playAllBtn.innerHTML = `
+          <i class="fa-solid fa-circle-stop text-amber-300 animate-pulse"></i>
+          <span>Hentikan Audio</span>
+        `;
+        playAllBtn.className = "px-4 py-2.5 bg-rose-700 hover:bg-rose-800 text-white rounded-2xl text-xs font-bold shadow-md transition-all flex items-center gap-2";
+      } else {
+        playAllBtn.innerHTML = `
+          <i class="fa-solid fa-volume-high"></i>
+          <span>Putar Audio Teks</span>
+        `;
+        playAllBtn.className = "px-4 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-2xl text-xs font-bold shadow-md transition-all flex items-center gap-2";
+      }
+    }
+  }
+
+  function splitArabicSentences(text) {
+    if (!text) return [];
+    // Clean string but preserve authentic Arabic diacritics / tashkeel
+    const clean = text.replace(/[\u060C\u061F\.\,\:\;\!\?\"\'\(\)]/g, ' ').trim();
+    // Split on Arabic and standard sentence delimiters
+    const rawChunks = text.split(/[\.\!\?\n\:\;\u061F]+/).map(s => s.trim()).filter(s => s.length > 0);
+    const result = [];
+    for (const chunk of rawChunks) {
+      if (chunk.length <= 160) {
+        result.push(chunk);
+      } else {
+        const parts = chunk.split(/[\u060C\,]+/).map(s => s.trim()).filter(s => s.length > 0);
+        for (const p of parts) {
+          if (p.length <= 160) {
+            result.push(p);
+          } else {
+            const words = p.split(/\s+/);
+            let buf = '';
+            for (const w of words) {
+              if ((buf + ' ' + w).length <= 160) {
+                buf = buf ? buf + ' ' + w : w;
+              } else {
+                if (buf) result.push(buf);
+                buf = w;
+              }
+            }
+            if (buf) result.push(buf);
+          }
+        }
+      }
+    }
+    return result.length > 0 ? result : [text.substring(0, 160)];
+  }
+
+  function speakArabic(text, customRate, callerBtn) {
+    if (!text || text.trim() === '') return;
+
+    unlockMobileAudio();
+
+    if (isPlayingAudio) {
+      stopArabicAudio();
+      return;
+    }
+
+    stopArabicAudio();
+    isPlayingAudio = true;
+    updateAudioUI(true);
+
+    // Instant click feedback
+    if (callerBtn && callerBtn.classList) {
+      callerBtn.classList.add('scale-90', 'ring-2', 'ring-emerald-400');
+      setTimeout(() => {
+        callerBtn.classList.remove('scale-90', 'ring-2', 'ring-emerald-400');
+      }, 250);
+    }
+
+    const chunks = splitArabicSentences(text);
+    if (chunks.length === 0) {
+      stopArabicAudio();
+      return;
+    }
+
+    audioQueue = [...chunks];
+
+    function playNext() {
+      if (!isPlayingAudio || audioQueue.length === 0) {
+        stopArabicAudio();
+        return;
+      }
+
+      const chunk = audioQueue.shift();
+      if (!chunk || !chunk.trim()) {
+        playNext();
+        return;
+      }
+
+      if (synth) {
+        try {
+          if (synth.speaking || synth.pending) {
+            synth.cancel();
+          }
+
+          const utterance = new SpeechSynthesisUtterance(chunk);
+          utterance.lang = 'ar-SA';
+          utterance.rate = customRate || 0.85;
+
+          const voice = getBestArabicVoice();
+          if (voice) utterance.voice = voice;
+
+          currentUtterance = utterance;
+
+          let finished = false;
+          const onFinish = () => {
+            if (finished) return;
+            finished = true;
+            if (audioQueue.length > 0) {
+              setTimeout(playNext, 120);
+            } else {
+              stopArabicAudio();
+            }
+          };
+
+          utterance.onend = onFinish;
+          utterance.onerror = (e) => {
+            console.warn('Utterance error:', e);
+            onFinish();
+          };
+
+          synth.speak(utterance);
+          if (synth.paused) synth.resume();
+          return;
+        } catch (e) {
+          console.warn('Synth error:', e);
+        }
+      }
+
+      stopArabicAudio();
+    }
+
+    playNext();
+  }
+
+  window.speakArabic = speakArabic;
+  window.stopArabicAudio = stopArabicAudio;
+})();
+
 document.addEventListener('DOMContentLoaded', () => {
   // Global State
   const state = {
@@ -99,292 +309,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const hamburgerBtn = document.getElementById('hamburger-btn');
   const closeDrawerBtn = document.getElementById('close-drawer-btn');
 
-  // Initialize High-Performance Arabic Audio Engine (Desktop & Mobile Optimized)
-  const synth = window.speechSynthesis;
-  let cachedVoices = [];
-  let activeAudio = null;
-  let audioQueue = [];
-  let isPlayingAudio = false;
-  const audioCache = new Map(); // In-memory cache for ultra-fast instant replay
 
-  // Audio gesture unlocker for Mobile (iOS Safari & Android Chrome)
-  let audioUnlocked = false;
-  function unlockMobileAudio() {
-    if (audioUnlocked) return;
-    audioUnlocked = true;
-
-    // 1. Unlock HTML5 Audio via silent buffer
-    try {
-      const silent = new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA');
-      silent.volume = 0.01;
-      const p = silent.play();
-      if (p !== undefined) {
-        p.then(() => {
-          silent.pause();
-          silent.currentTime = 0;
-        }).catch(() => {});
-      }
-    } catch (e) {}
-
-    // 2. Prime Web Speech Synthesis on iOS Safari
-    if (synth) {
-      try {
-        const dummy = new SpeechSynthesisUtterance(' ');
-        dummy.volume = 0.01;
-        dummy.rate = 2;
-        synth.speak(dummy);
-      } catch (e) {}
-    }
-
-    window.removeEventListener('touchstart', unlockMobileAudio);
-    window.removeEventListener('touchend', unlockMobileAudio);
-    window.removeEventListener('click', unlockMobileAudio);
-  }
-  window.addEventListener('touchstart', unlockMobileAudio, { passive: true, once: true });
-  window.addEventListener('touchend', unlockMobileAudio, { passive: true, once: true });
-  window.addEventListener('click', unlockMobileAudio, { passive: true, once: true });
-
-  function loadVoices() {
-    if (synth) {
-      try {
-        cachedVoices = synth.getVoices();
-      } catch (e) {}
-    }
-  }
-
-  if (synth) {
-    loadVoices();
-    if (synth.onvoiceschanged !== undefined) {
-      synth.onvoiceschanged = loadVoices;
-    }
-  }
-
-  function stopArabicAudio() {
-    isPlayingAudio = false;
-    audioQueue = [];
-    if (activeAudio) {
-      try {
-        activeAudio.pause();
-        activeAudio.currentTime = 0;
-      } catch (e) {}
-      activeAudio = null;
-    }
-    if (synth) {
-      try {
-        synth.cancel();
-      } catch (e) {}
-    }
-    updateAudioUI(false);
-  }
-
-  function updateAudioUI(playing) {
-    const playAllBtn = document.getElementById('play-qiraah-all-btn');
-    if (playAllBtn) {
-      if (playing) {
-        playAllBtn.innerHTML = `
-          <i class="fa-solid fa-circle-stop text-amber-300 animate-pulse"></i>
-          <span>Hentikan Audio</span>
-        `;
-        playAllBtn.className = "px-4 py-2.5 bg-rose-700 hover:bg-rose-800 text-white rounded-2xl text-xs font-bold shadow-md transition-all flex items-center gap-2";
-      } else {
-        playAllBtn.innerHTML = `
-          <i class="fa-solid fa-volume-high"></i>
-          <span>Putar Audio Teks</span>
-        `;
-        playAllBtn.className = "px-4 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-2xl text-xs font-bold shadow-md transition-all flex items-center gap-2";
-      }
-    }
-  }
-
-  function splitArabicSentences(text) {
-    if (!text) return [];
-    // Clean string but preserve authentic Arabic diacritics / tashkeel
-    const clean = text.replace(/[\u060C\u061F\.\,\:\;\!\?\"\'\(\)]/g, ' ').trim();
-    // Split on Arabic and standard sentence delimiters
-    const rawChunks = text.split(/[\.\!\?\n\:\;\u061F]+/).map(s => s.trim()).filter(s => s.length > 0);
-    const result = [];
-    for (const chunk of rawChunks) {
-      if (chunk.length <= 160) {
-        result.push(chunk);
-      } else {
-        const parts = chunk.split(/[\u060C\,]+/).map(s => s.trim()).filter(s => s.length > 0);
-        for (const p of parts) {
-          if (p.length <= 160) {
-            result.push(p);
-          } else {
-            const words = p.split(/\s+/);
-            let buf = '';
-            for (const w of words) {
-              if ((buf + ' ' + w).length <= 160) {
-                buf = buf ? buf + ' ' + w : w;
-              } else {
-                if (buf) result.push(buf);
-                buf = w;
-              }
-            }
-            if (buf) result.push(buf);
-          }
-        }
-      }
-    }
-    return result.length > 0 ? result : [text.substring(0, 160)];
-  }
-
-  function prefetchAudio(text) {
-    if (!text || !text.trim()) return;
-    try {
-      const clean = text.replace(/[\u060C\u061F\.\,\:\;\!\?\"\'\(\)]/g, ' ').trim();
-      const chunk = clean.substring(0, 160);
-      const cacheKey = `${chunk}_${state.audioSpeed || 0.85}`;
-      if (audioCache.has(cacheKey)) return;
-      const ttsUrl = `/api/tts?q=${encodeURIComponent(chunk)}&tl=ar`;
-      const audio = new Audio();
-      audio.preload = 'auto';
-      audio.src = ttsUrl;
-      audioCache.set(cacheKey, audio);
-    } catch (e) {}
-  }
-
-  function playSingleChunk(chunk, onEnded) {
-    if (!isPlayingAudio) return;
-
-    const clean = chunk.replace(/[\u060C\u061F\.\,\:\;\!\?\"\'\(\)]/g, ' ').trim();
-    if (!clean) {
-      if (onEnded) onEnded();
-      return;
-    }
-
-    const cacheKey = `${clean}_${state.audioSpeed || 0.85}`;
-    let audio = audioCache.get(cacheKey);
-
-    let hasEnded = false;
-    let fallbackTimeout = null;
-
-    const finish = () => {
-      if (fallbackTimeout) clearTimeout(fallbackTimeout);
-      if (hasEnded) return;
-      hasEnded = true;
-      if (onEnded) onEnded();
-    };
-
-    if (!audio) {
-      const ttsUrl = `/api/tts?q=${encodeURIComponent(clean)}&tl=ar`;
-      audio = new Audio(ttsUrl);
-      audioCache.set(cacheKey, audio);
-    } else {
-      audio.currentTime = 0;
-    }
-
-    activeAudio = audio;
-    audio.playbackRate = state.audioSpeed || 0.85;
-
-    audio.onended = finish;
-    audio.onerror = () => {
-      console.warn("Audio proxy failed, switching to instant WebSpeech fallback");
-      if (fallbackTimeout) clearTimeout(fallbackTimeout);
-      speakWithWebSpeech(clean, finish);
-    };
-
-    // Fast fallback timer: If audio doesn't start within 1.2s, fallback immediately to WebSpeech
-    fallbackTimeout = setTimeout(() => {
-      if (audio.paused && !hasEnded) {
-        console.warn("Audio timeout (1.2s), falling back to WebSpeech");
-        try { audio.pause(); } catch(e) {}
-        speakWithWebSpeech(clean, finish);
-      }
-    }, 1200);
-
-    const playPromise = audio.play();
-    if (playPromise !== undefined) {
-      playPromise.catch(err => {
-        console.warn("Audio play() blocked/failed, switching to WebSpeech:", err);
-        if (fallbackTimeout) clearTimeout(fallbackTimeout);
-        speakWithWebSpeech(clean, finish);
-      });
-    }
-  }
-
-  function speakWithWebSpeech(cleanText, onEnded) {
-    if (!isPlayingAudio) return;
-    if (!synth) {
-      if (onEnded) onEnded();
-      return;
-    }
-
-    try {
-      synth.cancel();
-      const voices = cachedVoices.length > 0 ? cachedVoices : synth.getVoices();
-      const arabicVoice = voices.find(v => v.lang && v.lang.toLowerCase().includes('ar'));
-
-      const utterance = new SpeechSynthesisUtterance(cleanText);
-      utterance.lang = 'ar-SA';
-      utterance.rate = state.audioSpeed || 0.85;
-      if (arabicVoice) utterance.voice = arabicVoice;
-
-      let finished = false;
-      utterance.onend = () => {
-        if (finished) return;
-        finished = true;
-        if (onEnded) onEnded();
-      };
-      utterance.onerror = (e) => {
-        console.warn("SpeechSynthesis utterance error:", e);
-        if (finished) return;
-        finished = true;
-        if (onEnded) onEnded();
-      };
-
-      synth.speak(utterance);
-      if (synth.paused) synth.resume();
-    } catch (e) {
-      console.warn("SpeechSynthesis exception:", e);
-      if (onEnded) onEnded();
-    }
-  }
-
-  function speakArabic(text, customRate, callerBtn) {
-    if (!text || text.trim() === '') return;
-
-    // Ensure mobile audio is primed on every speak click
-    unlockMobileAudio();
-
-    if (isPlayingAudio) {
-      stopArabicAudio();
-      return;
-    }
-
-    stopArabicAudio();
-    isPlayingAudio = true;
-    updateAudioUI(true);
-
-    // Instant visual click feedback if button element provided
-    if (callerBtn && callerBtn.classList) {
-      callerBtn.classList.add('scale-95', 'ring-2', 'ring-emerald-400');
-      setTimeout(() => {
-        callerBtn.classList.remove('scale-95', 'ring-2', 'ring-emerald-400');
-      }, 300);
-    }
-
-    const chunks = splitArabicSentences(text);
-    audioQueue = [...chunks];
-
-    function playNext() {
-      if (!isPlayingAudio || audioQueue.length === 0) {
-        stopArabicAudio();
-        return;
-      }
-      const nextChunk = audioQueue.shift();
-      playSingleChunk(nextChunk, () => {
-        setTimeout(playNext, 180);
-      });
-    }
-
-    playNext();
-  }
-
-  window.speakArabic = speakArabic;
-  window.stopArabicAudio = stopArabicAudio;
-  window.prefetchAudio = prefetchAudio;
 
   // Drawer Controls
   function toggleDrawer(open) {
