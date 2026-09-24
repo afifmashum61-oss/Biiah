@@ -2371,38 +2371,38 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
     }
 
-    // CASE 3: KAHOOT LIVE GAMEPLAY QUESTION STAGE (KAHOOT STAGE)
+    // CASE 3: KAHOOT LIVE GAMEPLAY QUESTION STAGE (COMPACT SINGLE SCREEN)
     return `
-      <div class="max-w-4xl mx-auto space-y-6">
+      <div class="max-w-4xl mx-auto space-y-2.5 sm:space-y-4">
         
-        <!-- Kahoot Stage Top Scoreboard Bar -->
-        <div class="bg-gradient-to-r from-purple-950 via-indigo-900 to-purple-950 p-4 sm:p-5 rounded-3xl border-2 border-purple-500/30 text-white shadow-xl flex items-center justify-between gap-3">
+        <!-- Kahoot Stage Top Scoreboard Bar (Compact) -->
+        <div class="bg-gradient-to-r from-purple-950 via-indigo-900 to-purple-950 px-3 py-2 sm:px-5 sm:py-2.5 rounded-2xl border border-purple-500/30 text-white shadow-md flex items-center justify-between gap-2">
           
           <!-- Question Pill Badge -->
-          <div class="flex items-center gap-2">
-            <span class="px-4 py-1.5 bg-purple-800 text-purple-200 rounded-full text-xs font-extrabold border border-purple-600 shadow-inner">
-              Soal ${state.quizIndex + 1} / ${quizzes.length}
+          <div class="flex items-center gap-1.5 sm:gap-2">
+            <span class="px-3 py-1 bg-purple-800 text-purple-200 rounded-full text-xs font-bold border border-purple-600 shadow-inner">
+              Soal ${state.quizIndex + 1}/${quizzes.length}
             </span>
-            <button onclick="speakArabic('${currentQ.question.replace(/\n/g, ' ')}')" class="p-2 bg-white/10 hover:bg-white/20 text-white rounded-xl text-xs transition-all border border-white/10" title="Baca Soal">
+            <button onclick="speakArabic('${currentQ.question.replace(/\n/g, ' ')}')" class="p-1.5 sm:p-2 bg-white/10 hover:bg-white/20 text-white rounded-xl text-xs transition-all border border-white/10" title="Baca Soal">
               <i class="fa-solid fa-volume-high"></i>
             </button>
           </div>
 
           <!-- Circular Live Countdown Timer Gauge -->
           <div class="flex items-center gap-2">
-            <div class="relative w-12 h-12 flex items-center justify-center rounded-full bg-purple-950 border-3 ${state.kahootTimeLeft <= 5 ? 'border-red-500 animate-ping' : 'border-yellow-400'} shadow-lg">
-              <span class="kahoot-stage-timer text-xl font-extrabold font-mono ${state.kahootTimeLeft <= 5 ? 'text-red-400' : 'text-yellow-300'}">${state.kahootTimeLeft}</span>
+            <div class="relative w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-full bg-purple-950 border-2 ${state.kahootTimeLeft <= 5 ? 'border-red-500 animate-ping' : 'border-yellow-400'} shadow-md">
+              <span class="kahoot-stage-timer text-sm sm:text-base font-extrabold font-mono ${state.kahootTimeLeft <= 5 ? 'text-red-400' : 'text-yellow-300'}">${state.kahootTimeLeft}</span>
             </div>
           </div>
 
           <!-- Points & Streak Badges -->
-          <div class="flex items-center gap-2 sm:gap-3">
-            <div class="px-3.5 py-1.5 bg-yellow-400/20 text-yellow-300 rounded-xl text-xs font-extrabold border border-yellow-400/40 flex items-center gap-1.5">
+          <div class="flex items-center gap-1.5 sm:gap-2">
+            <div class="px-2.5 py-1 bg-yellow-400/20 text-yellow-300 rounded-xl text-xs font-bold border border-yellow-400/40 flex items-center gap-1">
               <span>⭐</span>
-              <span class="font-mono text-sm">${state.kahootPoints.toLocaleString()}</span>
+              <span class="font-mono text-xs sm:text-sm">${state.kahootPoints.toLocaleString()}</span>
             </div>
             ${state.kahootStreak > 0 ? `
-              <div class="px-3.5 py-1.5 bg-orange-500/20 text-orange-400 rounded-xl text-xs font-extrabold border border-orange-500/40 hidden sm:flex items-center gap-1.5 animate-pulse">
+              <div class="px-2 py-1 bg-orange-500/20 text-orange-400 rounded-xl text-xs font-bold border border-orange-500/40 hidden sm:flex items-center gap-1 animate-pulse">
                 <span>🔥</span>
                 <span class="font-mono">${state.kahootStreak}x</span>
               </div>
@@ -2411,62 +2411,62 @@ document.addEventListener('DOMContentLoaded', () => {
 
         </div>
 
-        <!-- Main Kahoot Stage Question Card -->
-        <div class="bg-gradient-to-br from-indigo-950 via-purple-950 to-slate-950 rounded-[2.5rem] p-6 sm:p-10 border-4 border-purple-500/30 text-white shadow-2xl space-y-8 relative overflow-hidden">
+        <!-- Main Kahoot Stage Question Card (Compact Single Screen) -->
+        <div class="bg-gradient-to-br from-indigo-950 via-purple-950 to-slate-950 rounded-2xl sm:rounded-3xl p-3 sm:p-5 border-2 border-purple-500/40 text-white shadow-xl space-y-2.5 sm:space-y-4 relative overflow-hidden">
           
-          <!-- Question Container -->
-          <div class="bg-white/10 backdrop-blur-md p-6 sm:p-8 rounded-3xl border border-white/15 text-center shadow-inner space-y-2">
-            <span class="text-xs font-bold uppercase tracking-widest text-purple-300 block font-sans">السُّؤَالُ (Pertanyaan):</span>
-            <h2 class="text-3xl sm:text-4xl font-extrabold font-arabic text-yellow-300 leading-loose text-center dir-rtl drop-shadow-md whitespace-pre-line">
+          <!-- Compact Question Container -->
+          <div class="bg-white/10 backdrop-blur-md px-3.5 py-2.5 sm:px-6 sm:py-3.5 rounded-xl sm:rounded-2xl border border-white/15 text-center shadow-inner">
+            <span class="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-purple-300 block font-sans mb-1">السُّؤَالُ (Pertanyaan):</span>
+            <h2 class="text-base sm:text-xl md:text-2xl font-bold font-arabic text-yellow-300 leading-snug sm:leading-relaxed text-center dir-rtl drop-shadow-sm whitespace-pre-line">
               ${currentQ.question}
             </h2>
           </div>
 
-          <!-- 4 Iconic Kahoot 2x2 Answer Cards Grid -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
+          <!-- 4 Iconic Kahoot 2x2 Answer Cards Grid (Fit on Single Screen) -->
+          <div class="grid grid-cols-2 gap-2 sm:gap-3.5">
             
             <!-- Red Triangle Card (Option 0 - أ) -->
-            <button data-opt="0" class="kahoot-card-btn group bg-gradient-to-r from-red-600 via-red-600 to-rose-700 hover:from-red-500 hover:to-rose-600 text-white p-5 sm:p-6 rounded-3xl border-2 border-red-300/40 shadow-xl hover:shadow-red-500/50 transform hover:scale-[1.02] transition-all flex items-center justify-between gap-4 text-right">
-              <div class="w-10 h-10 rounded-2xl bg-black/20 group-hover:bg-white/20 text-white flex items-center justify-center text-lg font-bold font-arabic shrink-0 shadow-inner">
+            <button data-opt="0" class="kahoot-card-btn group bg-gradient-to-r from-red-600 via-red-600 to-rose-700 hover:from-red-500 hover:to-rose-600 text-white p-2.5 sm:p-4 rounded-xl sm:rounded-2xl border border-red-300/40 shadow-md hover:shadow-red-500/40 transform hover:scale-[1.01] active:scale-95 transition-all flex items-center justify-between gap-1.5 sm:gap-3 text-right min-h-[56px] sm:min-h-[72px]">
+              <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl bg-black/25 group-hover:bg-white/20 text-white flex items-center justify-center text-xs sm:text-sm font-bold font-arabic shrink-0 shadow-inner">
                 أ
               </div>
-              <span class="text-2xl sm:text-3xl font-extrabold font-arabic flex-1 text-right leading-snug drop-shadow">
+              <span class="text-xs sm:text-base md:text-lg font-bold font-arabic flex-1 text-right leading-tight sm:leading-snug drop-shadow-sm line-clamp-2">
                 ${currentQ.options[0]}
               </span>
-              <i class="fa-solid fa-play -rotate-90 text-2xl text-red-200 group-hover:scale-110 transition-transform shrink-0"></i>
+              <i class="fa-solid fa-play -rotate-90 text-sm sm:text-lg text-red-200 group-hover:scale-110 transition-transform shrink-0 opacity-80"></i>
             </button>
 
             <!-- Blue Diamond Card (Option 1 - ب) -->
-            <button data-opt="1" class="kahoot-card-btn group bg-gradient-to-r from-blue-600 via-blue-600 to-indigo-700 hover:from-blue-500 hover:to-indigo-600 text-white p-5 sm:p-6 rounded-3xl border-2 border-blue-300/40 shadow-xl hover:shadow-blue-500/50 transform hover:scale-[1.02] transition-all flex items-center justify-between gap-4 text-right">
-              <div class="w-10 h-10 rounded-2xl bg-black/20 group-hover:bg-white/20 text-white flex items-center justify-center text-lg font-bold font-arabic shrink-0 shadow-inner">
+            <button data-opt="1" class="kahoot-card-btn group bg-gradient-to-r from-blue-600 via-blue-600 to-indigo-700 hover:from-blue-500 hover:to-indigo-600 text-white p-2.5 sm:p-4 rounded-xl sm:rounded-2xl border border-blue-300/40 shadow-md hover:shadow-blue-500/40 transform hover:scale-[1.01] active:scale-95 transition-all flex items-center justify-between gap-1.5 sm:gap-3 text-right min-h-[56px] sm:min-h-[72px]">
+              <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl bg-black/25 group-hover:bg-white/20 text-white flex items-center justify-center text-xs sm:text-sm font-bold font-arabic shrink-0 shadow-inner">
                 ب
               </div>
-              <span class="text-2xl sm:text-3xl font-extrabold font-arabic flex-1 text-right leading-snug drop-shadow">
+              <span class="text-xs sm:text-base md:text-lg font-bold font-arabic flex-1 text-right leading-tight sm:leading-snug drop-shadow-sm line-clamp-2">
                 ${currentQ.options[1]}
               </span>
-              <i class="fa-solid fa-diamond text-2xl text-blue-200 group-hover:scale-110 transition-transform shrink-0"></i>
+              <i class="fa-solid fa-diamond text-sm sm:text-lg text-blue-200 group-hover:scale-110 transition-transform shrink-0 opacity-80"></i>
             </button>
 
             <!-- Yellow Circle Card (Option 2 - ج) -->
-            <button data-opt="2" class="kahoot-card-btn group bg-gradient-to-r from-amber-500 via-amber-500 to-yellow-600 hover:from-amber-400 hover:to-yellow-500 text-white p-5 sm:p-6 rounded-3xl border-2 border-amber-300/40 shadow-xl hover:shadow-amber-500/50 transform hover:scale-[1.02] transition-all flex items-center justify-between gap-4 text-right">
-              <div class="w-10 h-10 rounded-2xl bg-black/20 group-hover:bg-white/20 text-white flex items-center justify-center text-lg font-bold font-arabic shrink-0 shadow-inner">
+            <button data-opt="2" class="kahoot-card-btn group bg-gradient-to-r from-amber-500 via-amber-500 to-yellow-600 hover:from-amber-400 hover:to-yellow-500 text-white p-2.5 sm:p-4 rounded-xl sm:rounded-2xl border border-amber-300/40 shadow-md hover:shadow-amber-500/40 transform hover:scale-[1.01] active:scale-95 transition-all flex items-center justify-between gap-1.5 sm:gap-3 text-right min-h-[56px] sm:min-h-[72px]">
+              <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl bg-black/25 group-hover:bg-white/20 text-white flex items-center justify-center text-xs sm:text-sm font-bold font-arabic shrink-0 shadow-inner">
                 ج
               </div>
-              <span class="text-2xl sm:text-3xl font-extrabold font-arabic flex-1 text-right leading-snug drop-shadow">
+              <span class="text-xs sm:text-base md:text-lg font-bold font-arabic flex-1 text-right leading-tight sm:leading-snug drop-shadow-sm line-clamp-2">
                 ${currentQ.options[2]}
               </span>
-              <i class="fa-solid fa-circle text-2xl text-amber-100 group-hover:scale-110 transition-transform shrink-0"></i>
+              <i class="fa-solid fa-circle text-sm sm:text-lg text-amber-100 group-hover:scale-110 transition-transform shrink-0 opacity-80"></i>
             </button>
 
             <!-- Green Square Card (Option 3 - د) -->
-            <button data-opt="3" class="kahoot-card-btn group bg-gradient-to-r from-emerald-600 via-emerald-600 to-teal-700 hover:from-emerald-500 hover:to-teal-600 text-white p-5 sm:p-6 rounded-3xl border-2 border-emerald-300/40 shadow-xl hover:shadow-emerald-500/50 transform hover:scale-[1.02] transition-all flex items-center justify-between gap-4 text-right">
-              <div class="w-10 h-10 rounded-2xl bg-black/20 group-hover:bg-white/20 text-white flex items-center justify-center text-lg font-bold font-arabic shrink-0 shadow-inner">
+            <button data-opt="3" class="kahoot-card-btn group bg-gradient-to-r from-emerald-600 via-emerald-600 to-teal-700 hover:from-emerald-500 hover:to-teal-600 text-white p-2.5 sm:p-4 rounded-xl sm:rounded-2xl border border-emerald-300/40 shadow-md hover:shadow-emerald-500/40 transform hover:scale-[1.01] active:scale-95 transition-all flex items-center justify-between gap-1.5 sm:gap-3 text-right min-h-[56px] sm:min-h-[72px]">
+              <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl bg-black/25 group-hover:bg-white/20 text-white flex items-center justify-center text-xs sm:text-sm font-bold font-arabic shrink-0 shadow-inner">
                 د
               </div>
-              <span class="text-2xl sm:text-3xl font-extrabold font-arabic flex-1 text-right leading-snug drop-shadow">
+              <span class="text-xs sm:text-base md:text-lg font-bold font-arabic flex-1 text-right leading-tight sm:leading-snug drop-shadow-sm line-clamp-2">
                 ${currentQ.options[3]}
               </span>
-              <i class="fa-solid fa-square text-2xl text-emerald-200 group-hover:scale-110 transition-transform shrink-0"></i>
+              <i class="fa-solid fa-square text-sm sm:text-lg text-emerald-200 group-hover:scale-110 transition-transform shrink-0 opacity-80"></i>
             </button>
 
           </div>
