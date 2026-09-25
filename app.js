@@ -2113,48 +2113,48 @@ document.addEventListener('DOMContentLoaded', () => {
 
         <!-- MAIN VIEW MODE CONTENT -->
         ${isChatMode ? `
-          <!-- MODE 1: CHAT BUBBLES VIEW -->
-          <div class="bg-gradient-to-b from-emerald-50/30 via-white to-emerald-50/20 p-6 sm:p-8 rounded-[2.5rem] border border-emerald-100 shadow-inner space-y-6">
+          <!-- PERCAKAPAN BUBBLE VIEW (COMPACT & PROPORTIONAL) -->
+          <div class="bg-gradient-to-b from-emerald-50/20 via-white to-emerald-50/10 p-4 sm:p-5 rounded-3xl border border-emerald-100 shadow-inner space-y-3.5">
             ${currentDialogue.lines.map((line, idx) => {
               const isTeacher = line.speaker.includes('أُسْتَاذُ');
               const isEven = idx % 2 === 0;
               const styleClass = BUBBLE_STYLES[line.bubbleColor] || BUBBLE_STYLES.emerald;
               
               return `
-                <div class="flex gap-3 sm:gap-4 ${isEven ? 'flex-row' : 'flex-row-reverse'} items-start group">
+                <div class="flex gap-2.5 sm:gap-3.5 ${isEven ? 'flex-row' : 'flex-row-reverse'} items-start group">
                   
                   <!-- Character Avatar Card -->
-                  <div class="flex flex-col items-center gap-1 min-w-[70px] sm:min-w-[90px]">
+                  <div class="flex flex-col items-center gap-0.5 min-w-[55px] sm:min-w-[65px] pt-1">
                     <div class="relative">
-                      <img src="${line.avatar}" alt="${line.speaker}" class="w-14 h-14 sm:w-16 sm:h-16 rounded-full object-cover border-3 ${isTeacher ? 'border-amber-400 ring-4 ring-amber-100' : 'border-emerald-500 ring-4 ring-emerald-100'} shadow-md">
-                      <span class="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-emerald-600 text-white text-[10px] flex items-center justify-center font-bold shadow">${idx + 1}</span>
+                      <img src="${line.avatar}" alt="${line.speaker}" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full object-cover border-2 ${isTeacher ? 'border-amber-400 ring-2 ring-amber-100' : 'border-emerald-500 ring-2 ring-emerald-100'} shadow-sm">
+                      <span class="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-emerald-600 text-white text-[9px] flex items-center justify-center font-bold shadow">${idx + 1}</span>
                     </div>
-                    <span class="text-xs font-bold font-arabic text-emerald-950 text-center leading-tight mt-1">${line.speaker}</span>
-                    <span class="text-[10px] font-semibold text-emerald-700 text-center">${line.role.split('(')[0]}</span>
+                    <span class="text-[11px] font-bold font-arabic text-emerald-950 text-center leading-tight mt-0.5">${line.speaker}</span>
+                    <span class="text-[9px] font-semibold text-emerald-700 text-center">${line.role.split('(')[0]}</span>
                   </div>
 
-                  <!-- Speech Bubble Box -->
-                  <div class="flex-1 max-w-2xl">
-                    <div class="relative p-5 rounded-3xl border-2 ${styleClass} shadow-md transition-all hover:shadow-lg space-y-2">
+                  <!-- Compact Speech Bubble Box -->
+                  <div class="w-full max-w-lg sm:max-w-xl">
+                    <div class="relative px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-2xl border-2 ${styleClass} shadow-sm transition-all hover:shadow space-y-1.5">
                       
                       <!-- Header speech action -->
-                      <div class="flex items-center justify-between border-b border-black/5 pb-2">
-                        <span class="text-[11px] font-bold uppercase tracking-wider text-emerald-900 opacity-75 font-sans">${line.speaker} (${line.role})</span>
-                        <button data-speech="${line.arabic.replace(/\n/g, ' ')}" class="speech-btn px-3 py-1 rounded-full bg-white/80 hover:bg-emerald-700 hover:text-white text-emerald-800 text-xs font-bold border border-emerald-200/80 transition-all flex items-center gap-1.5 shadow-sm">
-                          <i class="fa-solid fa-volume-high"></i>
+                      <div class="flex items-center justify-between border-b border-black/5 pb-1">
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-900 opacity-75 font-sans">${line.speaker} (${line.role})</span>
+                        <button data-speech="${line.arabic.replace(/\n/g, ' ')}" class="speech-btn px-2.5 py-0.5 rounded-full bg-white/90 hover:bg-emerald-700 hover:text-white text-emerald-800 text-[11px] font-bold border border-emerald-200 transition-all flex items-center gap-1 shadow-2xs">
+                          <i class="fa-solid fa-volume-high text-[10px]"></i>
                           <span>Dengarkan</span>
                         </button>
                       </div>
 
-                      <!-- Arabic Speech Text -->
-                      <p class="text-xl sm:text-2xl font-arabic text-right font-bold leading-loose text-emerald-950 whitespace-pre-line py-1 drop-shadow-sm">
+                      <!-- Arabic Speech Text (Compact & Clear) -->
+                      <p class="text-base sm:text-lg font-arabic text-right font-bold leading-relaxed text-emerald-950 whitespace-pre-line py-0.5 drop-shadow-2xs">
                         ${line.arabic}
                       </p>
 
-                      <!-- Indonesian Translation (Collapsible/Toggleable) -->
+                      <!-- Indonesian Translation (Compact) -->
                       ${state.showDialogueTranslation ? `
-                        <div class="pt-2 border-t border-black/5 font-sans text-xs text-gray-700 italic leading-relaxed whitespace-pre-line bg-white/60 p-3 rounded-2xl">
-                          <strong class="text-emerald-900 font-semibold not-italic block mb-0.5">Terjemahan:</strong>
+                        <div class="pt-1.5 border-t border-black/5 font-sans text-[11px] sm:text-xs text-gray-700 italic leading-snug whitespace-pre-line bg-white/70 p-2 rounded-xl">
+                          <strong class="text-emerald-900 font-semibold not-italic block mb-0.5 text-[10px] uppercase tracking-wide">Terjemahan:</strong>
                           "${line.translation}"
                         </div>
                       ` : ''}
