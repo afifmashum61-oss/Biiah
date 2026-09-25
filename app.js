@@ -2918,8 +2918,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function showLoginError(msg) {
-      if (loginErrorMsg && loginErrorText) {
-        loginErrorText.textContent = msg;
+      if (loginErrorMsg) {
+        loginErrorMsg.className = "p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-center gap-2";
+        loginErrorMsg.innerHTML = `<i class="fa-solid fa-circle-exclamation shrink-0 text-rose-500"></i> <span>${msg}</span>`;
         loginErrorMsg.classList.remove('hidden');
       } else {
         alert(msg);
@@ -3057,19 +3058,35 @@ document.addEventListener('DOMContentLoaded', () => {
           window.FirebaseSync.saveStudent(newStudent);
         }
 
-        showRegAlert("Alhamdulillah! Akun berhasil didaftarkan. Mengalihkan...", "success");
+        showRegAlert("Alhamdulillah! Pendaftaran berhasil. Mengalihkan ke menu masuk...", "success");
 
-        // Langsung login otomatis dan masuk ke pembelajaran
+        // Alihkan kembali ke form login (tanpa langsung login)
         setTimeout(() => {
-          state.currentUser = {
-            name: regName,
-            role: 'siswa',
-            class: regClass
-          };
-          localStorage.setItem('arabic_app_user', JSON.stringify(state.currentUser));
-          state.currentView = 'dashboard';
-          render();
-        }, 700);
+          registerBox.classList.add('hidden');
+          loginBox.classList.remove('hidden');
+
+          // Reset form pendaftaran
+          registerForm.reset();
+          if (regMsg) regMsg.classList.add('hidden');
+
+          // Isi otomatis nama siswa di form login dan fokus ke password
+          const loginNameInput = document.getElementById('login-name');
+          const loginPwdInput = document.getElementById('login-password');
+          if (loginNameInput) {
+            loginNameInput.value = regName;
+          }
+          if (loginPwdInput) {
+            loginPwdInput.value = '';
+            loginPwdInput.focus();
+          }
+
+          // Tampilkan notifikasi sukses di form login
+          if (loginErrorMsg) {
+            loginErrorMsg.className = "p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-center gap-2";
+            loginErrorMsg.innerHTML = '<i class="fa-solid fa-circle-check shrink-0 text-emerald-600"></i> <span>Akun berhasil didaftarkan! Silakan masukkan kata sandi Anda untuk masuk.</span>';
+            loginErrorMsg.classList.remove('hidden');
+          }
+        }, 1200);
       });
     }
 
