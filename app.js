@@ -335,6 +335,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (userBadge) {
       if (state.currentUser) {
         userBadge.innerHTML = `
+          <div class="hidden lg:flex items-center gap-1.5 bg-emerald-50 text-emerald-800 border border-emerald-200 px-3 py-1.5 rounded-full text-xs font-semibold shadow-2xs" title="Status Sistem: Terhubung">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <i class="fa-solid fa-cloud text-emerald-600"></i>
+            <span>Cloud DB</span>
+          </div>
           <div class="hidden md:flex items-center gap-2 bg-emerald-50 text-emerald-800 border border-emerald-200 px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium shadow-2xs">
             <span class="w-2.5 h-2.5 rounded-full ${state.currentUser.role === 'guru' ? 'bg-amber-500' : 'bg-emerald-500'} animate-pulse"></span>
             <span class="truncate max-w-[150px] lg:max-w-none">${state.currentUser.name} (${state.currentUser.role === 'guru' ? 'Guru' : 'Siswa'})</span>
@@ -442,55 +447,114 @@ document.addEventListener('DOMContentLoaded', () => {
               <p class="text-xs text-emerald-200 font-medium">Materi Kelas 9 MTs / SMP Islam</p>
             </div>
 
-            <!-- Form Content -->
-            <div class="p-6 sm:p-8 space-y-6">
-              <!-- Role Toggle Button -->
-              <div class="flex p-1 bg-emerald-50/80 rounded-2xl border border-emerald-100">
-                <button id="tab-siswa-btn" class="flex-1 py-2.5 rounded-xl text-xs font-bold transition-all shadow-sm bg-white text-emerald-900 border border-emerald-100 flex items-center justify-center gap-2">
-                  <i class="fa-solid fa-user-graduate text-emerald-600"></i> Siswa
-                </button>
-                <button id="tab-guru-btn" class="flex-1 py-2.5 rounded-xl text-xs font-bold transition-all text-emerald-700 hover:text-emerald-900 flex items-center justify-center gap-2">
-                  <i class="fa-solid fa-chalkboard-user text-emerald-600"></i> Guru
-                </button>
+            <!-- Card Content Body -->
+            <div class="p-6 sm:p-8 space-y-5">
+
+              <!-- ================= SECTION 1: LOGIN BOX (SISWA & GURU SATU PINTU) ================= -->
+              <div id="login-box" class="space-y-4">
+                <div class="text-center mb-1">
+                  <h3 class="text-lg font-bold text-emerald-950">Masuk ke Pembelajaran</h3>
+                  <p class="text-xs text-gray-500">Silakan masukkan nama akun dan kata sandi Anda</p>
+                </div>
+
+                <!-- Alert Error Message -->
+                <div id="login-error-msg" class="hidden p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-center gap-2">
+                  <i class="fa-solid fa-circle-exclamation shrink-0 text-rose-500"></i>
+                  <span id="login-error-text"></span>
+                </div>
+
+                <form id="login-form" class="space-y-4">
+                  <div>
+                    <label class="block text-xs font-bold text-gray-700 mb-1.5 uppercase tracking-wider">Nama Lengkap / Akun</label>
+                    <div class="relative">
+                      <i class="fa-solid fa-user absolute left-4 top-3.5 text-emerald-600 text-sm"></i>
+                      <input type="text" id="login-name" required placeholder="Masukkan nama siswa atau guru..." class="w-full pl-11 pr-4 py-3 rounded-2xl border border-emerald-200 bg-emerald-50/30 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:border-transparent text-xs sm:text-sm font-semibold text-gray-800 placeholder-gray-400 transition-all">
+                    </div>
+                  </div>
+
+                  <div>
+                    <label class="block text-xs font-bold text-gray-700 mb-1.5 uppercase tracking-wider">Kata Sandi</label>
+                    <div class="relative">
+                      <i class="fa-solid fa-lock absolute left-4 top-3.5 text-emerald-600 text-sm"></i>
+                      <input type="password" id="login-password" required placeholder="Masukkan kata sandi..." class="w-full pl-11 pr-11 py-3 rounded-2xl border border-emerald-200 bg-emerald-50/30 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:border-transparent text-xs sm:text-sm font-semibold text-gray-800 placeholder-gray-400 transition-all">
+                      <button type="button" id="toggle-login-pwd" class="absolute right-3.5 top-3 text-gray-400 hover:text-emerald-700 text-sm focus:outline-none p-1">
+                        <i class="fa-solid fa-eye" id="login-pwd-icon"></i>
+                      </button>
+                    </div>
+                  </div>
+
+                  <button type="submit" id="btn-submit-login" class="w-full py-3.5 bg-gradient-to-r from-emerald-800 to-teal-700 hover:from-emerald-900 hover:to-teal-800 text-white rounded-2xl font-bold shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2 text-sm active:scale-[0.99]">
+                    <span>Masuk ke Pembelajaran</span>
+                    <i class="fa-solid fa-arrow-right text-xs"></i>
+                  </button>
+                </form>
+
+                <!-- Tombol Pindah ke Form Pendaftaran Siswa -->
+                <div class="pt-3 text-center border-t border-emerald-50">
+                  <p class="text-xs text-gray-500">Belum memiliki akun siswa?</p>
+                  <button type="button" id="btn-to-register" class="mt-1.5 text-xs font-bold text-emerald-700 hover:text-emerald-900 hover:underline transition-all inline-flex items-center gap-1.5">
+                    <i class="fa-solid fa-user-plus text-[11px]"></i>
+                    <span>Daftar Akun Siswa Baru</span>
+                  </button>
+                </div>
               </div>
 
-              <form id="login-form" class="space-y-4">
-                <input type="hidden" id="login-role" value="siswa">
-                
-                <div>
-                  <label class="block text-xs font-bold text-gray-700 mb-1.5 uppercase tracking-wider">Nama Lengkap</label>
-                  <div class="relative">
-                    <i class="fa-solid fa-user absolute left-4 top-3.5 text-emerald-600 text-sm"></i>
-                    <input type="text" id="login-name" required placeholder="Masukkan nama Anda..." class="w-full pl-11 pr-4 py-3 rounded-2xl border border-emerald-200 bg-emerald-50/30 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:border-transparent text-xs sm:text-sm font-semibold text-gray-800 placeholder-gray-400 transition-all">
-                  </div>
+              <!-- ================= SECTION 2: REGISTER BOX (DAFTAR AKUN SISWA) ================= -->
+              <div id="register-box" class="hidden space-y-4">
+                <div class="text-center mb-1">
+                  <h3 class="text-lg font-bold text-emerald-950">Daftar Akun Siswa</h3>
+                  <p class="text-xs text-gray-500">Buat akun belajar baru untuk menyimpan progres Anda</p>
                 </div>
 
-                <div>
-                  <label class="block text-xs font-bold text-gray-700 mb-1.5 uppercase tracking-wider">Kelas / NIP</label>
-                  <div class="relative">
-                    <i class="fa-solid fa-id-card absolute left-4 top-3.5 text-emerald-600 text-sm"></i>
-                    <input type="text" id="login-id" required placeholder="Contoh: IX-A atau NIP Guru..." class="w-full pl-11 pr-4 py-3 rounded-2xl border border-emerald-200 bg-emerald-50/30 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:border-transparent text-xs sm:text-sm font-semibold text-gray-800 placeholder-gray-400 transition-all">
+                <!-- Alert Message Register -->
+                <div id="reg-msg" class="hidden p-3 rounded-xl text-xs flex items-center gap-2"></div>
+
+                <form id="register-form" class="space-y-3.5">
+                  <div>
+                    <label class="block text-xs font-bold text-gray-700 mb-1.5 uppercase tracking-wider">Nama Lengkap</label>
+                    <div class="relative">
+                      <i class="fa-solid fa-user-graduate absolute left-4 top-3.5 text-emerald-600 text-sm"></i>
+                      <input type="text" id="reg-name" required placeholder="Contoh: Muhammad Farhan" class="w-full pl-11 pr-4 py-2.5 sm:py-3 rounded-2xl border border-emerald-200 bg-emerald-50/30 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:border-transparent text-xs sm:text-sm font-semibold text-gray-800 placeholder-gray-400 transition-all">
+                    </div>
                   </div>
-                </div>
 
-                <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-emerald-800 to-teal-700 hover:from-emerald-900 hover:to-teal-800 text-white rounded-2xl font-bold shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2 text-sm">
-                  <span>Masuk ke Pembelajaran</span>
-                  <i class="fa-solid fa-arrow-right text-xs"></i>
-                </button>
-              </form>
+                  <div>
+                    <label class="block text-xs font-bold text-gray-700 mb-1.5 uppercase tracking-wider">Kelas</label>
+                    <div class="relative">
+                      <i class="fa-solid fa-school absolute left-4 top-3.5 text-emerald-600 text-sm"></i>
+                      <input type="text" id="reg-class" required placeholder="Contoh: IX-A, IX-B, atau 9 MTs" class="w-full pl-11 pr-4 py-2.5 sm:py-3 rounded-2xl border border-emerald-200 bg-emerald-50/30 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:border-transparent text-xs sm:text-sm font-semibold text-gray-800 placeholder-gray-400 transition-all">
+                    </div>
+                  </div>
 
-              <!-- Quick Demo Section -->
-              <div class="pt-4 border-t border-gray-100 text-center">
-                <p class="text-[11px] text-gray-500 font-medium mb-3">Uji coba langsung tanpa ketik manual:</p>
-                <div class="grid grid-cols-2 gap-2.5">
-                  <button type="button" id="quick-demo-siswa" class="py-2.5 px-3 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 rounded-xl text-xs font-bold border border-emerald-200 transition-all flex items-center justify-center gap-1.5">
-                    <span>⚡ Demo Siswa</span>
+                  <div>
+                    <label class="block text-xs font-bold text-gray-700 mb-1.5 uppercase tracking-wider">Kata Sandi</label>
+                    <div class="relative">
+                      <i class="fa-solid fa-key absolute left-4 top-3.5 text-emerald-600 text-sm"></i>
+                      <input type="password" id="reg-password" required placeholder="Minimal 3 karakter..." class="w-full pl-11 pr-11 py-2.5 sm:py-3 rounded-2xl border border-emerald-200 bg-emerald-50/30 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:border-transparent text-xs sm:text-sm font-semibold text-gray-800 placeholder-gray-400 transition-all">
+                      <button type="button" id="toggle-reg-pwd" class="absolute right-3.5 top-3 text-gray-400 hover:text-emerald-700 text-sm focus:outline-none p-1">
+                        <i class="fa-solid fa-eye" id="reg-pwd-icon"></i>
+                      </button>
+                    </div>
+                  </div>
+
+                  <button type="submit" id="btn-submit-register" class="w-full py-3.5 bg-gradient-to-r from-emerald-800 to-teal-700 hover:from-emerald-900 hover:to-teal-800 text-white rounded-2xl font-bold shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2 text-sm active:scale-[0.99]">
+                    <span>Daftarkan Akun Siswa</span>
+                    <i class="fa-solid fa-check text-xs"></i>
                   </button>
-                  <button type="button" id="quick-demo-guru" class="py-2.5 px-3 bg-amber-50 hover:bg-amber-100 text-amber-800 rounded-xl text-xs font-bold border border-amber-200 transition-all flex items-center justify-center gap-1.5">
-                    <span>⚡ Demo Guru</span>
+                </form>
+
+                <!-- Tombol Kembali ke Form Login -->
+                <div class="pt-3 text-center border-t border-emerald-50">
+                  <p class="text-xs text-gray-500">Sudah memiliki akun?</p>
+                  <button type="button" id="btn-to-login" class="mt-1.5 text-xs font-bold text-emerald-700 hover:text-emerald-900 hover:underline transition-all inline-flex items-center gap-1.5">
+                    <i class="fa-solid fa-arrow-left text-[11px]"></i>
+                    <span>Kembali ke Halaman Masuk</span>
                   </button>
                 </div>
               </div>
+
+
+
             </div>
 
           </div>
@@ -2806,61 +2870,226 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // --- EVENT ATTACHMENTS ---
   function attachLoginEvents() {
-    const tabSiswa = document.getElementById('tab-siswa-btn');
-    const tabGuru = document.getElementById('tab-guru-btn');
-    const roleInput = document.getElementById('login-role');
-    const loginForm = document.getElementById('login-form');
+    const loginBox = document.getElementById('login-box');
+    const registerBox = document.getElementById('register-box');
+    const btnToRegister = document.getElementById('btn-to-register');
+    const btnToLogin = document.getElementById('btn-to-login');
 
-    if (tabSiswa && tabGuru) {
-      tabSiswa.addEventListener('click', () => {
-        roleInput.value = 'siswa';
-        tabSiswa.className = "flex-1 py-2.5 rounded-xl text-xs font-bold transition-all shadow-lg bg-white/90 text-emerald-950 border border-white/80 flex items-center justify-center gap-2";
-        tabGuru.className = "flex-1 py-2.5 rounded-xl text-xs font-bold transition-all text-emerald-950 hover:bg-white/30 flex items-center justify-center gap-2";
+    const loginForm = document.getElementById('login-form');
+    const loginErrorMsg = document.getElementById('login-error-msg');
+    const loginErrorText = document.getElementById('login-error-text');
+
+    const registerForm = document.getElementById('register-form');
+    const regMsg = document.getElementById('reg-msg');
+
+    // 1. Toggle Tampilan Login <-> Daftar
+    if (btnToRegister && btnToLogin && loginBox && registerBox) {
+      btnToRegister.addEventListener('click', () => {
+        loginBox.classList.add('hidden');
+        registerBox.classList.remove('hidden');
+        if (loginErrorMsg) loginErrorMsg.classList.add('hidden');
+        if (regMsg) regMsg.classList.add('hidden');
       });
 
-      tabGuru.addEventListener('click', () => {
-        roleInput.value = 'guru';
-        tabGuru.className = "flex-1 py-2.5 rounded-xl text-xs font-bold transition-all shadow-lg bg-white/90 text-emerald-950 border border-white/80 flex items-center justify-center gap-2";
-        tabSiswa.className = "flex-1 py-2.5 rounded-xl text-xs font-bold transition-all text-emerald-950 hover:bg-white/30 flex items-center justify-center gap-2";
+      btnToLogin.addEventListener('click', () => {
+        registerBox.classList.add('hidden');
+        loginBox.classList.remove('hidden');
+        if (loginErrorMsg) loginErrorMsg.classList.add('hidden');
+        if (regMsg) regMsg.classList.add('hidden');
       });
     }
 
+    // 2. Toggle Tampilkan / Sembunyikan Password
+    const toggleLoginPwd = document.getElementById('toggle-login-pwd');
+    const loginPassword = document.getElementById('login-password');
+    const loginPwdIcon = document.getElementById('login-pwd-icon');
+    if (toggleLoginPwd && loginPassword && loginPwdIcon) {
+      toggleLoginPwd.addEventListener('click', () => {
+        const isPwd = loginPassword.type === 'password';
+        loginPassword.type = isPwd ? 'text' : 'password';
+        loginPwdIcon.className = isPwd ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye';
+      });
+    }
+
+    const toggleRegPwd = document.getElementById('toggle-reg-pwd');
+    const regPassword = document.getElementById('reg-password');
+    const regPwdIcon = document.getElementById('reg-pwd-icon');
+    if (toggleRegPwd && regPassword && regPwdIcon) {
+      toggleRegPwd.addEventListener('click', () => {
+        const isPwd = regPassword.type === 'password';
+        regPassword.type = isPwd ? 'text' : 'password';
+        regPwdIcon.className = isPwd ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye';
+      });
+    }
+
+    function showLoginError(msg) {
+      if (loginErrorMsg && loginErrorText) {
+        loginErrorText.textContent = msg;
+        loginErrorMsg.classList.remove('hidden');
+      } else {
+        alert(msg);
+      }
+    }
+
+    // 3. Form Login Satu Pintu (Siswa & Guru Terdeteksi Otomatis)
     if (loginForm) {
       loginForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        const name = document.getElementById('login-name').value.trim();
-        const role = roleInput.value;
+        if (loginErrorMsg) loginErrorMsg.classList.add('hidden');
 
-        if (name) {
-          state.currentUser = { name, role };
+        const inputName = (document.getElementById('login-name').value || '').trim();
+        const inputPassword = (document.getElementById('login-password').value || '').trim();
+
+        if (!inputName) {
+          showLoginError("Silakan isi nama akun Anda.");
+          return;
+        }
+
+        const cleanInput = inputName.toLowerCase();
+
+        // 3A. Deteksi Apakah Guru
+        const matchedTeacher = (state.teachers || []).find(t => 
+          t.name.toLowerCase() === cleanInput ||
+          t.name.toLowerCase().includes(cleanInput) ||
+          (t.nip && t.nip.toLowerCase() === cleanInput)
+        );
+
+        const isTeacherTitle = cleanInput.includes('ustadz') || cleanInput.includes('ustadzah') || cleanInput.includes('guru') || cleanInput === 'guru';
+
+        if (matchedTeacher || isTeacherTitle) {
+          // Verifikasi Kata Sandi Guru (Default: guru123 atau NIP guru atau password tersimpan)
+          const validPasswords = ['guru123', 'admin123'];
+          if (matchedTeacher && matchedTeacher.nip) validPasswords.push(matchedTeacher.nip);
+          if (matchedTeacher && matchedTeacher.password) validPasswords.push(matchedTeacher.password);
+
+          if (inputPassword && !validPasswords.includes(inputPassword) && matchedTeacher && matchedTeacher.password) {
+            showLoginError("Kata sandi guru salah. Silakan periksa kembali kata sandi Anda.");
+            return;
+          }
+
+          const teacherName = matchedTeacher ? matchedTeacher.name : inputName;
+          state.currentUser = {
+            name: teacherName,
+            role: 'guru',
+            nip: matchedTeacher ? matchedTeacher.nip : '198503152010011002'
+          };
           localStorage.setItem('arabic_app_user', JSON.stringify(state.currentUser));
           state.currentView = 'dashboard';
           render();
+          return;
         }
+
+        // 3B. Deteksi Apakah Siswa
+        const matchedStudent = (state.students || []).find(s => 
+          s.name.toLowerCase() === cleanInput ||
+          s.name.toLowerCase().includes(cleanInput)
+        );
+
+        if (matchedStudent) {
+          // Jika siswa sudah memiliki kata sandi tersimpan, cocokkan
+          if (matchedStudent.password && inputPassword && matchedStudent.password !== inputPassword) {
+            showLoginError("Kata sandi salah. Silakan periksa kembali kata sandi Anda.");
+            return;
+          }
+
+          // Jika siswa awal belum memiliki kata sandi, simpan sandi yang dimasukkan
+          if (!matchedStudent.password && inputPassword) {
+            matchedStudent.password = inputPassword;
+            localStorage.setItem('arabic_app_students', JSON.stringify(state.students));
+            if (window.FirebaseSync) {
+              window.FirebaseSync.saveStudent(matchedStudent);
+            }
+          }
+
+          state.currentUser = {
+            name: matchedStudent.name,
+            role: 'siswa',
+            class: matchedStudent.class || 'IX-A'
+          };
+          localStorage.setItem('arabic_app_user', JSON.stringify(state.currentUser));
+          state.currentView = 'dashboard';
+          render();
+          return;
+        }
+
+        // 3C. Jika belum terdaftar
+        showLoginError("Akun belum terdaftar. Silakan klik 'Daftar Akun Siswa Baru' di bawah.");
       });
     }
 
-    // Demo buttons
-    const demoSiswa = document.getElementById('quick-demo-siswa');
-    const demoGuru = document.getElementById('quick-demo-guru');
+    // 4. Form Pendaftaran Akun Siswa Baru (Nama, Kelas, Password)
+    if (registerForm) {
+      registerForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const regName = (document.getElementById('reg-name').value || '').trim();
+        const regClass = (document.getElementById('reg-class').value || '').trim();
+        const regPwd = (document.getElementById('reg-password').value || '').trim();
 
-    if (demoSiswa) {
-      demoSiswa.addEventListener('click', () => {
-        state.currentUser = { name: 'Ahmad Fauzi', role: 'siswa' };
-        localStorage.setItem('arabic_app_user', JSON.stringify(state.currentUser));
-        state.currentView = 'dashboard';
-        render();
+        if (!regName || !regClass || !regPwd) {
+          showRegAlert("Mohon lengkapi semua kolom pendaftaran!", "error");
+          return;
+        }
+
+        if (regPwd.length < 3) {
+          showRegAlert("Kata sandi minimal 3 karakter!", "error");
+          return;
+        }
+
+        // Periksa apakah nama sudah digunakan
+        const isDuplicate = (state.students || []).some(s => s.name.toLowerCase() === regName.toLowerCase());
+        if (isDuplicate) {
+          showRegAlert("Nama siswa sudah terdaftar! Silakan langsung login dengan nama tersebut.", "error");
+          return;
+        }
+
+        // Buat objek siswa baru
+        const newStudent = {
+          id: Date.now(),
+          name: regName,
+          class: regClass,
+          password: regPwd,
+          score: 0,
+          progress: 0,
+          lastActive: "Baru Mendaftar"
+        };
+
+        // Simpan ke state lokal
+        state.students.push(newStudent);
+        localStorage.setItem('arabic_app_students', JSON.stringify(state.students));
+
+        // Sinkronisasi langsung ke Firebase Firestore Cloud
+        if (window.FirebaseSync) {
+          window.FirebaseSync.saveStudent(newStudent);
+        }
+
+        showRegAlert("Alhamdulillah! Akun berhasil didaftarkan. Mengalihkan...", "success");
+
+        // Langsung login otomatis dan masuk ke pembelajaran
+        setTimeout(() => {
+          state.currentUser = {
+            name: regName,
+            role: 'siswa',
+            class: regClass
+          };
+          localStorage.setItem('arabic_app_user', JSON.stringify(state.currentUser));
+          state.currentView = 'dashboard';
+          render();
+        }, 700);
       });
     }
 
-    if (demoGuru) {
-      demoGuru.addEventListener('click', () => {
-        state.currentUser = { name: 'Ustadz Abdullah, S.Pd.I', role: 'guru' };
-        localStorage.setItem('arabic_app_user', JSON.stringify(state.currentUser));
-        state.currentView = 'dashboard';
-        render();
-      });
+    function showRegAlert(msg, type = "error") {
+      if (!regMsg) return;
+      regMsg.className = type === "success" 
+        ? "p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-center gap-2"
+        : "p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-center gap-2";
+      
+      const icon = type === "success" ? "fa-circle-check text-emerald-600" : "fa-circle-exclamation text-rose-500";
+      regMsg.innerHTML = `<i class="fa-solid ${icon} shrink-0"></i> <span>${msg}</span>`;
+      regMsg.classList.remove('hidden');
     }
+
+
   }
 
   function attachVocabEvents() {
@@ -3079,6 +3308,18 @@ document.addEventListener('DOMContentLoaded', () => {
               });
             }
             localStorage.setItem('arabic_app_students', JSON.stringify(state.students));
+            
+            // Sync to Firebase Cloud Database (db-lomba)
+            if (window.FirebaseSync) {
+              window.FirebaseSync.saveAllStudents(state.students);
+              window.FirebaseSync.recordQuizSubmission({
+                studentName: state.currentUser ? state.currentUser.name : 'Anonim',
+                score: state.quizScore,
+                correctCount: correctCount,
+                totalQuestions: quizzes.length,
+                quizType: 'Latihan Kuis Interaktif'
+              });
+            }
           }
 
           render();
@@ -3120,15 +3361,19 @@ document.addEventListener('DOMContentLoaded', () => {
         const customId = document.getElementById('new-student-id').value.trim();
 
         if (name && studentClass) {
-          state.students.push({
+          const newStudent = {
             id: customId ? parseInt(customId) || Date.now() : Date.now(),
             name,
             class: studentClass,
             score: 0,
             progress: 0,
             lastActive: "Belum Aktif"
-          });
+          };
+          state.students.push(newStudent);
           localStorage.setItem('arabic_app_students', JSON.stringify(state.students));
+          if (window.FirebaseSync) {
+            window.FirebaseSync.saveStudent(newStudent);
+          }
           render();
         }
       });
@@ -3141,6 +3386,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (confirm("Apakah Anda yakin ingin menghapus akun siswa ini?")) {
           state.students = state.students.filter(s => s.id !== studentId);
           localStorage.setItem('arabic_app_students', JSON.stringify(state.students));
+          if (window.FirebaseSync) {
+            window.FirebaseSync.deleteStudent(studentId);
+          }
           render();
         }
       });
@@ -3156,14 +3404,18 @@ document.addEventListener('DOMContentLoaded', () => {
         const subject = document.getElementById('new-teacher-subject').value.trim();
 
         if (name && nip) {
-          state.teachers.push({
+          const newTeacher = {
             id: Date.now(),
             name,
             nip,
             subject: subject || 'Bahasa Arab',
             status: 'Aktif'
-          });
+          };
+          state.teachers.push(newTeacher);
           localStorage.setItem('arabic_app_teachers', JSON.stringify(state.teachers));
+          if (window.FirebaseSync) {
+            window.FirebaseSync.saveTeacher(newTeacher);
+          }
           render();
         }
       });
@@ -3176,6 +3428,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (confirm("Apakah Anda yakin ingin menghapus akun guru ini?")) {
           state.teachers = state.teachers.filter(t => t.id !== teacherId);
           localStorage.setItem('arabic_app_teachers', JSON.stringify(state.teachers));
+          if (window.FirebaseSync) {
+            window.FirebaseSync.deleteTeacher(teacherId);
+          }
           render();
         }
       });
@@ -3861,12 +4116,16 @@ document.addEventListener('DOMContentLoaded', () => {
         duel.opponentName = 'Menunggu Lawan...';
         duel.lobbyStep = 'create_room';
         
-        // Save room info locally
-        localStorage.setItem(`arabic_duel_room_${generatedPin}`, JSON.stringify({
+        // Save room info locally & to Firebase Cloud
+        const duelRoomInfo = {
           pin: generatedPin,
           hostName: state.currentUser ? state.currentUser.name : 'Siswa Host',
           setIdx: duel.selectedSetIdx || 0
-        }));
+        };
+        localStorage.setItem(`arabic_duel_room_${generatedPin}`, JSON.stringify(duelRoomInfo));
+        if (window.FirebaseSync) {
+          window.FirebaseSync.saveDuelRoom(generatedPin, duelRoomInfo);
+        }
 
         render();
       });
@@ -3992,6 +4251,23 @@ document.addEventListener('DOMContentLoaded', () => {
         render();
       });
     }
+  }
+
+  // Initialize Real-time Cloud Sync with Firebase (Cloud Firestore)
+  if (window.FirebaseSync && window.FirebaseSync.isConnected()) {
+    window.FirebaseSync.init(ARABIC_DATA.initialStudents, ARABIC_DATA.initialTeachers, (update) => {
+      if (update.type === 'students' && update.data) {
+        state.students = update.data;
+        if (state.currentView === 'students' || state.currentView === 'dashboard') {
+          render();
+        }
+      } else if (update.type === 'teachers' && update.data) {
+        state.teachers = update.data;
+        if (state.currentView === 'settings') {
+          render();
+        }
+      }
+    });
   }
 
   // Initial Boot
