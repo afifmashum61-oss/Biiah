@@ -2069,17 +2069,13 @@ document.addEventListener('DOMContentLoaded', () => {
           `).join('')}
         </div>
 
-        <!-- Mode Switcher (Balon Kata Komik vs Roleplay Drama) -->
+        <!-- Dialogue Header Instruction -->
         <div class="bg-white p-4 rounded-3xl border border-emerald-100 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-3">
-          <div class="flex items-center gap-2 w-full sm:w-auto">
-            <button id="mode-chat-btn" class="flex-1 sm:flex-none px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${isChatMode ? 'bg-emerald-800 text-white shadow-md' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}">
+          <div class="flex items-center gap-2">
+            <span class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-emerald-800 text-white shadow-sm flex items-center gap-1.5">
               <i class="fa-solid fa-comment-dots"></i>
-              <span>Mode Balon Kata (Komik)</span>
-            </button>
-            <button id="mode-roleplay-btn" class="flex-1 sm:flex-none px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${!isChatMode ? 'bg-emerald-800 text-white shadow-md' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}">
-              <i class="fa-solid fa-masks-theater"></i>
-              <span>Mode Roleplay Simulator</span>
-            </button>
+              <span>Teks Percakapan Interaktif (Al-Hiwar)</span>
+            </span>
           </div>
 
           <div class="text-xs text-emerald-700 font-medium font-arabic flex items-center gap-2 bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-100">
@@ -3140,23 +3136,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // Dialogue Mode Switcher (Chat vs Roleplay)
-    const modeChatBtn = document.getElementById('mode-chat-btn');
-    const modeRoleplayBtn = document.getElementById('mode-roleplay-btn');
-
-    if (modeChatBtn) {
-      modeChatBtn.addEventListener('click', () => {
-        state.dialogueMode = 'chat';
-        render();
-      });
-    }
-
-    if (modeRoleplayBtn) {
-      modeRoleplayBtn.addEventListener('click', () => {
-        state.dialogueMode = 'roleplay';
-        render();
-      });
-    }
+// Dialogue Mode Switcher removed
 
     // Toggle Translation Button
     const toggleTransBtn = document.getElementById('toggle-dialogue-trans-btn');
