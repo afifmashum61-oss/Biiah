@@ -335,11 +335,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (userBadge) {
       if (state.currentUser) {
         userBadge.innerHTML = `
-          <div class="hidden lg:flex items-center gap-1.5 bg-emerald-50 text-emerald-800 border border-emerald-200 px-3 py-1.5 rounded-full text-xs font-semibold shadow-2xs" title="Status Sistem: Terhubung">
-            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            <i class="fa-solid fa-cloud text-emerald-600"></i>
-            <span>Cloud DB</span>
-          </div>
           <div class="hidden md:flex items-center gap-2 bg-emerald-50 text-emerald-800 border border-emerald-200 px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium shadow-2xs">
             <span class="w-2.5 h-2.5 rounded-full ${state.currentUser.role === 'guru' ? 'bg-amber-500' : 'bg-emerald-500'} animate-pulse"></span>
             <span class="truncate max-w-[150px] lg:max-w-none">${state.currentUser.name} (${state.currentUser.role === 'guru' ? 'Guru' : 'Siswa'})</span>
