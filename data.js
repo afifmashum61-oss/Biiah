@@ -385,7 +385,7 @@ const ARABIC_DATA = {
           id: 1,
           speaker: "الْأُسْتَاذُ",
           role: "Guru (Ustadz)",
-          avatar: "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=150&q=80",
+          avatar: "avatar-guru.jpg",
           bubbleColor: "amber",
           arabic: "أَيُّهَا التَّلاَمِيْذُ، أُنْظُرُوا إِلَى الصُّوْرَتَيْنِ.",
           translation: "Wahai murid-murid, lihatlah kedua gambar ini!"
@@ -394,7 +394,7 @@ const ARABIC_DATA = {
           id: 2,
           speaker: "الْأُسْتَاذُ",
           role: "Guru (Ustadz)",
-          avatar: "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=150&q=80",
+          avatar: "avatar-guru.jpg",
           bubbleColor: "red",
           arabic: "يَا حَمْزَةُ، مَاذَا تَرَى فِي الصُّوْرَةِ الأُولَى؟",
           translation: "Wahai Hamzah, apa yang kamu lihat pada gambar pertama?"
@@ -412,7 +412,7 @@ const ARABIC_DATA = {
           id: 4,
           speaker: "الْأُسْتَاذُ",
           role: "Guru (Ustadz)",
-          avatar: "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=150&q=80",
+          avatar: "avatar-guru.jpg",
           bubbleColor: "emerald",
           arabic: "يَا عَبْدَ اللهِ، مَا رَأْيُكَ فِي الصُّوْرَةِ الأُولَى وَالثَّانِيَةِ؟",
           translation: "Wahai Abdullah, bagaimana pendapatmu tentang gambar pertama dan gambar kedua?"
@@ -430,7 +430,7 @@ const ARABIC_DATA = {
           id: 6,
           speaker: "الْأُسْتَاذُ",
           role: "Guru (Ustadz)",
-          avatar: "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=150&q=80",
+          avatar: "avatar-guru.jpg",
           bubbleColor: "purple",
           arabic: "صَحِيْحٌ يَا عَبْدَ اللهِ. حَمْدَانُ، أُذْكُرْ بَعْضَ الْوَسَائِلِ لِلْحِفَاظِ عَلَى الْبِيئَةِ.",
           translation: "Benar wahai Abdullah. Hamdan, sebutkan beberapa cara untuk melestarikan lingkungan!"
@@ -448,7 +448,7 @@ const ARABIC_DATA = {
           id: 8,
           speaker: "الْأُسْتَاذُ",
           role: "Guru (Ustadz)",
-          avatar: "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=150&q=80",
+          avatar: "avatar-guru.jpg",
           bubbleColor: "sky",
           arabic: "أَحْسَنْتَ يَا حَمْدَانُ. لِذَلِكَ أَيُّهَا التَّلاَمِيْذُ، الْبِيئَةُ تَنْتَظِرُ دَوْرَكُمْ. عَلَيْكُمْ أَنْ تُحَافِظُوا عَلَى الْبِيئَةِ.",
           translation: "Bagus sekali wahai Hamdan! Oleh karena itu wahai murid-murid, lingkungan hidup menunggu peran kalian. Hendaknya kalian melestarikan lingkungan hidup."
