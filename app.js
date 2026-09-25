@@ -1620,60 +1620,72 @@ document.addEventListener('DOMContentLoaded', () => {
 
         </div>
 
-        <!-- I'RAB DETAIL MODAL POPUP (Shows when user clicks any colored phrase) -->
+        <!-- I'RAB DETAIL MODAL POPUP (Ultra Compact, Never Overflows, Always Closable) -->
         ${modalToken ? `
-          <div id="irob-modal-overlay" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-emerald-950/70 backdrop-blur-sm animate-fadeIn">
-            <div class="bg-white rounded-[2.5rem] p-6 sm:p-8 max-w-lg w-full border-4 border-emerald-600 shadow-2xl space-y-5 relative transform transition-all scale-100">
+          <div id="irob-modal-overlay" class="fixed inset-0 z-50 overflow-y-auto bg-emerald-950/70 backdrop-blur-sm p-3 sm:p-4 flex items-center justify-center animate-fadeIn">
+            
+            <!-- Floating Close Button (ALWAYS VISIBLE at top-right corner of screen) -->
+            <button id="floating-irob-close-btn" class="fixed top-3 right-3 sm:top-4 sm:right-4 z-[60] px-3.5 py-1.5 rounded-full bg-white/95 hover:bg-rose-600 hover:text-white text-gray-800 text-xs font-bold shadow-2xl border border-gray-300 flex items-center gap-1.5 transition-all cursor-pointer" title="Tutup Keterangan (Esc)">
+              <i class="fa-solid fa-xmark font-bold text-sm"></i>
+              <span>Tutup (Esc)</span>
+            </button>
+
+            <!-- Modal Box Container (Compact & wide enough so Arabic fits on 1-2 neat lines) -->
+            <div id="irob-modal-box" class="bg-white rounded-2xl p-3 sm:p-3.5 max-w-md sm:max-w-lg w-full border-2 border-emerald-600 shadow-2xl space-y-1.5 sm:space-y-2 relative transform transition-all scale-100 max-h-[85vh] flex flex-col m-auto min-h-0">
               
-              <!-- Modal Header -->
-              <div class="flex items-center justify-between border-b border-emerald-100 pb-3">
-                <div class="flex items-center gap-3">
-                  <div class="w-10 h-10 rounded-2xl bg-emerald-700 text-white font-bold flex items-center justify-center text-base shadow-sm">
+              <!-- Modal Header (Shrink-0: Fixed at top of card) -->
+              <div class="flex items-center justify-between border-b border-emerald-100 pb-1.5 shrink-0">
+                <div class="flex items-center gap-2 min-w-0 pr-2">
+                  <div class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-emerald-700 text-white font-bold flex items-center justify-center text-xs shrink-0 shadow-xs">
                     <i class="fa-solid fa-spell-check"></i>
                   </div>
-                  <div>
-                    <h3 class="text-xs font-bold uppercase tracking-wider text-emerald-800 font-sans">Keterangan I'rab (Kedudukan Gramatikal)</h3>
-                    <span class="text-xs text-emerald-600 font-semibold font-sans">${modalToken.roleDesc}</span>
+                  <div class="min-w-0">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-emerald-900 font-sans truncate">Keterangan I'rab</h3>
+                    <span class="text-[11px] text-emerald-700 font-semibold font-sans block truncate leading-tight">${modalToken.roleDesc}</span>
                   </div>
                 </div>
-                <button id="close-irob-modal-btn" class="w-9 h-9 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 flex items-center justify-center font-bold text-sm transition-colors">
-                  <i class="fa-solid fa-xmark"></i>
+                <button id="close-irob-modal-btn" class="px-2.5 py-1 bg-rose-50 hover:bg-rose-100 text-rose-700 rounded-lg text-xs font-bold transition-all border border-rose-200 shrink-0 flex items-center gap-1 shadow-2xs cursor-pointer" title="Tutup Keterangan (Esc)">
+                  <i class="fa-solid fa-xmark font-bold text-sm"></i>
+                  <span>Tutup</span>
                 </button>
               </div>
 
-              <!-- Lafaz Frasa Banner -->
-              <div class="bg-emerald-50/80 p-5 rounded-3xl border border-emerald-200 text-center space-y-1.5 shadow-inner">
-                <span class="text-[11px] font-bold text-emerald-700 uppercase tracking-widest block font-sans">اللَّفْظُ (Lafaz Frasa):</span>
-                <h2 class="text-3xl sm:text-4xl font-extrabold font-arabic text-emerald-950 py-1 drop-shadow-xs dir-rtl">${modalToken.word}</h2>
-                <div class="inline-block px-3.5 py-1 bg-emerald-700 text-white rounded-full text-xs font-bold font-sans shadow-xs">
-                  Arti: "${modalToken.meaning}"
+              <!-- Scrollable Body (min-h-0 ensures flex container respects max-h-[85vh]) -->
+              <div class="overflow-y-auto space-y-1.5 pr-0.5 flex-1 min-h-0">
+                
+                <!-- Lafaz Frasa Banner (Hanya Teks Arab Lebih Kecil, Tanpa Arti) -->
+                <div class="bg-emerald-50/70 py-1.5 px-3 rounded-xl border border-emerald-200 text-center space-y-0.5 shadow-2xs">
+                  <span class="text-[9px] font-bold text-emerald-700 uppercase tracking-widest block font-sans">اللَّفْظُ (Lafaz Frasa):</span>
+                  <h2 class="text-sm sm:text-base font-bold font-arabic text-emerald-950 py-0.5 drop-shadow-2xs dir-rtl leading-normal">${modalToken.word}</h2>
                 </div>
+
+                <!-- Grammatical Role Badge -->
+                <div class="space-y-0.5">
+                  <label class="text-[9px] font-bold text-gray-500 uppercase tracking-wider block font-sans">Kedudukan Jabatan Kalimat:</label>
+                  <div class="px-2.5 py-1 bg-emerald-800 text-white rounded-xl font-arabic font-bold text-xs sm:text-sm text-right shadow-xs dir-rtl leading-normal">
+                    ${modalToken.role}
+                  </div>
+                </div>
+
+                <!-- Authentic Arabic I'rab Formula Box -->
+                <div class="space-y-0.5">
+                  <label class="text-[9px] font-bold text-gray-500 uppercase tracking-wider block font-sans">Penjelasan Kaidah I'rab (الإِعْرَابُ):</label>
+                  <div class="px-2.5 py-1.5 bg-amber-50 rounded-xl border border-amber-200 text-amber-950 font-arabic font-semibold text-xs sm:text-sm text-right leading-relaxed dir-rtl shadow-2xs">
+                    ${modalToken.irob}
+                  </div>
+                </div>
+
               </div>
 
-              <!-- Grammatical Role Badge -->
-              <div class="space-y-1">
-                <label class="text-[11px] font-bold text-gray-500 uppercase tracking-wider block font-sans">Kedudukan Jabatan Kalimat:</label>
-                <div class="p-3.5 bg-emerald-800 text-white rounded-2xl font-arabic font-bold text-xl text-right shadow-sm dir-rtl">
-                  ${modalToken.role}
-                </div>
-              </div>
-
-              <!-- Authentic Arabic I'rab Formula Box -->
-              <div class="space-y-1">
-                <label class="text-[11px] font-bold text-gray-500 uppercase tracking-wider block font-sans">Penjelasan Kaidah I'rab (الإِعْرَابُ):</label>
-                <div class="p-4 bg-amber-50 rounded-2xl border border-amber-200 text-amber-950 font-arabic font-bold text-xl text-right leading-relaxed dir-rtl shadow-inner">
-                  ${modalToken.irob}
-                </div>
-              </div>
-
-              <!-- Footer Buttons -->
-              <div class="pt-2 flex items-center justify-between gap-3">
-                <button id="modal-speak-btn" class="px-5 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-2xl text-xs font-bold shadow-md transition-all flex items-center gap-2">
-                  <i class="fa-solid fa-volume-high"></i>
-                  <span>Putar Suara Frasa</span>
+              <!-- Footer Buttons (Shrink-0: Fixed at bottom of card, ALWAYS IN VIEW) -->
+              <div class="pt-1.5 border-t border-gray-100 flex items-center justify-between gap-2 mt-auto shrink-0">
+                <button id="modal-speak-btn" class="px-3 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-bold shadow-xs transition-all flex items-center gap-1.5 shrink-0">
+                  <i class="fa-solid fa-volume-high text-[11px]"></i>
+                  <span>Putar Suara</span>
                 </button>
-                <button id="close-irob-modal-btn2" class="px-5 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-2xl text-xs font-bold transition-all">
-                  Tutup Keterangan
+                <button id="close-irob-modal-btn2" class="px-3.5 py-1.5 bg-gray-100 hover:bg-rose-50 hover:text-rose-700 text-gray-700 rounded-xl text-xs font-bold transition-all border border-gray-200 flex items-center gap-1 shadow-2xs cursor-pointer">
+                  <i class="fa-solid fa-xmark text-[11px]"></i>
+                  <span>Tutup Keterangan</span>
                 </button>
               </div>
 
@@ -1769,28 +1781,40 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // Close Modal events
+    // Close Modal events (Multiple failsafes)
     const closeBtn1 = document.getElementById('close-irob-modal-btn');
     const closeBtn2 = document.getElementById('close-irob-modal-btn2');
+    const floatCloseBtn = document.getElementById('floating-irob-close-btn');
     const overlay = document.getElementById('irob-modal-overlay');
+    const modalBox = document.getElementById('irob-modal-box');
 
-    if (closeBtn1) {
-      closeBtn1.addEventListener('click', () => {
-        state.activeIrobModalToken = null;
-        render();
+    function closeIrobModal() {
+      state.activeIrobModalToken = null;
+      render();
+    }
+
+    if (closeBtn1) closeBtn1.addEventListener('click', closeIrobModal);
+    if (closeBtn2) closeBtn2.addEventListener('click', closeIrobModal);
+    if (floatCloseBtn) floatCloseBtn.addEventListener('click', closeIrobModal);
+
+    if (modalBox) {
+      modalBox.addEventListener('click', (e) => {
+        e.stopPropagation();
       });
     }
-    if (closeBtn2) {
-      closeBtn2.addEventListener('click', () => {
-        state.activeIrobModalToken = null;
-        render();
-      });
-    }
+
     if (overlay) {
-      overlay.addEventListener('click', (e) => {
-        if (e.target === overlay) {
-          state.activeIrobModalToken = null;
-          render();
+      overlay.addEventListener('click', () => {
+        closeIrobModal();
+      });
+    }
+
+    // Keyboard ESC to close modal
+    if (!window._irobEscListenerAttached) {
+      window._irobEscListenerAttached = true;
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && state.activeIrobModalToken) {
+          closeIrobModal();
         }
       });
     }
