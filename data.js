@@ -94,7 +94,7 @@ const ARABIC_DATA = {
       sentence: "مِيَاهُ الصَّرْفِ الصِّنَاعِيَّةِ يَجِبُ مُعَالَجَتُهَا قَبْلَ صَبِّهَا فِي النَّهْرِ.",
       sentenceTranslation: "Air limbah industri harus diolah sebelum dialirkan ke sungai.",
       svgKey: "air_limbah",
-      image: "img-polusi.jpg"
+      image: "img-air-limbah.jpg"
     },
     {
       id: 9,
