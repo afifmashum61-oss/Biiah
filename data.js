@@ -127,7 +127,7 @@ const ARABIC_DATA = {
       sentence: "الْبِيئَةُ النَّظِيفَةُ تَجْعَلُ الْحَيَاةَ صِحِّيَّةً.",
       sentenceTranslation: "Lingkungan yang bersih membuat kehidupan menjadi sehat.",
       svgKey: "lingkungan",
-      image: "img-reboisasi.jpg"
+      image: "img-lingkungan.jpg"
     },
     {
       id: 12,
@@ -138,7 +138,7 @@ const ARABIC_DATA = {
       sentence: "الْحِفَاظُ عَلَى الْبِيئَةِ وَاجِبٌ عَلَى كُلِّ إِ نْسَانٍ.",
       sentenceTranslation: "Pelestarian lingkungan adalah kewajiban bagi setiap manusia.",
       svgKey: "pelestarian",
-      image: "img-reboisasi.jpg"
+      image: "img-lingkungan.jpg"
     },
     {
       id: 13,
