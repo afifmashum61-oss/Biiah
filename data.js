@@ -18,7 +18,7 @@ const ARABIC_DATA = {
       sentenceTranslation: "Reboisasi membantu menyegarkan udara dan mengembalikan kehidupan hutan.",
       svgKey: "reboisasi",
       image: "img-reboisasi.jpg",
-      imagePosition: "center bottom"
+      imagePosition: "center center"
     },
     {
       id: 2,
