@@ -463,7 +463,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <label class="block text-xs font-bold text-gray-700 mb-1.5 uppercase tracking-wider">Nama Lengkap / Akun</label>
                     <div class="relative">
                       <i class="fa-solid fa-user absolute left-4 top-3.5 text-emerald-600 text-sm"></i>
-                      <input type="text" id="login-name" required placeholder="Masukkan nama siswa atau guru..." class="w-full pl-11 pr-4 py-3 rounded-2xl border border-emerald-200 bg-emerald-50/30 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:border-transparent text-xs sm:text-sm font-semibold text-gray-800 placeholder-gray-400 transition-all">
+                      <input type="text" id="login-name" required placeholder="Masukkan nama siswa atau guru..." class="w-full pl-11 pr-4 py-3 rounded-2xl border border-emerald-200 bg-emerald-50/30 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:border-transparent text-base sm:text-sm font-semibold text-gray-800 placeholder-gray-400 transition-all">
                     </div>
                   </div>
 
@@ -471,7 +471,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <label class="block text-xs font-bold text-gray-700 mb-1.5 uppercase tracking-wider">Kata Sandi</label>
                     <div class="relative">
                       <i class="fa-solid fa-lock absolute left-4 top-3.5 text-emerald-600 text-sm"></i>
-                      <input type="password" id="login-password" required placeholder="Masukkan kata sandi..." class="w-full pl-11 pr-11 py-3 rounded-2xl border border-emerald-200 bg-emerald-50/30 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:border-transparent text-xs sm:text-sm font-semibold text-gray-800 placeholder-gray-400 transition-all">
+                      <input type="password" id="login-password" required placeholder="Masukkan kata sandi..." class="w-full pl-11 pr-11 py-3 rounded-2xl border border-emerald-200 bg-emerald-50/30 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:border-transparent text-base sm:text-sm font-semibold text-gray-800 placeholder-gray-400 transition-all">
                       <button type="button" id="toggle-login-pwd" class="absolute right-3.5 top-3 text-gray-400 hover:text-emerald-700 text-sm focus:outline-none p-1">
                         <i class="fa-solid fa-eye" id="login-pwd-icon"></i>
                       </button>
@@ -509,7 +509,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <label class="block text-xs font-bold text-gray-700 mb-1.5 uppercase tracking-wider">Nama Lengkap</label>
                     <div class="relative">
                       <i class="fa-solid fa-user-graduate absolute left-4 top-3.5 text-emerald-600 text-sm"></i>
-                      <input type="text" id="reg-name" required placeholder="Contoh: Muhammad Farhan" class="w-full pl-11 pr-4 py-2.5 sm:py-3 rounded-2xl border border-emerald-200 bg-emerald-50/30 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:border-transparent text-xs sm:text-sm font-semibold text-gray-800 placeholder-gray-400 transition-all">
+                      <input type="text" id="reg-name" required placeholder="Contoh: Muhammad Farhan" class="w-full pl-11 pr-4 py-2.5 sm:py-3 rounded-2xl border border-emerald-200 bg-emerald-50/30 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:border-transparent text-base sm:text-sm font-semibold text-gray-800 placeholder-gray-400 transition-all">
                     </div>
                   </div>
 
@@ -517,7 +517,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <label class="block text-xs font-bold text-gray-700 mb-1.5 uppercase tracking-wider">Kelas</label>
                     <div class="relative">
                       <i class="fa-solid fa-school absolute left-4 top-3.5 text-emerald-600 text-sm"></i>
-                      <input type="text" id="reg-class" required placeholder="Contoh: IX-A, IX-B, atau 9 MTs" class="w-full pl-11 pr-4 py-2.5 sm:py-3 rounded-2xl border border-emerald-200 bg-emerald-50/30 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:border-transparent text-xs sm:text-sm font-semibold text-gray-800 placeholder-gray-400 transition-all">
+                      <input type="text" id="reg-class" required placeholder="Contoh: IX-A, IX-B, atau 9 MTs" class="w-full pl-11 pr-4 py-2.5 sm:py-3 rounded-2xl border border-emerald-200 bg-emerald-50/30 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:border-transparent text-base sm:text-sm font-semibold text-gray-800 placeholder-gray-400 transition-all">
                     </div>
                   </div>
 
@@ -525,7 +525,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <label class="block text-xs font-bold text-gray-700 mb-1.5 uppercase tracking-wider">Kata Sandi</label>
                     <div class="relative">
                       <i class="fa-solid fa-key absolute left-4 top-3.5 text-emerald-600 text-sm"></i>
-                      <input type="password" id="reg-password" required placeholder="Minimal 3 karakter..." class="w-full pl-11 pr-11 py-2.5 sm:py-3 rounded-2xl border border-emerald-200 bg-emerald-50/30 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:border-transparent text-xs sm:text-sm font-semibold text-gray-800 placeholder-gray-400 transition-all">
+                      <input type="password" id="reg-password" required placeholder="Minimal 3 karakter..." class="w-full pl-11 pr-11 py-2.5 sm:py-3 rounded-2xl border border-emerald-200 bg-emerald-50/30 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:border-transparent text-base sm:text-sm font-semibold text-gray-800 placeholder-gray-400 transition-all">
                       <button type="button" id="toggle-reg-pwd" class="absolute right-3.5 top-3 text-gray-400 hover:text-emerald-700 text-sm focus:outline-none p-1">
                         <i class="fa-solid fa-eye" id="reg-pwd-icon"></i>
                       </button>

@@ -2,7 +2,7 @@
 <html lang="id" class="h-full bg-[#f8faf7]">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Media Pembelajaran Bahasa Arab Kelas 9 - الحفاظ على البيئة</title>
   
   <!-- Tailwind CSS CDN -->
@@ -44,6 +44,13 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <style>
+    /* Prevent iOS Safari auto-zoom on inputs */
+    @media screen and (max-width: 768px) {
+      input, select, textarea {
+        font-size: 16px !important;
+      }
+    }
+
     /* Optimized Arabic Typography Spacing for Grade 9 MTs */
     .font-arabic {
       font-family: 'Amiri', serif;
@@ -279,7 +286,7 @@
 
   <!-- Data & Script Imports -->
   <script src="data.js"></script>
-  <script src="app.js?v=1790395503450"></script>
+  <script src="app.js?v=1790396543213"></script>
 
 </body>
 </html>
