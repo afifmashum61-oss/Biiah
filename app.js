@@ -314,9 +314,17 @@ document.addEventListener('DOMContentLoaded', () => {
   // Drawer Controls
   function toggleDrawer(open) {
     state.isDrawerOpen = open !== undefined ? open : !state.isDrawerOpen;
+    const navItemsContainer = document.getElementById('drawer-nav-items');
     if (state.isDrawerOpen) {
       drawer.classList.remove('translate-x-full');
       drawerOverlay.classList.remove('hidden');
+      // Reset scroll position to top whenever drawer opens so menu always starts from the first item
+      if (navItemsContainer) {
+      navItemsContainer.scrollTop = 0;
+      }
+      if (drawer) {
+        drawer.scrollTop = 0;
+      }
     } else {
       drawer.classList.add('translate-x-full');
       drawerOverlay.classList.add('hidden');
