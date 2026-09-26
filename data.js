@@ -886,10 +886,10 @@ const ARABIC_DATA = {
             id: 1,
             audioText: "غَرْسُ الأَشْجَارِ وَالتَّشْجِيرُ",
             title: "Penanaman Pohon / Penghijauan",
-            image: "img-reboisasi.jpg",
+            image: "img-menanam-pohon.jpg",
             fallbackSvg: "reboisasi",
             options: [
-              { title: "Penanaman Pohon", correct: true, image: "img-reboisasi.jpg", fallbackSvg: "reboisasi" },
+              { title: "Penanaman Pohon", correct: true, image: "img-menanam-pohon.jpg", fallbackSvg: "reboisasi" },
               { title: "Banjir Bandang", correct: false, image: "img-banjir.jpg", fallbackSvg: "banjir" },
               { title: "Polusi Asap Pabrik", correct: false, image: "img-polusi.jpg", fallbackSvg: "polusi" }
             ]
@@ -898,11 +898,11 @@ const ARABIC_DATA = {
             id: 2,
             audioText: "رَمْيُ النُّفَايَاتِ فِي سَلَّةِ الْمُهْمَلاَتِ",
             title: "Membuang Sampah di Tempatnya",
-            image: "img-sampah.jpg",
+            image: "img-tempat-sampah.jpg",
             fallbackSvg: "sampah",
             options: [
               { title: "Bahan Kimia", correct: false, image: "img-bahan-kimia.jpg", fallbackSvg: "bahan_kimia" },
-              { title: "Membuang Sampah", correct: true, image: "img-sampah.jpg", fallbackSvg: "sampah" },
+              { title: "Membuang Sampah", correct: true, image: "img-tempat-sampah.jpg", fallbackSvg: "sampah" },
               { title: "Pemanasan Global", correct: false, image: "img-pemanasan-global.jpg", fallbackSvg: "pemanasan_global" }
             ]
           }

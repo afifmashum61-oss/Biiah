@@ -830,7 +830,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function getVocabIllustration(item) {
     if (item.image) {
       const pos = item.imagePosition ? ` style="object-position: ${item.imagePosition};"` : '';
-      return `<img src="${item.image}" alt="${item.meaning}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"${pos}>`;
+      return `<img src="${item.image}" alt="${item.meaning || item.title || ''}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"${pos}>`;
     }
     const key = item.svgKey || 'lingkungan';
     
@@ -1312,7 +1312,7 @@ document.addEventListener('DOMContentLoaded', () => {
                       return `
                         <button data-match-g="${g.id}" data-match-o="${oIdx}" class="match-opt-btn p-4 rounded-2xl border-2 text-center space-y-3 transition-all ${isSelected ? (isCorrect ? 'bg-emerald-50 border-emerald-500 ring-2 ring-emerald-300' : 'bg-red-50 border-red-500 ring-2 ring-red-300') : 'bg-gray-50/50 hover:bg-indigo-50/60 border-indigo-100'}">
                           <div class="w-full h-32 rounded-xl bg-indigo-950/10 overflow-hidden relative border border-indigo-100 flex items-center justify-center">
-                            ${getVocabIllustration({ svgKey: opt.fallbackSvg })}
+                            ${getVocabIllustration(opt)}
                           </div>
                           <span class="text-xs font-bold text-indigo-950 block">${opt.title}</span>
                           ${isSelected ? `
