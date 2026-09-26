@@ -2091,7 +2091,8 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
 
         <!-- Dialogue Navigation Tabs (Hiwar 1 vs Hiwar 2) -->
-        <div class="flex items-center gap-2 bg-emerald-100/60 p-1.5 rounded-2xl border border-emerald-200">
+        ${dialogues.length > 1 ? `
+          <div class="flex items-center gap-2 bg-emerald-100/60 p-1.5 rounded-2xl border border-emerald-200">
           ${dialogues.map(d => `
             <button data-dlg-id="${d.id}" class="dlg-tab-btn flex-1 py-3 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center justify-center gap-2 ${state.activeDialogueId === d.id ? 'bg-white text-emerald-900 shadow-md border border-emerald-200 font-arabic' : 'text-emerald-700 hover:bg-white/50'}">
               <i class="fa-solid fa-comments text-emerald-600"></i>
@@ -2099,6 +2100,7 @@ document.addEventListener('DOMContentLoaded', () => {
             </button>
           `).join('')}
         </div>
+        ` : ''}
 
         <!-- Dialogue Header Instruction -->
         <div class="bg-white p-4 rounded-3xl border border-emerald-100 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-3">

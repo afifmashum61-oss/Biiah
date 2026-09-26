@@ -367,8 +367,8 @@ const ARABIC_DATA = {
   dialogues: [
     {
       id: 1,
-      title: "الْحِوَارُ الأَوَّلُ",
-      subtitle: "Percakapan 1: Antara Ustadzah (Guru) dan Para Siswa",
+      title: "الْحِوَارُ",
+      subtitle: "Percakapan: Antara Ustadzah (Guru) dan Para Siswa",
       instruction: "أُنْظُرْ وَاسْتَمِعْ وَ أَعِدْ.",
       instructionTranslation: "Lihat, dengarkan, dan ulangi.",
       topicImages: [
@@ -457,51 +457,6 @@ const ARABIC_DATA = {
           bubbleColor: "sky",
           arabic: "أَحْسَنْتَ يَا حَمْدَانُ. لِذَلِكَ أَيُّهَا التَّلاَمِيْذُ، الْبِيئَةُ تَنْتَظِرُ دَوْرَكُمْ. عَلَيْكُمْ أَنْ تُحَافِظُوا عَلَى الْبِيئَةِ.",
           translation: "Bagus sekali wahai Hamdan! Oleh karena itu wahai murid-murid, lingkungan hidup menunggu peran kalian. Hendaknya kalian melestarikan lingkungan hidup."
-        }
-      ]
-    },
-    {
-      id: 2,
-      title: "الْحِوَارُ الثَّانِي",
-      subtitle: "Percakapan 2: Antara Dua Siswi (Salma & Aisyah)",
-      instruction: "أُنْظُرْ وَاسْتَمِعْ وَ أَعِدْ.",
-      instructionTranslation: "Lihat, dengarkan, dan ulangi.",
-      lines: [
-        {
-          id: 1,
-          speaker: "سَلْمَى",
-          role: "Siswi (Salma)",
-          avatar: "avatar-siswi.jpg",
-          bubbleColor: "purple",
-          arabic: "هَلْ تُحِبِّيْنَ الْبِيئَةَ النَّظِيْفَةَ؟",
-          translation: "Apakah kamu menyukai lingkungan yang bersih?"
-        },
-        {
-          id: 2,
-          speaker: "عَائِشَةُ",
-          role: "Siswi (Aisyah)",
-          avatar: "avatar-siswi.jpg",
-          bubbleColor: "blue",
-          arabic: "نَعَمْ، أُحِبُّهَا. يَجِبُ عَلَيْنَا أَنْ نُحَافِظَ عَلَيْهَا.",
-          translation: "Ya, aku sangat menyukainya. Wajib bagi kita untuk melestarikannya."
-        },
-        {
-          id: 3,
-          speaker: "سَلْمَى",
-          role: "Siswi (Salma)",
-          avatar: "avatar-siswi.jpg",
-          bubbleColor: "emerald",
-          arabic: "كَيْفَ نُحَافِظُ عَلَى الْبِيئَةِ؟",
-          translation: "Bagaimana cara kita menjaga dan melestarikan lingkungan?"
-        },
-        {
-          id: 4,
-          speaker: "عَائِشَةُ",
-          role: "Siswi (Aisyah)",
-          avatar: "avatar-siswi.jpg",
-          bubbleColor: "amber",
-          arabic: "مِنْهَا:\n✓ نَرْمِي الْقُمَامَةَ فِي الْمَزْبَلَةِ\n✓ نَزْرَعُ الأَشْجَارَ\n✓ نُقَلِّلُ الْبَلاَسْتِيْكَ",
-          translation: "Di antaranya:\n✓ Membuang sampah di tempat sampah\n✓ Menanam pohon\n✓ Mengurangi penggunaan plastik"
         }
       ]
     }
