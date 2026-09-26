@@ -368,7 +368,6 @@ const ARABIC_DATA = {
     {
       id: 1,
       title: "الْحِوَارُ",
-      subtitle: "Percakapan: Antara Ustadz (Guru) dan Para Siswa",
       instruction: "أُنْظُرْ وَاسْتَمِعْ وَ أَعِدْ.",
       instructionTranslation: "Lihat, dengarkan, dan ulangi.",
       topicImages: [

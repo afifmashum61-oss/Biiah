@@ -2072,9 +2072,9 @@ document.addEventListener('DOMContentLoaded', () => {
         <!-- Header Banner -->
         <div class="bg-white p-6 sm:p-8 rounded-[2.5rem] border border-emerald-100 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
           <div>
-            <span class="text-xs font-bold text-emerald-700 uppercase tracking-widest bg-emerald-50 px-3.5 py-1 rounded-full border border-emerald-200">الْحِوَارُ الإِسْتِمَاعِيُّ وَالتَّفَاعُلِيُّ (Hiwar Interaktif)</span>
+            <span class="text-xs font-bold text-emerald-700 uppercase tracking-widest bg-emerald-50 px-3.5 py-1 rounded-full border border-emerald-200">الْحِوَارُ الإِسْتِمَاعِيُّ وَالتَّفَاعُلِيُّ</span>
             <h2 class="text-3xl font-bold font-arabic text-emerald-950 mt-2">${currentDialogue.title}</h2>
-            <p class="text-xs sm:text-sm text-emerald-700 mt-1">${currentDialogue.subtitle}</p>
+            ${currentDialogue.subtitle ? `<p class="text-xs sm:text-sm text-emerald-700 mt-1">${currentDialogue.subtitle}</p>` : ''}
           </div>
 
           <!-- Quick Action Tools -->
@@ -2113,7 +2113,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
           <div class="text-xs text-emerald-700 font-medium font-arabic flex items-center gap-2 bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-100">
             <i class="fa-solid fa-volume-high text-emerald-600"></i>
-            <span>${currentDialogue.instruction} (${currentDialogue.instructionTranslation})</span>
+            <span>${currentDialogue.instruction}</span>
           </div>
         </div>
 
@@ -2121,8 +2121,8 @@ document.addEventListener('DOMContentLoaded', () => {
         ${currentDialogue.topicImages && currentDialogue.topicImages.length > 0 ? `
           <div class="bg-emerald-900/95 text-white p-6 rounded-3xl shadow-xl space-y-4 border border-emerald-700">
             <div class="flex items-center justify-between border-b border-emerald-700/80 pb-3">
-              <span class="text-xs font-bold uppercase tracking-widest text-emerald-300 font-arabic">أُنْظُرُوا إِلَى الصُّوْرَتَيْنِ (Perhatikan Kedua Gambar)</span>
-              <span class="text-xs text-emerald-200">Materi Diskusi Percakapan</span>
+              <span class="text-xs font-bold uppercase tracking-widest text-emerald-300 font-arabic">أُنْظُرُوا إِلَى الصُّوْرَتَيْنِ</span>
+              
             </div>
             <div class="grid sm:grid-cols-2 gap-4">
               ${currentDialogue.topicImages.map((img, i) => `
@@ -2163,7 +2163,7 @@ document.addEventListener('DOMContentLoaded', () => {
                       <span class="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-emerald-600 text-white text-[9px] flex items-center justify-center font-bold shadow">${idx + 1}</span>
                     </div>
                     <span class="text-[11px] font-bold font-arabic text-emerald-950 text-center leading-tight mt-0.5">${line.speaker}</span>
-                    <span class="text-[9px] font-semibold text-emerald-700 text-center">${line.role.split('(')[0]}</span>
+                    
                   </div>
 
                   <!-- Compact Speech Bubble Box -->
@@ -2172,7 +2172,7 @@ document.addEventListener('DOMContentLoaded', () => {
                       
                       <!-- Header speech action -->
                       <div class="flex items-center justify-between border-b border-black/5 pb-1">
-                        <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-900 opacity-75 font-sans">${line.speaker} (${line.role})</span>
+                        <span class="text-[11px] font-bold text-emerald-900 font-arabic">${line.speaker}</span>
                         <button data-speech="${line.arabic.replace(/\n/g, ' ')}" class="speech-btn px-2.5 py-0.5 rounded-full bg-white/90 hover:bg-emerald-700 hover:text-white text-emerald-800 text-[11px] font-bold border border-emerald-200 transition-all flex items-center gap-1 shadow-2xs">
                           <i class="fa-solid fa-volume-high text-[10px]"></i>
                           <span>Dengarkan</span>
