@@ -368,7 +368,7 @@ const ARABIC_DATA = {
     {
       id: 1,
       title: "الْحِوَارُ الأَوَّلُ",
-      subtitle: "Percakapan 1: Antara Ustadz (Guru) dan Para Siswa",
+      subtitle: "Percakapan 1: Antara Ustadzah (Guru) dan Para Siswa",
       instruction: "أُنْظُرْ وَاسْتَمِعْ وَ أَعِدْ.",
       instructionTranslation: "Lihat, dengarkan, dan ulangi.",
       topicImages: [
@@ -388,18 +388,18 @@ const ARABIC_DATA = {
       lines: [
         {
           id: 1,
-          speaker: "الْأُسْتَاذُ",
-          role: "Guru (Ustadz)",
-          avatar: "avatar-guru.jpg",
+          speaker: "الْأُسْتَاذَةُ",
+          role: "Guru (Ustadzah)",
+          avatar: "avatar-ustadzah.jpg",
           bubbleColor: "amber",
           arabic: "أَيُّهَا التَّلاَمِيْذُ، أُنْظُرُوا إِلَى الصُّوْرَتَيْنِ.",
           translation: "Wahai murid-murid, lihatlah kedua gambar ini!"
         },
         {
           id: 2,
-          speaker: "الْأُسْتَاذُ",
-          role: "Guru (Ustadz)",
-          avatar: "avatar-guru.jpg",
+          speaker: "الْأُسْتَاذَةُ",
+          role: "Guru (Ustadzah)",
+          avatar: "avatar-ustadzah.jpg",
           bubbleColor: "red",
           arabic: "يَا حَمْزَةُ، مَاذَا تَرَى فِي الصُّوْرَةِ الأُولَى؟",
           translation: "Wahai Hamzah, apa yang kamu lihat pada gambar pertama?"
@@ -408,16 +408,16 @@ const ARABIC_DATA = {
           id: 3,
           speaker: "حَمْزَةُ",
           role: "Siswa (Hamzah)",
-          avatar: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=150&q=80",
+          avatar: "avatar-siswa.jpg",
           bubbleColor: "emerald",
           arabic: "التَّصَحُّرُ.",
           translation: "Penggundulan hutan / Deforestasi."
         },
         {
           id: 4,
-          speaker: "الْأُسْتَاذُ",
-          role: "Guru (Ustadz)",
-          avatar: "avatar-guru.jpg",
+          speaker: "الْأُسْتَاذَةُ",
+          role: "Guru (Ustadzah)",
+          avatar: "avatar-ustadzah.jpg",
           bubbleColor: "emerald",
           arabic: "يَا عَبْدَ اللهِ، مَا رَأْيُكَ فِي الصُّوْرَةِ الأُولَى وَالثَّانِيَةِ؟",
           translation: "Wahai Abdullah, bagaimana pendapatmu tentang gambar pertama dan gambar kedua?"
@@ -426,16 +426,16 @@ const ARABIC_DATA = {
           id: 5,
           speaker: "عَبْدُ اللهِ",
           role: "Siswa (Abdullah)",
-          avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80",
+          avatar: "avatar-siswa.jpg",
           bubbleColor: "blue",
           arabic: "كِلاَهُمَا بِمَا كَسَبَتْ أَيْدِي النَّاسِ.",
           translation: "Kedua bencana tersebut terjadi akibat ulah perbuatan tangan manusia."
         },
         {
           id: 6,
-          speaker: "الْأُسْتَاذُ",
-          role: "Guru (Ustadz)",
-          avatar: "avatar-guru.jpg",
+          speaker: "الْأُسْتَاذَةُ",
+          role: "Guru (Ustadzah)",
+          avatar: "avatar-ustadzah.jpg",
           bubbleColor: "purple",
           arabic: "صَحِيْحٌ يَا عَبْدَ اللهِ. حَمْدَانُ، أُذْكُرْ بَعْضَ الْوَسَائِلِ لِلْحِفَاظِ عَلَى الْبِيئَةِ.",
           translation: "Benar wahai Abdullah. Hamdan, sebutkan beberapa cara untuk melestarikan lingkungan!"
@@ -444,16 +444,16 @@ const ARABIC_DATA = {
           id: 7,
           speaker: "حَمْدَانُ",
           role: "Siswa (Hamdan)",
-          avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&q=80",
+          avatar: "avatar-siswa.jpg",
           bubbleColor: "orange",
           arabic: "أَوَّلاً – تَثْقِيْفُ الْمُجْتَمَعِ لِلْحِفَاظِ عَلَى الْبِيئَةِ.\nثَانِيًا – الاِسْتِفَادَةُ مِنَ الْمَوَارِدِ الطَّبِيعِيَّةِ بِدُونِ إِسْرَافٍ.\nثَالِثًا – الْمُحَافَظَةُ عَلَى الْبِيئَةِ مِنَ التَّلَوُّثِ.\nرَابِعًا – التَّشْجِيْرُ.",
           translation: "Pertama – Mengedukasi masyarakat untuk menjaga lingkungan.\nKedua – Memanfaatkan sumber daya alam tanpa pemborosan.\nKetiga – Menjaga lingkungan hidup dari pencemaran.\nKeempat – Penghijauan / Reboisasi."
         },
         {
           id: 8,
-          speaker: "الْأُسْتَاذُ",
-          role: "Guru (Ustadz)",
-          avatar: "avatar-guru.jpg",
+          speaker: "الْأُسْتَاذَةُ",
+          role: "Guru (Ustadzah)",
+          avatar: "avatar-ustadzah.jpg",
           bubbleColor: "sky",
           arabic: "أَحْسَنْتَ يَا حَمْدَانُ. لِذَلِكَ أَيُّهَا التَّلاَمِيْذُ، الْبِيئَةُ تَنْتَظِرُ دَوْرَكُمْ. عَلَيْكُمْ أَنْ تُحَافِظُوا عَلَى الْبِيئَةِ.",
           translation: "Bagus sekali wahai Hamdan! Oleh karena itu wahai murid-murid, lingkungan hidup menunggu peran kalian. Hendaknya kalian melestarikan lingkungan hidup."
@@ -470,8 +470,8 @@ const ARABIC_DATA = {
         {
           id: 1,
           speaker: "سَلْمَى",
-          role: "Siswi (Salma - Kerudung Merah)",
-          avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=150&q=80",
+          role: "Siswi (Salma)",
+          avatar: "avatar-siswi.jpg",
           bubbleColor: "purple",
           arabic: "هَلْ تُحِبِّيْنَ الْبِيئَةَ النَّظِيْفَةَ؟",
           translation: "Apakah kamu menyukai lingkungan yang bersih?"
@@ -479,8 +479,8 @@ const ARABIC_DATA = {
         {
           id: 2,
           speaker: "عَائِشَةُ",
-          role: "Siswi (Aisyah - Kerudung Hitam)",
-          avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=150&q=80",
+          role: "Siswi (Aisyah)",
+          avatar: "avatar-siswi.jpg",
           bubbleColor: "blue",
           arabic: "نَعَمْ، أُحِبُّهَا. يَجِبُ عَلَيْنَا أَنْ نُحَافِظَ عَلَيْهَا.",
           translation: "Ya, aku sangat menyukainya. Wajib bagi kita untuk melestarikannya."
@@ -488,8 +488,8 @@ const ARABIC_DATA = {
         {
           id: 3,
           speaker: "سَلْمَى",
-          role: "Siswi (Salma - Kerudung Merah)",
-          avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=150&q=80",
+          role: "Siswi (Salma)",
+          avatar: "avatar-siswi.jpg",
           bubbleColor: "emerald",
           arabic: "كَيْفَ نُحَافِظُ عَلَى الْبِيئَةِ؟",
           translation: "Bagaimana cara kita menjaga dan melestarikan lingkungan?"
@@ -497,8 +497,8 @@ const ARABIC_DATA = {
         {
           id: 4,
           speaker: "عَائِشَةُ",
-          role: "Siswi (Aisyah - Kerudung Hitam)",
-          avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=150&q=80",
+          role: "Siswi (Aisyah)",
+          avatar: "avatar-siswi.jpg",
           bubbleColor: "amber",
           arabic: "مِنْهَا:\n✓ نَرْمِي الْقُمَامَةَ فِي الْمَزْبَلَةِ\n✓ نَزْرَعُ الأَشْجَارَ\n✓ نُقَلِّلُ الْبَلاَسْتِيْكَ",
           translation: "Di antaranya:\n✓ Membuang sampah di tempat sampah\n✓ Menanam pohon\n✓ Mengurangi penggunaan plastik"
