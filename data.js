@@ -148,7 +148,8 @@ const ARABIC_DATA = {
       category: "Nilai",
       sentence: "النَّظَافَةُ مِنَ الإِيمَانِ.",
       sentenceTranslation: "Kebersihan itu sebagian dari iman.",
-      svgKey: "kebersihan"
+      svgKey: "kebersihan",
+      image: "img-kebersihan.jpg"
     },
     {
       id: 14,
@@ -159,7 +160,7 @@ const ARABIC_DATA = {
       sentence: "يَقُومُ الطُّلاَّبُ بِغَرْسِ الأَشْجَارِ فِي حَدِيقَةِ الْمَدْرَسَةِ.",
       sentenceTranslation: "Para siswa melakukan penanaman pohon di taman sekolah.",
       svgKey: "reboisasi",
-      image: "img-reboisasi.jpg"
+      image: "img-menanam-pohon.jpg"
     },
     {
       id: 15,
@@ -169,7 +170,8 @@ const ARABIC_DATA = {
       category: "Solusi",
       sentence: "تَدْوِيرُ النَّفَايَاتِ يُقَلِّلُ مِنَ التَّلَوُّثِ.",
       sentenceTranslation: "Daur ulang sampah mengurangi pencemaran.",
-      svgKey: "sampah"
+      svgKey: "sampah",
+      image: "img-daur-ulang.jpg"
     },
     {
       id: 16,
@@ -179,7 +181,8 @@ const ARABIC_DATA = {
       category: "Solusi",
       sentence: "يَجِبُ عَلَيْنَا تَرْشِيدُ اسْتِهْلاَكِ الْمَاءِ كُلَّ يَوْمٍ.",
       sentenceTranslation: "Kita harus menghemat penggunaan air setiap hari.",
-      svgKey: "air_bersih"
+      svgKey: "air_bersih",
+      image: "img-penghematan-air.jpg"
     },
     {
       id: 17,
@@ -189,7 +192,8 @@ const ARABIC_DATA = {
       category: "Alat",
       sentence: "تُوجَدُ سَلَّةُ الْمُهْمَلاَتِ فِي كُلِّ فَصْلٍ.",
       sentenceTranslation: "Terdapat tempat sampah di setiap kelas.",
-      svgKey: "sampah"
+      svgKey: "sampah",
+      image: "img-tempat-sampah.jpg"
     }
   ],
 
