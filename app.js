@@ -408,9 +408,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // 1. LOGIN VIEW
   function renderLogin() {
     return `
-      <div class="relative w-full min-h-screen flex items-center justify-center p-4 sm:p-6 lg:p-8 overflow-hidden">
-        <!-- Background: High Quality Local Nature SVG + Emerald Overlay -->
-        <div class="absolute inset-0 z-0">
+      <div class="relative w-full min-h-screen flex flex-col justify-start sm:justify-center items-stretch sm:items-center p-0 sm:p-6 lg:p-8 overflow-y-auto sm:overflow-hidden bg-[#062d1c] sm:bg-transparent">
+        <!-- Background: High Quality Local Nature SVG + Emerald Overlay (Desktop) -->
+        <div class="absolute inset-0 z-0 hidden sm:block">
           <img src="bg-nature.svg" alt="Nature Background" class="w-full h-full object-cover object-center transform scale-105">
           <div class="absolute inset-0 bg-gradient-to-br from-emerald-950/40 via-emerald-900/30 to-teal-950/50"></div>
           
@@ -424,26 +424,26 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
         </div>
 
-        <!-- Clean Solid Login Container -->
-        <div class="relative z-10 w-full max-w-md my-auto">
-          <div class="bg-white rounded-[2.5rem] shadow-2xl border border-emerald-100 overflow-hidden">
+        <!-- Clean Solid Login Container: Edge-to-edge full screen on mobile (Zero pop-up feel), Centered Card on Desktop -->
+        <div class="relative z-10 w-full min-h-screen sm:min-h-0 sm:max-w-md flex flex-col sm:my-auto">
+          <div class="w-full flex-1 flex flex-col bg-white sm:rounded-[2.5rem] rounded-none shadow-none sm:shadow-2xl border-0 sm:border border-emerald-100 overflow-hidden">
             
-            <!-- Header Arch Banner inside Card -->
-            <div class="relative bg-gradient-to-r from-emerald-900 via-emerald-800 to-teal-800 p-6 sm:p-8 text-white overflow-hidden text-center">
-              <div class="absolute -right-10 -top-10 w-36 h-36 bg-emerald-400/10 rounded-full blur-xl"></div>
-              <div class="absolute -left-10 -bottom-10 w-36 h-36 bg-teal-300/10 rounded-full blur-xl"></div>
+            <!-- Header Arch Banner inside Card: Full bleed on mobile with safe top notch padding -->
+            <div class="relative bg-gradient-to-r from-emerald-900 via-emerald-800 to-teal-800 px-6 pt-12 pb-9 sm:p-8 text-white overflow-hidden text-center flex-shrink-0">
+              <div class="absolute -right-10 -top-10 w-36 h-36 bg-emerald-400/10 rounded-full blur-xl pointer-events-none"></div>
+              <div class="absolute -left-10 -bottom-10 w-36 h-36 bg-teal-300/10 rounded-full blur-xl pointer-events-none"></div>
               
-              <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-3.5 py-1 rounded-full text-[11px] font-semibold text-emerald-200 border border-white/20 mb-3">
+              <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-3.5 py-1.5 rounded-full text-[11px] font-semibold text-emerald-200 border border-white/20 mb-3 shadow-sm">
                 <i class="fa-solid fa-seedling text-emerald-400"></i>
                 <span>Media Pembelajaran Bahasa Arab</span>
               </div>
               
-              <h2 class="text-3xl font-bold font-arabic leading-tight mb-1 text-white">الحفاظ على البيئة</h2>
+              <h2 class="text-2xl sm:text-3xl font-bold font-arabic leading-tight mb-1.5 text-white drop-shadow-sm">الحفاظ على البيئة</h2>
               <p class="text-xs text-emerald-200 font-medium">Materi Kelas 9 MTs / SMP Islam</p>
             </div>
 
-            <!-- Card Content Body -->
-            <div class="p-6 sm:p-8 space-y-5">
+            <!-- Card Content Body: Full width on mobile with smooth top curve, fills all remaining height down to screen edge -->
+            <div class="flex-1 bg-white px-6 py-7 sm:p-8 space-y-5 rounded-t-[2.5rem] -mt-5 relative z-10 sm:rounded-none sm:mt-0 shadow-[0_-8px_30px_rgba(0,0,0,0.08)] sm:shadow-none flex flex-col justify-start sm:justify-center">
 
               <!-- ================= SECTION 1: LOGIN BOX (SISWA & GURU SATU PINTU) ================= -->
               <div id="login-box" class="space-y-4">
@@ -547,8 +547,6 @@ document.addEventListener('DOMContentLoaded', () => {
                   </button>
                 </div>
               </div>
-
-
 
             </div>
 

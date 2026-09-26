@@ -81,7 +81,8 @@ const server = http.createServer((req, res) => {
     } else {
       res.writeHead(200, {
         'Content-Type': contentType,
-        'Access-Control-Allow-Origin': '*'
+        'Access-Control-Allow-Origin': '*',
+        'Cache-Control': 'no-cache, no-store, must-revalidate, max-age=0'
       });
       res.end(content, 'utf-8');
     }
