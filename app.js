@@ -1360,6 +1360,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const qIdx = state.listeningQuizIndex || 0;
         const currentQ = section.questions[qIdx];
         state.listeningQuizAnswers[currentQ.id] = oIdx;
+        const isCorrect = oIdx === currentQ.answer;
+        playSoundEffect(isCorrect ? 'correct' : 'wrong');
         render();
       });
     });
@@ -1397,6 +1399,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const gId = e.currentTarget.getAttribute('data-match-g');
         const oIdx = parseInt(e.currentTarget.getAttribute('data-match-o'));
         state.listeningMatchSelected[gId] = oIdx;
+        const section = ARABIC_DATA.listening && ARABIC_DATA.listening.sections.find(s => s.id === 'match');
+        const game = section && section.games.find(g => String(g.id) === String(gId));
+        if (game && game.options[oIdx]) {
+          const isCorrect = game.options[oIdx].correct;
+          playSoundEffect(isCorrect ? 'correct' : 'wrong');
+        }
         render();
       });
     });
@@ -3183,6 +3191,7 @@ document.addEventListener('DOMContentLoaded', () => {
           state.kahootLastCorrect = false;
           state.kahootStreak = 0;
           state.kahootPointsEarned = 0;
+          playSoundEffect('wrong');
           state.kahootShowFeedback = true;
           render();
         }
@@ -3214,9 +3223,11 @@ document.addEventListener('DOMContentLoaded', () => {
           
           state.kahootPointsEarned = earned;
           state.kahootPoints += earned;
+          playSoundEffect(state.kahootStreak >= 3 ? 'combo' : 'correct');
         } else {
           state.kahootStreak = 0;
           state.kahootPointsEarned = 0;
+          playSoundEffect('wrong');
         }
 
         state.kahootShowFeedback = true;
@@ -3397,38 +3408,73 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       const AudioCtx = window.AudioContext || window.webkitAudioContext;
       if (!AudioCtx) return;
-      const ctx = new AudioCtx();
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.connect(gain);
-      gain.connect(ctx.destination);
+      if (!window.__appAudioCtx || window.__appAudioCtx.state === 'closed') {
+        window.__appAudioCtx = new AudioCtx();
+      }
+      const ctx = window.__appAudioCtx;
+      if (ctx.state === 'suspended') {
+        ctx.resume();
+      }
+
+      const now = ctx.currentTime;
 
       if (type === 'correct') {
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(523.25, ctx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.15);
-        gain.gain.setValueAtTime(0.3, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
-        osc.start(ctx.currentTime);
-        osc.stop(ctx.currentTime + 0.3);
+        // Bright cheerful 2-tone melodic chime (G5 -> C6)
+        const playChime = (freq, startTime, duration, vol) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, startTime);
+          gain.gain.setValueAtTime(vol, startTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(startTime);
+          osc.stop(startTime + duration);
+        };
+        playChime(783.99, now, 0.20, 0.25); // G5
+        playChime(1046.50, now + 0.10, 0.38, 0.30); // C6
       } else if (type === 'wrong') {
-        osc.type = 'sawtooth';
-        osc.frequency.setValueAtTime(220, ctx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(110, ctx.currentTime + 0.25);
-        gain.gain.setValueAtTime(0.3, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
-        osc.start(ctx.currentTime);
-        osc.stop(ctx.currentTime + 0.3);
+        // Gentle descending game buzzer (2-tone muted boop)
+        const playBuzzer = (freq1, freq2, startTime, duration, vol) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          const filter = ctx.createBiquadFilter();
+          osc.type = 'triangle';
+          filter.type = 'lowpass';
+          filter.frequency.setValueAtTime(700, startTime);
+          osc.frequency.setValueAtTime(freq1, startTime);
+          osc.frequency.linearRampToValueAtTime(freq2, startTime + duration);
+          gain.gain.setValueAtTime(vol, startTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+          osc.connect(filter);
+          filter.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(startTime);
+          osc.stop(startTime + duration);
+        };
+        playBuzzer(240, 180, now, 0.16, 0.22);
+        playBuzzer(190, 130, now + 0.14, 0.28, 0.22);
       } else if (type === 'combo') {
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(587.33, ctx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(1174.66, ctx.currentTime + 0.2);
-        gain.gain.setValueAtTime(0.4, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.35);
-        osc.start(ctx.currentTime);
-        osc.stop(ctx.currentTime + 0.35);
+        // Triumphant 4-note victory fanfare (C5 -> E5 -> G5 -> C6)
+        const notes = [523.25, 659.25, 783.99, 1046.50];
+        notes.forEach((freq, idx) => {
+          const start = now + (idx * 0.08);
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, start);
+          gain.gain.setValueAtTime(0.25, start);
+          gain.gain.exponentialRampToValueAtTime(0.001, start + 0.35);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(start);
+          osc.stop(start + 0.35);
+        });
       }
-    } catch (e) {}
+    } catch (e) {
+      console.warn('Sound effect error:', e);
+    }
   }
 
   function startDuelTimer() {
