@@ -1429,10 +1429,10 @@ document.addEventListener('DOMContentLoaded', () => {
             <div>
               <div class="inline-flex items-center gap-2 bg-teal-50 text-teal-800 px-3.5 py-1 rounded-full text-xs font-bold border border-teal-200 mb-2">
                 <i class="fa-solid fa-book-open text-teal-600"></i>
-                <span>مَهَارَةُ الْقِرَاءَةِ وَتَحْلِيلُ الإِعْرَابِ (Maharah Qira'ah & I'rab)</span>
+                <span>مَهَارَةُ الْقِرَاءَةِ وَتَحْلِيلُ الإِعْرَابِ</span>
               </div>
               <h2 class="text-3xl sm:text-5xl font-extrabold font-arabic text-emerald-950 leading-relaxed text-right dir-rtl">${reading.title}</h2>
-              <p class="text-xs sm:text-sm text-emerald-700 font-medium mt-1">${reading.titleTranslation}</p>
+              
             </div>
 
             <!-- Action Controls -->
@@ -1444,12 +1444,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 <button id="qiraah-font-lg" class="px-2.5 py-1.5 rounded-xl transition-all ${state.qiraahFontSize === 'lg' ? 'bg-emerald-700 text-white shadow-xs' : 'text-emerald-800 hover:bg-emerald-100'}" title="Ukuran Teks Besar">A+</button>
               </div>
 
-              <!-- Master Toggle Translation Button -->
-              <button id="toggle-qiraah-trans-btn" class="px-4 py-2.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 rounded-2xl text-xs font-bold border border-emerald-200 transition-all flex items-center gap-2 shadow-sm">
-                <i class="fa-solid ${state.showQiraahTranslation ? 'fa-eye-slash text-emerald-600' : 'fa-eye text-emerald-600'}"></i>
-                <span>${state.showQiraahTranslation ? 'Sembunyikan Semua Arti' : 'Tampilkan Arti Bahasa Indonesia'}</span>
-              </button>
-
               <!-- Audio Play All Button -->
               <button id="play-qiraah-all-btn" class="px-4 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-2xl text-xs font-bold shadow-md transition-all flex items-center gap-2">
                 <i class="fa-solid fa-volume-high"></i>
@@ -1458,37 +1452,11 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
           </div>
 
-          <!-- Color Syntax & I'rab Legend Banner -->
-          <div class="bg-gradient-to-br from-emerald-950 via-emerald-900 to-teal-950 text-white p-5 rounded-3xl border border-emerald-800 shadow-lg space-y-3">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-emerald-800/80 pb-3">
-              <div class="flex items-center gap-2 text-xs font-extrabold text-emerald-300 uppercase tracking-wider">
-                <i class="fa-solid fa-palette text-amber-400 text-sm"></i>
-                <span>Mode Analisis I'rab Berwarna (Klik frasa Arab untuk melihat keterangan kedudukan I'rab)</span>
-              </div>
-              
-              <button id="toggle-irob-color-btn" class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all border flex items-center gap-1.5 self-start sm:self-auto ${state.showQiraahIrobColor ? 'bg-emerald-600 text-white border-emerald-400 shadow' : 'bg-white/10 text-emerald-200 border-white/20'}">
-                <i class="fa-solid ${state.showQiraahIrobColor ? 'fa-toggle-on text-yellow-300' : 'fa-toggle-off'}"></i>
-                <span>${state.showQiraahIrobColor ? 'Warna Syntax: AKTIF' : 'Warna Syntax: NONAKTIF'}</span>
-              </button>
-            </div>
-
-            ${state.showQiraahIrobColor ? `
-              <div class="flex flex-wrap items-center gap-2 text-[11px] font-bold pt-1">
-                <span class="px-2.5 py-1 rounded-xl bg-emerald-100 text-emerald-950 border border-emerald-300 flex items-center gap-1">🟢 Fi'il (Kata Kerja)</span>
-                <span class="px-2.5 py-1 rounded-xl bg-blue-100 text-blue-950 border border-blue-300 flex items-center gap-1">🔵 Fa'il / Subjek</span>
-                <span class="px-2.5 py-1 rounded-xl bg-amber-100 text-amber-950 border border-amber-300 flex items-center gap-1">🟠 Jar & Majrur</span>
-                <span class="px-2.5 py-1 rounded-xl bg-purple-100 text-purple-950 border border-purple-300 flex items-center gap-1">🟣 Maf'ul Bih / Mudhaf Ilaih</span>
-                <span class="px-2.5 py-1 rounded-xl bg-cyan-100 text-cyan-950 border border-cyan-300 flex items-center gap-1">🩵 Mubtada' / Khabar</span>
-                <span class="px-2.5 py-1 rounded-xl bg-rose-100 text-rose-950 border border-rose-300 flex items-center gap-1">🔴 Badal / Athaf / Nahi</span>
-              </div>
-            ` : ''}
-          </div>
-
           <!-- Paragraph Cards List -->
           <div class="space-y-8">
             ${reading.paragraphs.map((p, idx) => {
               const arabicLines = p.arabic.split('\n').filter(l => l.trim().length > 0);
-              const isTransShown = state.showQiraahTranslation || state.openQiraahAccordions[idx];
+              
               const hasTokens = p.tokens && p.tokens.length > 0;
 
               return `
@@ -1502,12 +1470,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
 
                     <div class="flex items-center gap-2">
-                      <!-- Individual Translation Toggle Button -->
-                      <button data-qiraah-acc="${idx}" class="qiraah-acc-btn text-xs px-3.5 py-1.5 bg-white hover:bg-emerald-100 text-emerald-800 rounded-xl border border-emerald-200 transition-all flex items-center gap-1.5 font-bold shadow-sm">
-                        <i class="fa-solid ${isTransShown ? 'fa-eye-slash' : 'fa-eye'}"></i>
-                        <span>${isTransShown ? 'Tutup Arti' : 'Lihat Arti'}</span>
-                      </button>
-
                       <!-- Audio Speech Button -->
                       <button data-speech="${p.arabic.replace(/\n/g, ' ')}" class="speech-btn text-xs px-3.5 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl transition-all flex items-center gap-1.5 font-bold shadow-sm">
                         <i class="fa-solid fa-volume-high"></i>
@@ -1518,7 +1480,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                   <!-- Arabic Text Lines Container (Color Coded I'rab Badges or Natural Clean Flow) -->
                   <div class="bg-white p-6 sm:p-8 rounded-3xl border border-emerald-100/80 shadow-inner text-right dir-rtl">
-                    ${state.showQiraahIrobColor && hasTokens ? `
+                    ${hasTokens ? `
                       <div class="qiraah-interactive-passage font-arabic ${fontSizeClass} font-bold text-emerald-950 text-right dir-rtl">
                         ${(() => {
                           let html = '';
@@ -1609,18 +1571,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     `}
                   </div>
 
-                  <!-- Indonesian Translation (Hidden by default, expandable) -->
-                  ${isTransShown ? `
-                    <div class="text-xs sm:text-sm text-emerald-900 pt-4 border-t border-emerald-200/80 leading-relaxed font-sans bg-white/95 p-5 rounded-2xl space-y-1 shadow-xs border border-emerald-100">
-                      <div class="flex items-center gap-2 text-emerald-800 font-bold mb-1">
-                        <i class="fa-solid fa-language text-emerald-600"></i>
-                        <span>Terjemahan Bahasa Indonesia:</span>
-                      </div>
-                      <p class="whitespace-pre-line text-emerald-950 leading-relaxed">${p.translation}</p>
-                    </div>
-                  ` : ''}
-
-                </div>
+                  </div>
               `;
             }).join('')}
           </div>
@@ -1705,22 +1656,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function attachQiraahEvents() {
-    const masterToggleBtn = document.getElementById('toggle-qiraah-trans-btn');
-    if (masterToggleBtn) {
-      masterToggleBtn.addEventListener('click', () => {
-        state.showQiraahTranslation = !state.showQiraahTranslation;
-        render();
-      });
-    }
-
-    const toggleColorBtn = document.getElementById('toggle-irob-color-btn');
-    if (toggleColorBtn) {
-      toggleColorBtn.addEventListener('click', () => {
-        state.showQiraahIrobColor = !state.showQiraahIrobColor;
-        render();
-      });
-    }
-
     // Font size controls
     const fontSmBtn = document.getElementById('qiraah-font-sm');
     const fontMdBtn = document.getElementById('qiraah-font-md');
@@ -1764,14 +1699,6 @@ document.addEventListener('DOMContentLoaded', () => {
         speakArabic(state.activeIrobModalToken.word);
       });
     }
-
-    document.querySelectorAll('.qiraah-acc-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const idx = e.currentTarget.getAttribute('data-qiraah-acc');
-        state.openQiraahAccordions[idx] = !state.openQiraahAccordions[idx];
-        render();
-      });
-    });
 
     // Token click events for I'rab modal
     document.querySelectorAll('.irob-token-btn').forEach(btn => {
