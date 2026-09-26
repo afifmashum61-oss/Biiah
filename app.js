@@ -829,7 +829,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // SVG / Image Illustration Generator for Vocabulary Flip Cards
   function getVocabIllustration(item) {
     if (item.image) {
-      return `<img src="${item.image}" alt="${item.meaning}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">`;
+      const pos = item.imagePosition ? ` style="object-position: ${item.imagePosition};"` : '';
+      return `<img src="${item.image}" alt="${item.meaning}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"${pos}>`;
     }
     const key = item.svgKey || 'lingkungan';
     

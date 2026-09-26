@@ -17,7 +17,8 @@ const ARABIC_DATA = {
       sentence: "التَّشْجِيرُ يُسَاعِدُ عَلَى تَنْقِيَةِ الْهَوَاءِ وَإِعَادَةِ الْحَيَاةِ لِلْغَابَةِ.",
       sentenceTranslation: "Reboisasi membantu menyegarkan udara dan mengembalikan kehidupan hutan.",
       svgKey: "reboisasi",
-      image: "img-reboisasi.jpg"
+      image: "img-reboisasi.jpg",
+      imagePosition: "center bottom"
     },
     {
       id: 2,
