@@ -7,6 +7,7 @@
   let currentUtterance = null; // Retain reference to prevent iOS Safari GC bug
   let audioQueue = [];
   let isPlayingAudio = false;
+  window.isPlayingAudio = false;
 
   function loadVoices() {
     if (synth) {
@@ -2336,84 +2337,150 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // 4. QIRA'AH VIEW (Maharah Qira'ah - Membaca Teks & Analisis I'rab Berwarna)
+  // 4. QIRA'AH VIEW (Maharah Qira'ah - Membaca Teks, Analisis I'rab & Terjemahan)
   function renderQiraah() {
     const reading = ARABIC_DATA.reading;
+    
+    // Modern harmonious pastel badges for inline Arabic words
     const COLOR_BADGES = {
-      emerald: "bg-emerald-50 text-emerald-950 border border-emerald-300 hover:bg-emerald-100",
-      blue: "bg-blue-50 text-blue-950 border border-blue-300 hover:bg-blue-100",
-      amber: "bg-amber-50 text-amber-950 border border-amber-300 hover:bg-amber-100",
-      purple: "bg-purple-50 text-purple-950 border border-purple-300 hover:bg-purple-100",
-      rose: "bg-rose-50 text-rose-950 border border-rose-300 hover:bg-rose-100",
-      cyan: "bg-cyan-50 text-cyan-950 border border-cyan-300 hover:bg-cyan-100"
+      emerald: "bg-emerald-100/70 text-emerald-950 hover:bg-emerald-200/90 active:bg-emerald-300 border-b-2 border-emerald-400",
+      blue: "bg-sky-100/70 text-sky-950 hover:bg-sky-200/90 active:bg-sky-300 border-b-2 border-sky-400",
+      amber: "bg-amber-100/70 text-amber-950 hover:bg-amber-200/90 active:bg-amber-300 border-b-2 border-amber-400",
+      purple: "bg-purple-100/70 text-purple-950 hover:bg-purple-200/90 active:bg-purple-300 border-b-2 border-purple-400",
+      rose: "bg-rose-100/70 text-rose-950 hover:bg-rose-200/90 active:bg-rose-300 border-b-2 border-rose-400",
+      cyan: "bg-teal-100/70 text-teal-950 hover:bg-teal-200/90 active:bg-teal-300 border-b-2 border-teal-400"
+    };
+
+    // Clean badges for cards and tags
+    const PILL_BADGES = {
+      emerald: "bg-emerald-50 text-emerald-800 border border-emerald-200",
+      blue: "bg-sky-50 text-sky-800 border border-sky-200",
+      amber: "bg-amber-50 text-amber-800 border border-amber-200",
+      purple: "bg-purple-50 text-purple-800 border border-purple-200",
+      rose: "bg-rose-50 text-rose-800 border border-rose-200",
+      cyan: "bg-teal-50 text-teal-800 border border-teal-200"
     };
 
     const modalToken = state.activeIrobModalToken;
-    const fontSizeClass = state.qiraahFontSize === 'lg' ? 'text-3xl sm:text-4xl leading-[3.0] sm:leading-[3.4]' :
-                          state.qiraahFontSize === 'sm' ? 'text-xl sm:text-2xl leading-[2.6] sm:leading-[2.8]' :
-                          'text-2xl sm:text-3xl leading-[2.8] sm:leading-[3.2]';
+    const isPlaying = (typeof window !== 'undefined' && !!window.isPlayingAudio);
+    const fontSizeClass = state.qiraahFontSize === 'lg' ? 'text-2xl sm:text-4xl' :
+                          state.qiraahFontSize === 'sm' ? 'text-lg sm:text-2xl' :
+                          'text-xl sm:text-3xl';
 
     return `
-      <div class="space-y-8 max-w-5xl mx-auto">
-        <!-- Main Card Container -->
-        <div class="bg-white rounded-2xl sm:rounded-3xl lg:rounded-[2.5rem] p-4 sm:p-8 lg:p-10 border border-emerald-100 shadow-sm space-y-5 sm:space-y-6">
+      <div class="space-y-4 sm:space-y-7 max-w-5xl mx-auto px-0 sm:px-2">
+        <!-- Main Card Container (Slimmer mobile padding for maximum Arabic text width) -->
+        <div class="bg-white rounded-2xl sm:rounded-3xl lg:rounded-[2.5rem] p-3.5 sm:p-7 lg:p-9 border border-emerald-100 shadow-sm space-y-4 sm:space-y-6">
           
           <!-- Header Banner -->
-          <div class="border-b border-emerald-100 pb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div>
-              <div class="inline-flex items-center gap-2 bg-teal-50 text-teal-800 px-3.5 py-1 rounded-full text-xs font-bold border border-teal-200 mb-2">
-                <i class="fa-solid fa-book-open text-teal-600"></i>
-                <span>مَهَارَةُ الْقِرَاءَةِ وَتَحْلِيلُ الإِعْرَابِ</span>
+          <div class="border-b border-emerald-100/90 pb-4 sm:pb-6 space-y-3.5">
+            <!-- Title Row: Topic Badge & Clean Arabic Headline -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+              <div class="text-right sm:text-left order-2 sm:order-1">
+                <div class="inline-flex items-center gap-2 bg-emerald-50 text-emerald-800 px-3 py-1 rounded-full text-xs font-bold border border-emerald-200 mb-1">
+                  <i class="fa-solid fa-book-open text-emerald-600"></i>
+                  <span>مَهَارَةُ الْقِرَاءَةِ وَتَحْلِيلُ الإِعْرَابِ</span>
+                </div>
+                <p class="text-xs sm:text-sm text-emerald-700 font-sans font-medium">
+                  ${reading.titleTranslation || 'Pelestarian Lingkungan Hidup'}
+                </p>
               </div>
-              <h2 class="text-3xl sm:text-5xl font-extrabold font-arabic text-emerald-950 leading-relaxed text-right dir-rtl">${reading.title}</h2>
-              
+              <h2 class="text-2xl sm:text-4xl lg:text-5xl font-extrabold font-arabic text-emerald-950 text-right dir-rtl leading-tight order-1 sm:order-2">
+                ${reading.title}
+              </h2>
             </div>
 
-            <!-- Action Controls -->
-            <div class="flex flex-wrap items-center gap-2 self-start sm:self-auto">
-              <!-- Font Size Selector -->
-              <div class="inline-flex items-center bg-emerald-50 border border-emerald-200 rounded-2xl p-1 shadow-sm text-xs font-bold">
-                <button id="qiraah-font-sm" class="px-2.5 py-1.5 rounded-xl transition-all ${state.qiraahFontSize === 'sm' ? 'bg-emerald-700 text-white shadow-xs' : 'text-emerald-800 hover:bg-emerald-100'}" title="Ukuran Teks Sedang">A-</button>
-                <button id="qiraah-font-md" class="px-2.5 py-1.5 rounded-xl transition-all ${!state.qiraahFontSize || state.qiraahFontSize === 'md' ? 'bg-emerald-700 text-white shadow-xs' : 'text-emerald-800 hover:bg-emerald-100'}" title="Ukuran Teks Normal">A</button>
-                <button id="qiraah-font-lg" class="px-2.5 py-1.5 rounded-xl transition-all ${state.qiraahFontSize === 'lg' ? 'bg-emerald-700 text-white shadow-xs' : 'text-emerald-800 hover:bg-emerald-100'}" title="Ukuran Teks Besar">A+</button>
+            <!-- Action Controls Toolbar (Mobile-first responsive toolbar) -->
+            <div class="bg-emerald-50/70 border border-emerald-200/80 rounded-2xl p-2 sm:p-2.5 flex flex-wrap items-center justify-between gap-2 shadow-2xs">
+              <!-- Left: Controls Group (Font Size, Mode I'rab, Terjemahan) -->
+              <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                <!-- Font Size Selector -->
+                <div class="inline-flex items-center bg-white border border-emerald-200 rounded-xl p-0.5 shadow-2xs text-xs font-bold">
+                  <button id="qiraah-font-sm" class="px-2.5 py-1 rounded-lg transition-all ${state.qiraahFontSize === 'sm' ? 'bg-emerald-700 text-white shadow-xs' : 'text-emerald-800 hover:bg-emerald-50'}" title="Ukuran Font Sedang">A-</button>
+                  <button id="qiraah-font-md" class="px-2.5 py-1 rounded-lg transition-all ${!state.qiraahFontSize || state.qiraahFontSize === 'md' ? 'bg-emerald-700 text-white shadow-xs' : 'text-emerald-800 hover:bg-emerald-50'}" title="Ukuran Font Normal">A</button>
+                  <button id="qiraah-font-lg" class="px-2.5 py-1 rounded-lg transition-all ${state.qiraahFontSize === 'lg' ? 'bg-emerald-700 text-white shadow-xs' : 'text-emerald-800 hover:bg-emerald-50'}" title="Ukuran Font Besar">A+</button>
+                </div>
+
+                <!-- Mode Toggle Button (Color Highlight vs Clean Reading) -->
+                <button id="qiraah-toggle-color-btn" class="px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 border shadow-2xs cursor-pointer active:scale-95 ${state.showQiraahIrobColor ? 'bg-emerald-700 text-white border-emerald-700 shadow-xs' : 'bg-white text-emerald-800 hover:bg-emerald-50 border-emerald-200'}" title="Aktifkan/Nonaktifkan Sorotan Warna I'rab">
+                  <i class="fa-solid fa-palette text-xs"></i>
+                  <span>${state.showQiraahIrobColor ? "Warna I'rab" : "Teks Polos"}</span>
+                </button>
+
+                <!-- Global Translation Toggle Button -->
+                <button id="qiraah-toggle-all-trans-btn" class="px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 border shadow-2xs cursor-pointer active:scale-95 ${state.showQiraahTranslation ? 'bg-amber-600 text-white border-amber-600 shadow-xs' : 'bg-white text-amber-800 hover:bg-amber-50 border-amber-200'}" title="Buka/Tutup Seluruh Terjemahan Paragraf">
+                  <i class="fa-solid fa-language text-xs"></i>
+                  <span>${state.showQiraahTranslation ? "Tutup Arti" : "Semua Arti"}</span>
+                </button>
               </div>
 
-              <!-- Audio Play All Button -->
-              <button id="play-qiraah-all-btn" class="px-4 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-2xl text-xs font-bold shadow-md transition-all flex items-center gap-2">
-                <i class="fa-solid fa-volume-high"></i>
-                <span>Putar Audio Teks</span>
+              <!-- Right: Master Audio Play/Stop Button -->
+              <button id="play-qiraah-all-btn" class="w-full sm:w-auto px-3.5 py-2 ${isPlaying ? 'bg-rose-700 hover:bg-rose-800' : 'bg-emerald-700 hover:bg-emerald-800'} text-white rounded-xl text-xs font-bold shadow-xs transition-all flex items-center justify-center gap-2 active:scale-95 cursor-pointer">
+                <i class="fa-solid ${isPlaying ? 'fa-circle-stop text-amber-300 animate-pulse' : 'fa-volume-high'} text-xs"></i>
+                <span>${isPlaying ? 'Hentikan Audio' : 'Putar Audio Teks'}</span>
               </button>
+            </div>
+
+            <!-- Clean Guidance Tip for Mobile Learners -->
+            <div class="flex items-center justify-between text-[11px] text-emerald-800/80 px-1 font-sans">
+              <span class="flex items-center gap-1.5">
+                <i class="fa-solid fa-circle-info text-emerald-600"></i>
+                <span>Ketuk kata/frasa bergaris untuk melihat kedudukan kaidah I'rab dan artinya.</span>
+              </span>
             </div>
           </div>
 
           <!-- Paragraph Cards List -->
-          <div class="space-y-8">
+          <div class="space-y-4 sm:space-y-6">
             ${reading.paragraphs.map((p, idx) => {
               const arabicLines = p.arabic.split('\n').filter(l => l.trim().length > 0);
-              
               const hasTokens = p.tokens && p.tokens.length > 0;
+              const isTransOpen = state.showQiraahTranslation || !!state.openQiraahAccordions[idx];
 
               return `
-                <div class="p-6 sm:p-8 rounded-[2rem] bg-emerald-50/40 border-2 border-emerald-100/90 space-y-6 shadow-sm hover:shadow-md transition-all">
+                <div class="p-3.5 sm:p-6 lg:p-7 rounded-2xl sm:rounded-3xl bg-emerald-50/40 border border-emerald-200/80 space-y-3 sm:space-y-4 shadow-2xs hover:shadow-xs transition-all">
                   
-                  <!-- Paragraph Top Bar -->
-                  <div class="flex items-center justify-between border-b border-emerald-200/60 pb-4">
-                    <div class="flex items-center gap-2">
-                      <span class="w-8 h-8 rounded-xl bg-emerald-700 text-white text-xs flex items-center justify-center font-bold shadow-sm">${idx + 1}</span>
-                      ${p.section ? `<span class="text-xs sm:text-sm font-bold text-emerald-900 font-arabic bg-emerald-100/90 px-3.5 py-1 rounded-full border border-emerald-200">${p.section}</span>` : ''}
+                  <!-- Paragraph Top Bar (Responsive for HP) -->
+                  <div class="border-b border-emerald-200/70 pb-3 space-y-2">
+                    <!-- Top Row: Paragraph Number Badge & Action Buttons -->
+                    <div class="flex items-center justify-between gap-2">
+                      <!-- Paragraph Number Badge -->
+                      <div class="flex items-center gap-2">
+                        <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-emerald-700 text-white text-xs sm:text-sm flex items-center justify-center font-bold shadow-xs">
+                          ${idx + 1}
+                        </span>
+                        <span class="text-xs sm:text-sm font-bold text-emerald-900 font-sans">
+                          Paragraf ${idx + 1}
+                        </span>
+                      </div>
+
+                      <!-- Action Buttons: Terjemahan & Dengarkan -->
+                      <div class="flex items-center gap-1.5 sm:gap-2">
+                        <!-- Toggle Translation Button for this paragraph -->
+                        <button class="toggle-para-trans-btn px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 border shadow-2xs cursor-pointer active:scale-95 ${isTransOpen ? 'bg-amber-100 text-amber-900 border-amber-300' : 'bg-white hover:bg-amber-50 text-amber-800 border-amber-200'}" data-para-idx="${idx}" title="Tampilkan/Sembunyikan Terjemahan Paragraf">
+                          <i class="fa-solid fa-language text-xs"></i>
+                          <span>${isTransOpen ? 'Tutup Arti' : 'Terjemahan'}</span>
+                        </button>
+
+                        <!-- Audio Listen Button -->
+                        <button data-speech="${p.arabic.replace(/\n/g, ' ')}" class="speech-btn text-xs px-2.5 sm:px-3 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl transition-all flex items-center gap-1.5 font-bold shadow-xs active:scale-95 cursor-pointer">
+                          <i class="fa-solid fa-volume-high text-xs"></i>
+                          <span>Dengarkan</span>
+                        </button>
+                      </div>
                     </div>
 
-                    <div class="flex items-center gap-2">
-                      <!-- Audio Speech Button -->
-                      <button data-speech="${p.arabic.replace(/\n/g, ' ')}" class="speech-btn text-xs px-3.5 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl transition-all flex items-center gap-1.5 font-bold shadow-sm">
-                        <i class="fa-solid fa-volume-high"></i>
-                        <span>Dengarkan</span>
-                      </button>
-                    </div>
+                    <!-- Bottom Row: Arabic Section Title (Full width, right-aligned) -->
+                    ${p.section ? `
+                      <div class="pt-1 flex items-center justify-end gap-2 text-right dir-rtl">
+                        <span class="w-2 h-2 rounded-full bg-emerald-600 shrink-0"></span>
+                        <h3 class="text-xs sm:text-sm font-bold text-emerald-950 font-arabic">${p.section}</h3>
+                      </div>
+                    ` : ''}
                   </div>
 
-                  <!-- Arabic Text Lines Container (Color Coded I'rab Badges or Natural Clean Flow) -->
-                  <div class="bg-white p-6 sm:p-8 rounded-3xl border border-emerald-100/80 shadow-inner text-right dir-rtl">
+                  <!-- Arabic Text Passage Container (Natural Flowing Lines) -->
+                  <div class="bg-white p-3.5 sm:p-6 rounded-xl sm:rounded-2xl border border-emerald-100/90 shadow-2xs text-right dir-rtl">
                     ${hasTokens ? `
                       <div class="qiraah-interactive-passage font-arabic ${fontSizeClass} font-bold text-emerald-950 text-right dir-rtl">
                         ${(() => {
@@ -2423,16 +2490,24 @@ document.addEventListener('DOMContentLoaded', () => {
                           function flushRunningTokens() {
                             if (runningTokens.length === 0) return '';
                             const segment = `
-                              <p class="my-1.5 leading-relaxed tracking-normal" style="word-spacing: 0.08em;">
+                              <div class="my-2 leading-[2.3] sm:leading-[2.6] text-right dir-rtl" style="word-spacing: 0.12em;">
                                 ${runningTokens.map(item => {
-                                  const bStyle = COLOR_BADGES[item.token.color] || COLOR_BADGES.emerald;
-                                  return `
-                                    <button data-irob-p="${idx}" data-irob-t="${item.tIdx}" class="irob-token-btn inline-block px-2.5 py-0.5 mx-1 my-1 rounded-xl ${bStyle} transition-all duration-150 align-baseline cursor-pointer hover:shadow-sm hover:scale-[1.02] shadow-2xs" title="Klik untuk penjelasan kedudukan I'rab: ${item.token.roleDesc || ''}">
-                                      <span>${item.token.word}</span>
-                                    </button>
-                                  `;
-                                }).join('')}
-                              </p>
+                                  if (state.showQiraahIrobColor) {
+                                    const bStyle = COLOR_BADGES[item.token.color] || COLOR_BADGES.emerald;
+                                    return `
+                                      <span role="button" tabindex="0" data-irob-p="${idx}" data-irob-t="${item.tIdx}" class="irob-token-btn inline rounded-md px-1.5 py-0.5 mx-0.5 transition-all duration-150 cursor-pointer ${bStyle} active:scale-95 select-none" title="Klik untuk penjelasan kedudukan I'rab: ${item.token.roleDesc || ''}">
+                                        ${item.token.word}
+                                      </span>
+                                    `;
+                                  } else {
+                                    return `
+                                      <span role="button" tabindex="0" data-irob-p="${idx}" data-irob-t="${item.tIdx}" class="irob-token-btn inline rounded-md px-1 py-0.5 mx-0.5 hover:bg-emerald-100/70 hover:text-emerald-800 text-emerald-950 transition-colors cursor-pointer active:scale-95 select-none" title="Klik untuk penjelasan I'rab">
+                                        ${item.token.word}
+                                      </span>
+                                    `;
+                                  }
+                                }).join(' ')}
+                              </div>
                             `;
                             runningTokens = [];
                             return segment;
@@ -2440,31 +2515,44 @@ document.addEventListener('DOMContentLoaded', () => {
 
                           p.tokens.forEach((token, tIdx) => {
                             const trimmed = token.word.trim();
-                            // Check if token is a section number/title (starts with ١. or ٢. or ٣.)
+                            // Section Number / Title (e.g. ١. تَلَوُّثُ الْمَاءِ)
                             if (/^[١٢٣٤٥٦٧٨٩0-9]+\./.test(trimmed)) {
                               html += flushRunningTokens();
-                              const bStyle = COLOR_BADGES[token.color] || COLOR_BADGES.cyan;
+                              const pillStyle = PILL_BADGES[token.color] || PILL_BADGES.cyan;
                               html += `
-                                <div class="mb-3 pb-2 border-b-2 border-emerald-100 flex items-center justify-between gap-3">
-                                  <button data-irob-p="${idx}" data-irob-t="${tIdx}" class="irob-token-btn text-right font-arabic font-extrabold text-emerald-900 hover:text-emerald-700 transition-colors" title="Klik untuk penjelasan I'rab">
-                                    <span>${token.word}</span>
-                                  </button>
-                                  <span class="text-xs px-3 py-1 rounded-full ${bStyle} font-sans font-bold shadow-xs">
-                                    ${token.roleDesc || 'Judul Bagian'}
-                                  </span>
+                                <div data-irob-p="${idx}" data-irob-t="${tIdx}" class="irob-card-btn mb-3 pb-2 border-b-2 border-emerald-200/90 flex flex-col-reverse sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-3 cursor-pointer group active:scale-[0.99] select-none">
+                                  <div class="flex items-center justify-between sm:justify-start gap-2">
+                                    <span class="text-[11px] sm:text-xs px-2.5 py-0.5 rounded-full ${pillStyle} font-sans font-bold shadow-2xs">
+                                      ${token.roleDesc || 'Judul Bagian'}
+                                    </span>
+                                    <span class="sm:hidden text-[10px] text-emerald-600/80 font-sans flex items-center gap-1 group-hover:text-emerald-700">
+                                      <span>Kaidah I'rab</span>
+                                      <i class="fa-solid fa-angle-left text-[9px]"></i>
+                                    </span>
+                                  </div>
+                                  <div class="text-right font-arabic font-extrabold text-emerald-900 group-hover:text-emerald-700 transition-colors ${fontSizeClass} leading-tight dir-rtl">
+                                    ${token.word}
+                                  </div>
                                 </div>
                               `;
                             } else if (trimmed.startsWith('•')) {
                               html += flushRunningTokens();
-                              const bStyle = COLOR_BADGES[token.color] || COLOR_BADGES.rose;
+                              const pillStyle = PILL_BADGES[token.color] || PILL_BADGES.rose;
                               html += `
-                                <div class="my-2.5 pr-4 border-r-4 border-emerald-500 bg-emerald-50/60 rounded-2xl p-3 flex items-center justify-between gap-3 shadow-xs">
-                                  <button data-irob-p="${idx}" data-irob-t="${tIdx}" class="irob-token-btn text-right flex-1 font-arabic font-bold text-emerald-950 hover:text-emerald-800 transition-colors" title="Klik untuk penjelasan I'rab">
-                                    <span>${token.word}</span>
-                                  </button>
-                                  <span class="text-xs px-3 py-1 rounded-full ${bStyle} font-sans font-bold whitespace-nowrap shadow-xs">
-                                    ${token.roleDesc || 'I\'rab'}
-                                  </span>
+                                <div data-irob-p="${idx}" data-irob-t="${tIdx}" class="irob-card-btn my-2.5 p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-gradient-to-l from-emerald-50/90 via-emerald-50/50 to-white border border-emerald-200/80 shadow-2xs hover:border-emerald-400 hover:shadow-xs transition-all cursor-pointer group active:scale-[0.99] select-none">
+                                  <div class="flex items-center justify-between gap-2 mb-1.5 pb-1 border-b border-emerald-100/70">
+                                    <span class="inline-flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-0.5 rounded-full ${pillStyle} font-sans shadow-2xs">
+                                      <i class="fa-solid fa-list-check text-[9px]"></i>
+                                      <span>${token.roleDesc || 'Bentuk Kerusakan'}</span>
+                                    </span>
+                                    <span class="text-[10px] text-emerald-600/75 group-hover:text-emerald-700 font-sans flex items-center gap-1">
+                                      <span>Lihat I'rab</span>
+                                      <i class="fa-solid fa-angle-left text-[9px]"></i>
+                                    </span>
+                                  </div>
+                                  <div class="text-right dir-rtl font-arabic ${fontSizeClass} font-bold text-emerald-950 leading-[2.2] sm:leading-[2.5]">
+                                    ${token.word}
+                                  </div>
                                 </div>
                               `;
                             } else {
@@ -2477,7 +2565,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         })()}
                       </div>
                     ` : `
-                      <div class="qiraah-clean-passage font-arabic ${fontSizeClass} font-bold text-emerald-950 text-right dir-rtl space-y-3">
+                      <div class="qiraah-clean-passage font-arabic ${fontSizeClass} font-bold text-emerald-950 text-right dir-rtl space-y-2.5 leading-[2.3] sm:leading-[2.6]">
                         ${arabicLines.map(line => {
                           const isNumbered = /^[١٢٣٤٥٦٧٨٩0-9]+\./.test(line.trim());
                           const isBullet = line.trim().startsWith('•');
@@ -2490,13 +2578,13 @@ document.addEventListener('DOMContentLoaded', () => {
                           }
                           if (isBullet) {
                             return `
-                              <div class="pr-5 border-r-4 border-emerald-600 bg-emerald-50/70 p-4 rounded-2xl my-2.5 shadow-xs">
+                              <div class="pr-4 border-r-4 border-emerald-600 bg-emerald-50/70 p-3 rounded-xl my-2 shadow-2xs">
                                 ${line}
                               </div>
                             `;
                           }
                           return `
-                            <p class="py-1 leading-relaxed tracking-normal" style="word-spacing: 0.08em;">
+                            <p class="py-1 leading-[2.3] sm:leading-[2.6]" style="word-spacing: 0.12em;">
                               ${line}
                             </p>
                           `;
@@ -2505,79 +2593,112 @@ document.addEventListener('DOMContentLoaded', () => {
                     `}
                   </div>
 
-                  </div>
+                  <!-- Indonesian Translation Accordion Card (Accessible & Clean) -->
+                  ${isTransOpen ? `
+                    <div class="mt-3 p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-amber-50/90 border border-amber-200 text-amber-950 space-y-2 animate-fadeIn shadow-2xs">
+                      <div class="flex items-center justify-between border-b border-amber-200/70 pb-1.5">
+                        <div class="flex items-center gap-2 text-xs font-bold text-amber-900">
+                          <i class="fa-solid fa-book-bookmark text-amber-600"></i>
+                          <span>Terjemahan Paragraf ${idx + 1}</span>
+                        </div>
+                        <button class="toggle-para-trans-btn text-[11px] text-amber-800 hover:text-amber-950 font-semibold cursor-pointer" data-para-idx="${idx}">
+                          <i class="fa-solid fa-xmark"></i> Sembunyikan
+                        </button>
+                      </div>
+                      <div class="text-xs sm:text-sm leading-relaxed text-amber-950 font-sans space-y-1.5">
+                        ${p.translation.split('\n').map(tLine => {
+                          const trimmedLine = tLine.trim();
+                          if (trimmedLine.startsWith('•')) {
+                            return `
+                              <div class="flex items-start gap-2 pr-1 my-1">
+                                <span class="text-amber-600 font-bold">•</span>
+                                <span class="flex-1">${trimmedLine.replace(/^•\s*/, '')}</span>
+                              </div>
+                            `;
+                          }
+                          return `<p class="leading-relaxed">${trimmedLine}</p>`;
+                        }).join('')}
+                      </div>
+                    </div>
+                  ` : ''}
+
+                </div>
               `;
             }).join('')}
           </div>
 
         </div>
 
-        <!-- I'RAB DETAIL MODAL POPUP (Ultra Compact, Never Overflows, Always Closable) -->
+        <!-- I'RAB DETAIL MODAL POPUP (Mobile Bottom Sheet & Centered Dialog, Clean Single Close Button) -->
         ${modalToken ? `
-          <div id="irob-modal-overlay" class="fixed inset-0 z-50 overflow-y-auto bg-emerald-950/70 backdrop-blur-sm p-3 sm:p-4 flex items-center justify-center animate-fadeIn">
+          <div id="irob-modal-overlay" class="fixed inset-0 z-50 overflow-y-auto bg-emerald-950/70 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 animate-fadeIn">
             
-            <!-- Floating Close Button (ALWAYS VISIBLE at top-right corner of screen) -->
-            <button id="floating-irob-close-btn" class="fixed top-3 right-3 sm:top-4 sm:right-4 z-[60] px-3.5 py-1.5 rounded-full bg-white/95 hover:bg-rose-600 hover:text-white text-gray-800 text-xs font-bold shadow-2xl border border-gray-300 flex items-center gap-1.5 transition-all cursor-pointer" title="Tutup Keterangan (Esc)">
-              <i class="fa-solid fa-xmark font-bold text-sm"></i>
-              <span>Tutup (Esc)</span>
-            </button>
-
-            <!-- Modal Box Container (Compact & wide enough so Arabic fits on 1-2 neat lines) -->
-            <div id="irob-modal-box" class="bg-white rounded-2xl p-3 sm:p-3.5 max-w-md sm:max-w-lg w-full border-2 border-emerald-600 shadow-2xl space-y-1.5 sm:space-y-2 relative transform transition-all scale-100 max-h-[85vh] flex flex-col m-auto min-h-0">
+            <!-- Modal Box Container (Bottom Sheet on mobile, centered card on tablet/desktop) -->
+            <div id="irob-modal-box" class="bg-white rounded-t-3xl sm:rounded-3xl p-4 sm:p-5 max-w-lg w-full border-t-2 sm:border-2 border-emerald-600 shadow-2xl space-y-3 relative max-h-[90vh] sm:max-h-[85vh] flex flex-col animate-slideUp">
               
-              <!-- Modal Header (Shrink-0: Fixed at top of card) -->
-              <div class="flex items-center justify-between border-b border-emerald-100 pb-1.5 shrink-0">
-                <div class="flex items-center gap-2 min-w-0 pr-2">
-                  <div class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-emerald-700 text-white font-bold flex items-center justify-center text-xs shrink-0 shadow-xs">
+              <!-- Mobile Pull Indicator Bar -->
+              <div class="w-12 h-1 bg-gray-300 rounded-full mx-auto sm:hidden shrink-0"></div>
+
+              <!-- Modal Header -->
+              <div class="flex items-center justify-between border-b border-emerald-100 pb-2.5 shrink-0">
+                <div class="flex items-center gap-2.5 min-w-0 pr-2">
+                  <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-emerald-700 text-white font-bold flex items-center justify-center text-xs sm:text-sm shrink-0 shadow-xs">
                     <i class="fa-solid fa-spell-check"></i>
                   </div>
                   <div class="min-w-0">
-                    <h3 class="text-xs font-bold uppercase tracking-wider text-emerald-900 font-sans truncate">Keterangan I'rab</h3>
-                    <span class="text-[11px] text-emerald-700 font-semibold font-sans block truncate leading-tight">${modalToken.roleDesc}</span>
+                    <h3 class="text-xs sm:text-sm font-bold uppercase tracking-wider text-emerald-950 font-sans truncate">Analisis Kaidah I'rab</h3>
+                    <span class="text-[11px] text-emerald-700 font-semibold font-sans block truncate leading-tight">${modalToken.roleDesc || ''}</span>
                   </div>
                 </div>
-                <button id="close-irob-modal-btn" class="px-2.5 py-1 bg-rose-50 hover:bg-rose-100 text-rose-700 rounded-lg text-xs font-bold transition-all border border-rose-200 shrink-0 flex items-center gap-1 shadow-2xs cursor-pointer" title="Tutup Keterangan (Esc)">
-                  <i class="fa-solid fa-xmark font-bold text-sm"></i>
-                  <span>Tutup</span>
+                
+                <!-- Single Clean Close Button -->
+                <button id="close-irob-modal-btn" class="w-8 h-8 rounded-full bg-gray-100 hover:bg-rose-100 text-gray-500 hover:text-rose-600 flex items-center justify-center transition-all cursor-pointer shadow-2xs" title="Tutup Keterangan (Esc)">
+                  <i class="fa-solid fa-xmark text-sm font-bold"></i>
                 </button>
               </div>
 
-              <!-- Scrollable Body (min-h-0 ensures flex container respects max-h-[85vh]) -->
-              <div class="overflow-y-auto space-y-1.5 pr-0.5 flex-1 min-h-0">
+              <!-- Scrollable Body -->
+              <div class="overflow-y-auto space-y-2.5 pr-0.5 flex-1 min-h-0">
                 
-                <!-- Lafaz Frasa Banner (Hanya Teks Arab Lebih Kecil, Tanpa Arti) -->
-                <div class="bg-emerald-50/70 py-1.5 px-3 rounded-xl border border-emerald-200 text-center space-y-0.5 shadow-2xs">
-                  <span class="text-[9px] font-bold text-emerald-700 uppercase tracking-widest block font-sans">اللَّفْظُ (Lafaz Frasa):</span>
-                  <h2 class="text-sm sm:text-base font-bold font-arabic text-emerald-950 py-0.5 drop-shadow-2xs dir-rtl leading-normal">${modalToken.word}</h2>
+                <!-- Lafaz Frasa & Arti Banner -->
+                <div class="bg-gradient-to-r from-emerald-50 via-teal-50 to-emerald-50 p-3 rounded-2xl border border-emerald-200 text-center space-y-1 shadow-2xs">
+                  <span class="text-[10px] font-bold text-emerald-700 uppercase tracking-widest block font-sans">اللَّفْظُ (Lafaz / Frasa):</span>
+                  <h2 class="text-lg sm:text-2xl font-bold font-arabic text-emerald-950 dir-rtl leading-normal py-0.5 drop-shadow-2xs">${modalToken.word}</h2>
+                  ${modalToken.meaning ? `
+                    <div class="inline-block mt-0.5">
+                      <span class="text-xs sm:text-sm font-semibold text-emerald-900 bg-white/90 px-3 py-1 rounded-full border border-emerald-200 shadow-2xs font-sans">
+                        Arti: "${modalToken.meaning}"
+                      </span>
+                    </div>
+                  ` : ''}
                 </div>
 
                 <!-- Grammatical Role Badge -->
-                <div class="space-y-0.5">
-                  <label class="text-[9px] font-bold text-gray-500 uppercase tracking-wider block font-sans">Kedudukan Jabatan Kalimat:</label>
-                  <div class="px-2.5 py-1 bg-emerald-800 text-white rounded-xl font-arabic font-bold text-xs sm:text-sm text-right shadow-xs dir-rtl leading-normal">
+                <div class="space-y-1">
+                  <label class="text-[10px] font-bold text-gray-500 uppercase tracking-wider block font-sans">Kedudukan Jabatan Kalimat:</label>
+                  <div class="px-3 py-2 bg-emerald-800 text-white rounded-xl font-arabic font-bold text-sm sm:text-base text-right shadow-xs dir-rtl leading-normal">
                     ${modalToken.role}
                   </div>
                 </div>
 
                 <!-- Authentic Arabic I'rab Formula Box -->
-                <div class="space-y-0.5">
-                  <label class="text-[9px] font-bold text-gray-500 uppercase tracking-wider block font-sans">Penjelasan Kaidah I'rab (الإِعْرَابُ):</label>
-                  <div class="px-2.5 py-1.5 bg-amber-50 rounded-xl border border-amber-200 text-amber-950 font-arabic font-semibold text-xs sm:text-sm text-right leading-relaxed dir-rtl shadow-2xs">
+                <div class="space-y-1">
+                  <label class="text-[10px] font-bold text-gray-500 uppercase tracking-wider block font-sans">Penjelasan Kaidah I'rab (الإِعْرَابُ):</label>
+                  <div class="px-3 py-2.5 bg-amber-50/90 rounded-xl border border-amber-200 text-amber-950 font-arabic font-semibold text-xs sm:text-sm text-right leading-relaxed dir-rtl shadow-2xs">
                     ${modalToken.irob}
                   </div>
                 </div>
 
               </div>
 
-              <!-- Footer Buttons (Shrink-0: Fixed at bottom of card, ALWAYS IN VIEW) -->
-              <div class="pt-1.5 border-t border-gray-100 flex items-center justify-between gap-2 mt-auto shrink-0">
-                <button id="modal-speak-btn" class="px-3 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-bold shadow-xs transition-all flex items-center gap-1.5 shrink-0">
-                  <i class="fa-solid fa-volume-high text-[11px]"></i>
-                  <span>Putar Suara</span>
+              <!-- Footer Buttons -->
+              <div class="pt-2 border-t border-gray-100 flex items-center justify-between gap-2 mt-auto shrink-0">
+                <button id="modal-speak-btn" class="px-3.5 py-2 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-bold shadow-xs transition-all flex items-center gap-1.5 cursor-pointer active:scale-95">
+                  <i class="fa-solid fa-volume-high text-xs"></i>
+                  <span>Putar Suara Lafaz</span>
                 </button>
-                <button id="close-irob-modal-btn2" class="px-3.5 py-1.5 bg-gray-100 hover:bg-rose-50 hover:text-rose-700 text-gray-700 rounded-xl text-xs font-bold transition-all border border-gray-200 flex items-center gap-1 shadow-2xs cursor-pointer">
-                  <i class="fa-solid fa-xmark text-[11px]"></i>
-                  <span>Tutup Keterangan</span>
+                <button id="close-irob-modal-btn2" class="px-3.5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold transition-all border border-gray-200 flex items-center gap-1 shadow-2xs cursor-pointer">
+                  <span>Tutup</span>
                 </button>
               </div>
 
@@ -2613,15 +2734,47 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
+    // Toggle I'rab Color Mode
+    const colorToggleBtn = document.getElementById('qiraah-toggle-color-btn');
+    if (colorToggleBtn) {
+      colorToggleBtn.addEventListener('click', () => {
+        state.showQiraahIrobColor = !state.showQiraahIrobColor;
+        render();
+      });
+    }
+
+    // Toggle All Translations
+    const transToggleAllBtn = document.getElementById('qiraah-toggle-all-trans-btn');
+    if (transToggleAllBtn) {
+      transToggleAllBtn.addEventListener('click', () => {
+        state.showQiraahTranslation = !state.showQiraahTranslation;
+        state.openQiraahAccordions = {};
+        render();
+      });
+    }
+
+    // Toggle Paragraph Specific Translation
+    document.querySelectorAll('.toggle-para-trans-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const pIdx = btn.getAttribute('data-para-idx');
+        if (pIdx !== null) {
+          const currentVal = state.showQiraahTranslation || !!state.openQiraahAccordions[pIdx];
+          state.openQiraahAccordions[pIdx] = !currentVal;
+          render();
+        }
+      });
+    });
+
     // Master Audio Button
     const playAllBtn = document.getElementById('play-qiraah-all-btn');
     if (playAllBtn) {
       playAllBtn.addEventListener('click', () => {
-        if (isPlayingAudio) {
-          stopArabicAudio();
+        if (window.isPlayingAudio) {
+          if (window.stopArabicAudio) window.stopArabicAudio();
         } else {
           const allText = ARABIC_DATA.reading.paragraphs.map(p => p.arabic).join(' \n ');
-          speakArabic(allText);
+          if (window.speakArabic) window.speakArabic(allText);
         }
       });
     }
@@ -2630,15 +2783,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalSpeakBtn = document.getElementById('modal-speak-btn');
     if (modalSpeakBtn && state.activeIrobModalToken) {
       modalSpeakBtn.addEventListener('click', () => {
-        speakArabic(state.activeIrobModalToken.word);
+        if (window.speakArabic) window.speakArabic(state.activeIrobModalToken.word);
       });
     }
 
-    // Token click events for I'rab modal
-    document.querySelectorAll('.irob-token-btn').forEach(btn => {
+    // Token & Card click events for I'rab modal
+    document.querySelectorAll('.irob-token-btn, .irob-card-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
-        const pIdx = e.currentTarget.getAttribute('data-irob-p');
-        const tIdx = e.currentTarget.getAttribute('data-irob-t');
+        const target = e.currentTarget;
+        const pIdx = target.getAttribute('data-irob-p');
+        const tIdx = target.getAttribute('data-irob-t');
         if (pIdx !== null && tIdx !== null && ARABIC_DATA.reading.paragraphs[pIdx]) {
           const token = ARABIC_DATA.reading.paragraphs[pIdx].tokens[tIdx];
           if (token) {
@@ -2649,10 +2803,9 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // Close Modal events (Multiple failsafes)
+    // Close Modal events
     const closeBtn1 = document.getElementById('close-irob-modal-btn');
     const closeBtn2 = document.getElementById('close-irob-modal-btn2');
-    const floatCloseBtn = document.getElementById('floating-irob-close-btn');
     const overlay = document.getElementById('irob-modal-overlay');
     const modalBox = document.getElementById('irob-modal-box');
 
@@ -2663,7 +2816,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (closeBtn1) closeBtn1.addEventListener('click', closeIrobModal);
     if (closeBtn2) closeBtn2.addEventListener('click', closeIrobModal);
-    if (floatCloseBtn) floatCloseBtn.addEventListener('click', closeIrobModal);
 
     if (modalBox) {
       modalBox.addEventListener('click', (e) => {
@@ -2672,8 +2824,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (overlay) {
-      overlay.addEventListener('click', () => {
-        closeIrobModal();
+      overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) {
+          closeIrobModal();
+        }
       });
     }
 
@@ -2688,7 +2842,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-    // 4B. QAWA'ID VIEW (Tata Bahasa Arab: Fi'il Amr, Nahi & Isim Tafdhil)
+      // 4B. QAWA'ID VIEW (Tata Bahasa Arab: Fi'il Amr, Nahi & Isim Tafdhil)
   function renderQawaid() {
     const grammar = ARABIC_DATA.grammar;
     const tafdhil = grammar.tafdhil;
