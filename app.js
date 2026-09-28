@@ -2369,7 +2369,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     return `
       <div class="space-y-4 sm:space-y-7 max-w-5xl mx-auto px-0 sm:px-2">
-        <!-- Main Card Container (Slimmer mobile padding for maximum Arabic text width) -->
+        <!-- Main Card Container -->
         <div class="bg-white rounded-2xl sm:rounded-3xl lg:rounded-[2.5rem] p-3.5 sm:p-7 lg:p-9 border border-emerald-100 shadow-sm space-y-4 sm:space-y-6">
           
           <!-- Header Banner -->
@@ -2435,12 +2435,13 @@ document.addEventListener('DOMContentLoaded', () => {
             ${reading.paragraphs.map((p, idx) => {
               const arabicLines = p.arabic.split('\n').filter(l => l.trim().length > 0);
               const hasTokens = p.tokens && p.tokens.length > 0;
+              const hasNumberedTitle = hasTokens && p.tokens.some(t => /^[١٢٣٤٥٦٧٨٩0-9]+\./.test(t.word.trim()));
               const isTransOpen = state.showQiraahTranslation || !!state.openQiraahAccordions[idx];
 
               return `
                 <div class="p-3.5 sm:p-6 lg:p-7 rounded-2xl sm:rounded-3xl bg-emerald-50/40 border border-emerald-200/80 space-y-3 sm:space-y-4 shadow-2xs hover:shadow-xs transition-all">
                   
-                  <!-- Paragraph Top Bar (Responsive for HP) -->
+                  <!-- Paragraph Top Bar -->
                   <div class="border-b border-emerald-200/70 pb-3 space-y-2">
                     <!-- Top Row: Paragraph Number Badge & Action Buttons -->
                     <div class="flex items-center justify-between gap-2">
@@ -2470,8 +2471,8 @@ document.addEventListener('DOMContentLoaded', () => {
                       </div>
                     </div>
 
-                    <!-- Bottom Row: Arabic Section Title (Full width, right-aligned) -->
-                    ${p.section ? `
+                    <!-- Bottom Row: Arabic Section Title (Only for paragraphs that do not have an inline section title token) -->
+                    ${p.section && !hasNumberedTitle ? `
                       <div class="pt-1 flex items-center justify-end gap-2 text-right dir-rtl">
                         <span class="w-2 h-2 rounded-full bg-emerald-600 shrink-0"></span>
                         <h3 class="text-xs sm:text-sm font-bold text-emerald-950 font-arabic">${p.section}</h3>
@@ -2479,7 +2480,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     ` : ''}
                   </div>
 
-                  <!-- Arabic Text Passage Container (Natural Flowing Lines) -->
+                  <!-- Arabic Text Passage Container (Clean, Cohesive, Natural Paragraph) -->
                   <div class="bg-white p-3.5 sm:p-6 rounded-xl sm:rounded-2xl border border-emerald-100/90 shadow-2xs text-right dir-rtl">
                     ${hasTokens ? `
                       <div class="qiraah-interactive-passage font-arabic ${fontSizeClass} font-bold text-emerald-950 text-right dir-rtl">
@@ -2490,24 +2491,24 @@ document.addEventListener('DOMContentLoaded', () => {
                           function flushRunningTokens() {
                             if (runningTokens.length === 0) return '';
                             const segment = `
-                              <div class="my-2 leading-[2.3] sm:leading-[2.6] text-right dir-rtl" style="word-spacing: 0.12em;">
+                              <p class="my-2 leading-[2.3] sm:leading-[2.6] text-right dir-rtl font-arabic ${fontSizeClass} text-emerald-950 font-bold" style="word-spacing: 0.12em; text-align: justify; text-align-last: right;">
                                 ${runningTokens.map(item => {
                                   if (state.showQiraahIrobColor) {
                                     const bStyle = COLOR_BADGES[item.token.color] || COLOR_BADGES.emerald;
                                     return `
-                                      <span role="button" tabindex="0" data-irob-p="${idx}" data-irob-t="${item.tIdx}" class="irob-token-btn inline rounded-md px-1.5 py-0.5 mx-0.5 transition-all duration-150 cursor-pointer ${bStyle} active:scale-95 select-none" title="Klik untuk penjelasan kedudukan I'rab: ${item.token.roleDesc || ''}">
+                                      <span role="button" tabindex="0" data-irob-p="${idx}" data-irob-t="${item.tIdx}" class="irob-token-btn inline rounded px-1.5 py-0.5 mx-0.5 transition-all duration-150 cursor-pointer ${bStyle} active:scale-95 select-none" title="Klik untuk penjelasan kedudukan I'rab: ${item.token.roleDesc || ''}">
                                         ${item.token.word}
                                       </span>
                                     `;
                                   } else {
                                     return `
-                                      <span role="button" tabindex="0" data-irob-p="${idx}" data-irob-t="${item.tIdx}" class="irob-token-btn inline rounded-md px-1 py-0.5 mx-0.5 hover:bg-emerald-100/70 hover:text-emerald-800 text-emerald-950 transition-colors cursor-pointer active:scale-95 select-none" title="Klik untuk penjelasan I'rab">
+                                      <span role="button" tabindex="0" data-irob-p="${idx}" data-irob-t="${item.tIdx}" class="irob-token-btn inline rounded px-1 py-0.5 mx-0.5 hover:bg-emerald-100/70 hover:text-emerald-800 text-emerald-950 transition-colors cursor-pointer active:scale-95 select-none" title="Klik untuk penjelasan I'rab">
                                         ${item.token.word}
                                       </span>
                                     `;
                                   }
                                 }).join(' ')}
-                              </div>
+                              </p>
                             `;
                             runningTokens = [];
                             return segment;
@@ -2520,19 +2521,13 @@ document.addEventListener('DOMContentLoaded', () => {
                               html += flushRunningTokens();
                               const pillStyle = PILL_BADGES[token.color] || PILL_BADGES.cyan;
                               html += `
-                                <div data-irob-p="${idx}" data-irob-t="${tIdx}" class="irob-card-btn mb-3 pb-2 border-b-2 border-emerald-200/90 flex flex-col-reverse sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-3 cursor-pointer group active:scale-[0.99] select-none">
-                                  <div class="flex items-center justify-between sm:justify-start gap-2">
-                                    <span class="text-[11px] sm:text-xs px-2.5 py-0.5 rounded-full ${pillStyle} font-sans font-bold shadow-2xs">
-                                      ${token.roleDesc || 'Judul Bagian'}
-                                    </span>
-                                    <span class="sm:hidden text-[10px] text-emerald-600/80 font-sans flex items-center gap-1 group-hover:text-emerald-700">
-                                      <span>Kaidah I'rab</span>
-                                      <i class="fa-solid fa-angle-left text-[9px]"></i>
-                                    </span>
-                                  </div>
-                                  <div class="text-right font-arabic font-extrabold text-emerald-900 group-hover:text-emerald-700 transition-colors ${fontSizeClass} leading-tight dir-rtl">
+                                <div class="mb-3.5 pb-2.5 border-b border-emerald-200/80 flex items-center justify-between gap-2">
+                                  <span class="text-[11px] sm:text-xs px-2.5 py-0.5 rounded-full ${pillStyle} font-sans font-bold shadow-2xs shrink-0">
+                                    ${token.roleDesc || 'Judul Bagian'}
+                                  </span>
+                                  <h3 data-irob-p="${idx}" data-irob-t="${tIdx}" class="irob-token-btn font-arabic font-extrabold text-emerald-950 text-xl sm:text-2xl text-right dir-rtl leading-normal whitespace-nowrap cursor-pointer hover:text-emerald-700 transition-colors">
                                     ${token.word}
-                                  </div>
+                                  </h3>
                                 </div>
                               `;
                             } else if (trimmed.startsWith('•')) {
@@ -2541,7 +2536,7 @@ document.addEventListener('DOMContentLoaded', () => {
                               html += `
                                 <div data-irob-p="${idx}" data-irob-t="${tIdx}" class="irob-card-btn my-2.5 p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-gradient-to-l from-emerald-50/90 via-emerald-50/50 to-white border border-emerald-200/80 shadow-2xs hover:border-emerald-400 hover:shadow-xs transition-all cursor-pointer group active:scale-[0.99] select-none">
                                   <div class="flex items-center justify-between gap-2 mb-1.5 pb-1 border-b border-emerald-100/70">
-                                    <span class="inline-flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-0.5 rounded-full ${pillStyle} font-sans shadow-2xs">
+                                    <span class="inline-flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-0.5 rounded-full ${pillStyle} font-sans shadow-2xs shrink-0">
                                       <i class="fa-solid fa-list-check text-[9px]"></i>
                                       <span>${token.roleDesc || 'Bentuk Kerusakan'}</span>
                                     </span>
@@ -2565,13 +2560,13 @@ document.addEventListener('DOMContentLoaded', () => {
                         })()}
                       </div>
                     ` : `
-                      <div class="qiraah-clean-passage font-arabic ${fontSizeClass} font-bold text-emerald-950 text-right dir-rtl space-y-2.5 leading-[2.3] sm:leading-[2.6]">
+                      <div class="qiraah-clean-passage font-arabic ${fontSizeClass} font-bold text-emerald-950 text-right dir-rtl space-y-2.5 leading-[2.3] sm:leading-[2.6]" style="word-spacing: 0.12em; text-align: justify; text-align-last: right;">
                         ${arabicLines.map(line => {
                           const isNumbered = /^[١٢٣٤٥٦٧٨٩0-9]+\./.test(line.trim());
                           const isBullet = line.trim().startsWith('•');
                           if (isNumbered) {
                             return `
-                              <div class="font-extrabold text-emerald-900 border-b border-emerald-200/80 pb-2 mb-2">
+                              <div class="font-extrabold text-emerald-900 border-b border-emerald-200/80 pb-2 mb-2 text-xl sm:text-2xl whitespace-nowrap">
                                 ${line}
                               </div>
                             `;
@@ -2584,7 +2579,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             `;
                           }
                           return `
-                            <p class="py-1 leading-[2.3] sm:leading-[2.6]" style="word-spacing: 0.12em;">
+                            <p class="py-1 leading-[2.3] sm:leading-[2.6]">
                               ${line}
                             </p>
                           `;
