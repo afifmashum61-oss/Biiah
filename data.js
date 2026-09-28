@@ -911,6 +911,189 @@ const ARABIC_DATA = {
     ]
   },
 
+  kalam: {
+    meta: {
+      title: "مَهَارَةُ الكَلَامِ",
+      titleLatin: "Maharah Kalam (Kemahiran Berbicara)",
+      subtitle: "Latihan Melafalkan Teks Bahasa Arab dengan Evaluasi Suara Real-time",
+      instructions: "Dengarkan pelafalan asli (Ustadz), tekan tombol mikrofon untuk merekam suara Anda, lalu sistem AI akan mengevaluasi persentase kemiripan pelafalan Anda secara otomatis!"
+    },
+    categories: [
+      { id: "all", name: "الْكُلُّ", label: "Semua Latihan", count: 15 },
+      { id: "dasar", name: "عِبَارَاتٌ رَئِيْسِيَّةٌ", label: "Frasa Kunci", count: 4 },
+      { id: "amr_nahyi", name: "الأَمْرُ وَالنَّهْيُ", label: "Perintah & Larangan", count: 5 },
+      { id: "kalimat", name: "جُمَلٌ مُفِيْدَةٌ", label: "Kalimat Lengkap", count: 4 },
+      { id: "hiwar", name: "حِوَارٌ قَصِيْرٌ", label: "Percakapan Pendek", count: 2 }
+    ],
+    items: [
+      {
+        id: 1,
+        category: "dasar",
+        categoryName: "Frasa Kunci",
+        arabic: "التَّشْجِيْرُ خَيْرٌ لِلْبِيئَةِ",
+        latin: "At-tasyjīru khairun lil-bī'ah.",
+        translation: "Reboisasi (penanaman pohon) itu baik untuk kelestarian lingkungan.",
+        phoneticTip: "Fokus pada huruf Syin (ش) ber-tasydid dan Ta Marbutah di akhir kata.",
+        difficulty: "Mudah",
+        targetClean: "التشجير خير للبيئة"
+      },
+      {
+        id: 2,
+        category: "dasar",
+        categoryName: "Frasa Kunci",
+        arabic: "نَظَافَةُ الْمَدْرَسَةِ وَاجِبَةٌ عَلَى الْجَمِيْعِ",
+        latin: "Naẓāfatul-madrasati wājibatun 'alal-jamī'.",
+        translation: "Kebersihan sekolah adalah kewajiban bagi semua orang.",
+        phoneticTip: "Perhatikan huruf Zha (ظ) makhraj ujung lidah dengan gigi seri atas.",
+        difficulty: "Mudah",
+        targetClean: "نظافة المدرسة واجبة على الجميع"
+      },
+      {
+        id: 3,
+        category: "dasar",
+        categoryName: "Frasa Kunci",
+        arabic: "الْمَاءُ النَّقِيُّ ضَرُورِيٌّ لِلْحَيَاةِ",
+        latin: "Al-mā'un-naqiyyu ḍarūriyyun lil-ḥayāh.",
+        translation: "Air bersih sangat penting bagi kelangsungan hidup.",
+        phoneticTip: "Fokus pada makhraj Qaf (ق) dan Dhad (ض) dengan suara tebal (isti'la).",
+        difficulty: "Mudah",
+        targetClean: "الماء النقي ضروري للحياة"
+      },
+      {
+        id: 4,
+        category: "dasar",
+        categoryName: "Frasa Kunci",
+        arabic: "الْبِيئَةُ النَّظِيفَةُ تَجْعَلُنَا أَصِحَّاءَ",
+        latin: "Al-bī'atun-naẓīfatu taj'alunā aṣiḥḥā'.",
+        translation: "Lingkungan yang bersih membuat kita senantiasa sehat.",
+        phoneticTip: "Fokus pada huruf Ha (ح) bersih dan Hamzah ber-madd di akhir kata.",
+        difficulty: "Sedang",
+        targetClean: "البيئة النظيفة تجعلنا اصحاء"
+      },
+      {
+        id: 5,
+        category: "amr_nahyi",
+        categoryName: "Perintah & Larangan",
+        arabic: "اِزْرَعِ الأَشْجَارَ فِي حَدِيقَةِ الْمَدْرَسَةِ!",
+        latin: "Izra'il-asyjāra fī ḥadīqatil-madrasah!",
+        translation: "Tanamlah pohon-pohon di taman sekolah! (Fi'il Amr)",
+        phoneticTip: "Ucapkan Fi'il Amr 'Izra'' dengan huruf 'Ain (ع) di ujung kata secara mantap.",
+        difficulty: "Sedang",
+        targetClean: "ازرع الاشجار في حديقة المدرسة"
+      },
+      {
+        id: 6,
+        category: "amr_nahyi",
+        categoryName: "Perintah & Larangan",
+        arabic: "اِرْمِ الْقُمَامَةَ فِي سَلَّةِ الْمُهْمَلَاتِ!",
+        latin: "Irmil-qumāmata fī sallatil-muhmalāt!",
+        translation: "Buanglah sampah ke dalam tempat sampah! (Fi'il Amr)",
+        phoneticTip: "Kasrah pada 'Irmi' pendek karena pembuangan huruf 'Illat pada Fi'il Amr mu'tal.",
+        difficulty: "Sedang",
+        targetClean: "ارم القمامة في سلة المهملات"
+      },
+      {
+        id: 7,
+        category: "amr_nahyi",
+        categoryName: "Perintah & Larangan",
+        arabic: "لاَ تَرْمِ النِّفَايَاتِ فِي النَّهْرِ!",
+        latin: "Lā tarmin-nifāyāti fīn-nahr!",
+        translation: "Janganlah kamu membuang sampah limbah ke dalam sungai! (Fi'il Nahyi)",
+        phoneticTip: "Nada larangan tegas, perhatikan pelafalan Fa (ف) dan Nun ber-tasydid.",
+        difficulty: "Sedang",
+        targetClean: "لا ترم النفايات في النهر"
+      },
+      {
+        id: 8,
+        category: "amr_nahyi",
+        categoryName: "Perintah & Larangan",
+        arabic: "لاَ تُفْسِدُوا فِي الأَرْضِ بَعْدَ إِصْلاَحِهَا!",
+        latin: "Lā tufsidū fīl-arḍi ba'da iṣlāḥihā!",
+        translation: "Janganlah kamu membuat kerusakan di muka bumi setelah perbaikannya! (Fi'il Nahyi Jamak)",
+        phoneticTip: "Kutipan ayat Al-Qur'an, lafalkan Dhad (ض) dan Shod (ص) dengan jelas.",
+        difficulty: "Tantangan",
+        targetClean: "لا تفسدوا في الارض بعد اصلاحها"
+      },
+      {
+        id: 9,
+        category: "amr_nahyi",
+        categoryName: "Perintah & Larangan",
+        arabic: "حَافِظْ عَلَى نَظَافَةِ فَصْلِكَ يَا أَحْمَدُ!",
+        latin: "Ḥāfiẓ 'alā naẓāfati faṣlika yā Aḥmad!",
+        translation: "Jagalah kebersihan kelasmu wahai Ahmad! (Fi'il Amr)",
+        phoneticTip: "Huruf Ha (ح) dan Zha (ظ) sukun, diucapkan dengan makhraj yang tepat.",
+        difficulty: "Sedang",
+        targetClean: "حافظ على نظافة فصلك يا احمد"
+      },
+      {
+        id: 10,
+        category: "kalimat",
+        categoryName: "Kalimat Lengkap",
+        arabic: "يَجِبُ عَلَيْنَا أَنْ نُحَافِظَ عَلَى نَظَافَةِ الْبِيئَةِ",
+        latin: "Yajibu 'alainā an nuḥāfiẓa 'alā naẓāfatil-bī'ah.",
+        translation: "Wajib bagi kita semua untuk menjaga kebersihan lingkungan hidup.",
+        phoneticTip: "Gunakan intonasi mengalir, idgham pada 'an nuḥāfiẓa'.",
+        difficulty: "Tantangan",
+        targetClean: "يجب علينا ان نحافظ على نظافة البيئة"
+      },
+      {
+        id: 11,
+        category: "kalimat",
+        categoryName: "Kalimat Lengkap",
+        arabic: "إِحْرَاقُ الْغَابَةِ يُسَبِّبُ تَلَوُّثَ الْهَوَاءِ الشَّدِيدِ",
+        latin: "Iḥrāqul-ġābati yusabbibu talawwuṡal-hawā'isy-syadīd.",
+        translation: "Pembakaran hutan menyebabkan pencemaran udara yang parah.",
+        phoneticTip: "Huruf Ghain (غ) tenggorokan atas dan Tsa (ث) lidah menyentuh gigi depan.",
+        difficulty: "Tantangan",
+        targetClean: "احراق الغابة يسبب تلوث الهواء الشديد"
+      },
+      {
+        id: 12,
+        category: "kalimat",
+        categoryName: "Kalimat Lengkap",
+        arabic: "هَيَّا بِنَا نُنَظِّفُ سَاحَةَ الْمَدْرَسَةِ مَعًا!",
+        latin: "Hayyā binā nunaẓẓifu sāḥatal-madrasati ma'an!",
+        translation: "Ayo kita bersihkan halaman sekolah bersama-sama!",
+        phoneticTip: "Ungkapan ajakan bersemangat, tasydid pada Ya (ي) dan Zha (ظ).",
+        difficulty: "Sedang",
+        targetClean: "هيا بنا ننظف ساحة المدرسة معا"
+      },
+      {
+        id: 13,
+        category: "kalimat",
+        categoryName: "Kalimat Lengkap",
+        arabic: "النَّظَافَةُ مِنَ الإِيمَانِ وَهِيَ شِعَارُ الْمُسْلِمِ",
+        latin: "An-naẓāfatu minal-īmān wa hiya syi'ārul-muslim.",
+        translation: "Kebersihan itu sebagian dari iman dan merupakan syiar seorang muslim.",
+        phoneticTip: "Hadits dan semboyan Islam tentang kebersihan, lafalkan dengan tartil.",
+        difficulty: "Sedang",
+        targetClean: "النظافة من الايمان وهي شعار المسلم"
+      },
+      {
+        id: 14,
+        category: "hiwar",
+        categoryName: "Percakapan Pendek",
+        arabic: "مَاذَا تَفْعَلُ يَا عَلِيُّ؟ - أَنَا أَغْرِسُ شَجَرَةً جَدِيدَةً",
+        latin: "Māżā taf'alu yā 'Aliyyu? - Anā aġrisu syajaratan jadīdah.",
+        translation: "Apa yang sedang kamu lakukan wahai Ali? - Saya sedang menanam pohon baru.",
+        phoneticTip: "Percakapan tanya-jawab, bedakan intonasi bertanya dan menjawab.",
+        difficulty: "Sedang",
+        targetClean: "ماذا تفعل يا علي انا اغرس شجرة جديدة"
+      },
+      {
+        id: 15,
+        category: "hiwar",
+        categoryName: "Percakapan Pendek",
+        arabic: "أَيْنَ نَضَعُ هَذِهِ النُّفَايَاتِ؟ - فِي صُنْدُوقِ الْقُمَامَةِ",
+        latin: "Aina naḍa'u hażihin-nufāyāt? - Fī ṣundūqil-qumāmah.",
+        translation: "Di mana kita membuang sampah ini? - Di dalam kotak/tong sampah.",
+        phoneticTip: "Perhatikan huruf Dhad (ض) dan Qaf (ق).",
+        difficulty: "Sedang",
+        targetClean: "اين نضع هذه النفايات في صندوق القمامة"
+      }
+    ]
+  },
+
   duelQuestionSets: [
     {
       id: "paket_a",

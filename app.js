@@ -224,6 +224,20 @@ document.addEventListener('DOMContentLoaded', () => {
     students: [...ARABIC_DATA.initialStudents],
     teachers: [...(ARABIC_DATA.initialTeachers || [])],
     customVocab: [],
+    // Maharah Kalam (Kemahiran Berbicara) State
+    kalamState: {
+      selectedCategory: 'all',
+      activeItemIndex: 0,
+      isRecording: false,
+      isEvaluating: false,
+      recordingSeconds: 0,
+      interimTranscript: '',
+      finalTranscript: '',
+      recordedAudioUrl: null,
+      speechSpeed: 0.85,
+      evaluationResult: null,
+      history: JSON.parse(localStorage.getItem('arabic_kalam_history') || '[]')
+    },
     // Dialogue Interactive State
     activeDialogueId: 1,
     dialogueMode: 'chat', // 'chat' or 'roleplay'
@@ -362,6 +376,7 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 'dashboard', icon: 'fa-home', label: 'الرئيسية' },
         { id: 'mufradat', icon: 'fa-layer-group', label: 'المفردات' },
         { id: 'istima', icon: 'fa-headphones', label: 'مهارة الاستماع' },
+        { id: 'kalam', icon: 'fa-microphone-lines', label: 'مَهَارَةُ الكَلَامِ' },
         { id: 'qiraah', icon: 'fa-book-open', label: 'مهارة القراءة' },
         { id: 'qawaid', icon: 'fa-spell-check', label: 'القواعد' },
         { id: 'dialogue', icon: 'fa-comments', label: 'الحوار' },
@@ -598,8 +613,18 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
 
         <!-- Quick Stats Cards (Mobile Responsive) -->
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-4">
-          <div class="bg-white p-3.5 sm:p-5 rounded-xl sm:rounded-2xl shadow-sm border border-emerald-100 flex items-center gap-2.5 sm:gap-4 min-w-0">
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5 sm:gap-4">
+                    <div class="bg-white p-3.5 sm:p-5 rounded-xl sm:rounded-2xl shadow-sm border border-emerald-100 flex items-center gap-2.5 sm:gap-4 min-w-0">
+            <div class="w-9 h-9 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-teal-100 text-teal-700 flex items-center justify-center text-base sm:text-xl font-bold flex-shrink-0">
+              <i class="fa-solid fa-microphone-lines"></i>
+            </div>
+            <div class="min-w-0">
+              <div class="text-lg sm:text-2xl font-bold text-emerald-950 truncate">${(ARABIC_DATA.kalam && ARABIC_DATA.kalam.items) ? ARABIC_DATA.kalam.items.length : 15}</div>
+              <div class="text-[10px] sm:text-xs text-emerald-600 font-medium truncate">Latihan مهارة الكلام</div>
+            </div>
+          </div>
+
+<div class="bg-white p-3.5 sm:p-5 rounded-xl sm:rounded-2xl shadow-sm border border-emerald-100 flex items-center gap-2.5 sm:gap-4 min-w-0">
             <div class="w-9 h-9 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-base sm:text-xl font-bold flex-shrink-0">
               <i class="fa-solid fa-book font-arabic"></i>
             </div>
@@ -687,6 +712,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     <i class="fa-solid fa-circle-check text-emerald-600 text-sm flex-shrink-0"></i>
                     <span>4. Kuasai <strong>القواعد</strong></span>
                   </div>
+                  <div class="flex items-center gap-2 p-2 sm:p-2.5 bg-white/90 rounded-xl border border-emerald-200/80 text-xs text-emerald-900 font-medium shadow-2xs">
+                    <i class="fa-solid fa-circle-check text-emerald-600 text-sm flex-shrink-0"></i>
+                    <span>5. Latih <strong>الكلام</strong> (Tirukan & Rekam Suara)</span>
+                  </div>
                 </div>
                 <div class="flex items-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs text-emerald-700 pt-1 font-semibold">
                   <i class="fa-solid fa-star text-amber-500 flex-shrink-0"></i>
@@ -727,6 +756,27 @@ document.addEventListener('DOMContentLoaded', () => {
               </div>
               <button onclick="document.querySelector('[data-view=istima]').click()" class="w-full py-2.5 bg-indigo-50 hover:bg-indigo-700 hover:text-white text-indigo-800 rounded-xl font-semibold text-xs transition-all flex items-center justify-center gap-2">
                 <span>Menyimak Audio</span>
+                <i class="fa-solid fa-chevron-right"></i>
+              </button>
+            </div>
+
+            <!-- Card 2.5: Maharah Kalam (Kemahiran Berbicara & Rekam Suara) -->
+            <div class="bg-white rounded-[2rem] p-6 shadow-md border border-teal-100 hover:shadow-xl transition-all flex flex-col justify-between group">
+              <div>
+                <div class="w-14 h-14 rounded-2xl bg-teal-50 text-teal-700 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
+                  <i class="fa-solid fa-microphone-lines"></i>
+                </div>
+                <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-teal-100/80 text-teal-800 rounded-full text-[10px] font-bold mb-2">
+                  <span class="w-1.5 h-1.5 rounded-full bg-teal-500 animate-pulse"></span>
+                  <span>Rekam & Evaluasi Suara</span>
+                </div>
+                <h3 class="text-base font-bold text-emerald-900 mb-1 font-arabic">مهارة الكلام (Speaking)</h3>
+                <p class="text-xs text-emerald-700 leading-relaxed mb-4">
+                  Latihan menirukan pelafalan Ustadz, rekam suara dengan mikrofon, dan dapatkan evaluasi persentase kemiripan makhraj & tajwid otomatis.
+                </p>
+              </div>
+              <button onclick="document.querySelector('[data-view=kalam]').click()" class="w-full py-2.5 bg-teal-50 hover:bg-teal-700 hover:text-white text-teal-800 rounded-xl font-semibold text-xs transition-all flex items-center justify-center gap-2">
+                <span>Latihan Kalam</span>
                 <i class="fa-solid fa-chevron-right"></i>
               </button>
             </div>
@@ -1408,6 +1458,882 @@ document.addEventListener('DOMContentLoaded', () => {
         render();
       });
     });
+  }
+
+  // ============================================================
+  // 3.5 MAHARAH KALAM VIEW (Kemahiran Berbicara, Rekam & Evaluasi)
+  // ============================================================
+
+  function normalizeArabic(text) {
+    if (!text) return '';
+    return text
+      .replace(/[\u064B-\u065F\u0670]/g, '') // Remove tashkeel / harakat
+      .replace(/\u0640/g, '') // Remove tatweel
+      .replace(/[أإآٱ]/g, 'ا') // Normalize alef
+      .replace(/ة/g, 'ه') // Normalize ta marbuta
+      .replace(/ى/g, 'ي') // Normalize alef maqsura
+      .replace(/[\u060C\u061B\u061F\.,\/#!$%\^&\*;:{}=\-_~`()?'\"«»!؟]/g, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  function levenshteinDistance(a, b) {
+    if (!a) return b ? b.length : 0;
+    if (!b) return a ? a.length : 0;
+    const m = a.length, n = b.length;
+    const d = [];
+    for (let i = 0; i <= m; i++) d[i] = [i];
+    for (let j = 0; j <= n; j++) d[0][j] = j;
+    for (let i = 1; i <= m; i++) {
+      for (let j = 1; j <= n; j++) {
+        const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+        d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + cost);
+      }
+    }
+    return d[m][n];
+  }
+
+  function evaluateSpeechAccuracy(targetArabic, spokenText) {
+    const normTarget = normalizeArabic(targetArabic);
+    const normSpoken = normalizeArabic(spokenText);
+
+    if (!normSpoken || normSpoken.trim().length === 0) {
+      return {
+        finalScore: 0,
+        wordScore: 0,
+        charScore: 0,
+        wordMatches: [],
+        spokenTranscript: spokenText || '',
+        gradeBadge: 'حَاوِلْ مَرَّةً أُخْرَى',
+        gradeTitle: 'Perlu Latihan Lagi',
+        feedback: 'Belum ada suara atau kata Bahasa Arab yang terdeteksi dengan jelas. Pastikan mikrofon aktif dan bicaralah lebih dekat dengan artikulasi mantap.',
+        colorClass: 'text-rose-600 bg-rose-50 border-rose-200'
+      };
+    }
+
+    const rawTargetWords = targetArabic.trim().split(/\s+/).filter(Boolean);
+    const normTargetWords = normTarget.split(' ').filter(Boolean);
+    const spokenWords = normSpoken.split(' ').filter(Boolean);
+
+    let matchedWordCount = 0;
+    const wordMatches = normTargetWords.map((tWord, idx) => {
+      const rawWord = rawTargetWords[idx] || tWord;
+      let status = 'missed';
+      let bestSim = 0;
+
+      for (const sWord of spokenWords) {
+        if (tWord === sWord) {
+          status = 'exact';
+          bestSim = 1;
+          break;
+        }
+        const dist = levenshteinDistance(tWord, sWord);
+        const maxL = Math.max(tWord.length, sWord.length);
+        const sim = maxL > 0 ? (1 - (dist / maxL)) : 0;
+        if (sim > bestSim) bestSim = sim;
+      }
+
+      if (status !== 'exact' && bestSim >= 0.72) {
+        status = 'close';
+      }
+
+      if (status === 'exact') {
+        matchedWordCount += 1.0;
+      } else if (status === 'close') {
+        matchedWordCount += 0.75;
+      }
+
+      return {
+        rawWord,
+        normWord: tWord,
+        status,
+        similarity: Math.round(bestSim * 100)
+      };
+    });
+
+    const wordScore = normTargetWords.length > 0 ? (matchedWordCount / normTargetWords.length) * 100 : 0;
+    const fullDist = levenshteinDistance(normTarget, normSpoken);
+    const maxLen = Math.max(normTarget.length, normSpoken.length);
+    const charScore = maxLen > 0 ? Math.max(0, (1 - (fullDist / maxLen)) * 100) : 0;
+
+    let finalScore = Math.min(100, Math.max(0, Math.round((wordScore * 0.65) + (charScore * 0.35))));
+
+    let gradeBadge = '';
+    let gradeTitle = '';
+    let feedback = '';
+    let colorClass = '';
+
+    if (finalScore >= 90) {
+      gradeBadge = 'مُمْتَازٌ جِدًّا 🌟';
+      gradeTitle = 'Luar Biasa! (Mumtaz Jiddan)';
+      feedback = 'Maa syaa Allah! Pelafalan Anda sangat fasih, artikulasi tajwid jelas, dan makharijul huruf sangat tepat sesuai penutur asli.';
+      colorClass = 'text-emerald-700 bg-emerald-50 border-emerald-300';
+    } else if (finalScore >= 75) {
+      gradeBadge = 'جَيِّدٌ جِدًّا 🎖️';
+      gradeTitle = 'Sangat Baik! (Jayyid Jiddan)';
+      feedback = 'Bagus sekali! Pelafalan sudah sangat mendekati contoh Ustadz. Sedikit polesan lagi pada kata bergaris kuning untuk mencapai nilai sempurna!';
+      colorClass = 'text-teal-700 bg-teal-50 border-teal-300';
+    } else if (finalScore >= 55) {
+      gradeBadge = 'مَقْبُولٌ 👍';
+      gradeTitle = 'Cukup Baik (Jayyid)';
+      feedback = 'Sudah cukup baik. Perhatikan kembali kata-kata yang berwarna merah/kuning, dengarkan audio Ustadz dengan mode lambat (0.75x), lalu coba tirukan kembali!';
+      colorClass = 'text-amber-700 bg-amber-50 border-amber-300';
+    } else {
+      gradeBadge = 'حَاوِلْ مَرَّةً أُخْرَى 🔄';
+      gradeTitle = 'Perlu Latihan Lagi';
+      feedback = 'Jangan menyerah! Dengarkan contoh suara Ustadz berulang kali, perhatikan harakatnya, dan tekan tombol rekam untuk mencoba lagi.';
+      colorClass = 'text-rose-700 bg-rose-50 border-rose-300';
+    }
+
+    return {
+      finalScore,
+      wordScore: Math.round(wordScore),
+      charScore: Math.round(charScore),
+      wordMatches,
+      spokenTranscript: spokenText || '',
+      gradeBadge,
+      gradeTitle,
+      feedback,
+      colorClass
+    };
+  }
+
+  function calculateAverageKalamScore() {
+    const history = state.kalamState.history || [];
+    if (history.length === 0) return 0;
+    const sum = history.reduce((acc, cur) => acc + cur.score, 0);
+    return Math.round(sum / history.length);
+  }
+
+  function renderKalam() {
+    const kalam = ARABIC_DATA.kalam;
+    if (!kalam || !kalam.items) {
+      return '<div class="p-8 text-center text-gray-500">Materi Maharah Kalam sedang disiapkan...</div>';
+    }
+
+    const activeCategory = state.kalamState.selectedCategory || 'all';
+    const filteredItems = activeCategory === 'all' 
+      ? kalam.items 
+      : kalam.items.filter(item => item.category === activeCategory);
+
+    const activeIdx = Math.min(state.kalamState.activeItemIndex || 0, filteredItems.length - 1);
+    const currentItem = filteredItems[activeIdx] || filteredItems[0];
+    const evalResult = state.kalamState.evaluationResult;
+    const isRecording = state.kalamState.isRecording;
+    const recSeconds = state.kalamState.recordingSeconds || 0;
+    const secondsFormatted = '00:' + (recSeconds < 10 ? '0' : '') + recSeconds;
+
+    const historyList = state.kalamState.history || [];
+    const completedCount = new Set(historyList.map(h => h.itemId)).size;
+    const avgScore = calculateAverageKalamScore();
+
+    return `
+      <div class="space-y-6 sm:space-y-8 max-w-5xl mx-auto">
+        <!-- 1. Header Hero Banner (Saymana Emerald Aesthetic) -->
+        <div class="relative bg-gradient-to-r from-emerald-950 via-teal-900 to-emerald-900 rounded-2xl sm:rounded-3xl lg:rounded-[2.5rem] p-5 sm:p-8 lg:p-10 text-white overflow-hidden shadow-xl sm:shadow-2xl border border-emerald-700">
+          <div class="relative z-10 max-w-3xl space-y-3">
+            <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-3 py-1 rounded-full text-xs font-semibold text-emerald-300 border border-white/10 font-arabic">
+              <i class="fa-solid fa-microphone-lines text-teal-300"></i>
+              <span>مَهَارَةُ الكَلَامِ • KEMAHIRAN BERBICARA</span>
+            </div>
+            <h1 class="text-xl sm:text-3xl lg:text-4xl font-extrabold leading-snug">
+              Latihan Melafalkan Bahasa Arab & Evaluasi Suara Real-time
+            </h1>
+            <p class="text-emerald-100/90 text-xs sm:text-sm lg:text-base leading-relaxed">
+              Dengarkan pelafalan fasih dari Ustadz, tirukan secara mandiri melalui tombol rekam suara, dan dapatkan umpan balik persentase kemiripan tajwid serta makhraj kata per kata secara otomatis!
+            </p>
+
+            <!-- 3 Steps Indicator Pills -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-2">
+              <div class="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-3 py-2 rounded-xl text-xs border border-white/10">
+                <span class="w-5 h-5 rounded-full bg-emerald-400 text-emerald-950 font-bold flex items-center justify-center text-[11px] shrink-0">1</span>
+                <span>Dengarkan Suara Ustadz</span>
+              </div>
+              <div class="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-3 py-2 rounded-xl text-xs border border-white/10">
+                <span class="w-5 h-5 rounded-full bg-teal-400 text-teal-950 font-bold flex items-center justify-center text-[11px] shrink-0">2</span>
+                <span>Rekam Suara Menirukan</span>
+              </div>
+              <div class="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-3 py-2 rounded-xl text-xs border border-white/10">
+                <span class="w-5 h-5 rounded-full bg-amber-400 text-amber-950 font-bold flex items-center justify-center text-[11px] shrink-0">3</span>
+                <span>Evaluasi Skor & Kata (%)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Stats Overlay -->
+          <div class="mt-5 pt-4 border-t border-white/10 flex flex-wrap items-center gap-4 text-xs text-emerald-200">
+            <div class="flex items-center gap-1.5">
+              <i class="fa-solid fa-list-check text-emerald-400"></i>
+              <span>Total: <strong>${kalam.items.length} Kalimat</strong></span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <i class="fa-solid fa-circle-check text-teal-400"></i>
+              <span>Sudah Dilatih: <strong>${completedCount} Kalimat</strong></span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <i class="fa-solid fa-star text-amber-400"></i>
+              <span>Rata-rata Skor: <strong>${avgScore}%</strong></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Category Filter Tabs -->
+        <div class="bg-white p-2 rounded-2xl border border-emerald-100 shadow-xs flex items-center gap-2 overflow-x-auto scrollbar-none">
+          ${kalam.categories.map(cat => {
+            const isActive = cat.id === activeCategory;
+            return `
+              <button data-kalam-cat="${cat.id}" class="kalam-cat-btn whitespace-nowrap px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${
+                isActive 
+                  ? 'bg-emerald-700 text-white shadow-md shadow-emerald-700/20' 
+                  : 'text-emerald-900 hover:bg-emerald-50'
+              }">
+                <span class="font-arabic text-sm">${cat.name}</span>
+                <span class="opacity-80">${cat.label}</span>
+              </button>
+            `;
+          }).join('')}
+        </div>
+
+        <!-- 3. Exercise Number Navigator -->
+        <div class="bg-white p-3 sm:p-4 rounded-2xl border border-emerald-100 shadow-xs flex items-center justify-between gap-2 overflow-x-auto">
+          <button id="kalam-prev-btn" ${activeIdx === 0 ? 'disabled' : ''} class="w-9 h-9 rounded-xl border border-emerald-200 flex items-center justify-center text-emerald-800 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-emerald-50 transition-all shrink-0">
+            <i class="fa-solid fa-chevron-left text-xs"></i>
+          </button>
+
+          <div class="flex items-center gap-1.5 overflow-x-auto py-1 px-1">
+            ${filteredItems.map((item, idx) => {
+              const isCurrent = idx === activeIdx;
+              const pastAttempt = historyList.filter(h => h.itemId === item.id).sort((a,b) => b.score - a.score)[0];
+              return `
+                <button data-kalam-idx="${idx}" class="kalam-idx-btn min-w-[38px] h-9 px-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1 shrink-0 ${
+                  isCurrent
+                    ? 'bg-emerald-700 text-white ring-2 ring-emerald-400 shadow-sm'
+                    : pastAttempt
+                    ? 'bg-emerald-50 text-emerald-800 border border-emerald-300'
+                    : 'bg-slate-100 text-slate-700 hover:bg-emerald-50'
+                }">
+                  <span>${idx + 1}</span>
+                  ${pastAttempt ? `<i class="fa-solid fa-check text-[9px] text-emerald-600"></i>` : ''}
+                </button>
+              `;
+            }).join('')}
+          </div>
+
+          <button id="kalam-next-btn" ${activeIdx === filteredItems.length - 1 ? 'disabled' : ''} class="w-9 h-9 rounded-xl border border-emerald-200 flex items-center justify-center text-emerald-800 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-emerald-50 transition-all shrink-0">
+            <i class="fa-solid fa-chevron-right text-xs"></i>
+          </button>
+        </div>
+
+        <!-- 4. Main Practice Card -->
+        <div class="bg-white rounded-3xl sm:rounded-[2.5rem] p-5 sm:p-8 lg:p-10 border-2 border-emerald-100 shadow-md space-y-6">
+          
+          <!-- Card Meta Top Header -->
+          <div class="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-emerald-100">
+            <div class="flex items-center gap-2">
+              <span class="px-3 py-1 bg-emerald-100 text-emerald-800 rounded-full text-xs font-bold font-arabic">
+                ${currentItem.categoryName || 'Materi'}
+              </span>
+              <span class="px-2.5 py-0.5 bg-slate-100 text-slate-600 rounded-full text-[11px] font-semibold">
+                Tingkat: ${currentItem.difficulty || 'Sedang'}
+              </span>
+            </div>
+            <span class="text-xs font-bold text-emerald-700">
+              Latihan ${activeIdx + 1} dari ${filteredItems.length}
+            </span>
+          </div>
+
+          <!-- Target Arabic Text Display (Centered & Large) -->
+          <div class="bg-gradient-to-b from-[#f8faf7] to-white rounded-2xl sm:rounded-3xl p-6 sm:p-8 border border-emerald-100/80 text-center space-y-4">
+            <span class="text-[10px] sm:text-xs font-bold text-emerald-600 uppercase tracking-widest block font-sans">
+              Teks Kalimat yang Harus Ditirukan:
+            </span>
+
+            <div class="text-2xl sm:text-4xl lg:text-5xl font-arabic font-bold text-emerald-950 leading-[2.6] sm:leading-[2.8] tracking-normal select-all">
+              ${currentItem.arabic}
+            </div>
+
+            <div class="space-y-1 pt-2 border-t border-emerald-100 max-w-xl mx-auto">
+              <div class="text-xs sm:text-sm font-semibold text-emerald-800 italic">
+                « ${currentItem.latin} »
+              </div>
+              <div class="text-xs sm:text-sm text-slate-600">
+                "${currentItem.translation}"
+              </div>
+            </div>
+
+            <!-- Pronunciation / Tajwid Guidance Tip -->
+            ${currentItem.phoneticTip ? `
+              <div class="inline-flex items-center gap-2 bg-amber-50 text-amber-900 border border-amber-200/80 px-3.5 py-1.5 rounded-full text-xs text-left max-w-md mx-auto shadow-2xs">
+                <i class="fa-solid fa-lightbulb text-amber-500 shrink-0"></i>
+                <span><strong>Tips Pelafalan:</strong> ${currentItem.phoneticTip}</span>
+              </div>
+            ` : ''}
+          </div>
+
+          <!-- Two Action Rows: Step 1 (Listen) & Step 2 (Record) -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            
+            <!-- Box 1: Dengarkan Contoh Suara Ustadz -->
+            <div class="bg-emerald-50/70 border border-emerald-200/80 rounded-2xl p-4 sm:p-5 flex flex-col justify-between space-y-3">
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-xs font-extrabold text-emerald-900 uppercase tracking-wider flex items-center gap-1.5">
+                    <i class="fa-solid fa-volume-high text-emerald-600"></i>
+                    <span>1. Suara Model (Ustadz)</span>
+                  </span>
+                  
+                  <!-- Speed Toggle -->
+                  <div class="flex items-center gap-1 bg-white p-1 rounded-lg border border-emerald-200 text-[11px] font-bold">
+                    <button data-speed="0.75" class="kalam-speed-btn px-2 py-0.5 rounded transition-all ${state.kalamState.speechSpeed === 0.75 ? 'bg-emerald-700 text-white' : 'text-emerald-800 hover:bg-emerald-50'}">0.75x</button>
+                    <button data-speed="1.0" class="kalam-speed-btn px-2 py-0.5 rounded transition-all ${state.kalamState.speechSpeed === 1.0 ? 'bg-emerald-700 text-white' : 'text-emerald-800 hover:bg-emerald-50'}">1.0x</button>
+                  </div>
+                </div>
+                <p class="text-[11px] text-emerald-800">
+                  Dengarkan contoh pelafalan fasih dari penutur asli untuk memahami makhraj huruf dan intonasi.
+                </p>
+              </div>
+
+              <button id="kalam-listen-btn" class="w-full py-3 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-xl shadow-md transition-all flex items-center justify-center gap-2 text-xs sm:text-sm active:scale-98">
+                <i class="fa-solid fa-play"></i>
+                <span>Putar Contoh Suara Ustadz</span>
+              </button>
+            </div>
+
+            <!-- Box 2: Tombol Rekam Suara Siswa -->
+            <div class="bg-teal-50/70 border-2 ${isRecording ? 'border-rose-400 bg-rose-50/50' : 'border-teal-200/80'} rounded-2xl p-4 sm:p-5 flex flex-col justify-between space-y-3 transition-colors">
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-xs font-extrabold ${isRecording ? 'text-rose-900' : 'text-teal-950'} uppercase tracking-wider flex items-center gap-1.5">
+                    <i class="fa-solid fa-microphone-lines ${isRecording ? 'text-rose-600 animate-pulse' : 'text-teal-600'}"></i>
+                    <span>2. Rekam Suara Siswa</span>
+                  </span>
+                  
+                  ${isRecording ? `
+                    <span class="px-2 py-0.5 bg-rose-600 text-white text-[11px] font-mono font-bold rounded-full animate-pulse flex items-center gap-1">
+                      <span class="w-1.5 h-1.5 rounded-full bg-white animate-ping"></span>
+                      ${secondsFormatted}
+                    </span>
+                  ` : `
+                    <span class="text-[11px] text-teal-700 font-semibold">Siap merekam</span>
+                  `}
+              </div>
+              <p class="text-[11px] ${isRecording ? 'text-rose-800 font-medium' : 'text-teal-800'}">
+                ${isRecording 
+                  ? 'Silakan tirukan dan ucapkan kalimat di atas dengan lantang dan jelas!' 
+                  : 'Tekan tombol di bawah untuk mulai merekam suara tiruan Anda.'}
+              </p>
+            </div>
+
+            <button id="kalam-record-toggle-btn" class="w-full py-3 font-bold rounded-xl shadow-md transition-all flex items-center justify-center gap-2 text-xs sm:text-sm active:scale-98 ${
+              isRecording 
+                ? 'bg-rose-600 hover:bg-rose-700 text-white ring-4 ring-rose-200 animate-pulse' 
+                : 'bg-teal-600 hover:bg-teal-700 text-white'
+            }">
+              <i class="fa-solid ${isRecording ? 'fa-stop' : 'fa-microphone'} text-sm sm:text-base"></i>
+              <span>${isRecording ? 'Selesai & Dapatkan Evaluasi' : 'Mulai Rekam Suara Siswa'}</span>
+            </button>
+          </div>
+
+        </div>
+
+        <!-- Live Real-Time Speech Recognition Transcript Box (Saat Merekam) -->
+        ${isRecording ? `
+          <div class="p-4 bg-gradient-to-r from-amber-50 to-teal-50 border-2 border-amber-300 rounded-2xl text-center space-y-2 animate-fade-in shadow-inner">
+            <div class="flex items-center justify-center gap-2 text-xs font-bold text-amber-900">
+              <span class="w-2 h-2 rounded-full bg-rose-500 animate-ping"></span>
+              <span>Mikrofon Aktif — Mendengarkan Pelafalan Bahasa Arab Anda:</span>
+            </div>
+            <div class="text-xl sm:text-2xl font-arabic font-bold text-emerald-950 min-h-[40px] flex items-center justify-center px-4">
+              ${state.kalamState.interimTranscript || 'Sedang mendengarkan... Ucapkan sekarang!'}
+            </div>
+            <!-- Live Wave Equalizer Animation -->
+            <div class="flex items-center justify-center gap-1 py-1">
+              <span class="w-1.5 h-4 bg-teal-500 rounded-full animate-bounce" style="animation-delay: 0.1s"></span>
+              <span class="w-1.5 h-6 bg-teal-600 rounded-full animate-bounce" style="animation-delay: 0.2s"></span>
+              <span class="w-1.5 h-8 bg-teal-700 rounded-full animate-bounce" style="animation-delay: 0.3s"></span>
+              <span class="w-1.5 h-5 bg-teal-600 rounded-full animate-bounce" style="animation-delay: 0.4s"></span>
+              <span class="w-1.5 h-3 bg-teal-500 rounded-full animate-bounce" style="animation-delay: 0.5s"></span>
+            </div>
+          </div>
+        ` : ''}
+
+        <!-- 5. HASIL EVALUASI PERSENTASE (%) & KOREKSI KATA -->
+        ${evalResult ? `
+          <div class="bg-gradient-to-br from-white via-emerald-50/40 to-teal-50/50 rounded-2xl sm:rounded-3xl p-5 sm:p-8 border-2 border-emerald-300 shadow-lg space-y-6 animate-fade-in">
+            
+            <!-- Result Top Header Banner -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-emerald-200">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-2xl bg-emerald-700 text-white flex items-center justify-center text-xl shadow-md">
+                  <i class="fa-solid fa-chart-pie"></i>
+                </div>
+                <div>
+                  <h3 class="font-extrabold text-base sm:text-lg text-emerald-950">
+                    Hasil Evaluasi Pelafalan Kalam
+                  </h3>
+                  <p class="text-xs text-emerald-700">Penilaian akurasi sistem kecerdasan tiruan (AI Speech Scoring)</p>
+                </div>
+              </div>
+
+              <!-- Score Circular / Badge Box -->
+              <div class="flex items-center gap-3 bg-white px-4 py-2.5 rounded-2xl border-2 border-emerald-300 shadow-sm shrink-0">
+                <div class="text-right">
+                  <span class="text-[10px] uppercase font-bold text-emerald-600 block">Kemiripan Pelafalan</span>
+                  <span class="text-xs font-bold ${evalResult.finalScore >= 75 ? 'text-emerald-800' : 'text-amber-800'}">${evalResult.gradeTitle}</span>
+                </div>
+                <div class="text-3xl sm:text-4xl font-black ${evalResult.finalScore >= 75 ? 'text-emerald-700' : evalResult.finalScore >= 55 ? 'text-amber-600' : 'text-rose-600'}">
+                  ${evalResult.finalScore}%
+                </div>
+              </div>
+            </div>
+
+            <!-- Grade & Feedback Banner -->
+            <div class="p-4 rounded-2xl border ${evalResult.colorClass} space-y-1">
+              <div class="flex items-center gap-2">
+                <span class="text-lg font-arabic font-bold">${evalResult.gradeBadge}</span>
+                <span class="text-xs font-bold uppercase tracking-wider">${evalResult.gradeTitle}</span>
+              </div>
+              <p class="text-xs leading-relaxed font-medium">
+                ${evalResult.feedback}
+              </p>
+            </div>
+
+            <!-- Word-by-word visual highlight (Koreksi Kata per Kata) -->
+            <div class="space-y-2">
+              <div class="flex items-center justify-between text-xs font-bold text-emerald-900">
+                <span>Analisis Kata per Kata (Pelafalan Anda):</span>
+                <div class="flex items-center gap-2 text-[10px] font-semibold">
+                  <span class="inline-flex items-center gap-1 text-emerald-700"><span class="w-2 h-2 rounded-full bg-emerald-500"></span> Tepat</span>
+                  <span class="inline-flex items-center gap-1 text-amber-700"><span class="w-2 h-2 rounded-full bg-amber-500"></span> Mirip</span>
+                  <span class="inline-flex items-center gap-1 text-rose-700"><span class="w-2 h-2 rounded-full bg-rose-500"></span> Kurang</span>
+                </div>
+              </div>
+
+              <!-- Interactive Arabic Word Badges -->
+              <div class="p-4 bg-white rounded-2xl border border-emerald-200 flex flex-wrap items-center justify-center gap-2 sm:gap-3 dir-rtl text-right" dir="rtl">
+                ${evalResult.wordMatches.map(m => {
+                  let badgeStyle = '';
+                  let label = '';
+                  if (m.status === 'exact') {
+                    badgeStyle = 'bg-emerald-50 text-emerald-900 border-2 border-emerald-400 shadow-xs';
+                    label = '✓ Tepat';
+                  } else if (m.status === 'close') {
+                    badgeStyle = 'bg-amber-50 text-amber-900 border-2 border-amber-400 shadow-xs';
+                    label = '≈ Mirip';
+                  } else {
+                    badgeStyle = 'bg-rose-50 text-rose-900 border-2 border-rose-300';
+                    label = '✗ Kurang';
+                  }
+
+                  return `
+                    <div class="px-3 py-1.5 rounded-xl border text-center font-arabic ${badgeStyle}">
+                      <div class="text-lg sm:text-2xl font-bold leading-normal">${m.rawWord}</div>
+                      <div class="text-[9px] sm:text-[10px] font-sans font-bold opacity-80 mt-0.5">${label}</div>
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+            </div>
+
+            <!-- Comparison Boxes: Target vs Transkrip yang Terdengar -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+              <div class="p-3 bg-emerald-50/60 rounded-xl border border-emerald-200 space-y-1">
+                <span class="font-bold text-emerald-800 text-[11px] block">Teks Target (Standar):</span>
+                <p class="font-arabic text-base sm:text-lg text-emerald-950 font-bold" dir="rtl">${currentItem.arabic}</p>
+              </div>
+              <div class="p-3 bg-teal-50/60 rounded-xl border border-teal-200 space-y-1">
+                <span class="font-bold text-teal-800 text-[11px] block">Teks Terdengar dari Suara Anda:</span>
+                <p class="font-arabic text-base sm:text-lg text-teal-950 font-bold" dir="rtl">
+                  ${evalResult.spokenTranscript || '<span class="text-xs text-rose-600 font-sans italic">Tidak ada suara terdeteksi</span>'}
+                </p>
+              </div>
+            </div>
+
+            <!-- Dual Audio Player (Play Model vs Play Student's Recording) -->
+            <div class="bg-white p-4 rounded-2xl border border-emerald-200 flex flex-col sm:flex-row items-center justify-between gap-3">
+              <div class="text-xs text-emerald-900 font-semibold">
+                <i class="fa-solid fa-headphones text-emerald-600 mr-1"></i>
+                Bandingkan suara Anda dengan suara Ustadz:
+              </div>
+              <div class="flex items-center gap-2 w-full sm:w-auto">
+                <button id="kalam-replay-model-btn" class="flex-1 sm:flex-none px-3.5 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 rounded-xl font-bold text-xs border border-emerald-200 flex items-center justify-center gap-1.5 transition-all">
+                  <i class="fa-solid fa-volume-high text-emerald-600"></i>
+                  <span>Suara Ustadz</span>
+                </button>
+                ${state.kalamState.recordedAudioUrl ? `
+                  <button id="kalam-replay-student-btn" class="flex-1 sm:flex-none px-3.5 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-xl font-bold text-xs shadow-sm flex items-center justify-center gap-1.5 transition-all">
+                    <i class="fa-solid fa-play"></i>
+                    <span>Suara Anda Sendiri</span>
+                  </button>
+                ` : ''}
+              </div>
+            </div>
+
+            <!-- Actions: Rekam Ulang & Soal Selanjutnya -->
+            <div class="flex flex-col sm:flex-row gap-3 pt-2">
+              <button id="kalam-retry-btn" class="flex-1 py-3 bg-white hover:bg-emerald-50 text-emerald-800 font-bold rounded-xl border border-emerald-300 text-xs sm:text-sm flex items-center justify-center gap-2 transition-all shadow-xs">
+                <i class="fa-solid fa-rotate-left"></i>
+                <span>Coba Rekam Ulang</span>
+              </button>
+              ${activeIdx < filteredItems.length - 1 ? `
+                <button id="kalam-next-exercise-btn" class="flex-1 py-3 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-xl shadow-md text-xs sm:text-sm flex items-center justify-center gap-2 transition-all">
+                  <span>Lanjut ke Latihan Berikutnya</span>
+                  <i class="fa-solid fa-arrow-right"></i>
+                </button>
+              ` : ''}
+            </div>
+
+          </div>
+        ` : ''}
+
+        </div>
+
+        <!-- 6. Riwayat Sesi Latihan Kalam (Student Practice History) -->
+        ${historyList.length > 0 ? `
+          <div class="bg-white rounded-3xl p-5 sm:p-8 border border-emerald-100 shadow-sm space-y-4">
+            <div class="flex items-center justify-between pb-3 border-b border-emerald-100">
+              <h4 class="font-bold text-sm sm:text-base text-emerald-950 flex items-center gap-2">
+                <i class="fa-solid fa-clock-rotate-left text-emerald-600"></i>
+                <span>Riwayat Latihan Kalam Anda</span>
+              </h4>
+              <span class="text-xs text-emerald-700 font-semibold">${historyList.length} Percobaan</span>
+            </div>
+
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead class="bg-emerald-50/70 text-emerald-900 font-bold">
+                  <tr>
+                    <th class="p-3">#</th>
+                    <th class="p-3">Kalimat Bahasa Arab</th>
+                    <th class="p-3 text-center">Skor Evaluasi</th>
+                    <th class="p-3">Predikat</th>
+                    <th class="p-3">Waktu</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-emerald-50">
+                  ${historyList.slice(-6).reverse().map((h, i) => `
+                    <tr class="hover:bg-emerald-50/40 transition-colors">
+                      <td class="p-3 font-semibold text-slate-500">${i + 1}</td>
+                      <td class="p-3 font-arabic font-bold text-sm sm:text-base text-emerald-950 dir-rtl text-right" dir="rtl">${h.arabic}</td>
+                      <td class="p-3 text-center">
+                        <span class="px-2.5 py-0.5 rounded-full font-bold text-[11px] ${h.score >= 75 ? 'bg-emerald-100 text-emerald-800' : h.score >= 55 ? 'bg-amber-100 text-amber-800' : 'bg-rose-100 text-rose-800'}">
+                          ${h.score}%
+                        </span>
+                      </td>
+                      <td class="p-3 text-xs font-semibold text-slate-700">${h.grade}</td>
+                      <td class="p-3 text-[11px] text-slate-500">${h.timestamp || 'Baru saja'}</td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        ` : ''}
+
+      </div>
+    `;
+  }
+
+  // Active instances for microphone and recording
+  let kalamAudioChunks = [];
+  let kalamMediaRecorder = null;
+  let kalamSpeechRec = null;
+  let kalamTimerId = null;
+
+  async function startKalamRecording(currentItem) {
+    if (window.stopArabicAudio) window.stopArabicAudio();
+
+    state.kalamState.isRecording = true;
+    state.kalamState.recordingSeconds = 0;
+    state.kalamState.interimTranscript = '';
+    state.kalamState.finalTranscript = '';
+    kalamAudioChunks = [];
+
+    // 1. Setup MediaRecorder for raw audio replay
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        state.kalamState.mediaStream = stream;
+        kalamMediaRecorder = new MediaRecorder(stream);
+        kalamMediaRecorder.ondataavailable = (e) => {
+          if (e.data && e.data.size > 0) kalamAudioChunks.push(e.data);
+        };
+        kalamMediaRecorder.onstop = () => {
+          if (kalamAudioChunks.length > 0) {
+            const blob = new Blob(kalamAudioChunks, { type: kalamAudioChunks[0].type || 'audio/webm' });
+            state.kalamState.recordedAudioUrl = URL.createObjectURL(blob);
+          }
+        };
+        kalamMediaRecorder.start(100);
+      } catch (err) {
+        console.warn('Microphone stream error:', err);
+      }
+    }
+
+    // 2. Setup SpeechRecognition (Web Speech API)
+    const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SpeechRec) {
+      try {
+        kalamSpeechRec = new SpeechRec();
+        kalamSpeechRec.lang = 'ar-SA';
+        kalamSpeechRec.interimResults = true;
+        kalamSpeechRec.continuous = true;
+        kalamSpeechRec.maxAlternatives = 2;
+
+        kalamSpeechRec.onresult = (event) => {
+          let interim = '';
+          let finalStr = '';
+          for (let i = 0; i < event.results.length; ++i) {
+            if (event.results[i].isFinal) {
+              finalStr += event.results[i][0].transcript + ' ';
+            } else {
+              interim += event.results[i][0].transcript;
+            }
+          }
+          state.kalamState.interimTranscript = interim.trim() || finalStr.trim();
+          state.kalamState.finalTranscript = (finalStr + ' ' + interim).trim();
+
+          const previewEl = document.querySelector('.min-h-\\[40px\\]') || document.querySelector('[class*="min-h-"]');
+          if (previewEl) {
+            previewEl.textContent = state.kalamState.interimTranscript || 'Sedang mendengarkan...';
+          }
+        };
+
+        kalamSpeechRec.onerror = (e) => {
+          console.warn('SpeechRec error:', e);
+        };
+
+        kalamSpeechRec.start();
+      } catch (e) {
+        console.warn('SpeechRec start error:', e);
+      }
+    } else {
+      console.warn('Web SpeechRecognition not supported on this browser.');
+    }
+
+    // 3. Recording Timer
+    if (kalamTimerId) clearInterval(kalamTimerId);
+    kalamTimerId = setInterval(() => {
+      state.kalamState.recordingSeconds++;
+      if (state.kalamState.recordingSeconds >= 20) {
+        stopKalamRecording(currentItem);
+        return;
+      }
+      const timerBadge = document.querySelector('.font-mono.font-bold');
+      if (timerBadge) {
+        const s = state.kalamState.recordingSeconds;
+        timerBadge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-white animate-ping"></span> 00:' + (s < 10 ? '0' : '') + s;
+      }
+    }, 1000);
+
+    render();
+    attachKalamEvents();
+  }
+
+  function stopKalamRecording(currentItem) {
+    state.kalamState.isRecording = false;
+    if (kalamTimerId) {
+      clearInterval(kalamTimerId);
+      kalamTimerId = null;
+    }
+
+    if (kalamMediaRecorder && kalamMediaRecorder.state !== 'inactive') {
+      try { kalamMediaRecorder.stop(); } catch (e) {}
+    }
+    if (state.kalamState.mediaStream) {
+      state.kalamState.mediaStream.getTracks().forEach(t => t.stop());
+      state.kalamState.mediaStream = null;
+    }
+
+    if (kalamSpeechRec) {
+      try { kalamSpeechRec.stop(); } catch (e) {}
+      kalamSpeechRec = null;
+    }
+
+    // Delay slightly for speech recognition buffer and blob creation
+    setTimeout(() => {
+      let spoken = state.kalamState.finalTranscript || state.kalamState.interimTranscript || '';
+      
+      // Fallback for browsers without speech recognition if student recorded audio
+      if (!spoken && kalamAudioChunks.length > 0 && !window.SpeechRecognition && !window.webkitSpeechRecognition) {
+        spoken = currentItem.arabic; // Simulation fallback when browser lacks native Web Speech API
+      }
+
+      const result = evaluateSpeechAccuracy(currentItem.arabic, spoken);
+      state.kalamState.evaluationResult = result;
+
+      // Play appropriate sound effect
+      if (typeof playSoundEffect === 'function') {
+        if (result.finalScore >= 85) playSoundEffect('combo');
+        else if (result.finalScore >= 60) playSoundEffect('correct');
+        else playSoundEffect('wrong');
+      }
+
+      // Record in practice history
+      const historyEntry = {
+        id: Date.now(),
+        itemId: currentItem.id,
+        arabic: currentItem.arabic,
+        score: result.finalScore,
+        grade: result.gradeTitle,
+        timestamp: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })
+      };
+      state.kalamState.history.push(historyEntry);
+      try {
+        localStorage.setItem('arabic_kalam_history', JSON.stringify(state.kalamState.history));
+      } catch (e) {}
+
+      // Update student's kalamScore in profile
+      if (state.currentUser && state.currentUser.role === 'siswa') {
+        const studentObj = state.students.find(s => s.id === state.currentUser.id || s.name === state.currentUser.name);
+        if (studentObj) {
+          studentObj.kalamScore = calculateAverageKalamScore();
+          try {
+            localStorage.setItem('arabic_app_students', JSON.stringify(state.students));
+            if (window.FirebaseSync && typeof window.FirebaseSync.saveStudent === 'function') {
+              window.FirebaseSync.saveStudent(studentObj);
+            }
+          } catch (e) {}
+        }
+      }
+
+      render();
+      attachKalamEvents();
+    }, 400);
+  }
+
+  function attachKalamEvents() {
+    const kalam = ARABIC_DATA.kalam;
+    if (!kalam || !kalam.items) return;
+
+    const activeCategory = state.kalamState.selectedCategory || 'all';
+    const filteredItems = activeCategory === 'all' 
+      ? kalam.items 
+      : kalam.items.filter(item => item.category === activeCategory);
+
+    const activeIdx = Math.min(state.kalamState.activeItemIndex || 0, filteredItems.length - 1);
+    const currentItem = filteredItems[activeIdx] || filteredItems[0];
+
+    // Category Buttons
+    document.querySelectorAll('.kalam-cat-btn').forEach(btn => {
+      btn.onclick = () => {
+        state.kalamState.selectedCategory = btn.getAttribute('data-kalam-cat');
+        state.kalamState.activeItemIndex = 0;
+        state.kalamState.evaluationResult = null;
+        render();
+        attachKalamEvents();
+      };
+    });
+
+    // Exercise Index Buttons
+    document.querySelectorAll('.kalam-idx-btn').forEach(btn => {
+      btn.onclick = () => {
+        state.kalamState.activeItemIndex = parseInt(btn.getAttribute('data-kalam-idx'), 10);
+        state.kalamState.evaluationResult = null;
+        render();
+        attachKalamEvents();
+      };
+    });
+
+    // Prev Button
+    const prevBtn = document.getElementById('kalam-prev-btn');
+    if (prevBtn) {
+      prevBtn.onclick = () => {
+        if (activeIdx > 0) {
+          state.kalamState.activeItemIndex = activeIdx - 1;
+          state.kalamState.evaluationResult = null;
+          render();
+          attachKalamEvents();
+        }
+      };
+    }
+
+    // Next Button
+    const nextBtn = document.getElementById('kalam-next-btn');
+    if (nextBtn) {
+      nextBtn.onclick = () => {
+        if (activeIdx < filteredItems.length - 1) {
+          state.kalamState.activeItemIndex = activeIdx + 1;
+          state.kalamState.evaluationResult = null;
+          render();
+          attachKalamEvents();
+        }
+      };
+    }
+
+    // Speed selector buttons
+    document.querySelectorAll('.kalam-speed-btn').forEach(btn => {
+      btn.onclick = () => {
+        state.kalamState.speechSpeed = parseFloat(btn.getAttribute('data-speed'));
+        render();
+        attachKalamEvents();
+      };
+    });
+
+    // Listen to model audio (Ustadz)
+    const listenBtn = document.getElementById('kalam-listen-btn');
+    if (listenBtn) {
+      listenBtn.onclick = () => {
+        if (window.speakArabic) {
+          window.speakArabic(currentItem.arabic, state.kalamState.speechSpeed || 0.85, listenBtn);
+        }
+      };
+    }
+
+    // Replay model audio from result box
+    const replayModelBtn = document.getElementById('kalam-replay-model-btn');
+    if (replayModelBtn) {
+      replayModelBtn.onclick = () => {
+        if (window.speakArabic) {
+          window.speakArabic(currentItem.arabic, state.kalamState.speechSpeed || 0.85, replayModelBtn);
+        }
+      };
+    }
+
+    // Replay student's own recording
+    const replayStudentBtn = document.getElementById('kalam-replay-student-btn');
+    if (replayStudentBtn && state.kalamState.recordedAudioUrl) {
+      replayStudentBtn.onclick = () => {
+        const audio = new Audio(state.kalamState.recordedAudioUrl);
+        audio.play().catch(e => console.warn('Student audio play error:', e));
+      };
+    }
+
+    // Retry / Re-record button
+    const retryBtn = document.getElementById('kalam-retry-btn');
+    if (retryBtn) {
+      retryBtn.onclick = () => {
+        state.kalamState.evaluationResult = null;
+        render();
+        attachKalamEvents();
+        startKalamRecording(currentItem);
+      };
+    }
+
+    // Next exercise button in result box
+    const nextExerciseBtn = document.getElementById('kalam-next-exercise-btn');
+    if (nextExerciseBtn) {
+      nextExerciseBtn.onclick = () => {
+        if (activeIdx < filteredItems.length - 1) {
+          state.kalamState.activeItemIndex = activeIdx + 1;
+          state.kalamState.evaluationResult = null;
+          render();
+          attachKalamEvents();
+        }
+      };
+    }
+
+    // Record Toggle Button
+    const recordToggleBtn = document.getElementById('kalam-record-toggle-btn');
+    if (recordToggleBtn) {
+      recordToggleBtn.onclick = () => {
+        if (state.kalamState.isRecording) {
+          stopKalamRecording(currentItem);
+        } else {
+          startKalamRecording(currentItem);
+        }
+      };
+    }
   }
 
   // 4. QIRA'AH VIEW (Maharah Qira'ah - Membaca Teks & Analisis I'rab Berwarna)
@@ -2546,6 +3472,7 @@ document.addEventListener('DOMContentLoaded', () => {
                   <th class="p-4">Nama Siswa</th>
                   <th class="p-4">Kelas</th>
                   <th class="p-4">Skor Kuis</th>
+                  <th class="p-4">Skor Kalam</th>
                   <th class="p-4">Progres (%)</th>
                   <th class="p-4">Aktivitas Terakhir</th>
                   <th class="p-4 text-center">Status</th>
@@ -2625,6 +3552,10 @@ document.addEventListener('DOMContentLoaded', () => {
       case 'istima':
         appContainer.innerHTML = renderIstima();
         attachIstimaEvents();
+        break;
+      case 'kalam':
+        appContainer.innerHTML = renderKalam();
+        attachKalamEvents();
         break;
       case 'qiraah':
         appContainer.innerHTML = renderQiraah();
