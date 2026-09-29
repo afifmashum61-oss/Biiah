@@ -4631,7 +4631,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // STEP 1: LOBBY SELECTOR SCREEN
     if (duel.lobbyStep === 'lobby') {
       return `
-        <div class="space-y-8 max-w-5xl mx-auto">
+        <div class="space-y-8 max-w-4xl mx-auto">
           <!-- Header Banner -->
           <div class="bg-gradient-to-r from-amber-500 via-amber-600 to-emerald-700 rounded-[2.5rem] p-8 sm:p-10 text-white shadow-xl border-4 border-amber-300 relative overflow-hidden flex flex-col sm:flex-row items-center justify-between gap-6">
             <div class="space-y-2 text-center sm:text-left z-10">
@@ -4639,74 +4639,28 @@ document.addEventListener('DOMContentLoaded', () => {
                 <i class="fa-solid fa-bolt text-amber-200"></i> Mode Pertandingan 1v1 Qawa'id
               </span>
               <h1 class="text-3xl sm:text-4xl font-black font-arabic text-amber-100">⚔️ Duel Adu Cepat Qawa'id</h1>
-              <p class="text-xs sm:text-sm text-emerald-100 max-w-lg">Pilih Tingkatan Level Soal atau langsung tantang Bot AI Ustadz berjenjang dari Pemula hingga Master!</p>
+              <p class="text-xs sm:text-sm text-emerald-100 max-w-lg">Pilih mode permainan: Latihan mandiri melawan 5 tingkatan Bot AI atau tantang teman sekelas dengan Kode PIN!</p>
             </div>
             <div class="text-6xl sm:text-7xl shrink-0 animate-bounce z-10">🤖⚡</div>
           </div>
 
-          <!-- SECTION 1: PILIH PAKET SOAL (5 LEVEL LENGKAP) -->
-          <div class="bg-white rounded-[2rem] p-6 sm:p-8 shadow-md border border-emerald-100 space-y-4">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <!-- PILIH MODE PERMAINAN -->
+          <div class="bg-white rounded-[2rem] p-6 sm:p-8 shadow-md border border-emerald-100 space-y-6">
+            <div>
               <h2 class="text-lg sm:text-xl font-bold text-emerald-950 flex items-center gap-2">
-                <i class="fa-solid fa-layer-group text-amber-600"></i>
-                <span>Langkah 1: Pilih Versi Paket / Level Soal (10 Soal per Ronde)</span>
+                <i class="fa-solid fa-gamepad text-emerald-600"></i>
+                <span>Pilih Mode Permainan Duel</span>
               </h2>
-              <span class="text-xs font-bold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200 self-start sm:self-auto">
-                Tersedia 5 Tingkatan Level
-              </span>
+              <p class="text-xs text-slate-500 mt-1">Tersedia mode latihan mandiri melawan AI berjenjang dan mode multiplayer duel PvP antar siswa.</p>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3.5">
-              ${sets.map((s, idx) => {
-                const isSelected = (duel.selectedSetIdx || 0) === idx;
-                const stars = parseInt(localStorage.getItem('arabic_duel_stars_level_' + idx) || '0');
-                const highScore = parseInt(localStorage.getItem('arabic_duel_score_level_' + idx) || '0');
-                return `
-                  <div 
-                    data-set-idx="${idx}"
-                    class="duel-set-card cursor-pointer p-4 rounded-2xl border-2 transition-all flex flex-col justify-between ${isSelected ? 'bg-amber-50 border-amber-500 shadow-md scale-[1.02] ring-2 ring-amber-300' : 'bg-white border-emerald-100 hover:border-emerald-300 hover:bg-emerald-50/40'}"
-                  >
-                    <div>
-                      <div class="flex items-center justify-between mb-2">
-                        <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold ${isSelected ? 'bg-amber-500 text-white' : 'bg-emerald-100 text-emerald-800'}">
-                          ${s.badge}
-                        </span>
-                        ${isSelected ? '<i class="fa-solid fa-circle-check text-amber-600 text-base"></i>' : ''}
-                      </div>
-                      <h3 class="text-sm font-bold text-emerald-950 mb-1 leading-snug">${s.title}</h3>
-                      <p class="text-[11px] text-slate-500 leading-relaxed mb-2 line-clamp-2">${s.description}</p>
-                    </div>
-
-                    <div class="pt-2 border-t border-emerald-100 space-y-1">
-                      <div class="text-[11px] font-bold text-slate-600 flex items-center justify-between">
-                        <span>Lawan:</span>
-                        <span class="text-emerald-700 truncate max-w-[100px]">${s.botName}</span>
-                      </div>
-                      <div class="flex items-center justify-between text-[10px] font-bold">
-                        <span class="text-amber-600">${stars > 0 ? '⭐'.repeat(stars) : 'Belum Ada Bintang'}</span>
-                        ${highScore > 0 ? `<span class="text-slate-400 font-mono">${highScore} pts</span>` : ''}
-                      </div>
-                    </div>
-                  </div>
-                `;
-              }).join('')}
-            </div>
-          </div>
-
-          <!-- SECTION 2: PILIH MODE PERMAINAN -->
-          <div class="bg-white rounded-[2rem] p-6 sm:p-8 shadow-md border border-emerald-100 space-y-4">
-            <h2 class="text-lg sm:text-xl font-bold text-emerald-950 flex items-center gap-2">
-              <i class="fa-solid fa-gamepad text-emerald-600"></i>
-              <span>Langkah 2: Pilih Cara Main Duel</span>
-            </h2>
-
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
               <!-- Mode 1: Bot AI dengan Pilihan Level -->
-              <button id="btn-start-ai" class="p-6 rounded-2xl border-2 border-emerald-300 bg-gradient-to-br from-emerald-50 via-teal-50 to-emerald-100/60 hover:border-emerald-500 hover:shadow-lg text-left transition-all flex flex-col justify-between gap-4 group shadow-sm relative overflow-hidden">
-                <div class="absolute top-2 right-2 px-2 py-0.5 bg-emerald-600 text-white rounded-full text-[10px] font-extrabold uppercase">
-                  5 Level Berjenjang
+              <button id="btn-start-ai" class="p-6 rounded-2xl border-2 border-emerald-300 bg-gradient-to-br from-emerald-50 via-teal-50 to-emerald-100/60 hover:border-emerald-500 hover:shadow-lg text-left transition-all flex flex-col justify-between gap-5 group shadow-sm relative overflow-hidden cursor-pointer">
+                <div class="absolute top-2 right-2 px-2.5 py-0.5 bg-emerald-600 text-white rounded-full text-[10px] font-black uppercase tracking-wider">
+                  5 Level AI
                 </div>
-                <div class="w-12 h-12 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-2xl shadow-md group-hover:scale-110 transition-transform">
+                <div class="w-14 h-14 rounded-2xl bg-emerald-600 text-white flex items-center justify-center text-3xl shadow-md group-hover:scale-110 transition-transform">
                   🤖
                 </div>
                 <div>
@@ -4714,37 +4668,37 @@ document.addEventListener('DOMContentLoaded', () => {
                     <span>Latihan vs Bot AI</span>
                     <i class="fa-solid fa-star text-amber-500 text-xs"></i>
                   </h3>
-                  <p class="text-xs text-emerald-800 mt-1">Latihan bertanding melawan 5 tingkatan Bot AI (Pemula s/d Master Boss) tanpa kode PIN.</p>
+                  <p class="text-xs text-emerald-800 mt-1.5 leading-relaxed">Latihan bertanding melawan 5 tingkatan Bot AI (Pemula s/d Master Boss) tanpa kode PIN.</p>
                 </div>
-                <div class="text-xs font-extrabold text-emerald-800 flex items-center gap-1">
+                <div class="text-xs font-extrabold text-emerald-800 flex items-center gap-1 pt-2 border-t border-emerald-200/60">
                   <span>Pilih Level & Mulai</span> <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
                 </div>
               </button>
 
               <!-- Mode 2: Buat Kamar Kode PIN -->
-              <button id="btn-create-room" class="p-6 rounded-2xl border-2 border-amber-300 bg-amber-50/50 hover:bg-amber-100 hover:border-amber-400 text-left transition-all flex flex-col justify-between gap-4 group shadow-sm">
-                <div class="w-12 h-12 rounded-xl bg-amber-500 text-white flex items-center justify-center text-2xl shadow-md group-hover:scale-110 transition-transform">
+              <button id="btn-create-room" class="p-6 rounded-2xl border-2 border-amber-300 bg-amber-50/50 hover:bg-amber-100 hover:border-amber-400 text-left transition-all flex flex-col justify-between gap-5 group shadow-sm cursor-pointer">
+                <div class="w-14 h-14 rounded-2xl bg-amber-500 text-white flex items-center justify-center text-3xl shadow-md group-hover:scale-110 transition-transform">
                   🔑
                 </div>
                 <div>
                   <h3 class="font-bold text-base text-amber-950">Buat Kamar (Host)</h3>
-                  <p class="text-xs text-amber-800 mt-1">Dapatkan Kode PIN 4-digit untuk dibagikan ke lawan di kelas.</p>
+                  <p class="text-xs text-amber-800 mt-1.5 leading-relaxed">Dapatkan Kode PIN 4-digit untuk dibagikan ke lawan duel di kelas.</p>
                 </div>
-                <div class="text-xs font-extrabold text-amber-900 flex items-center gap-1">
+                <div class="text-xs font-extrabold text-amber-900 flex items-center gap-1 pt-2 border-t border-amber-200">
                   <span>Buat Kode PIN</span> <i class="fa-solid fa-key"></i>
                 </div>
               </button>
 
               <!-- Mode 3: Masuk Kamar Kode PIN -->
-              <button id="btn-join-room-step" class="p-6 rounded-2xl border-2 border-indigo-200 bg-indigo-50/50 hover:bg-indigo-100 hover:border-indigo-300 text-left transition-all flex flex-col justify-between gap-4 group shadow-sm">
-                <div class="w-12 h-12 rounded-xl bg-indigo-600 text-white flex items-center justify-center text-2xl shadow-md group-hover:scale-110 transition-transform">
+              <button id="btn-join-room-step" class="p-6 rounded-2xl border-2 border-indigo-200 bg-indigo-50/50 hover:bg-indigo-100 hover:border-indigo-300 text-left transition-all flex flex-col justify-between gap-5 group shadow-sm cursor-pointer">
+                <div class="w-14 h-14 rounded-2xl bg-indigo-600 text-white flex items-center justify-center text-3xl shadow-md group-hover:scale-110 transition-transform">
                   🚪
                 </div>
                 <div>
                   <h3 class="font-bold text-base text-indigo-950">Masuk Kamar (Join)</h3>
-                  <p class="text-xs text-indigo-700 mt-1">Masukkan Kode PIN 4-digit yang diberikan oleh temanmu.</p>
+                  <p class="text-xs text-indigo-700 mt-1.5 leading-relaxed">Masukkan Kode PIN 4-digit yang diberikan oleh teman sekelasmu.</p>
                 </div>
-                <div class="text-xs font-extrabold text-indigo-800 flex items-center gap-1">
+                <div class="text-xs font-extrabold text-indigo-800 flex items-center gap-1 pt-2 border-t border-indigo-200">
                   <span>Input Kode PIN</span> <i class="fa-solid fa-right-to-bracket"></i>
                 </div>
               </button>
