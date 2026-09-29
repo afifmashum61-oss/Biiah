@@ -4631,48 +4631,61 @@ document.addEventListener('DOMContentLoaded', () => {
     // STEP 1: LOBBY SELECTOR SCREEN
     if (duel.lobbyStep === 'lobby') {
       return `
-        <div class="space-y-8 max-w-4xl mx-auto">
+        <div class="space-y-8 max-w-5xl mx-auto">
           <!-- Header Banner -->
           <div class="bg-gradient-to-r from-amber-500 via-amber-600 to-emerald-700 rounded-[2.5rem] p-8 sm:p-10 text-white shadow-xl border-4 border-amber-300 relative overflow-hidden flex flex-col sm:flex-row items-center justify-between gap-6">
             <div class="space-y-2 text-center sm:text-left z-10">
               <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-white/20 rounded-full text-xs font-bold border border-white/30 backdrop-blur-md">
                 <i class="fa-solid fa-bolt text-amber-200"></i> Mode Pertandingan 1v1 Qawa'id
               </span>
-              <h1 class="text-3xl sm:text-4xl font-black font-arabic text-amber-100">⚡ Duel Adu Cepat Qawa'id</h1>
-              <p class="text-xs sm:text-sm text-emerald-100 max-w-lg">Pilih Paket Soal dan cara masuk ke kamar pertarungan bersama teman sekelas!</p>
+              <h1 class="text-3xl sm:text-4xl font-black font-arabic text-amber-100">⚔️ Duel Adu Cepat Qawa'id</h1>
+              <p class="text-xs sm:text-sm text-emerald-100 max-w-lg">Pilih Tingkatan Level Soal atau langsung tantang Bot AI Ustadz berjenjang dari Pemula hingga Master!</p>
             </div>
-            <div class="text-6xl sm:text-7xl shrink-0 animate-bounce z-10">⚔️</div>
+            <div class="text-6xl sm:text-7xl shrink-0 animate-bounce z-10">🤖⚡</div>
           </div>
 
-          <!-- SECTION 1: PILIH PAKET SOAL (3 VERSI) -->
+          <!-- SECTION 1: PILIH PAKET SOAL (5 LEVEL LENGKAP) -->
           <div class="bg-white rounded-[2rem] p-6 sm:p-8 shadow-md border border-emerald-100 space-y-4">
-            <div class="flex items-center justify-between">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <h2 class="text-lg sm:text-xl font-bold text-emerald-950 flex items-center gap-2">
                 <i class="fa-solid fa-layer-group text-amber-600"></i>
-                <span>Langkah 1: Pilih Versi Paket Soal (10 Soal per Ronde)</span>
+                <span>Langkah 1: Pilih Versi Paket / Level Soal (10 Soal per Ronde)</span>
               </h2>
+              <span class="text-xs font-bold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200 self-start sm:self-auto">
+                Tersedia 5 Tingkatan Level
+              </span>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3.5">
               ${sets.map((s, idx) => {
                 const isSelected = (duel.selectedSetIdx || 0) === idx;
+                const stars = parseInt(localStorage.getItem('arabic_duel_stars_level_' + idx) || '0');
+                const highScore = parseInt(localStorage.getItem('arabic_duel_score_level_' + idx) || '0');
                 return `
                   <div 
                     data-set-idx="${idx}"
-                    class="duel-set-card cursor-pointer p-5 rounded-2xl border-2 transition-all flex flex-col justify-between ${isSelected ? 'bg-amber-50 border-amber-500 shadow-md scale-[1.02]' : 'bg-white border-emerald-100 hover:border-emerald-300 hover:bg-emerald-50/40'}"
+                    class="duel-set-card cursor-pointer p-4 rounded-2xl border-2 transition-all flex flex-col justify-between ${isSelected ? 'bg-amber-50 border-amber-500 shadow-md scale-[1.02] ring-2 ring-amber-300' : 'bg-white border-emerald-100 hover:border-emerald-300 hover:bg-emerald-50/40'}"
                   >
                     <div>
                       <div class="flex items-center justify-between mb-2">
-                        <span class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold ${isSelected ? 'bg-amber-500 text-white' : 'bg-emerald-100 text-emerald-800'}">
+                        <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold ${isSelected ? 'bg-amber-500 text-white' : 'bg-emerald-100 text-emerald-800'}">
                           ${s.badge}
                         </span>
-                        ${isSelected ? '<i class="fa-solid fa-circle-check text-amber-600 text-lg"></i>' : ''}
+                        ${isSelected ? '<i class="fa-solid fa-circle-check text-amber-600 text-base"></i>' : ''}
                       </div>
-                      <h3 class="text-base font-bold text-emerald-950 mb-1">${s.title}</h3>
-                      <p class="text-xs text-slate-600 leading-relaxed mb-3">${s.description}</p>
+                      <h3 class="text-sm font-bold text-emerald-950 mb-1 leading-snug">${s.title}</h3>
+                      <p class="text-[11px] text-slate-500 leading-relaxed mb-2 line-clamp-2">${s.description}</p>
                     </div>
-                    <div class="pt-2 border-t border-emerald-100 text-[11px] font-bold ${isSelected ? 'text-amber-700' : 'text-emerald-700'}">
-                      ✓ ${s.questions.length} Pertanyaan Qawa'id
+
+                    <div class="pt-2 border-t border-emerald-100 space-y-1">
+                      <div class="text-[11px] font-bold text-slate-600 flex items-center justify-between">
+                        <span>Lawan:</span>
+                        <span class="text-emerald-700 truncate max-w-[100px]">${s.botName}</span>
+                      </div>
+                      <div class="flex items-center justify-between text-[10px] font-bold">
+                        <span class="text-amber-600">${stars > 0 ? '⭐'.repeat(stars) : 'Belum Ada Bintang'}</span>
+                        ${highScore > 0 ? `<span class="text-slate-400 font-mono">${highScore} pts</span>` : ''}
+                      </div>
                     </div>
                   </div>
                 `;
@@ -4688,17 +4701,23 @@ document.addEventListener('DOMContentLoaded', () => {
             </h2>
 
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <!-- Mode 1: Bot AI -->
-              <button id="btn-start-ai" class="p-6 rounded-2xl border-2 border-emerald-200 bg-emerald-50/50 hover:bg-emerald-100 hover:border-emerald-400 text-left transition-all flex flex-col justify-between gap-4 group shadow-sm">
+              <!-- Mode 1: Bot AI dengan Pilihan Level -->
+              <button id="btn-start-ai" class="p-6 rounded-2xl border-2 border-emerald-300 bg-gradient-to-br from-emerald-50 via-teal-50 to-emerald-100/60 hover:border-emerald-500 hover:shadow-lg text-left transition-all flex flex-col justify-between gap-4 group shadow-sm relative overflow-hidden">
+                <div class="absolute top-2 right-2 px-2 py-0.5 bg-emerald-600 text-white rounded-full text-[10px] font-extrabold uppercase">
+                  5 Level Berjenjang
+                </div>
                 <div class="w-12 h-12 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-2xl shadow-md group-hover:scale-110 transition-transform">
                   🤖
                 </div>
                 <div>
-                  <h3 class="font-bold text-base text-emerald-950">Latihan vs Bot AI</h3>
-                  <p class="text-xs text-emerald-700 mt-1">Bertanding langsung melawan Bot AI Ustadz tanpa kode PIN.</p>
+                  <h3 class="font-bold text-base text-emerald-950 flex items-center gap-1.5">
+                    <span>Latihan vs Bot AI</span>
+                    <i class="fa-solid fa-star text-amber-500 text-xs"></i>
+                  </h3>
+                  <p class="text-xs text-emerald-800 mt-1">Latihan bertanding melawan 5 tingkatan Bot AI (Pemula s/d Master Boss) tanpa kode PIN.</p>
                 </div>
                 <div class="text-xs font-extrabold text-emerald-800 flex items-center gap-1">
-                  <span>Mulai Tanding</span> <i class="fa-solid fa-arrow-right"></i>
+                  <span>Pilih Level & Mulai</span> <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
                 </div>
               </button>
 
@@ -4729,6 +4748,110 @@ document.addEventListener('DOMContentLoaded', () => {
                   <span>Input Kode PIN</span> <i class="fa-solid fa-right-to-bracket"></i>
                 </div>
               </button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // STEP 1B: DEDICATED AI LEVELS ARENA SELECTOR
+    if (duel.lobbyStep === 'ai_levels') {
+      return `
+        <div class="space-y-8 max-w-5xl mx-auto animate-fadeIn">
+          <!-- Header Banner -->
+          <div class="bg-gradient-to-r from-emerald-800 via-teal-900 to-emerald-950 rounded-[2.5rem] p-8 text-white shadow-xl border-4 border-emerald-400 relative overflow-hidden flex flex-col sm:flex-row items-center justify-between gap-6">
+            <div class="space-y-2 text-center sm:text-left z-10">
+              <div class="inline-flex items-center gap-2 px-3 py-1 bg-white/10 rounded-full text-xs font-bold border border-white/20">
+                <i class="fa-solid fa-robot text-emerald-300"></i> Arena Latihan Mandiri vs Bot AI
+              </div>
+              <h1 class="text-3xl sm:text-4xl font-black text-amber-300 font-arabic">🤖 Pilih Level Tantangan Bot AI</h1>
+              <p class="text-xs sm:text-sm text-emerald-100 max-w-xl">
+                Setiap level dirancang berjenjang dengan materi Qawa'id dan karakter Bot AI yang berbeda tingkat kecepatannya. Kumpulkan Bintang ⭐⭐⭐ di semua level!
+              </p>
+            </div>
+            <button id="btn-back-to-main-lobby" class="px-5 py-3 bg-white/10 hover:bg-white/20 text-white rounded-2xl font-bold text-xs border border-white/20 transition-all flex items-center gap-2 shrink-0 z-10">
+              <i class="fa-solid fa-arrow-left"></i> Menu Utama
+            </button>
+          </div>
+
+          <!-- Level Cards Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            ${sets.map((lvl, idx) => {
+              const stars = parseInt(localStorage.getItem('arabic_duel_stars_level_' + idx) || '0');
+              const highScore = parseInt(localStorage.getItem('arabic_duel_score_level_' + idx) || '0');
+              const isMaster = idx === 4;
+
+              const levelColors = [
+                { bg: 'from-emerald-500/10 to-teal-500/20', border: 'border-emerald-300', badge: 'bg-emerald-600', text: 'text-emerald-950' },
+                { bg: 'from-sky-500/10 to-blue-500/20', border: 'border-sky-300', badge: 'bg-sky-600', text: 'text-sky-950' },
+                { bg: 'from-amber-500/10 to-orange-500/20', border: 'border-amber-300', badge: 'bg-amber-600', text: 'text-amber-950' },
+                { bg: 'from-indigo-500/10 to-purple-500/20', border: 'border-indigo-300', badge: 'bg-indigo-600', text: 'text-indigo-950' },
+                { bg: 'from-rose-500/15 to-amber-500/25', border: 'border-amber-400 ring-2 ring-amber-300', badge: 'bg-gradient-to-r from-rose-600 to-amber-600', text: 'text-rose-950' }
+              ];
+              const c = levelColors[idx] || levelColors[0];
+
+              return `
+                <div class="bg-white rounded-3xl p-6 shadow-md border-2 ${c.border} flex flex-col justify-between space-y-4 hover:shadow-xl transition-all relative overflow-hidden group">
+                  ${isMaster ? '<div class="absolute -right-10 top-5 bg-gradient-to-r from-amber-500 to-rose-600 text-white text-[9px] font-black uppercase py-1 px-12 rotate-45 shadow-sm">BOSS LEVEL</div>' : ''}
+                  
+                  <div class="space-y-3">
+                    <div class="flex items-center justify-between">
+                      <span class="px-3 py-1 rounded-full text-xs font-black text-white ${c.badge} shadow-sm">
+                        Level ${idx + 1}
+                      </span>
+                      <div class="text-xs font-bold text-amber-500">
+                        ${stars > 0 ? '⭐'.repeat(stars) : '<span class="text-slate-400 text-[11px]">Belum Ada Bintang</span>'}
+                      </div>
+                    </div>
+
+                    <!-- Bot Info Box -->
+                    <div class="p-3.5 bg-gradient-to-br ${c.bg} rounded-2xl border border-slate-200/60 flex items-center gap-3">
+                      <div class="w-12 h-12 rounded-2xl bg-white shadow-md flex items-center justify-center text-2xl shrink-0 group-hover:scale-110 transition-transform">
+                        ${lvl.botAvatar || '🤖'}
+                      </div>
+                      <div class="min-w-0">
+                        <div class="font-extrabold text-xs text-slate-900 truncate">${lvl.botName}</div>
+                        <div class="text-[11px] text-slate-600">${lvl.botRole || 'Lawan Bot AI'}</div>
+                        <div class="text-[10px] font-bold text-emerald-700 mt-0.5">Kesulitan: ${lvl.botDifficulty || 'Normal'}</div>
+                      </div>
+                    </div>
+
+                    <!-- Title & Topic Description -->
+                    <div>
+                      <h3 class="font-bold text-base text-emerald-950 mb-1 leading-snug">${lvl.title}</h3>
+                      <p class="text-xs text-slate-600 leading-relaxed">${lvl.description}</p>
+                    </div>
+                  </div>
+
+                  <div class="pt-3 border-t border-slate-100 space-y-3">
+                    <div class="flex items-center justify-between text-xs">
+                      <span class="text-slate-500 font-medium">Jumlah Soal:</span>
+                      <span class="font-bold text-emerald-800">10 Pertanyaan Qawa'id</span>
+                    </div>
+                    ${highScore > 0 ? `
+                      <div class="flex items-center justify-between text-xs">
+                        <span class="text-slate-500 font-medium">Skor Tertinggi:</span>
+                        <span class="font-black text-amber-600 font-mono">${highScore} Pts</span>
+                      </div>
+                    ` : ''}
+
+                    <button 
+                      class="btn-start-ai-level w-full py-3 bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold rounded-xl shadow-md hover:shadow-lg transition-all text-xs flex items-center justify-center gap-2 group-hover:scale-[1.02]"
+                      data-level-idx="${idx}"
+                    >
+                      <i class="fa-solid fa-play"></i>
+                      <span>${stars > 0 ? 'Mainkan Lagi (Level ' + (idx + 1) + ')' : 'Mulai Tantangan Level ' + (idx + 1)}</span>
+                    </button>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+
+          <div class="p-4 bg-amber-50 rounded-2xl border border-amber-200 text-amber-900 text-xs flex items-center gap-3">
+            <i class="fa-solid fa-lightbulb text-amber-600 text-lg shrink-0"></i>
+            <div>
+              <strong>Saran Belajar:</strong> Jawaban telah diacak secara merata (A, B, C, D) dengan pembahasan lengkap. Mulai dari Level 1 untuk memperkuat pemahaman kosakata dan kata perintah dasar, lalu lanjutkan hingga Master Level 5!
             </div>
           </div>
         </div>
@@ -4827,21 +4950,39 @@ document.addEventListener('DOMContentLoaded', () => {
     if (duel.battleEnded) {
       const playerWon = duel.scorePlayer > duel.scoreOpponent;
       const isDraw = duel.scorePlayer === duel.scoreOpponent;
-      const stars = playerWon ? (duel.scorePlayer > 1200 ? '⭐⭐⭐' : '⭐⭐') : '⭐';
-      
+      const starsCount = playerWon ? (duel.scorePlayer >= 1200 ? 3 : (duel.scorePlayer >= 800 ? 2 : 1)) : 0;
+      const starsDisplay = starsCount > 0 ? '⭐'.repeat(starsCount) : '☆';
+
+      // Save record in localStorage for AI mode
+      if (duel.mode === 'ai') {
+        const keyScore = 'arabic_duel_score_level_' + (duel.selectedSetIdx || 0);
+        const keyStars = 'arabic_duel_stars_level_' + (duel.selectedSetIdx || 0);
+        const prevScore = parseInt(localStorage.getItem(keyScore) || '0');
+        if (duel.scorePlayer > prevScore) {
+          localStorage.setItem(keyScore, duel.scorePlayer);
+        }
+        const prevStars = parseInt(localStorage.getItem(keyStars) || '0');
+        if (starsCount > prevStars) {
+          localStorage.setItem(keyStars, starsCount);
+        }
+      }
+
+      const hasNextLevel = duel.mode === 'ai' && duel.selectedSetIdx < sets.length - 1;
+      const nextLevelObj = hasNextLevel ? sets[duel.selectedSetIdx + 1] : null;
+
       return `
         <div class="space-y-8 max-w-4xl mx-auto">
           <!-- Victory / Defeat Header -->
           <div class="relative bg-gradient-to-br ${playerWon ? 'from-amber-600 via-amber-700 to-emerald-800' : 'from-slate-800 via-slate-900 to-rose-950'} rounded-[2.5rem] p-8 sm:p-12 text-white text-center shadow-2xl border-4 ${playerWon ? 'border-amber-300' : 'border-rose-400'} overflow-hidden">
-            <div class="text-6xl mb-3 animate-bounce">${playerWon ? '🏆' : (isDraw ? '🤝' : '💔')}</div>
+            <div class="text-6xl mb-3 animate-bounce">${playerWon ? '🏆' : (isDraw ? '🤝' : '💪')}</div>
             <h1 class="text-3xl sm:text-5xl font-black mb-2 uppercase tracking-wide">
-              ${playerWon ? 'KEMENANGAN TELAK!' : (isDraw ? 'HASIL SERI!' : 'PERATURAN ULANG!')}
+              ${playerWon ? 'KEMENANGAN TELAK!' : (isDraw ? 'HASIL SERI!' : 'LATIHAN BAGUS! AYO COBA LAGI')}
             </h1>
-            <div class="text-3xl mb-4">${stars}</div>
+            <div class="text-3xl mb-4 text-amber-300">${starsDisplay}</div>
             <p class="text-emerald-100 text-sm sm:text-base max-w-lg mx-auto">
               ${playerWon 
                 ? `Selamat! Anda berhasil mengalahkan ${duel.opponentName} pada ${activeSet.badge}!`
-                : `Pertarungan sengit! Teruskan latihan Qawa'id untuk menguasai tata bahasa Arab.`}
+                : `Pertarungan sengit melawan ${duel.opponentName}! Teruskan latihan Qawa'id untuk menguasai tata bahasa Arab.`}
             </p>
 
             <!-- Score Comparison Cards -->
@@ -4859,14 +5000,28 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
 
             <!-- Action Buttons -->
-            <div class="flex flex-wrap items-center justify-center gap-4 mt-8">
-              <button id="duel-rematch-btn" class="px-8 py-3.5 bg-amber-400 hover:bg-amber-300 text-amber-950 font-black rounded-2xl shadow-xl transition-all flex items-center gap-2 text-base">
+            <div class="flex flex-wrap items-center justify-center gap-3 mt-8">
+              ${playerWon && hasNextLevel ? `
+                <button id="duel-next-level-btn" class="px-7 py-3.5 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-amber-950 font-black rounded-2xl shadow-xl transition-all flex items-center gap-2 text-sm sm:text-base transform hover:scale-105">
+                  <i class="fa-solid fa-forward-step"></i>
+                  <span>Lanjut ke Level ${duel.selectedSetIdx + 2} (${nextLevelObj.badge})</span>
+                  <i class="fa-solid fa-arrow-right"></i>
+                </button>
+              ` : ''}
+              
+              <button id="duel-retry-level-btn" class="px-6 py-3.5 bg-white text-emerald-950 hover:bg-slate-100 font-black rounded-2xl shadow-lg transition-all flex items-center gap-2 text-sm">
                 <i class="fa-solid fa-rotate-right"></i>
-                <span>Main Duel Lagi (Pilih Paket)</span>
+                <span>Main Ulang Level Ini</span>
               </button>
-              <button onclick="document.querySelector('[data-view=dashboard]').click()" class="px-6 py-3.5 bg-white/10 hover:bg-white/20 text-white font-bold rounded-2xl border border-white/20 backdrop-blur-md transition-all flex items-center gap-2 text-sm">
+
+              <button id="duel-select-other-level-btn" class="px-6 py-3.5 bg-white/15 hover:bg-white/25 text-white font-bold rounded-2xl border border-white/30 backdrop-blur-md transition-all flex items-center gap-2 text-sm">
+                <i class="fa-solid fa-layer-group"></i>
+                <span>Pilih Level Lain</span>
+              </button>
+
+              <button onclick="document.querySelector('[data-view=dashboard]').click()" class="px-5 py-3.5 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-2xl border border-white/20 backdrop-blur-md transition-all flex items-center gap-2 text-xs">
                 <i class="fa-solid fa-house"></i>
-                <span>Kembali ke Dashboard</span>
+                <span>Dashboard</span>
               </button>
             </div>
           </div>
@@ -4878,23 +5033,41 @@ document.addEventListener('DOMContentLoaded', () => {
               <span>Evaluasi Ringkasan 10 Soal (${activeSet.badge})</span>
             </h2>
             <div class="space-y-4">
-              ${duel.history.map((item, idx) => `
-                <div class="p-4 rounded-2xl border ${item.isCorrect ? 'bg-emerald-50/60 border-emerald-200' : 'bg-rose-50/60 border-rose-200'} transition-all">
-                  <div class="flex items-start justify-between gap-3 mb-2">
-                    <span class="inline-flex items-center gap-1 text-xs font-extrabold px-2.5 py-0.5 rounded-full ${item.isCorrect ? 'bg-emerald-200 text-emerald-900' : 'bg-rose-200 text-rose-900'}">
-                      ${item.isCorrect ? '✓ Benar (+' + item.points + ' Pts)' : '✗ Salah (0 Pts)'}
-                    </span>
-                    <span class="text-xs text-slate-500">Soal ${idx + 1} dari ${totalQ}</span>
+              ${duel.history.map((item, idx) => {
+                const optLetters = ['A', 'B', 'C', 'D'];
+                const correctLetter = optLetters[item.question.answer];
+                const selectedLetter = item.selectedAnswer >= 0 ? optLetters[item.selectedAnswer] : 'Tidak Menjawab (Waktu Habis)';
+                return `
+                  <div class="p-4 rounded-2xl border ${item.isCorrect ? 'bg-emerald-50/60 border-emerald-200' : 'bg-rose-50/60 border-rose-200'} transition-all">
+                    <div class="flex items-start justify-between gap-3 mb-2">
+                      <span class="inline-flex items-center gap-1 text-xs font-extrabold px-2.5 py-0.5 rounded-full ${item.isCorrect ? 'bg-emerald-200 text-emerald-900' : 'bg-rose-200 text-rose-900'}">
+                        ${item.isCorrect ? '✓ Benar (+' + item.points + ' Pts)' : '✕ Salah / Waktu Habis (0 Pts)'}
+                      </span>
+                      <span class="text-xs text-slate-500">Soal ${idx + 1} dari ${totalQ}</span>
+                    </div>
+                    <div class="text-base sm:text-lg font-bold text-emerald-950 mb-2 leading-relaxed" dir="auto">
+                      ${item.question.question}
+                    </div>
+                    <div class="text-xs text-slate-700 bg-white p-3.5 rounded-xl border border-slate-100 space-y-1.5">
+                      <div class="flex items-center gap-2">
+                        <strong>Jawaban Anda:</strong>
+                        <span class="${item.isCorrect ? 'text-emerald-700 font-bold' : 'text-rose-600 font-bold'}">
+                          (${selectedLetter}) ${item.selectedAnswer >= 0 ? item.question.options[item.selectedAnswer] : ''}
+                        </span>
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <strong>Kunci Jawaban:</strong>
+                        <span class="text-emerald-800 font-bold font-arabic">
+                          (${correctLetter}) ${item.question.options[item.question.answer]}
+                        </span>
+                      </div>
+                      <div class="text-emerald-900 italic pt-1 border-t border-slate-100">
+                        📖 <strong>Penjelasan Qawa'id:</strong> ${item.question.explanation}
+                      </div>
+                    </div>
                   </div>
-                  <div class="text-lg font-bold font-arabic text-emerald-950 mb-2 leading-relaxed" dir="rtl">
-                    ${item.question.question}
-                  </div>
-                  <div class="text-xs text-slate-700 bg-white p-3 rounded-xl border border-slate-100 space-y-1">
-                    <div><strong>Jawaban Benar:</strong> <span class="text-emerald-700 font-semibold font-arabic">${item.question.options[item.question.answer]}</span></div>
-                    <div class="text-emerald-800 italic">💡 <strong>Penjelasan Qawa'id:</strong> ${item.question.explanation}</div>
-                  </div>
-                </div>
-              `).join('')}
+                `;
+              }).join('')}
             </div>
           </div>
         </div>
@@ -4919,6 +5092,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 <span class="px-2.5 py-0.5 bg-amber-100 text-amber-900 rounded-full text-[10px] font-extrabold">
                   ${activeSet.badge}
                 </span>
+                <span class="px-2 py-0.5 bg-emerald-100 text-emerald-900 rounded-full text-[10px] font-bold">
+                  Level ${(duel.selectedSetIdx || 0) + 1}
+                </span>
                 ${duel.roomPin ? `<span class="px-2 py-0.5 bg-indigo-100 text-indigo-900 rounded-md text-[10px] font-mono font-bold">PIN: ${duel.roomPin}</span>` : ''}
               </div>
               <h3 class="text-base font-bold text-emerald-950">${activeSet.title}</h3>
@@ -4926,7 +5102,7 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
 
           <button id="btn-back-to-lobby" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition-all flex items-center gap-1.5">
-            <i class="fa-solid fa-arrow-left"></i> Lobby
+            <i class="fa-solid fa-arrow-left"></i> Menu Level
           </button>
         </div>
 
@@ -4967,7 +5143,7 @@ document.addEventListener('DOMContentLoaded', () => {
                   ${duel.opponentName}
                 </div>
                 <div class="w-8 h-8 rounded-full bg-indigo-600 text-white font-bold flex items-center justify-center text-xs shadow-md">
-                  ${duel.mode === 'ai' ? '🤖' : (duel.opponentName[0] || 'L')}
+                  ${duel.mode === 'ai' ? (activeSet.botAvatar || '🤖') : (duel.opponentName[0] || 'L')}
                 </div>
               </div>
               <div class="text-2xl sm:text-3xl font-black text-white">${duel.scoreOpponent} <span class="text-xs">Pts</span></div>
@@ -4982,7 +5158,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-lg border border-emerald-100 space-y-6">
           <div class="flex items-center justify-between border-b border-emerald-50 pb-4">
             <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-800 rounded-full text-xs font-bold border border-emerald-200">
-              <i class="fa-solid fa-font"></i> Soal Qawa'id Kelas 9
+              <i class="fa-solid fa-font"></i> Soal Qawa'id: ${activeSet.badge}
             </span>
             <button id="duel-tts-btn" class="px-3.5 py-1.5 bg-emerald-100 hover:bg-emerald-200 text-emerald-900 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5">
               <i class="fa-solid fa-volume-high"></i> Pelafalan Audio
@@ -4990,7 +5166,7 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
 
           <div class="py-2 text-center">
-            <h2 class="text-2xl sm:text-3xl font-extrabold text-emerald-950 font-arabic leading-relaxed" dir="rtl">
+            <h2 class="text-xl sm:text-2xl font-bold text-emerald-950 font-sans leading-relaxed text-center" dir="auto">
               ${currentQ.question}
             </h2>
           </div>
@@ -5023,7 +5199,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <span class="w-8 h-8 rounded-xl bg-white/20 border border-current flex items-center justify-center text-xs font-black shrink-0">
                       ${String.fromCharCode(65 + idx)}
                     </span>
-                    <span class="font-arabic text-base sm:text-lg" dir="rtl">${opt}</span>
+                    <span class="text-base sm:text-lg font-medium" dir="auto">${opt}</span>
                   </div>
                   ${statusIcon}
                 </button>
@@ -5035,10 +5211,14 @@ document.addEventListener('DOMContentLoaded', () => {
           ${duel.isSubmitted ? `
             <div class="p-4 rounded-2xl ${duel.selectedAnswer === currentQ.answer ? 'bg-emerald-50 border border-emerald-200 text-emerald-900' : 'bg-rose-50 border border-rose-200 text-rose-900'} space-y-1 animate-fade-in">
               <div class="flex items-center gap-2 font-bold text-xs uppercase tracking-wide">
-                ${duel.selectedAnswer === currentQ.answer ? '🎉 TEPAT SEKALI!' : '❌ KURANG TEPAT'}
+                ${duel.selectedAnswer === currentQ.answer ? '✨ TEPAT SEKALI!' : '❌ KURANG TEPAT'}
               </div>
               <div class="text-xs sm:text-sm leading-relaxed">
-                💡 <strong>Penjelasan Qawa'id:</strong> ${currentQ.explanation}
+                ${currentQ.explanation}
+              </div>
+              <div class="text-[11px] text-slate-500 pt-1 flex items-center gap-1 font-semibold">
+                <i class="fa-solid fa-spinner animate-spin"></i>
+                <span>Menuju soal berikutnya...</span>
               </div>
             </div>
           ` : ''}
@@ -5084,14 +5264,29 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    // Simulated opponent score if not answered via socket yet
+    // Level-based Opponent AI Simulation
     if (!duel.opponentAnswered) {
-      const aiCorrect = Math.random() < 0.75;
-      if (aiCorrect) {
-        const aiTimeLeft = Math.floor(Math.random() * 6) + 3;
-        duel.scoreOpponent += 100 + (aiTimeLeft * 12);
+      if (duel.mode === 'ai') {
+        const levelIdx = duel.selectedSetIdx || 0;
+        const sets = ARABIC_DATA.duelQuestionSets || [];
+        const currentLevel = sets[levelIdx];
+        const botAcc = currentLevel && currentLevel.botAccuracy ? currentLevel.botAccuracy : 0.70;
+        const aiCorrect = Math.random() < botAcc;
+        if (aiCorrect) {
+          const minT = Math.min(6, 1 + levelIdx);
+          const maxT = Math.min(8, 4 + levelIdx);
+          const aiTimeLeft = Math.floor(Math.random() * (maxT - minT + 1)) + minT;
+          duel.scoreOpponent += 100 + (aiTimeLeft * 12);
+        }
+        duel.opponentAnswered = true;
+      } else {
+        const aiCorrect = Math.random() < 0.75;
+        if (aiCorrect) {
+          const aiTimeLeft = Math.floor(Math.random() * 6) + 3;
+          duel.scoreOpponent += 100 + (aiTimeLeft * 12);
+        }
+        duel.opponentAnswered = true;
       }
-      duel.opponentAnswered = true;
     }
 
     // Record history
@@ -5106,8 +5301,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Advance to next question after 2.5s
     setTimeout(() => {
-      const questions = getActiveDuelQuestions();
-      if (duel.currentQuestionIdx + 1 < questions.length) {
+      const qs = getActiveDuelQuestions();
+      if (duel.currentQuestionIdx + 1 < qs.length) {
         duel.currentQuestionIdx++;
         duel.timeLeft = 10;
         duel.isSubmitted = false;
@@ -5124,7 +5319,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function resetDuelState(mode = 'ai') {
-    if (state.duelState.timerId) clearInterval(state.duelState.timerId);
+    if (state.duelState && state.duelState.timerId) clearInterval(state.duelState.timerId);
     state.duelState = {
       selectedSetIdx: state.duelState ? (state.duelState.selectedSetIdx || 0) : 0,
       lobbyStep: 'lobby',
@@ -5152,32 +5347,125 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function attachSimpleDuelGameEvents() {
     const duel = state.duelState;
+    const sets = ARABIC_DATA.duelQuestionSets || [];
 
     // Start timer only if in playing step and round active
     if (duel.lobbyStep === 'playing' && !duel.isSubmitted && !duel.battleEnded) {
       startDuelTimer();
     }
 
-    // Select Paket Soal Cards
+    // Select Paket Soal Cards (Langkah 1)
     document.querySelectorAll('.duel-set-card').forEach(card => {
       card.addEventListener('click', (e) => {
         const setIdx = parseInt(e.currentTarget.getAttribute('data-set-idx'));
         duel.selectedSetIdx = setIdx;
+        const currentSet = sets[setIdx];
+        if (currentSet && currentSet.botName) {
+          duel.opponentName = currentSet.botName;
+        }
         render();
       });
     });
 
-    // Start vs AI Button
+    // Start vs AI Button in Lobby -> Open dedicated AI levels arena
     const btnStartAi = document.getElementById('btn-start-ai');
     if (btnStartAi) {
       btnStartAi.addEventListener('click', () => {
+        duel.lobbyStep = 'ai_levels';
+        render();
+      });
+    }
+
+    // Direct Start AI Level buttons in AI levels arena
+    document.querySelectorAll('.btn-start-ai-level').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const levelIdx = parseInt(e.currentTarget.getAttribute('data-level-idx'));
+        duel.selectedSetIdx = levelIdx;
+        const targetSet = sets[levelIdx] || sets[0];
         duel.mode = 'ai';
-        duel.opponentName = 'Ustadz AI (Bot)';
+        duel.opponentName = targetSet.botName || 'Ustadz AI (Bot)';
         duel.lobbyStep = 'playing';
         duel.battleEnded = false;
         duel.currentQuestionIdx = 0;
         duel.scorePlayer = 0;
         duel.scoreOpponent = 0;
+        duel.comboStreak = 0;
+        duel.maxCombo = 0;
+        duel.timeLeft = 10;
+        duel.isSubmitted = false;
+        duel.selectedAnswer = null;
+        duel.opponentAnswered = false;
+        duel.history = [];
+        render();
+      });
+    });
+
+    // Back to Main Lobby buttons
+    const btnBackToMainLobby = document.getElementById('btn-back-to-main-lobby');
+    if (btnBackToMainLobby) {
+      btnBackToMainLobby.addEventListener('click', () => {
+        if (duel.timerId) clearInterval(duel.timerId);
+        duel.lobbyStep = 'lobby';
+        render();
+      });
+    }
+
+    // Next Level Button on Victory
+    const btnNextLevel = document.getElementById('duel-next-level-btn');
+    if (btnNextLevel) {
+      btnNextLevel.addEventListener('click', () => {
+        if (duel.timerId) clearInterval(duel.timerId);
+        if (duel.selectedSetIdx < sets.length - 1) {
+          duel.selectedSetIdx++;
+        }
+        const targetSet = sets[duel.selectedSetIdx] || sets[0];
+        duel.mode = 'ai';
+        duel.opponentName = targetSet.botName || 'Ustadz AI (Bot)';
+        duel.lobbyStep = 'playing';
+        duel.battleEnded = false;
+        duel.currentQuestionIdx = 0;
+        duel.scorePlayer = 0;
+        duel.scoreOpponent = 0;
+        duel.comboStreak = 0;
+        duel.maxCombo = 0;
+        duel.timeLeft = 10;
+        duel.isSubmitted = false;
+        duel.selectedAnswer = null;
+        duel.opponentAnswered = false;
+        duel.history = [];
+        render();
+      });
+    }
+
+    // Retry Level Button
+    const btnRetryLevel = document.getElementById('duel-retry-level-btn');
+    if (btnRetryLevel) {
+      btnRetryLevel.addEventListener('click', () => {
+        if (duel.timerId) clearInterval(duel.timerId);
+        const targetSet = sets[duel.selectedSetIdx || 0] || sets[0];
+        duel.lobbyStep = 'playing';
+        duel.battleEnded = false;
+        duel.currentQuestionIdx = 0;
+        duel.scorePlayer = 0;
+        duel.scoreOpponent = 0;
+        duel.comboStreak = 0;
+        duel.maxCombo = 0;
+        duel.timeLeft = 10;
+        duel.isSubmitted = false;
+        duel.selectedAnswer = null;
+        duel.opponentAnswered = false;
+        duel.history = [];
+        render();
+      });
+    }
+
+    // Select Other Level Button
+    const btnSelectOtherLevel = document.getElementById('duel-select-other-level-btn');
+    if (btnSelectOtherLevel) {
+      btnSelectOtherLevel.addEventListener('click', () => {
+        if (duel.timerId) clearInterval(duel.timerId);
+        duel.lobbyStep = 'ai_levels';
+        duel.battleEnded = false;
         duel.history = [];
         render();
       });
@@ -5243,6 +5531,12 @@ document.addEventListener('DOMContentLoaded', () => {
         duel.currentQuestionIdx = 0;
         duel.scorePlayer = 0;
         duel.scoreOpponent = 0;
+        duel.comboStreak = 0;
+        duel.maxCombo = 0;
+        duel.timeLeft = 10;
+        duel.isSubmitted = false;
+        duel.selectedAnswer = null;
+        duel.opponentAnswered = false;
         duel.history = [];
 
         if (savedRoom) {
@@ -5278,6 +5572,12 @@ document.addEventListener('DOMContentLoaded', () => {
         duel.currentQuestionIdx = 0;
         duel.scorePlayer = 0;
         duel.scoreOpponent = 0;
+        duel.comboStreak = 0;
+        duel.maxCombo = 0;
+        duel.timeLeft = 10;
+        duel.isSubmitted = false;
+        duel.selectedAnswer = null;
+        duel.opponentAnswered = false;
         duel.history = [];
 
         if (duelSyncChannel) {

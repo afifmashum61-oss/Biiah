@@ -1095,241 +1095,672 @@ const ARABIC_DATA = {
   },
 
   duelQuestionSets: [
-    {
-      id: "paket_a",
-      title: "Paket A: 🌿 Pelestarian Lingkungan & Fi'il Amr",
-      badge: "Paket 1 (10 Soal)",
-      description: "Soal seputar kosa kata lingkungan, perintah menjaga kebersihan, dan Fi'il Amr.",
-      questions: [
-        {
-          id: 201,
-          question: "Manakah fi'il amr (perintah) yang benar untuk menjaga kebersihan?",
-          options: ["احْرِصْ عَلَى النَّظَافَةِ!", "لاَ تُسْرِفْ فِي الْمَاءِ!", "النَّظَافَةُ جَمِيلَةٌ", "يُحَافِظُ عَلَى البيئة"],
-          answer: 0,
-          explanation: "«احْرِصْ» adalah Fi'il Amr (perintah) dari fi'il tsulatsi untuk menyuruh menjaga kebersihan."
-        },
-        {
-          id: 202,
-          question: "Bentuk fi'il nahi (larangan) membuang sampah sembarangan yang tepat adalah:",
-          options: ["لاَ تَرْمِ الْقُمَامَةَ فِي الشَّارِعِ!", "ارْمِ الْقُمَامَةَ فِي السَّلَّةِ!", "الْقُمَامَةُ كَثِيرَةٌ", "رَمَى الْقُمَامَةَ"],
-          answer: 0,
-          explanation: "«لاَ تَرْمِ» menggunakan La Nahiyah untuk melarang membuang sampah sembarangan."
-        },
-        {
-          id: 203,
-          question: "Ubah fi'il amr «احْرِصْ» untuk kamu perempuan (أَنْتِ):",
-          options: ["احْرِصِي", "احْرِصُوا", "احْرِصْنَ", "احْرِصَا"],
-          answer: 0,
-          explanation: "Untuk Dhamir Mu'annas (أَنْتِ), Fi'il Amr ditambahkan Yaa Mukhatabah di akhiran: «احْرِصِي»."
-        },
-        {
-          id: 204,
-          question: "Arti dari kosakata «التَّشْجِيرُ» dalam tema lingkungan adalah:",
-          options: ["Penghijauan / Reboisasi", "Penggundulan Hutan", "Pencemaran Udara", "Bencana Banjir"],
-          answer: 0,
-          explanation: "«التَّشْجِيرُ» berarti Penghijauan atau Penanaman Pohon kembali (Reboisasi)."
-        },
-        {
-          id: 205,
-          question: "Fi'il Nahi «لاَ تُسْرِفُوا فِي الْمَاءِ» ditujukan untuk dhamir:",
-          options: ["أَنْتُمْ (Kalian banyak laki-laki)", "أَنْتَ (Kamu satu laki-laki)", "أَنْتِ (Kamu satu perempuan)", "أَنْتُمَا (Kalian berdua)"],
-          answer: 0,
-          explanation: "Adanya Wawu Al-Jama'ah (وا) pada «تُسْرِفُوا» menandakan subjek (أَنْتُمْ)."
-        },
-        {
-          id: 206,
-          question: "Arti dari ungkapan «تَدْوِيرُ النَّفَايَاتِ» adalah:",
-          options: ["Daur Ulang Sampah", "Membakar Sampah", "Menumpuk Sampah", "Menjual Sampah"],
-          answer: 0,
-          explanation: "«تَدْوِيرُ النَّفَايَاتِ» berarti Recycling / Daur Ulang Sampah."
-        },
-        {
-          id: 207,
-          question: "Lengkapi kalimat perintah: «يَا طُلاَّبُ، ...... عَلَى نَظَافَةِ الْمَدْرَسَةِ!»",
-          options: ["حَافِظُوا", "حَافِظْ", "حَافِظِي", "تُحَافِظُونَ"],
-          answer: 0,
-          explanation: "Karena munada berupa jamak «يَا طُلاَّبُ», gunakan fi'il amr jamak mudzakkar «حَافِظُوا»."
-        },
-        {
-          id: 208,
-          question: "Manakah fi'il amr yang bermakna \"Tanamlah!\" untuk kamu 1 orang laki-laki (أَنْتَ)?",
-          options: ["اِزْرَعْ", "اِزْرَعِي", "اِزْرَعُوا", "تَزْرَعُ"],
-          answer: 0,
-          explanation: "Fi'il amr dari «زَرَعَ - يَزْرَعُ» untuk (أَنْتَ) adalah «اِزْرَعْ» (sukun di akhir)."
-        },
-        {
-          id: 209,
-          question: "Bentuk larangan \"Janganlah kamu (perempuan) mematikan lampu!\" yang benar:",
-          options: ["لاَ تُطْفِئِي النُّورَ!", "لاَ تُطْفِئْ النُّورَ!", "أَطْفِئِي النُّورَ!", "لاَ تُطْفِئُوا النُّورَ!"],
-          answer: 0,
-          explanation: "Untuk (أَنْتِ), fi'il nahi berakhiran yaa sukun: «لاَ تُطْفِئِي»."
-        },
-        {
-          id: 210,
-          question: "Terjemahan dari «نَظَّفَ - يُنَظِّفُ - نَظِّفْ» secara berurutan adalah:",
-          options: ["Telah membersihkan - Sedang membersihkan - Bersihkanlah!", "Sedang membersihkan - Telah membersihkan - Jangan bersihkan!", "Bersihkanlah! - Telah membersihkan - Sedang membersihkan", "Membersihkan - Kebersihan - Orang yang bersih"],
-          answer: 0,
-          explanation: "Bentuk Fi'il Madhi, Mudhari', dan Amr berturut-turut."
-        }
-      ]
-    },
-    {
-      id: "paket_b",
-      title: "Paket B: 📚 Tata Bahasa Isim Tafdhil & Na't Man'ut",
-      badge: "Paket 2 (10 Soal)",
-      description: "Soal seputar kata perbandingan (Isim Tafdhil) dan kata sifat (Na't & Man'ut).",
-      questions: [
-        {
-          id: 301,
-          question: "Bentuk Isim Tafdhil dari kata «كَبِيرٌ» (besar) adalah:",
-          options: ["أَكْبَرُ", "كُبْرَى", "تَكْبِيرٌ", "كَبِيرَةٌ"],
-          answer: 0,
-          explanation: "Wazan Isim Tafdhil Mudzakkar adalah «أَفْعَلُ» (كَبِيرٌ → أَكْبَرُ)."
-        },
-        {
-          id: 302,
-          question: "Kalimat «جَاوَةُ أَكْبَرُ مِنَ الْمَدِينَةِ» memiliki arti:",
-          options: ["Jawa lebih besar daripada kota tersebut", "Jawa adalah kota paling besar", "Kota tersebut sangat besar", "Jawa kota yang indah"],
-          answer: 0,
-          explanation: "Pola Isim Tafdhil + «مِنْ» menyatakan perbandingan \"lebih ... daripada\"."
-        },
-        {
-          id: 303,
-          question: "Manakah kalimat yang menggunakan Isim Tafdhil bermakna \"PALING / TER\" (Superlative)?",
-          options: ["الْغَابَةُ أَجْمَلُ أَمَاكِنِ الطَّبِيعَةِ", "الْغَابَةُ أَجْمَلُ مِنْ حَدِيقَةِ الْبَيْتِ", "الْغَابَةُ جَمِيلَةٌ جِدًّا", "هَذِهِ غَابَةٌ جَمِيلَةٌ"],
-          answer: 0,
-          explanation: "Isim Tafdhil yang dimudhafkan ke isim makrifah/jamak bermakna \"Paling / Ter-\"."
-        },
-        {
-          id: 304,
-          question: "Susunan Na't & Man'ut (kata sifat dan yang disifati) yang benar adalah:",
-          options: ["بِيئَةٌ نَظِيفَةٌ", "بِيئَةٌ النَّظِيفَةُ", "الْبِيئَةُ نَظِيفَةٌ", "نَظِيفَةٌ بِيئَةٌ"],
-          answer: 0,
-          explanation: "Na't harus mengikuti Man'ut dalam hal mudzakkar/mu'annas dan nakirah/makrifah."
-        },
-        {
-          id: 305,
-          question: "Bentuk Isim Tafdhil dari kata «نَظِيفٌ» (bersih) adalah:",
-          options: ["أَنْظَفُ", "نَظَاَفَةٌ", "مُنَظَّفٌ", "تَنْظِيفٌ"],
-          answer: 0,
-          explanation: "«نَظِيفٌ» mengikuti wazan «أَفْعَلُ» menjadi «أَنْظَفُ» (lebih bersih)."
-        },
-        {
-          id: 306,
-          question: "Pada kalimat «الْهَوَاءِ النَّقِيِّ», kata «النَّقِيِّ» kedudukannya sebagai:",
-          options: ["Na't (Sifat)", "Man'ut (Yang disifati)", "Mubtada'", "Khabar"],
-          answer: 0,
-          explanation: "«النَّقِيِّ» menjelaskan sifat dari «الْهَوَاءِ», sehingga berkedudukan sebagai Na't."
-        },
-        {
-          id: 307,
-          question: "Lengkapi kalimat perbandingan: «الشَّجَرَةُ ...... مِنَ الزَّهْرَةِ»",
-          options: ["أَطْوَلُ", "طَوِيلَةٌ", "طَوِيلٌ", "طُولٌ"],
-          answer: 0,
-          explanation: "Untuk perbandingan \"lebih tinggi daripada\", gunakan Isim Tafdhil «أَطْوَلُ مِنْ»."
-        },
-        {
-          id: 308,
-          question: "Manakah bentuk Isim Tafdhil Mu'annas (feminin) dari «أَكْبَرُ»?",
-          options: ["كُبْرَى", "كَبِيرَةٌ", "أَكْبَرَةٌ", "كِبَارٌ"],
-          answer: 0,
-          explanation: "Wazan Isim Tafdhil mu'annas adalah «فُعْلَى» (أَكْبَرُ → كُبْرَى)."
-        },
-        {
-          id: 309,
-          question: "Pilih kalimat Na't Man'ut berbentuk Makrifah (ber-AL) yang benar:",
-          options: ["الْمَاءُ النَّقِيُّ مُفِيدٌ لِلصِّحَّةِ", "الْمَاءُ نَقِيٌّ مُفِيدٌ", "مَاءٌ النَّقِيُّ مُفِيدٌ", "الْمَاءُ النَّقِيَةُ مُفِيدٌ"],
-          answer: 0,
-          explanation: "Keduanya ber-AL dan mudzakkar: «الْمَاءُ النَّقِيُّ»."
-        },
-        {
-          id: 310,
-          question: "Terjemahkan ke Bahasa Arab: \"Matahari lebih besar daripada Bumi.\"",
-          options: ["الشَّمْسُ أَكْبَرُ مِنَ الأَرْضِ", "الشَّمْسُ كَبِيرَةٌ فِي الأَرْضِ", "الأَرْضُ أَكْبَرُ مِنَ الشَّمْسِ", "الشَّمْسُ كَبِيرٌ جِدًّا"],
-          answer: 0,
-          explanation: "«الشَّمْسُ أَكْبَرُ مِنَ الأَرْضِ» adalah struktur perbandingan yang tepat."
-        }
-      ]
-    },
-    {
-      id: "paket_c",
-      title: "Paket C: 🌊 Al-Idhafah & Dharaf Makan/Zaman",
-      badge: "Paket 3 (10 Soal)",
-      description: "Soal seputar susunan Idhafah (Mudhaf & Mudhaf Ilaihi) serta keterangan waktu dan tempat.",
-      questions: [
-        {
-          id: 401,
-          question: "Manakah contoh susunan Mudhaf & Mudhaf Ilaihi (Al-Idhafah) yang benar?",
-          options: ["حَدِيقَةُ الْمَدْرَسَةِ", "حَدِيقَةٌ الْمَدْرَسَةِ", "الْحَدِيقَةُ الْمَدْرَسَةِ", "حَدِيقَةُ مَدْرَسَةٌ"],
-          answer: 0,
-          explanation: "Mudhaf tidak boleh ber-AL dan tidak bertanwin, sedangkan Mudhaf Ilaihi berharakat majrur (kasrah)."
-        },
-        {
-          id: 402,
-          question: "Pada frase «تَلَوُّثُ الْهَوَاءِ», harakat akhir kata «الْهَوَاءِ» adalah kasrah karena kedudukannya sebagai:",
-          options: ["Mudhaf Ilaihi", "Mudhaf", "Na't", "Fa'il"],
-          answer: 0,
-          explanation: "Setiap Mudhaf Ilaihi hukumnya majrur (berharakat kasrah)."
-        },
-        {
-          id: 403,
-          question: "Arti dari Dharaf Makan «أَمَامَ» adalah:",
-          options: ["Di depan", "Di belakang", "Di atas", "Di bawah"],
-          answer: 0,
-          explanation: "«أَمَامَ» adalah kata keterangan tempat yang berarti \"Di depan\"."
-        },
-        {
-          id: 404,
-          question: "Lengkapi kalimat: «يَزْرَعُ الطَّالِبُ الأَشْجَارَ ...... الْمَدْرَسَةِ» (di belakang sekolah)",
-          options: ["وَرَاءَ", "فَوْقَ", "تَحْتَ", "مَعَ"],
-          answer: 0,
-          explanation: "Dharaf Makan \"di belakang\" adalah «وَرَاءَ» atau «خَلْفَ»."
-        },
-        {
-          id: 405,
-          question: "Ketentuan Mudhaf dalam tata bahasa Arab adalah:",
-          options: ["Tidak boleh memakai AL dan Tanwin", "Wajib memakai AL", "Wajib memakai Tanwin", "Harus berharakat fathah selalu"],
-          answer: 0,
-          explanation: "Syarat Mudhaf: Tanwin dan Alif-Lam (AL) harus dibuang."
-        },
-        {
-          id: 406,
-          question: "Manakah kata yang merupakan Dharaf Zaman (Keterangan Waktu)?",
-          options: ["صَبَاحًا", "تَحْتَ", "أَمَامَ", "بَيْنَ"],
-          answer: 0,
-          explanation: "«صَبَاحًا» menunjukkan keterangan waktu (di pagi hari)."
-        },
-        {
-          id: 407,
-          question: "Lengkapi Idhafah: «رَئِيسُ ...... يَحْمِي الْبِيئَةَ» (Ketua Organisasi)",
-          options: ["الْجَمْعِيَّةِ", "جَمْعِيَّةٌ", "الْجَمْعِيَّةُ", "جَمْعِيَّةً"],
-          answer: 0,
-          explanation: "Mudhaf Ilaihi harus majrur ber-AL: «الْجَمْعِيَّةِ»."
-        },
-        {
-          id: 408,
-          question: "\"Di bawah naungan pohon\" dalam Bahasa Arab disajikan dengan susunan Dharaf & Idhafah:",
-          options: ["تَحْتَ ظِلِّ الشَّجَرَةِ", "فَوْقَ ظِلِّ الشَّجَرَةِ", "أَمَامَ ظِلِّ الشَّجَرَةِ", "وَرَاءَ ظِلِّ الشَّجَرَةِ"],
-          answer: 0,
-          explanation: "«تَحْتَ» (di bawah) + «ظِلِّ الشَّجَرَةِ» (naungan pohon)."
-        },
-        {
-          id: 409,
-          question: "Kalimat «نُنَظِّفُ الشَّاطِئَ يَوْمَ الأَحَدِ», kata «يَوْمَ» berkedudukan sebagai:",
-          options: ["Dharaf Zaman (Keterangan Waktu)", "Dharaf Makan (Keterangan Tempat)", "Na't", "Mubtada'"],
-          answer: 0,
-          explanation: "«يَوْمَ» menyatakan waktu pelaksanaan kegiatan (hari Minggu)."
-        },
-        {
-          id: 410,
-          question: "Pilih bentuk Idhafah dengan makna \"Air Limbah Sungai\" yang tepat:",
-          options: ["مِيَاهُ صَرْفِ النَّهْرِ", "المِيَاهُ الصَّرْفِ النَّهْرِ", "مِيَاهٌ صَرْفٌ نَهْرٌ", "مِيَاهُ النَّهْرِ صَرْفًا"],
-          answer: 0,
-          explanation: "Idhafah bertingkat: «مِيَاهُ صَرْفِ النَّهْرِ»."
-        }
-      ]
-    }
-  ]
+  {
+    "id": "level_1",
+    "title": "Level 1: 🌿 Kosa Kata Lingkungan & Fi'il Amr Dasar",
+    "badge": "Level 1 (Pemula)",
+    "botName": "Bot Santri Zaid 🤖",
+    "botAvatar": "🤖",
+    "botRole": "Santri Pemula (AI)",
+    "botDifficulty": "Mudah (50%)",
+    "botAccuracy": 0.5,
+    "description": "Latihan dasar kosa kata pelestarian lingkungan dan pembentukan kata kerja perintah (Fi'il Amr) sederhana.",
+    "questions": [
+      {
+        "id": 101,
+        "question": "Arti dari kosakata «التَّشْجِيرُ» dalam tema pelestarian lingkungan adalah:",
+        "options": [
+          "Penggundulan Hutan",
+          "Penghijauan / Reboisasi",
+          "Pencemaran Udara",
+          "Banjir Bandang"
+        ],
+        "answer": 1,
+        "explanation": "«التَّشْجِيرُ» berarti Penghijauan atau Penanaman Pohon kembali (Reboisasi)."
+      },
+      {
+        "id": 102,
+        "question": "Manakah fi'il amr (kata kerja perintah) yang bermakna \"Tanamlah!\" untuk kamu satu laki-laki (أَنْتَ)?",
+        "options": [
+          "اِقْرَأْ",
+          "اُكْتُبْ",
+          "اِزْرَعْ",
+          "اِجْلِسْ"
+        ],
+        "answer": 2,
+        "explanation": "«اِزْرَعْ» adalah Fi'il Amr dari kata «زَرَعَ - يَزْرَعُ» yang berarti \"Tanamlah!\"."
+      },
+      {
+        "id": 103,
+        "question": "Arti kata «الْبِيئَةُ» dalam bahasa Indonesia adalah:",
+        "options": [
+          "Lingkungan Hidup",
+          "Kebun Binatang",
+          "Ruang Perpustakaan",
+          "Pabrik Industri"
+        ],
+        "answer": 0,
+        "explanation": "«الْبِيئَةُ» dalam bahasa Arab berarti Lingkungan Hidup."
+      },
+      {
+        "id": 104,
+        "question": "Fi'il amr untuk menyuruh seorang siswa laki-laki membersihkan kelas adalah:",
+        "options": [
+          "نَظَّفَ",
+          "يُنَظِّفُ",
+          "تَنْظِيفٌ",
+          "نَظِّفْ"
+        ],
+        "answer": 3,
+        "explanation": "«نَظِّفْ» adalah Fi'il Amr (perintah bersihkanlah!) untuk dhamir أَنْتَ."
+      },
+      {
+        "id": 105,
+        "question": "Kosakata «النِّفَايَاتُ» atau «الْقُمَامَةُ» memiliki arti:",
+        "options": [
+          "Pohon Rindang",
+          "Sampah / Limbah",
+          "Sungai Mengalir",
+          "Tanaman Hias"
+        ],
+        "answer": 1,
+        "explanation": "«النِّفَايَاتُ» dan «الْقُمَامَةُ» berarti sampah atau limbah buangan."
+      },
+      {
+        "id": 106,
+        "question": "Terjemahan dari «نَظَّفَ - يُنَظِّفُ - نَظِّفْ» secara berurutan adalah:",
+        "options": [
+          "Telah membersihkan - Sedang membersihkan - Bersihkanlah!",
+          "Sedang membersihkan - Bersihkanlah - Telah membersihkan",
+          "Bersihkanlah! - Telah membersihkan - Sedang membersihkan",
+          "Pembersih - Kebersihan - Membersihkan"
+        ],
+        "answer": 0,
+        "explanation": "Urutan tasrif fi'il madhi - mudhari' - amr yang tepat adalah: Telah membersihkan - Sedang membersihkan - Bersihkanlah!"
+      },
+      {
+        "id": 107,
+        "question": "Kosakata «الْفَيَضَانُ» bermakna bencana alam berupa:",
+        "options": [
+          "Gunung Meletus",
+          "Gempa Bumi",
+          "Banjir",
+          "Angin Topan"
+        ],
+        "answer": 2,
+        "explanation": "«الْفَيَضَانُ» dalam bahasa Arab berarti bencana banjir."
+      },
+      {
+        "id": 108,
+        "question": "Maksud dari kalimat perintah «اِقْصِدْ فِي اسْتِخْدَامِ الْمَاءِ!» adalah:",
+        "options": [
+          "Minumlah air yang banyak!",
+          "Tumpahkanlah air di lantai!",
+          "Jangan pernah mencuci tangan!",
+          "Hematlah dalam menggunakan air!"
+        ],
+        "answer": 3,
+        "explanation": "«اِقْصِدْ» bermakna berhemat atau bersikap bijak dan tidak boros."
+      },
+      {
+        "id": 109,
+        "question": "Arti dari istilah «تَدْوِيرُ النَّفَايَاتِ» adalah:",
+        "options": [
+          "Membakar Sampah",
+          "Daur Ulang Sampah",
+          "Menumpuk Sampah",
+          "Menimbun Sampah"
+        ],
+        "answer": 1,
+        "explanation": "«تَدْوِيرُ النَّفَايَاتِ» bermakna daur ulang sampah (recycling)."
+      },
+      {
+        "id": 110,
+        "question": "Kalimat perintah «احْرِصْ عَلَى النَّظَافَةِ!» ditujukan untuk subjek:",
+        "options": [
+          "Kalian banyak laki-laki",
+          "Kamu satu perempuan (أَنْتِ)",
+          "Kamu satu laki-laki (أَنْتَ)",
+          "Mereka berdua"
+        ],
+        "answer": 2,
+        "explanation": "«احْرِصْ» bersukun tanpa akhiran tambahan adalah untuk dhamir أَنْتَ (kamu satu laki-laki)."
+      }
+    ]
+  },
+  {
+    "id": "level_2",
+    "title": "Level 2: 🛑 Fi'il Amr & Fi'il Nahi (Perintah & Larangan)",
+    "badge": "Level 2 (Dasar)",
+    "botName": "Bot Ustazah Fatimah 🧕",
+    "botAvatar": "🧕",
+    "botRole": "Guru Pembimbing (AI)",
+    "botDifficulty": "Dasar (65%)",
+    "botAccuracy": 0.65,
+    "description": "Latihan membedakan perintah merawat alam dan larangan merusak lingkungan (Laa Nahiyah) sesuai dhomir.",
+    "questions": [
+      {
+        "id": 201,
+        "question": "Bentuk fi'il nahi (larangan) membuang sampah sembarangan di jalan yang tepat adalah:",
+        "options": [
+          "اِرْمِ الْقُمَامَةَ فِي الشَّارِعِ!",
+          "تَرْمِي الْقُمَامَةَ فِي الشَّارِعِ",
+          "لاَ تَرْمِ الْقُمَامَةَ فِي الشَّارِعِ!",
+          "رَمَى الْقُمَامَةَ فِي الشَّارِعِ"
+        ],
+        "answer": 2,
+        "explanation": "«لاَ تَرْمِ» menggunakan La Nahiyah yang menjazemkan fi'il mudhari' (membuang huruf 'illat ya)."
+      },
+      {
+        "id": 202,
+        "question": "Fi'il nahi «لاَ تُسْرِفُوا فِي الْمَاءِ!» ditujukan untuk dhamir:",
+        "options": [
+          "أَنْتُمْ (Kalian banyak laki-laki)",
+          "أَنْتَ (Kamu satu laki-laki)",
+          "أَنْتِ (Kamu satu perempuan)",
+          "أَنْتُمَا (Kalian berdua)"
+        ],
+        "answer": 0,
+        "explanation": "Wawu jama'ah (وا) pada «لاَ تُسْرِفُوا» menandakan subjek jamak mudzakkar: أَنْتُمْ."
+      },
+      {
+        "id": 203,
+        "question": "Bentuk larangan \"Janganlah kamu (perempuan) mematikan lampu!\" yang benar adalah:",
+        "options": [
+          "لاَ تُطْفِئُ النُّورَ!",
+          "لاَ تُطْفِئْ النُّورَ!",
+          "لاَ تُطْفِئُوا النُّورَ!",
+          "لاَ تُطْفِئِي النُّورَ!"
+        ],
+        "answer": 3,
+        "explanation": "Untuk dhamir أَنْتِ, fi'il nahi berakhiran ya mukhatabah (membuang huruf nun): «لاَ تُطْفِئِي»."
+      },
+      {
+        "id": 204,
+        "question": "Ubah fi'il amr «احْرِصْ» jika ditujukan kepada seorang siswi perempuan (أَنْتِ):",
+        "options": [
+          "احْرِصُوا",
+          "احْرِصِي",
+          "احْرِصْنَ",
+          "احْرِصَا"
+        ],
+        "answer": 1,
+        "explanation": "Untuk dhamir mu'annats (أَنْتِ), fi'il amr ditambahkan ya mukhatabah di akhir: «احْرِصِي»."
+      },
+      {
+        "id": 205,
+        "question": "Larangan menebang pohon secara liar dalam bahasa Arab yang tepat adalah:",
+        "options": [
+          "اِقْطَعِ الأَشْجَارَ دُونَ إِذْنٍ!",
+          "قَطَعَ الأَشْجَارَ دُونَ إِذْنٍ",
+          "لاَ تَقْطَعِ الأَشْجَارَ دُونَ إِذْنٍ!",
+          "تَقْطَعُ الأَشْجَارَ دُونَ إِذْنٍ"
+        ],
+        "answer": 2,
+        "explanation": "«لاَ تَقْطَعِ» (jangan tebang) adalah fi'il nahi untuk mencegah perusakan alam."
+      },
+      {
+        "id": 206,
+        "question": "Lengkapi kalimat perintah untuk banyak murid: «يَا طُلاَّبُ، ...... عَلَى نَظَافَةِ الْمَدْرَسَةِ!»",
+        "options": [
+          "حَافِظْ",
+          "حَافِظُوا",
+          "حَافِظِي",
+          "تُحَافِظُونَ"
+        ],
+        "answer": 1,
+        "explanation": "«يَا طُلاَّبُ» adalah panggilan jamak (banyak siswa), maka fi'il amr ber-wawu jama'ah: «حَافِظُوا»."
+      },
+      {
+        "id": 207,
+        "question": "Manakah fi'il amr yang benar untuk mengajak 2 orang (أَنْتُمَا) menyiram tanaman?",
+        "options": [
+          "اِسْقِيَا النَّبَاتَاتِ!",
+          "اِسْقِ النَّبَاتَاتِ!",
+          "اِسْقُوا النَّبَاتَاتِ!",
+          "اِسْقِينَ النَّبَاتَاتِ!"
+        ],
+        "answer": 0,
+        "explanation": "Untuk dhamir mutsanna (dua orang / أَنْتُمَا), fi'il amr diakhiri alif tasniyah: «اِسْقِيَا»."
+      },
+      {
+        "id": 208,
+        "question": "Bentuk fi'il amr dari kata «شَرِبَ - يَشْرَبُ» untuk menyuruh meminum air bersih adalah:",
+        "options": [
+          "شَارِبٌ",
+          "يَشْرَبُ",
+          "تَشْرَبُ",
+          "اِشْرَبْ"
+        ],
+        "answer": 3,
+        "explanation": "Fi'il amr dari «شَرِبَ» adalah «اِشْرَبْ» (minumlah!)."
+      },
+      {
+        "id": 209,
+        "question": "Tanda jazem pada fi'il nahi mufrad shahih akhir seperti «لاَ تُفْسِدْ فِي الأَرْضِ» adalah:",
+        "options": [
+          "Kasrah",
+          "Fathah",
+          "Sukun (ـْ)",
+          "Dhommah"
+        ],
+        "answer": 2,
+        "explanation": "Fi'il mudhari' shahih akhir dijazemkan dengan tanda sukun (ـْ) pada huruf terakhirnya."
+      },
+      {
+        "id": 210,
+        "question": "Ubah larangan «لاَ تُهْمِلْ» (jangan lalai) untuk rombongan siswi perempuan (أَنْتُنَّ):",
+        "options": [
+          "لاَ تُهْمِلُوا",
+          "لاَ تُهْمِلْنَ",
+          "لاَ تُهْمِلِي",
+          "لاَ تُهْمِلاَ"
+        ],
+        "answer": 1,
+        "explanation": "Untuk dhamir jamak mu'annats (أَنْتُنَّ), fi'il nahi diakhiri nun niswah: «لاَ تُهْمِلْنَ»."
+      }
+    ]
+  },
+  {
+    "id": "level_3",
+    "title": "Level 3: ⚖️ Isim Tafdhil & Na't Man'ut (Perbandingan & Sifat)",
+    "badge": "Level 3 (Menengah)",
+    "botName": "Bot Ust. Farhan AI 👨‍🏫",
+    "botAvatar": "👨‍🏫",
+    "botRole": "Ustadz Muda Qawa'id (AI)",
+    "botDifficulty": "Menengah (75%)",
+    "botAccuracy": 0.75,
+    "description": "Latihan pembentukan Isim Tafdhil (أَفْعَلُ مِنْ) dan kesesuaian kata sifat (Na't) dengan yang disifati (Man'ut).",
+    "questions": [
+      {
+        "id": 301,
+        "question": "Bentuk Isim Tafdhil Mu'annas (feminin) dari kata «أَكْبَرُ» adalah:",
+        "options": [
+          "أَكْبَرَةٌ",
+          "كَبِيرَةٌ",
+          "كِبَارٌ",
+          "كُبْرَى"
+        ],
+        "answer": 3,
+        "explanation": "Wazan Isim Tafdhil untuk mu'annas adalah «فُعْلَى», sehingga «أَكْبَرُ» menjadi «كُبْرَى»."
+      },
+      {
+        "id": 302,
+        "question": "Bentuk Isim Tafdhil dari kata «كَبِيرٌ» (besar) adalah:",
+        "options": [
+          "تَكْبِيرٌ",
+          "أَكْبَرُ",
+          "كُبَرَاءُ",
+          "مُتَكَبِّرٌ"
+        ],
+        "answer": 1,
+        "explanation": "Isim Tafdhil mengikuti wazan «أَفْعَلُ», sehingga «كَبِيرٌ» menjadi «أَكْبَرُ» (lebih besar)."
+      },
+      {
+        "id": 303,
+        "question": "Susunan Na't & Man'ut (kata sifat dan yang disifati) yang benar berikut ini adalah:",
+        "options": [
+          "بِيئَةٌ النَّظِيفَةُ",
+          "الْبِيئَةُ نَظِيفَةٌ",
+          "بِيئَةٌ نَظِيفَةٌ",
+          "نَظِيفَةٌ بِيئَةٌ"
+        ],
+        "answer": 2,
+        "explanation": "Na't harus mengikuti Man'ut dalam hal mudzakkar/mu'annas dan nakirah/makrifah: keduanya nakirah dan mu'annats «بِيئَةٌ نَظِيفَةٌ»."
+      },
+      {
+        "id": 304,
+        "question": "Lengkapi kalimat perbandingan: «الشَّجَرَةُ ...... مِنَ الزَّهْرَةِ» (Pohon lebih tinggi dari bunga):",
+        "options": [
+          "أَطْوَلُ",
+          "طَوِيلَةٌ",
+          "أَقْصَرُ",
+          "طُولٌ"
+        ],
+        "answer": 0,
+        "explanation": "Untuk menyatakan \"lebih tinggi daripada\", gunakan Isim Tafdhil «أَطْوَلُ مِنْ»."
+      },
+      {
+        "id": 305,
+        "question": "Pada frase «الْهَوَاءُ النَّقِيُّ», kata «النَّقِيُّ» berkedudukan sebagai:",
+        "options": [
+          "Mudhaf Ilaihi",
+          "Na't (Kata Sifat)",
+          "Mubtada'",
+          "Khabar"
+        ],
+        "answer": 1,
+        "explanation": "«النَّقِيُّ» menjelaskan sifat dari «الْهَوَاءُ», sehingga berkedudukan sebagai Na't."
+      },
+      {
+        "id": 306,
+        "question": "Manakah kalimat yang menggunakan Isim Tafdhil bermakna \"PALING / TER\" (Superlatif)?",
+        "options": [
+          "الْغَابَةُ جَمِيلَةٌ",
+          "الْغَابَةُ أَجْمَلُ مِنَ الْحَدِيقَةِ",
+          "الْغَابَةُ أَجْمَلُ أَمَاكِنِ الطَّبِيعَةِ",
+          "الْغَابَةُ لَيْسَتْ جَمِيلَةً"
+        ],
+        "answer": 2,
+        "explanation": "Isim Tafdhil yang disandarkan pada isim ma'rifah («أَجْمَلُ أَمَاكِنِ») bermakna superlatif (paling indah)."
+      },
+      {
+        "id": 307,
+        "question": "Terjemahkan ke Bahasa Arab: \"Matahari lebih besar daripada Bumi\":",
+        "options": [
+          "الشَّمْسُ كَبِيرَةٌ فِي الأَرْضِ",
+          "الأَرْضُ أَكْبَرُ مِنَ الشَّمْسِ",
+          "الشَّمْسُ كَبِيرٌ جِدًّا",
+          "الشَّمْسُ أَكْبَرُ مِنَ الأَرْضِ"
+        ],
+        "answer": 3,
+        "explanation": "«الشَّمْسُ أَكْبَرُ مِنَ الأَرْضِ» adalah struktur perbandingan yang tepat."
+      },
+      {
+        "id": 308,
+        "question": "Bentuk Isim Tafdhil dari kata «نَظِيفٌ» (bersih) adalah:",
+        "options": [
+          "أَنْظَفُ",
+          "نَظَاَفَةٌ",
+          "مُنَظَّفٌ",
+          "تَنْظِيفٌ"
+        ],
+        "answer": 0,
+        "explanation": "«نَظِيفٌ» mengikuti wazan «أَفْعَلُ» menjadi «أَنْظَفُ» (lebih bersih)."
+      },
+      {
+        "id": 309,
+        "question": "Pilih kalimat Na't Man'ut berbentuk Makrifah (ber-AL) yang benar dan serasi:",
+        "options": [
+          "الْمَاءُ نَقِيٌّ مُفِيدٌ",
+          "الْمَاءُ النَّقِيُّ مُفِيدٌ لِلصِّحَّةِ",
+          "مَاءٌ النَّقِيُّ مُفِيدٌ",
+          "الْمَاءُ النَّقِيَةُ مُفِيدٌ"
+        ],
+        "answer": 1,
+        "explanation": "Keduanya sama-sama ber-AL dan mudzakkar: «الْمَاءُ النَّقِيُّ»."
+      },
+      {
+        "id": 310,
+        "question": "Kalimat «الْحَدِيقَةُ أَوْسَعُ مِنَ الْفِنَاءِ» memiliki arti:",
+        "options": [
+          "Halaman lebih luas dari taman",
+          "Taman sama luasnya dengan halaman",
+          "Taman lebih luas daripada halaman",
+          "Taman sangat sempit di halaman"
+        ],
+        "answer": 2,
+        "explanation": "«أَوْسَعُ مِنْ» adalah Isim Tafdhil yang berarti \"lebih luas daripada\"."
+      }
+    ]
+  },
+  {
+    "id": "level_4",
+    "title": "Level 4: 🌊 Al-Idhafah & Dharaf Makan/Zaman",
+    "badge": "Level 4 (Mahir)",
+    "botName": "Bot Ust. Khalid AI ⚡",
+    "botAvatar": "⚡",
+    "botRole": "Ahli Sintaksis Arab (AI)",
+    "botDifficulty": "Mahir (85%)",
+    "botAccuracy": 0.85,
+    "description": "Latihan susunan Mudhaf & Mudhaf Ilaihi serta penempatan keterangan tempat dan waktu dalam konteks lingkungan.",
+    "questions": [
+      {
+        "id": 401,
+        "question": "Arti dari kata keterangan tempat (Dharaf Makan) «أَمَامَ» adalah:",
+        "options": [
+          "Di depan",
+          "Di belakang",
+          "Di samping",
+          "Di atas"
+        ],
+        "answer": 0,
+        "explanation": "«أَمَامَ» adalah kata keterangan tempat yang bermakna \"Di depan\"."
+      },
+      {
+        "id": 402,
+        "question": "Pada frase «تَلَوُّثُ الْهَوَاءِ» (pencemaran udara), kata «الْهَوَاءِ» berkedudukan sebagai:",
+        "options": [
+          "Mudhaf",
+          "Na't",
+          "Mudhaf Ilaihi",
+          "Maf'ul Bih"
+        ],
+        "answer": 2,
+        "explanation": "«الْهَوَاءِ» adalah kata kedua dari susunan Idhafah, berkedudukan sebagai Mudhaf Ilaihi (berharakat kasrah)."
+      },
+      {
+        "id": 403,
+        "question": "Manakah contoh susunan Mudhaf & Mudhaf Ilaihi (Al-Idhafah) yang benar?",
+        "options": [
+          "الْحَدِيقَةُ الْمَدْرَسَةِ",
+          "حَدِيقَةُ الْمَدْرَسَةِ",
+          "حَدِيقَةٌ الْمَدْرَسَةِ",
+          "حَدِيقَةُ مَدْرَسَةٌ"
+        ],
+        "answer": 1,
+        "explanation": "Mudhaf tidak boleh ber-AL dan tidak bertanwin, sedangkan Mudhaf Ilaihi berharakat majrur (kasrah): «حَدِيقَةُ الْمَدْرَسَةِ»."
+      },
+      {
+        "id": 404,
+        "question": "Lengkapi kalimat: «يَزْرَعُ الطَّالِبُ الأَشْجَارَ ...... الْمَدْرَسَةِ» (di belakang sekolah):",
+        "options": [
+          "فَوْقَ",
+          "تَحْتَ",
+          "مَعَ",
+          "وَرَاءَ"
+        ],
+        "answer": 3,
+        "explanation": "Dharaf Makan untuk \"di belakang\" adalah «وَرَاءَ» atau «خَلْفَ»."
+      },
+      {
+        "id": 405,
+        "question": "Pilih bentuk Idhafah dengan makna \"Air Limbah Sungai\" yang tepat:",
+        "options": [
+          "المِيَاهُ الصَّرْفِ النَّهْرِ",
+          "مِيَاهٌ صَرْفٌ نَهْرٌ",
+          "مِيَاهُ صَرْفِ النَّهْرِ",
+          "مِيَاهُ النَّهْرِ صَرْفًا"
+        ],
+        "answer": 2,
+        "explanation": "Susunan Idhafah bertingkat yang benar adalah: «مِيَاهُ صَرْفِ النَّهْرِ»."
+      },
+      {
+        "id": 406,
+        "question": "Ketentuan tata bahasa bagi kata yang berkedudukan sebagai Mudhaf adalah:",
+        "options": [
+          "Wajib memakai AL",
+          "Tidak boleh memakai AL dan Tanwin",
+          "Wajib memakai Tanwin",
+          "Harus berharakat kasrah selalu"
+        ],
+        "answer": 1,
+        "explanation": "Syarat Mudhaf: Tanwin dan Alif-Lam (AL) harus dibuang."
+      },
+      {
+        "id": 407,
+        "question": "Manakah kata yang merupakan Dharaf Zaman (Keterangan Waktu)?",
+        "options": [
+          "صَبَاحًا (Di pagi hari)",
+          "تَحْتَ (Di bawah)",
+          "أَمَامَ (Di depan)",
+          "بَيْنَ (Di antara)"
+        ],
+        "answer": 0,
+        "explanation": "«صَبَاحًا» menunjukkan keterangan waktu (di pagi hari)."
+      },
+      {
+        "id": 408,
+        "question": "Lengkapi susunan Idhafah: «رَئِيسُ ...... يَدْعُو لِحِمَايَةِ الْبِيئَةِ» (Ketua Organisasi):",
+        "options": [
+          "جَمْعِيَّةٌ",
+          "الْجَمْعِيَّةُ",
+          "الْجَمْعِيَّةِ",
+          "جَمْعِيَّةً"
+        ],
+        "answer": 2,
+        "explanation": "Mudhaf Ilaihi harus majrur berharakat kasrah: «الْجَمْعِيَّةِ»."
+      },
+      {
+        "id": 409,
+        "question": "Kalimat «نُنَظِّفُ الشَّاطِئَ يَوْمَ الأَحَدِ», kata «يَوْمَ» berkedudukan sebagai:",
+        "options": [
+          "Dharaf Makan",
+          "Na't",
+          "Mubtada'",
+          "Dharaf Zaman (Keterangan Waktu)"
+        ],
+        "answer": 3,
+        "explanation": "«يَوْمَ» menyatakan waktu pelaksanaan kegiatan (hari Ahad/Minggu)."
+      },
+      {
+        "id": 410,
+        "question": "\"Di bawah naungan pohon\" dalam Bahasa Arab disajikan dengan susunan Dharaf & Idhafah:",
+        "options": [
+          "فَوْقَ ظِلِّ الشَّجَرَةِ",
+          "تَحْتَ ظِلِّ الشَّجَرَةِ",
+          "أَمَامَ ظِلِّ الشَّجَرَةِ",
+          "وَرَاءَ ظِلِّ الشَّجَرَةِ"
+        ],
+        "answer": 1,
+        "explanation": "«تَحْتَ» (di bawah) + «ظِلِّ الشَّجَرَةِ» (naungan pohon)."
+      }
+    ]
+  },
+  {
+    "id": "level_5",
+    "title": "Level 5: 🏆 Master Qawa'id & Analisis Kalimat (Boss Level)",
+    "badge": "Level 5 (Master)",
+    "botName": "Bot Syaikhul Lughah AI 👑",
+    "botAvatar": "👑",
+    "botRole": "Pakar Bahasa Arab Tertinggi (AI Boss)",
+    "botDifficulty": "Master Boss (92%)",
+    "botAccuracy": 0.92,
+    "description": "Ujian puncak menyeluruh: gabungan tarkib Qawa'id, analisis kedudukan kata (i'rab dasar), dan terjemah kontekstual tingkat lanjut.",
+    "questions": [
+      {
+        "id": 501,
+        "question": "Perhatikan kalimat: «إِنَّ حِمَايَةَ الْبِيئَةِ وَاجِبٌ دِينِيٌّ». Susunan «وَاجِبٌ دِينِيٌّ» berkedudukan sebagai:",
+        "options": [
+          "Mudhaf & Mudhaf Ilaihi",
+          "Khabar Inna berupa susunan Na't & Man'ut",
+          "Mubtada' Muakhkhar",
+          "Dharaf Zaman"
+        ],
+        "answer": 1,
+        "explanation": "«وَاجِبٌ» adalah Khabar Inna (marfu'), dan «دِينِيٌّ» adalah sifat (Na't) yang mengikutinya."
+      },
+      {
+        "id": 502,
+        "question": "Lengkapi kalimat perintah dan larangan seimbang: «...... عَلَى نَظَافَةِ الْمَاءِ، وَ...... فِيهِ النِّفَايَاتِ!»",
+        "options": [
+          "حَافِظِي - لاَ تَرْمُوا",
+          "حَافِظُوا - تَرْمِي",
+          "تُحَافِظُ - تَرْمِ",
+          "احْرِصْ - لاَ تَرْمِ"
+        ],
+        "answer": 3,
+        "explanation": "Keduanya seimbang untuk dhamir أَنْتَ: «احْرِصْ» (jagalah) dan «لاَ تَرْمِ» (jangan buang)."
+      },
+      {
+        "id": 503,
+        "question": "Manakah kalimat yang memadukan Isim Tafdhil dan Idhafah dengan kaidah yang sempurna?",
+        "options": [
+          "مَاءُ النَّهْرِ أَنْظَفُ مِيَاهِ الْمَدِينَةِ",
+          "مَاءُ النَّهْرِ الأَنْظَفُ مِنْ مِيَاهِ",
+          "مَاءٌ نَهْرٌ أَنْظَفُ مِيَاهٌ",
+          "الْمَاءُ النَّهْرِ نَظِيفٌ مِيَاهِ"
+        ],
+        "answer": 0,
+        "explanation": "«مَاءُ النَّهْرِ» adalah Idhafah, dan «أَنْظَفُ مِيَاهِ الْمَدِينَةِ» adalah Isim Tafdhil mudhaf ke ma'rifah (paling bersih)."
+      },
+      {
+        "id": 504,
+        "question": "Pada kalimat «يَا مُسْلِمُونَ، لاَ تُفْسِدُوا فِي الأَرْضِ», tanda jazem pada «لاَ تُفْسِدُوا» adalah:",
+        "options": [
+          "Sukun",
+          "Fathah",
+          "Membuang huruf Nun (حَذْفُ النُّونِ)",
+          "Membuang huruf 'Illat"
+        ],
+        "answer": 2,
+        "explanation": "Af'alul Khamsah (أَنْتُمْ) dijazemkan dengan membuang huruf nun (asalnya: تُفْسِدُونَ)."
+      },
+      {
+        "id": 505,
+        "question": "Lengkapi kalimat: «تَقْتَصِدُ الدُّوَلُ فِي اسْتِهْلَاكِ الطَّاقَةِ لِأَنَّهَا ...... تَكْلُفَةً» (lebih murah biayanya):",
+        "options": [
+          "أَغْلَى",
+          "أَكْبَرُ",
+          "أَثْقَلُ",
+          "أَرْخَصُ"
+        ],
+        "answer": 3,
+        "explanation": "«أَرْخَصُ» adalah Isim Tafdhil dari «رَخِيصٌ» yang berarti \"lebih murah\"."
+      },
+      {
+        "id": 506,
+        "question": "Manakah i'rab yang benar untuk kata «أَشَدُّ» pada kalimat «تَلَوُّثُ الْهَوَاءِ أَشَدُّ ضَرَرًا مِنَ النِّفَايَاتِ»?",
+        "options": [
+          "Khabar Mubtada' marfu' dengan dhommah",
+          "Na't manshub dengan fathah",
+          "Mudhaf Ilaihi majrur dengan kasrah",
+          "Fa'il marfu' dengan dhommah"
+        ],
+        "answer": 0,
+        "explanation": "«تَلَوُّثُ» adalah Mubtada', dan «أَشَدُّ» adalah Khabar Mubtada' yang menerangkan tingkat bahayanya."
+      },
+      {
+        "id": 507,
+        "question": "Pada frase «مَشْرُوعُ التَّشْجِيرِ الْجَدِيدُ», kata «الْجَدِيدُ» adalah sifat (Na't) untuk kata:",
+        "options": [
+          "التَّشْجِيرِ",
+          "مَشْرُوعُ",
+          "Al-Bi'ah",
+          "Mustamir"
+        ],
+        "answer": 1,
+        "explanation": "«الْجَدِيدُ» berharakat dhommah marfu' mengikuti harakat mudhaf «مَشْرُوعُ», bukan «التَّشْجِيرِ» yang majrur."
+      },
+      {
+        "id": 508,
+        "question": "Konjugasi fi'il amr yang benar untuk mengajak rombongan siswi (أَنْتُنَّ) merawat kebun adalah:",
+        "options": [
+          "اِزْرَعُوا الْحَدِيقَةَ!",
+          "اِزْرَعِي الْحَدِيقَةَ!",
+          "اِزْرَعْنَ الْحَدِيقَةَ!",
+          "اِزْرَعَا الْحَدِيقَةَ!"
+        ],
+        "answer": 2,
+        "explanation": "Untuk jamak mu'annats (أَنْتُنَّ), fi'il amr menggunakan nun niswah: «اِزْرَعْنَ»."
+      },
+      {
+        "id": 509,
+        "question": "Kalimat «تَجْتَمِعُ لَجْنَةُ الْبِيئَةِ عَصْرًا خَلْفَ مَكْتَبَةِ الْمَدْرَسَةِ» mengandung:",
+        "options": [
+          "Hanya Dharaf Makan saja",
+          "Dharaf Zaman («عَصْرًا») dan Dharaf Makan («خَلْفَ»)",
+          "Hanya Dharaf Zaman saja",
+          "Susunan Na't Man'ut tanpa Dharaf"
+        ],
+        "answer": 1,
+        "explanation": "«عَصْرًا» adalah keterangan waktu (Zaman) dan «خَلْفَ» adalah keterangan tempat (Makan)."
+      },
+      {
+        "id": 510,
+        "question": "Lengkapi percakapan: «هَلِ الْهَوَاءُ فِي الْقَرْيَةِ أَنْقَى مِنَ الْمَدِينَةِ؟» - «نَعَمْ، الْهَوَاءُ فِي الْقَرْيَةِ ......»:",
+        "options": [
+          "أَكْثَرُ تَلَوُّثًا",
+          "أَقَلُّ نَقَاءً",
+          "أَنْقَى وَأَنْعَشُ",
+          "مُلَوَّثٌ جِدًّا"
+        ],
+        "answer": 2,
+        "explanation": "Udara di desa lebih murni dan menyegarkan: «أَنْقَى وَأَنْعَشُ»."
+      }
+    ]
+  }
+]
 };
 
 ARABIC_DATA.duelQuestions = ARABIC_DATA.duelQuestionSets[0].questions;
