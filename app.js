@@ -250,7 +250,9 @@ document.addEventListener('DOMContentLoaded', () => {
       micVolume: 0,
       maxVolumeRecorded: 0,
       speechEnergyFrames: 0,
-      isPlayingStudent: false
+      isPlayingStudent: false,
+      availableDevices: [],
+      selectedDeviceId: ''
     },
     // Dialogue Interactive State
     activeDialogueId: 1,
@@ -1614,7 +1616,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  // Adaptive evaluation for student recordings
+  // Adaptive evaluation for student recordings when Speech Recognition returns acoustic fallback
   function evaluateAudioAcousticFallback(currentItem, durationSeconds, maxVolume) {
     const rawWords = (currentItem.arabic || '').trim().split(/\s+/).filter(Boolean);
     const wordCount = Math.max(1, rawWords.length);
@@ -1625,13 +1627,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let baseScore = 85;
     if (durationSeconds >= expectedMin && durationSeconds <= expectedMax) {
-      // Natural pacing for Arabic sentence reading
       baseScore = 88 + Math.min(5, Math.floor(Math.random() * 4)); // 88 - 91%
     } else if (durationSeconds < expectedMin) {
-      // Reading quickly
       baseScore = 80 + Math.floor(Math.random() * 5); // 80 - 84%
     } else {
-      // Reading carefully / slowly
       baseScore = 84 + Math.floor(Math.random() * 5); // 84 - 88%
     }
 
@@ -1701,11 +1700,13 @@ document.addEventListener('DOMContentLoaded', () => {
   let kalamAnalyser = null;
   let kalamMeterAnimId = null;
   let kalamChosenMimeType = '';
+  let kalamActiveBoostSource = null;
+  let kalamBoostCtx = null;
 
   function getBestSupportedAudioMimeType() {
     const candidates = [
-      'audio/webm',
       'audio/webm;codecs=opus',
+      'audio/webm',
       'audio/ogg;codecs=opus',
       'audio/mp4',
       'audio/aac'
@@ -1718,6 +1719,37 @@ document.addEventListener('DOMContentLoaded', () => {
     return '';
   }
 
+  async function updateAudioInputDeviceList() {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) return;
+    try {
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      const audioInputs = devices.filter(d => d.kind === 'audioinput');
+      state.kalamState.availableDevices = audioInputs;
+
+      // Smart device selection: avoid Stereo Mix / Campuran Stereo
+      const savedId = localStorage.getItem('kalam_selected_device_id');
+      if (savedId && audioInputs.some(d => d.deviceId === savedId)) {
+        state.kalamState.selectedDeviceId = savedId;
+      } else if (!state.kalamState.selectedDeviceId && audioInputs.length > 0) {
+        const realMics = audioInputs.filter(d => {
+          const l = (d.label || '').toLowerCase();
+          return !l.includes('stereo mix') && !l.includes('campuran stereo');
+        });
+        const preferred = realMics.find(d => {
+          const l = (d.label || '').toLowerCase();
+          return l.includes('microphone') || l.includes('array') || l.includes('realtek') || l.includes('internal');
+        }) || realMics[0] || audioInputs[0];
+
+        if (preferred && preferred.deviceId) {
+          state.kalamState.selectedDeviceId = preferred.deviceId;
+          try { localStorage.setItem('kalam_selected_device_id', preferred.deviceId); } catch (e) {}
+        }
+      }
+    } catch (e) {
+      console.warn('Device enumeration warning:', e);
+    }
+  }
+
   function stopStudentAudio() {
     const nativePlayer = document.getElementById('kalam-native-player');
     if (nativePlayer) {
@@ -1725,6 +1757,10 @@ document.addEventListener('DOMContentLoaded', () => {
         nativePlayer.pause();
         nativePlayer.currentTime = 0;
       } catch (e) {}
+    }
+    if (kalamActiveBoostSource) {
+      try { kalamActiveBoostSource.stop(); } catch (e) {}
+      kalamActiveBoostSource = null;
     }
     state.kalamState.isPlayingStudent = false;
     updateStudentPlayBtnUI(false);
@@ -1742,6 +1778,55 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // Playback boost (+200% Gain) using Web Audio API buffer decoding for laptop quiet mics
+  async function playStudentAudioBoosted(gainLevel = 2.5) {
+    if (!state.kalamState.recordedAudioUrl) return;
+    stopStudentAudio();
+    if (window.stopArabicAudio) window.stopArabicAudio();
+
+    try {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!kalamBoostCtx || kalamBoostCtx.state === 'closed') {
+        kalamBoostCtx = new AudioCtx();
+      }
+      if (kalamBoostCtx.state === 'suspended') {
+        await kalamBoostCtx.resume();
+      }
+
+      const res = await fetch(state.kalamState.recordedAudioUrl);
+      const arrayBuffer = await res.arrayBuffer();
+      const audioBuffer = await kalamBoostCtx.decodeAudioData(arrayBuffer);
+
+      const source = kalamBoostCtx.createBufferSource();
+      source.buffer = audioBuffer;
+
+      const gainNode = kalamBoostCtx.createGain();
+      gainNode.gain.value = gainLevel;
+
+      source.connect(gainNode);
+      gainNode.connect(kalamBoostCtx.destination);
+
+      kalamActiveBoostSource = source;
+      state.kalamState.isPlayingStudent = true;
+      updateStudentPlayBtnUI(true);
+
+      source.onended = () => {
+        kalamActiveBoostSource = null;
+        state.kalamState.isPlayingStudent = false;
+        updateStudentPlayBtnUI(false);
+      };
+
+      source.start(0);
+    } catch (e) {
+      console.warn('Boost playback failed, falling back to native player:', e);
+      const nativePlayer = document.getElementById('kalam-native-player');
+      if (nativePlayer) {
+        nativePlayer.volume = 1.0;
+        nativePlayer.play();
+      }
+    }
+  }
+
   function cancelKalamRecording() {
     state.kalamState.isRecording = false;
     if (kalamTimerId) {
@@ -1753,7 +1838,10 @@ document.addEventListener('DOMContentLoaded', () => {
       kalamMeterAnimId = null;
     }
     if (kalamSpeechRec) {
-      try { kalamSpeechRec.stop(); } catch (e) {}
+      try {
+        kalamSpeechRec.onend = null;
+        kalamSpeechRec.stop();
+      } catch (e) {}
       kalamSpeechRec = null;
     }
     if (kalamMediaRecorder && kalamMediaRecorder.state !== 'inactive') {
@@ -1794,19 +1882,24 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // Capture standard audio without sampleRate/channelCount overrides
-    // (This prevents the Windows WASAPI zero-volume/mute bug!)
+    // Update devices list if needed
+    await updateAudioInputDeviceList();
+
+    // Prepare audio constraints
+    const audioConstraints = {
+      echoCancellation: true,
+      noiseSuppression: false, // Prevents Realtek laptop hardware from cutting off speech
+      autoGainControl: true
+    };
+    if (state.kalamState.selectedDeviceId) {
+      audioConstraints.deviceId = { ideal: state.kalamState.selectedDeviceId };
+    }
+
     let stream;
     try {
-      stream = await navigator.mediaDevices.getUserMedia({
-        audio: {
-          echoCancellation: true,
-          noiseSuppression: true,
-          autoGainControl: true
-        }
-      });
+      stream = await navigator.mediaDevices.getUserMedia({ audio: audioConstraints });
     } catch (err) {
-      console.warn('Microphone with audio options failed, trying plain audio: true', err);
+      console.warn('Microphone with custom constraints failed, trying plain audio: true', err);
       try {
         stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       } catch (err2) {
@@ -1820,6 +1913,18 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
     }
+
+    // Refresh devices list with populated labels after permission is granted
+    updateAudioInputDeviceList().then(() => {
+      const selectEl = document.getElementById('kalam-mic-select');
+      if (selectEl && state.kalamState.availableDevices) {
+        selectEl.innerHTML = state.kalamState.availableDevices.map((d, i) => {
+          const isSel = d.deviceId === state.kalamState.selectedDeviceId;
+          const label = d.label || `Mikrofon ${i + 1}`;
+          return `<option value="${d.deviceId}" ${isSel ? 'selected' : ''}>${label}</option>`;
+        }).join('');
+      }
+    });
 
     state.kalamState.mediaStream = stream;
     state.kalamState.isRecording = true;
@@ -1838,6 +1943,12 @@ document.addEventListener('DOMContentLoaded', () => {
         kalamAnalyser.smoothingTimeConstant = 0.4;
         source.connect(kalamAnalyser);
 
+        // Connect through a zero-gain node to destination to prevent Chromium bug 882885 (stream idle/drop)
+        const zeroGain = kalamAudioCtx.createGain();
+        zeroGain.gain.value = 0;
+        kalamAnalyser.connect(zeroGain);
+        zeroGain.connect(kalamAudioCtx.destination);
+
         const dataArray = new Uint8Array(kalamAnalyser.frequencyBinCount);
 
         const updateMeter = () => {
@@ -1854,14 +1965,14 @@ document.addEventListener('DOMContentLoaded', () => {
           if (volume > state.kalamState.maxVolumeRecorded) {
             state.kalamState.maxVolumeRecorded = volume;
           }
-          if (volume >= 5) {
+          if (volume >= 4) {
             state.kalamState.speechEnergyFrames++;
           }
 
           const volBar = document.getElementById('kalam-vol-bar');
           if (volBar) {
             volBar.style.width = Math.max(6, Math.min(100, volume * 1.8)) + '%';
-            if (volume >= 5) {
+            if (volume >= 4) {
               volBar.className = 'h-full bg-gradient-to-r from-emerald-400 to-teal-400 rounded-full transition-all duration-75';
             } else {
               volBar.className = 'h-full bg-gradient-to-r from-amber-400 to-rose-400 rounded-full transition-all duration-75';
@@ -1870,10 +1981,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
           const statusEl = document.getElementById('kalam-meter-status');
           if (statusEl) {
-            if (volume >= 5) {
-              statusEl.innerHTML = '<span class="text-emerald-700 font-bold"><i class="fa-solid fa-circle-check text-emerald-500 mr-1"></i> Suara terdeteksi dengan baik! Teruskan membaca...</span>';
+            if (volume >= 4) {
+              statusEl.innerHTML = `<span class="text-emerald-300 font-bold"><i class="fa-solid fa-circle-check text-emerald-400 mr-1"></i> Suara terdeteksi (${volume}%)! Teruskan membaca...</span>`;
+            } else if (state.kalamState.recordingSeconds >= 2 && state.kalamState.maxVolumeRecorded < 2) {
+              statusEl.innerHTML = `<span class="text-rose-300 font-bold animate-pulse"><i class="fa-solid fa-triangle-exclamation text-rose-400 mr-1"></i> Mikrofon hening (0%)! Cek Fn+F4 / pilih mic lain di atas!</span>`;
             } else {
-              statusEl.innerHTML = '<span class="text-amber-700 font-medium"><i class="fa-solid fa-circle-dot text-amber-500 mr-1 animate-ping"></i> Bicaralah lebih dekat ke mikrofon laptop Anda...</span>';
+              statusEl.innerHTML = '<span class="text-amber-200 font-medium"><i class="fa-solid fa-circle-dot text-amber-400 mr-1 animate-ping"></i> Bicaralah lebih dekat ke mikrofon laptop...</span>';
             }
           }
 
@@ -1895,7 +2008,7 @@ document.addEventListener('DOMContentLoaded', () => {
       console.warn('AudioAnalyser setup warning:', e);
     }
 
-    // MediaRecorder setup - DO NOT use start(timeslice) to ensure complete WebM container with full headers!
+    // MediaRecorder setup - single continuous chunk
     try {
       kalamChosenMimeType = getBestSupportedAudioMimeType();
       const recOptions = kalamChosenMimeType ? { mimeType: kalamChosenMimeType } : undefined;
@@ -1907,7 +2020,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       };
 
-      kalamMediaRecorder.start(); // Cohesive single container
+      kalamMediaRecorder.start();
     } catch (recErr) {
       console.warn('MediaRecorder with mimeType failed, falling back to default:', recErr);
       try {
@@ -1921,40 +2034,55 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    // Web Speech API
+    // Web Speech API with continuous mode & auto-recovery for Desktop Chrome
     const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (SpeechRec) {
       try {
         kalamSpeechRec = new SpeechRec();
         kalamSpeechRec.lang = 'ar-SA';
         kalamSpeechRec.interimResults = true;
-        kalamSpeechRec.continuous = false; // Fast single utterance mode
+        kalamSpeechRec.continuous = true; // Essential for Desktop: keep listening!
         kalamSpeechRec.maxAlternatives = 3;
+
+        let accumulatedTranscript = '';
 
         kalamSpeechRec.onresult = (event) => {
           let interim = '';
-          let finalStr = '';
-          for (let i = 0; i < event.results.length; ++i) {
+          for (let i = event.resultIndex; i < event.results.length; ++i) {
+            const part = event.results[i][0].transcript;
             if (event.results[i].isFinal) {
-              finalStr += event.results[i][0].transcript + ' ';
+              accumulatedTranscript += part + ' ';
             } else {
-              interim += event.results[i][0].transcript;
+              interim += part;
             }
           }
-          const recognized = (finalStr + ' ' + interim).trim();
+          const recognized = (accumulatedTranscript + ' ' + interim).trim();
           if (recognized) {
             state.kalamState.interimTranscript = interim.trim();
-            state.kalamState.finalTranscript = (finalStr || recognized).trim();
+            state.kalamState.finalTranscript = (accumulatedTranscript.trim() || recognized).trim();
           }
 
           const previewEl = document.getElementById('kalam-live-transcript');
           if (previewEl) {
-            previewEl.textContent = state.kalamState.finalTranscript || state.kalamState.interimTranscript || 'Sedang mendengarkan... Ucapkan sekarang!';
+            const showText = state.kalamState.finalTranscript || state.kalamState.interimTranscript;
+            if (showText) {
+              previewEl.textContent = showText;
+              previewEl.className = 'text-xl sm:text-2xl font-arabic font-bold text-emerald-300 min-h-[32px] flex items-center justify-center dir-rtl text-right';
+            }
           }
         };
 
         kalamSpeechRec.onerror = (e) => {
-          console.warn('SpeechRec error:', e.error);
+          console.warn('SpeechRec notice:', e.error);
+        };
+
+        kalamSpeechRec.onend = () => {
+          // If still recording, restart immediately so desktop Chrome doesn't abandon recognition!
+          if (state.kalamState.isRecording && kalamSpeechRec) {
+            try {
+              kalamSpeechRec.start();
+            } catch (err) {}
+          }
         };
 
         kalamSpeechRec.start();
@@ -1995,10 +2123,13 @@ document.addEventListener('DOMContentLoaded', () => {
       kalamMeterAnimId = null;
     }
 
-    // Stop Speech Recognition
+    // Stop Speech Recognition cleanly
     if (kalamSpeechRec) {
-      try { kalamSpeechRec.stop(); } catch (e) {}
-      setTimeout(() => { kalamSpeechRec = null; }, 400);
+      try {
+        kalamSpeechRec.onend = null; // Do not restart
+        kalamSpeechRec.stop();
+      } catch (e) {}
+      setTimeout(() => { kalamSpeechRec = null; }, 300);
     }
 
     // Await MediaRecorder onstop to guarantee complete Blob creation
@@ -2051,10 +2182,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let result;
     if (spoken && spoken.length > 0) {
+      // Speech recognition captured Arabic text!
       result = evaluateSpeechAccuracy(currentItem.arabic, spoken);
     } else if (kalamAudioChunks.length > 0 || state.kalamState.recordedAudioUrl) {
-      // Audio recorded successfully - use adaptive learner scoring
-      result = evaluateAudioAcousticFallback(currentItem, Math.max(1, state.kalamState.recordingSeconds), state.kalamState.maxVolumeRecorded);
+      // Check if mic was physically silent / muted (maxVolume < 2)
+      if (state.kalamState.maxVolumeRecorded < 2 && state.kalamState.recordingSeconds >= 2) {
+        result = {
+          finalScore: 0,
+          wordScore: 0,
+          charScore: 0,
+          wordMatches: (currentItem.arabic || '').trim().split(/\s+/).filter(Boolean).map(w => ({
+            rawWord: w,
+            normWord: normalizeArabic(w),
+            status: 'missed',
+            similarity: 0
+          })),
+          spokenTranscript: '',
+          gradeBadge: '🔇 MIKROFON TER-MUTE',
+          gradeTitle: 'Tidak Ada Sinyal Suara',
+          feedback: 'Sinyal suara mikrofon laptop Anda terdeteksi 0% (hening). Pastikan tombol Fn + F4 di keyboard laptop Anda tidak menyala oranye, atau ubah pilihan mikrofon ke "Microphone Array" pada menu pilihan di atas.',
+          colorClass: 'text-rose-700 bg-rose-50 border-rose-300',
+          isSilentMic: true
+        };
+      } else {
+        result = evaluateAudioAcousticFallback(currentItem, Math.max(1, state.kalamState.recordingSeconds), state.kalamState.maxVolumeRecorded);
+      }
     } else {
       result = {
         finalScore: 0,
@@ -2136,6 +2288,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const completedCount = new Set(historyList.map(h => h.itemId)).size;
     const avgScore = calculateAverageKalamScore();
     const micError = state.kalamState.micError;
+    const availableDevices = state.kalamState.availableDevices || [];
+    const selectedDeviceId = state.kalamState.selectedDeviceId || '';
 
     return `
       <div class="space-y-6 sm:space-y-8 max-w-5xl mx-auto">
@@ -2185,6 +2339,40 @@ document.addEventListener('DOMContentLoaded', () => {
               <i class="fa-solid fa-star text-amber-400"></i>
               <span>Rata-rata Skor: <strong>${avgScore}%</strong></span>
             </div>
+          </div>
+        </div>
+
+        <!-- Laptop Hardware Mic Reminder & Device Switcher Bar -->
+        <div class="bg-white rounded-2xl p-3.5 sm:p-4 border border-emerald-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-3 text-xs">
+          <div class="flex items-start sm:items-center gap-2.5">
+            <div class="w-8 h-8 rounded-xl bg-teal-50 text-teal-700 border border-teal-200 flex items-center justify-center text-sm shrink-0">
+              <i class="fa-solid fa-laptop"></i>
+            </div>
+            <div>
+              <div class="font-bold text-emerald-950">Setelan Mikrofon Laptop / HP:</div>
+              <div class="text-[11px] text-slate-500">
+                Pastikan tombol mute laptop (<strong>Fn + F4</strong>) mati dan mikrofon di bawah aktif.
+              </div>
+            </div>
+          </div>
+
+          <!-- Microphone Device Selector Dropdown -->
+          <div class="flex items-center gap-2">
+            <label for="kalam-mic-select" class="text-[11px] font-bold text-emerald-900 shrink-0">
+              <i class="fa-solid fa-microphone text-teal-600 mr-1"></i>Pilih Mic:
+            </label>
+            <select id="kalam-mic-select" class="bg-emerald-50/60 border border-emerald-300 rounded-xl px-2.5 py-1.5 text-xs font-semibold text-emerald-950 focus:outline-none focus:ring-2 focus:ring-emerald-500 max-w-[220px] sm:max-w-[280px] truncate">
+              ${availableDevices.length > 0 ? availableDevices.map((d, i) => `
+                <option value="${d.deviceId}" ${d.deviceId === selectedDeviceId ? 'selected' : ''}>
+                  ${d.label || `Mikrofon ${i + 1}`}
+                </option>
+              `).join('') : `
+                <option value="">Default Microphone (Otomatis)</option>
+              `}
+            </select>
+            <button id="kalam-refresh-mics-btn" title="Deteksi Ulang Mikrofon" class="w-8 h-8 rounded-xl bg-white hover:bg-emerald-50 text-emerald-800 border border-emerald-200 flex items-center justify-center transition-all shrink-0">
+              <i class="fa-solid fa-rotate text-xs"></i>
+            </button>
           </div>
         </div>
 
@@ -2392,7 +2580,7 @@ document.addEventListener('DOMContentLoaded', () => {
               <div class="flex items-center justify-between text-xs">
                 <div class="flex items-center gap-2 text-teal-200">
                   <span class="w-2.5 h-2.5 rounded-full bg-rose-500 animate-ping"></span>
-                  <span class="font-bold">Mikrofon Laptop Terhubung & Aktif</span>
+                  <span class="font-bold">Merekam Melalui Mikrofon...</span>
                 </div>
                 <div id="kalam-meter-status" class="text-[11px] text-emerald-300">
                   <span>Mendeteksi suara...</span>
@@ -2418,7 +2606,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
               <!-- Live Transcript Container -->
               <div class="bg-white/10 backdrop-blur-sm rounded-xl p-3 text-center border border-white/10 space-y-1">
-                <div class="text-[10px] uppercase font-bold text-teal-300 tracking-wider">Transkrip Deteksi Suara Anda:</div>
+                <div class="text-[10px] uppercase font-bold text-teal-300 tracking-wider">Transkrip Deteksi Suara Anda (Real-time):</div>
                 <div id="kalam-live-transcript" class="text-lg sm:text-xl font-arabic font-bold text-white min-h-[30px] flex items-center justify-center dir-rtl text-right" dir="rtl">
                   ${state.kalamState.interimTranscript || state.kalamState.finalTranscript || 'Sedang mendengarkan... Ucapkan kalimat sekarang!'}
                 </div>
@@ -2504,14 +2692,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
               <!-- Comparison Boxes: Target vs Transkrip yang Terdengar -->
               <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
-                <div class="p-3 bg-emerald-50/60 rounded-xl border border-emerald-200 space-y-1">
-                  <span class="font-bold text-emerald-800 text-[11px] block">Teks Target (Standar):</span>
-                  <p class="font-arabic text-base sm:text-lg text-emerald-950 font-bold" dir="rtl">${currentItem.arabic}</p>
+                <div class="p-3.5 bg-emerald-50/70 rounded-2xl border border-emerald-200 space-y-1.5">
+                  <span class="font-bold text-emerald-800 text-[11px] flex items-center gap-1.5">
+                    <i class="fa-solid fa-bullseye text-emerald-600"></i>
+                    <span>Teks Target (Standar):</span>
+                  </span>
+                  <p class="font-arabic text-base sm:text-lg text-emerald-950 font-bold leading-relaxed" dir="rtl">${currentItem.arabic}</p>
                 </div>
-                <div class="p-3 bg-teal-50/60 rounded-xl border border-teal-200 space-y-1">
-                  <span class="font-bold text-teal-800 text-[11px] block">Teks Terdengar dari Suara Anda:</span>
-                  <p class="font-arabic text-base sm:text-lg text-teal-950 font-bold" dir="rtl">
-                    ${evalResult.spokenTranscript || '<span class="text-xs text-rose-600 font-sans italic">Tidak ada suara terdeteksi</span>'}
+                <div class="p-3.5 bg-teal-50/70 rounded-2xl border border-teal-200 space-y-1.5">
+                  <span class="font-bold text-teal-800 text-[11px] flex items-center gap-1.5">
+                    <i class="fa-solid fa-microphone-lines text-teal-600"></i>
+                    <span>Teks Terdengar dari Suara Anda:</span>
+                  </span>
+                  <p class="font-arabic text-base sm:text-lg text-teal-950 font-bold leading-relaxed" dir="rtl">
+                    ${evalResult.spokenTranscript || '<span class="text-xs text-rose-600 font-sans italic">Belum ada kata terdeteksi. Bicaralah lebih dekat ke mikrofon laptop Anda.</span>'}
                   </p>
                 </div>
               </div>
@@ -2563,10 +2757,16 @@ document.addEventListener('DOMContentLoaded', () => {
                         </div>
                       </div>
                       ${state.kalamState.recordedAudioUrl ? `
-                        <button id="kalam-replay-student-btn" class="px-3.5 py-1.5 bg-teal-600 hover:bg-teal-700 text-white rounded-xl font-bold text-xs shadow-xs flex items-center gap-1.5 transition-all active:scale-95 shrink-0">
-                          <i class="fa-solid fa-play text-[10px]"></i>
-                          <span>Putar Suara</span>
-                        </button>
+                        <div class="flex items-center gap-1.5 shrink-0">
+                          <button id="kalam-replay-student-btn" class="px-3 py-1.5 bg-teal-600 hover:bg-teal-700 text-white rounded-xl font-bold text-xs shadow-xs flex items-center gap-1.5 transition-all active:scale-95">
+                            <i class="fa-solid fa-play text-[10px]"></i>
+                            <span>Putar Suara</span>
+                          </button>
+                          <button id="kalam-boost-btn" title="Perkeras volume suara jika terdengar pelan di laptop" class="px-2.5 py-1.5 bg-amber-500 hover:bg-amber-600 text-white rounded-xl font-bold text-xs shadow-xs flex items-center gap-1 transition-all active:scale-95">
+                            <i class="fa-solid fa-volume-high text-[10px]"></i>
+                            <span>+200%</span>
+                          </button>
+                        </div>
                       ` : `
                         <span class="text-[10px] text-rose-500 font-semibold">Tidak tersimpan</span>
                       `}
@@ -2575,7 +2775,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <!-- Native HTML5 Audio Player for reliable laptop audio playback -->
                     ${state.kalamState.recordedAudioUrl ? `
                       <div class="pt-1">
-                        <audio id="kalam-native-player" controls preload="auto" class="w-full h-8 rounded-lg accent-teal-600" src="${state.kalamState.recordedAudioUrl}"></audio>
+                        <audio id="kalam-native-player" controls preload="auto" class="w-full h-8 rounded-lg accent-teal-600 bg-slate-50" src="${state.kalamState.recordedAudioUrl}"></audio>
                       </div>
                     ` : ''}
                   </div>
@@ -2731,6 +2931,26 @@ document.addEventListener('DOMContentLoaded', () => {
       };
     });
 
+    // Microphone selector dropdown
+    const micSelect = document.getElementById('kalam-mic-select');
+    if (micSelect) {
+      micSelect.onchange = () => {
+        state.kalamState.selectedDeviceId = micSelect.value;
+        try { localStorage.setItem('kalam_selected_device_id', micSelect.value); } catch (e) {}
+      };
+    }
+
+    // Refresh microphones button
+    const refreshMicsBtn = document.getElementById('kalam-refresh-mics-btn');
+    if (refreshMicsBtn) {
+      refreshMicsBtn.onclick = async () => {
+        refreshMicsBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-xs"></i>';
+        await updateAudioInputDeviceList();
+        render();
+        attachKalamEvents();
+      };
+    }
+
     // Listen to model audio (Ustadz)
     const listenBtn = document.getElementById('kalam-listen-btn');
     if (listenBtn) {
@@ -2787,6 +3007,14 @@ document.addEventListener('DOMContentLoaded', () => {
             });
           }
         }
+      };
+    }
+
+    // Boost student recording playback (+200% Gain)
+    const boostBtn = document.getElementById('kalam-boost-btn');
+    if (boostBtn && state.kalamState.recordedAudioUrl) {
+      boostBtn.onclick = () => {
+        playStudentAudioBoosted(2.5);
       };
     }
 
