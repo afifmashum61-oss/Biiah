@@ -939,40 +939,7 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
         </div>
 
-        ${isGuru ? `
-          <!-- Teacher Real-Time Incoming Scores Live Widget -->
-          <div class="bg-white p-6 rounded-3xl border-2 border-emerald-200 shadow-sm space-y-4">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-emerald-100 pb-3">
-              <div class="flex items-center gap-2.5">
-                <span class="w-3 h-3 rounded-full bg-emerald-500 animate-ping"></span>
-                <div>
-                  <h3 class="font-extrabold text-emerald-950 text-base">🔴 Live Feed: Nilai Siswa Terbaru Masuk (Cloud Realtime)</h3>
-                  <p class="text-xs text-emerald-700">Setiap ada siswa yang selesai latihan kuis atau game di HP/PC mereka, nilai langsung muncul di sini secara seketika.</p>
-                </div>
-              </div>
-              <button onclick="document.querySelector('[data-view=students]').click()" class="px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-bold transition-all shadow-xs flex items-center gap-2 self-start sm:self-auto">
-                <span>Lihat Rekap Lengkap Semua Siswa</span>
-                <i class="fa-solid fa-arrow-right text-xs"></i>
-              </button>
-            </div>
 
-            <div class="grid sm:grid-cols-3 gap-3">
-              ${(state.submissions || []).slice(0, 3).map(sub => `
-                <div class="p-3.5 rounded-2xl bg-emerald-50/50 border border-emerald-100 flex items-center justify-between">
-                  <div>
-                    <span class="font-bold text-emerald-950 text-xs block">${sub.studentName} (${sub.class || 'IX-A'})</span>
-                    <span class="text-[11px] text-emerald-700 block truncate max-w-[150px]">${sub.activityType}</span>
-                    <span class="text-[10px] text-slate-400">${sub.createdAtFormatted || 'Baru Saja'}</span>
-                  </div>
-                  <div class="text-right">
-                    <span class="text-lg font-black text-emerald-800">${sub.score}</span>
-                    <span class="text-[9px] text-slate-500 block">${sub.category === 'game' ? 'Pts' : '/ 100'}</span>
-                  </div>
-                </div>
-              `).join('')}
-            </div>
-          </div>
-        ` : ''}
 
         <!-- Main Features Grid (Arch Cards) -->
         <div class="space-y-5">
