@@ -1403,12 +1403,8 @@ document.addEventListener('DOMContentLoaded', () => {
           
           <!-- Header Banner -->
           <div class="border-b border-emerald-100 pb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div class="space-y-3 sm:space-y-4">
-              <div class="inline-flex items-center gap-2 bg-indigo-50 text-indigo-800 px-3.5 py-1.5 rounded-full text-xs font-bold border border-indigo-200 shadow-xs">
-                <i class="fa-solid fa-headphones text-indigo-600"></i>
-                <span>مَهَارَةُ الاِسْتِمَاعِ (Maharah Istima')</span>
-              </div>
-              <h2 class="text-3xl sm:text-4xl md:text-5xl font-extrabold font-arabic text-emerald-950 leading-[2.1] sm:leading-[2.3] pt-2 pb-1.5">${listening.title}</h2>
+            <div class="space-y-2 sm:space-y-2.5">
+              <h2 class="text-3xl sm:text-4xl md:text-5xl font-extrabold font-arabic text-emerald-950 leading-[1.8] sm:leading-[2] pb-1">${listening.title}</h2>
               <p class="text-xs sm:text-sm text-emerald-700 font-medium leading-relaxed max-w-2xl">${listening.subtitle}</p>
             </div>
 
