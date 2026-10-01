@@ -2087,28 +2087,36 @@ document.addEventListener('DOMContentLoaded', () => {
   async function updateAudioInputDeviceList() {
     if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) return;
     try {
+      // Purge bad Stereo Mix from localStorage if previously stored
+      try {
+        const savedId = localStorage.getItem('kalam_selected_device_id');
+        if (savedId) {
+          const devList = await navigator.mediaDevices.enumerateDevices();
+          const dev = devList.find(d => d.deviceId === savedId);
+          if (dev && /stereo mix|campuran stereo|wave out|what u hear/i.test(dev.label || '')) {
+            localStorage.removeItem('kalam_selected_device_id');
+            state.kalamState.selectedDeviceId = '';
+          }
+        }
+      } catch (e) {}
+
       const devices = await navigator.mediaDevices.enumerateDevices();
       const audioInputs = devices.filter(d => d.kind === 'audioinput');
-      state.kalamState.availableDevices = audioInputs;
 
-      // Smart device selection: avoid Stereo Mix / Campuran Stereo
+      // Filter out Stereo Mix / loopback devices completely
+      const realMics = audioInputs.filter(d => {
+        const l = (d.label || '').toLowerCase();
+        return !/stereo mix|campuran stereo|wave out|what u hear/i.test(l);
+      });
+
+      state.kalamState.availableDevices = realMics;
+
       const savedId = localStorage.getItem('kalam_selected_device_id');
-      if (savedId && audioInputs.some(d => d.deviceId === savedId)) {
+      if (savedId && realMics.some(d => d.deviceId === savedId)) {
         state.kalamState.selectedDeviceId = savedId;
-      } else if (!state.kalamState.selectedDeviceId && audioInputs.length > 0) {
-        const realMics = audioInputs.filter(d => {
-          const l = (d.label || '').toLowerCase();
-          return !l.includes('stereo mix') && !l.includes('campuran stereo');
-        });
-        const preferred = realMics.find(d => {
-          const l = (d.label || '').toLowerCase();
-          return l.includes('microphone') || l.includes('array') || l.includes('realtek') || l.includes('internal');
-        }) || realMics[0] || audioInputs[0];
-
-        if (preferred && preferred.deviceId) {
-          state.kalamState.selectedDeviceId = preferred.deviceId;
-          try { localStorage.setItem('kalam_selected_device_id', preferred.deviceId); } catch (e) {}
-        }
+      } else {
+        // By default, leave selectedDeviceId empty so browser uses the default system mic automatically!
+        state.kalamState.selectedDeviceId = '';
       }
     } catch (e) {
       console.warn('Device enumeration warning:', e);
@@ -2283,7 +2291,9 @@ document.addEventListener('DOMContentLoaded', () => {
     updateAudioInputDeviceList().then(() => {
       const selectEl = document.getElementById('kalam-mic-select');
       if (selectEl && state.kalamState.availableDevices) {
-        selectEl.innerHTML = state.kalamState.availableDevices.map((d, i) => {
+        selectEl.innerHTML = `
+          <option value="" ${!state.kalamState.selectedDeviceId ? 'selected' : ''}>Otomatis (Mikrofon Laptop)</option>
+        ` + state.kalamState.availableDevices.map((d, i) => {
           const isSel = d.deviceId === state.kalamState.selectedDeviceId;
           const label = d.label || `Mikrofon ${i + 1}`;
           return `<option value="${d.deviceId}" ${isSel ? 'selected' : ''}>${label}</option>`;
@@ -2708,35 +2718,37 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
         </div>
 
-        <!-- Laptop Hardware Mic Reminder & Device Switcher Bar -->
-        <div class="bg-white rounded-2xl p-3.5 sm:p-4 border border-emerald-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-3 text-xs">
+        <!-- Laptop Hardware Mic Reminder & Device Switcher Bar (Automatic Default) -->
+        <div class="bg-emerald-50/70 rounded-2xl p-3 sm:p-4 border border-emerald-200/80 shadow-2xs flex flex-col md:flex-row md:items-center justify-between gap-3 text-xs">
           <div class="flex items-start sm:items-center gap-2.5">
-            <div class="w-8 h-8 rounded-xl bg-teal-50 text-teal-700 border border-teal-200 flex items-center justify-center text-sm shrink-0">
-              <i class="fa-solid fa-laptop"></i>
+            <div class="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-sm shadow-xs shrink-0">
+              <i class="fa-solid fa-microphone-lines"></i>
             </div>
             <div>
-              <div class="font-bold text-emerald-950">Setelan Mikrofon Laptop / HP:</div>
-              <div class="text-[11px] text-slate-500">
-                Pastikan tombol mute laptop (<strong>Fn + F4</strong>) mati dan mikrofon di bawah aktif.
+              <div class="font-bold text-emerald-950 flex items-center gap-2">
+                <span>Mikrofon Otomatis Aktif</span>
+                <span class="px-2 py-0.5 rounded-full bg-emerald-200 text-emerald-900 text-[10px] font-extrabold uppercase tracking-wide">Siap Rekam</span>
+              </div>
+              <div class="text-[11px] text-emerald-800">
+                Sistem otomatis menggunakan mikrofon laptop. Langsung tekan tombol <strong>Mulai Rekam Suara</strong> tanpa perlu memilih mic.
               </div>
             </div>
           </div>
 
-          <!-- Microphone Device Selector Dropdown -->
-          <div class="flex items-center gap-2">
+          <!-- Microphone Device Selector (Optional fallback) -->
+          <div class="flex items-center gap-2 self-start md:self-center">
             <label for="kalam-mic-select" class="text-[11px] font-bold text-emerald-900 shrink-0">
-              <i class="fa-solid fa-microphone text-teal-600 mr-1"></i>Pilih Mic:
+              <i class="fa-solid fa-sliders text-emerald-600 mr-1"></i>Perangkat:
             </label>
-            <select id="kalam-mic-select" class="bg-emerald-50/60 border border-emerald-300 rounded-xl px-2.5 py-1.5 text-xs font-semibold text-emerald-950 focus:outline-none focus:ring-2 focus:ring-emerald-500 max-w-[220px] sm:max-w-[280px] truncate">
-              ${availableDevices.length > 0 ? availableDevices.map((d, i) => `
+            <select id="kalam-mic-select" class="bg-white border border-emerald-300 rounded-xl px-2.5 py-1.5 text-xs font-semibold text-emerald-950 focus:outline-none focus:ring-2 focus:ring-emerald-500 max-w-[200px] sm:max-w-[240px] truncate shadow-2xs">
+              <option value="" ${!selectedDeviceId ? 'selected' : ''}>Otomatis (Mikrofon Laptop)</option>
+              ${availableDevices.map((d, i) => `
                 <option value="${d.deviceId}" ${d.deviceId === selectedDeviceId ? 'selected' : ''}>
                   ${d.label || `Mikrofon ${i + 1}`}
                 </option>
-              `).join('') : `
-                <option value="">Default Microphone (Otomatis)</option>
-              `}
+              `).join('')}
             </select>
-            <button id="kalam-refresh-mics-btn" title="Deteksi Ulang Mikrofon" class="w-8 h-8 rounded-xl bg-white hover:bg-emerald-50 text-emerald-800 border border-emerald-200 flex items-center justify-center transition-all shrink-0">
+            <button id="kalam-refresh-mics-btn" title="Deteksi Ulang Mikrofon" class="w-8 h-8 rounded-xl bg-white hover:bg-emerald-100 text-emerald-800 border border-emerald-200 flex items-center justify-center transition-all shrink-0">
               <i class="fa-solid fa-rotate text-xs"></i>
             </button>
           </div>
@@ -3302,7 +3314,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (micSelect) {
       micSelect.onchange = () => {
         state.kalamState.selectedDeviceId = micSelect.value;
-        try { localStorage.setItem('kalam_selected_device_id', micSelect.value); } catch (e) {}
+        if (micSelect.value) {
+          try { localStorage.setItem('kalam_selected_device_id', micSelect.value); } catch (e) {}
+        } else {
+          try { localStorage.removeItem('kalam_selected_device_id'); } catch (e) {}
+        }
       };
     }
 
