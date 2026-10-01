@@ -5248,51 +5248,41 @@ document.addEventListener('DOMContentLoaded', () => {
   function updatePageTitle() {
     let title = 'Biiah 4.0';
     if (!state.currentUser || state.currentView === 'login') {
-      title = 'Biiah 4.0 - Masuk (Login)';
+      title = 'Biiah 4.0 - Login';
     } else {
       switch (state.currentView) {
         case 'dashboard':
           title = 'Biiah 4.0 - Beranda';
           break;
         case 'mufradat':
-          title = 'Biiah 4.0 - Mufradat (Kosakata)';
+          title = 'Biiah 4.0 - Mufrodat';
           break;
         case 'istima':
-          if (state.listeningActiveTab === 'quiz') {
-            title = "Biiah 4.0 - Istima' (Kuis Audio)";
-          } else if (state.listeningActiveTab === 'match') {
-            title = "Biiah 4.0 - Istima' (Cocokkan Kata)";
-          } else {
-            title = "Biiah 4.0 - Istima' (Menyimak)";
-          }
+          title = "Biiah 4.0 - Istima'";
           break;
         case 'kalam':
-          title = "Biiah 4.0 - Kalam (Berbicara)";
+          title = 'Biiah 4.0 - Kalam';
           break;
         case 'qiraah':
-          title = "Biiah 4.0 - Qira'ah (Membaca)";
+          title = "Biiah 4.0 - Qiro'ah";
           break;
         case 'qawaid':
-          title = "Biiah 4.0 - Qawa'id (Tata Bahasa)";
+          title = "Biiah 4.0 - Qawa'id";
           break;
         case 'dialogue':
-          title = "Biiah 4.0 - Hiwar (Percakapan)";
+          title = 'Biiah 4.0 - Hiwar';
           break;
         case 'quiz':
-          title = "Biiah 4.0 - Tadribat (Latihan Soal)";
+          title = 'Biiah 4.0 - Tadribat';
           break;
         case 'duelgame':
-          title = "Biiah 4.0 - Game Duel 1v1";
+          title = 'Biiah 4.0 - Game Duel 1v1';
           break;
         case 'students':
-          if (state.studentsTab === 'feed') {
-            title = "Biiah 4.0 - Monitoring (Aktivitas Realtime)";
-          } else {
-            title = "Biiah 4.0 - Monitoring (Rekap Nilai Siswa)";
-          }
+          title = 'Biiah 4.0 - Monitoring';
           break;
         case 'settings':
-          title = "Biiah 4.0 - Pengaturan Akun";
+          title = 'Biiah 4.0 - Pengaturan akun';
           break;
         default:
           title = 'Biiah 4.0';
