@@ -5244,9 +5244,66 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
   }
+  // Helper to dynamically update the document/tab title matching the active menu
+  function updatePageTitle() {
+    let title = 'Biiah 4.0';
+    if (!state.currentUser || state.currentView === 'login') {
+      title = 'Biiah 4.0 - Masuk (Login)';
+    } else {
+      switch (state.currentView) {
+        case 'dashboard':
+          title = 'Biiah 4.0 - Beranda';
+          break;
+        case 'mufradat':
+          title = 'Biiah 4.0 - Mufradat (Kosakata)';
+          break;
+        case 'istima':
+          if (state.listeningActiveTab === 'quiz') {
+            title = "Biiah 4.0 - Istima' (Kuis Audio)";
+          } else if (state.listeningActiveTab === 'match') {
+            title = "Biiah 4.0 - Istima' (Cocokkan Kata)";
+          } else {
+            title = "Biiah 4.0 - Istima' (Menyimak)";
+          }
+          break;
+        case 'kalam':
+          title = "Biiah 4.0 - Kalam (Berbicara)";
+          break;
+        case 'qiraah':
+          title = "Biiah 4.0 - Qira'ah (Membaca)";
+          break;
+        case 'qawaid':
+          title = "Biiah 4.0 - Qawa'id (Tata Bahasa)";
+          break;
+        case 'dialogue':
+          title = "Biiah 4.0 - Hiwar (Percakapan)";
+          break;
+        case 'quiz':
+          title = "Biiah 4.0 - Tadribat (Latihan Soal)";
+          break;
+        case 'duelgame':
+          title = "Biiah 4.0 - Game Duel 1v1";
+          break;
+        case 'students':
+          if (state.studentsTab === 'feed') {
+            title = "Biiah 4.0 - Monitoring (Aktivitas Realtime)";
+          } else {
+            title = "Biiah 4.0 - Monitoring (Rekap Nilai Siswa)";
+          }
+          break;
+        case 'settings':
+          title = "Biiah 4.0 - Pengaturan Akun";
+          break;
+        default:
+          title = 'Biiah 4.0';
+      }
+    }
+    document.title = title;
+  }
 
   // MAIN RENDER SWITCH
   function render() {
+    updatePageTitle();
     const headerEl = document.querySelector('header');
     const footerEl = document.querySelector('footer');
     const mainEl = document.querySelector('main');
