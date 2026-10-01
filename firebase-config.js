@@ -2,6 +2,7 @@
 // Firebase Configuration & Realtime Cloud Sync
 // Proyek: Lughotuna - Media Pembelajaran Bahasa Arab
 // Firebase Project: db-lomba
+// Sinkronisasi Real-time Nilai Latihan Soal & Game ke Akun Guru
 // ==========================================================================
 
 const firebaseConfig = {
@@ -23,7 +24,7 @@ try {
     }
     db = firebase.firestore();
     isFirebaseConnected = true;
-    console.log("🔥 [Firebase Cloud DB] Terhubung ke Firestore: db-lomba");
+    console.log("⚡ [Firebase Cloud DB] Terhubung ke Firestore: db-lomba");
   } else {
     console.warn("⚠️ [Firebase] SDK Firebase belum dimuat.");
   }
@@ -37,7 +38,7 @@ window.db = db;
 window.FirebaseSync = {
   isConnected: () => isFirebaseConnected && !!db,
 
-  // Inisialisasi sinkronisasi data siswa & guru
+  // Inisialisasi sinkronisasi data siswa, guru, dan aktivitas/nilai kuis & game
   async init(defaultStudents = [], defaultTeachers = [], onSyncCallback = null) {
     if (!this.isConnected()) return;
 
@@ -60,20 +61,27 @@ window.FirebaseSync = {
         await batch.commit();
       }
 
-      // Realtime listener untuk siswa: ketika ada kuis selesai di HP lain, layar guru update otomatis!
+      // Realtime listener untuk siswa: ketika ada kuis / game selesai di HP lain, akun guru terupdate seketika!
       studentsCol.onSnapshot(querySnap => {
         if (!querySnap.empty) {
           const cloudStudents = [];
           querySnap.forEach(doc => {
-            const data = doc.data();
+            const data = doc.data() || {};
             cloudStudents.push({
               id: data.id || Number(doc.id) || Date.now(),
               name: data.name || '',
               class: data.class || 'IX-A',
               password: data.password || '',
-              score: typeof data.score === 'number' ? data.score : 0,
+              score: typeof data.score === 'number' ? data.score : 0, // Kuis Utama / Kahoot
+              istimaScore: typeof data.istimaScore === 'number' ? data.istimaScore : 0, // Latihan Istima
+              kalamScore: typeof data.kalamScore === 'number' ? data.kalamScore : 0, // Praktik Kalam AI
+              duelScore: typeof data.duelScore === 'number' ? data.duelScore : 0, // Game Duel 1v1 Pts
+              matchGameScore: typeof data.matchGameScore === 'number' ? data.matchGameScore : 0, // Game Tebak Gambar
+              averageScore: typeof data.averageScore === 'number' ? data.averageScore : 0,
               progress: typeof data.progress === 'number' ? data.progress : 0,
-              lastActive: data.lastActive || 'Aktif'
+              lastActive: data.lastActive || 'Aktif',
+              submissions: Array.isArray(data.submissions) ? data.submissions : [],
+              ...data
             });
           });
           
@@ -112,6 +120,53 @@ window.FirebaseSync = {
         }
       });
 
+      // 3. Realtime Listener untuk Hasil Latihan Soal & Game (quiz_results)
+      // Setiap kali ada siswa menyelesaikan soal / game, arus data masuk ke dashboard guru seketika!
+      const setupSubmissionsListener = (useOrder = true) => {
+        let q = db.collection('quiz_results');
+        if (useOrder) {
+          try {
+            q = q.orderBy('timestamp', 'desc');
+          } catch (e) {
+            useOrder = false;
+          }
+        }
+        q.limit(40).onSnapshot(querySnap => {
+          if (!querySnap.empty) {
+            const list = [];
+            querySnap.forEach(doc => {
+              const d = doc.data() || {};
+              list.push({
+                id: doc.id,
+                studentName: d.studentName || 'Siswa',
+                studentId: d.studentId || '',
+                class: d.class || 'IX-A',
+                activityType: d.activityType || d.quizType || 'Latihan',
+                category: d.category || 'latihan',
+                score: typeof d.score === 'number' ? d.score : 0,
+                maxScore: d.maxScore || 100,
+                details: d.details || '',
+                createdAtFormatted: d.createdAtFormatted || 'Baru Saja',
+                timestamp: d.timestamp
+              });
+            });
+            // Urutkan jika fallback tanpa order
+            if (!useOrder) {
+              list.sort((a, b) => (b.timestamp?.seconds || 0) - (a.timestamp?.seconds || 0));
+            }
+            localStorage.setItem('arabic_app_submissions', JSON.stringify(list));
+            if (typeof onSyncCallback === 'function') {
+              onSyncCallback({ type: 'submissions', data: list });
+            }
+          }
+        }, err => {
+          console.warn("⚠️ [Firebase] Realtime submissions fallback tanpa index:", err.message);
+          if (useOrder) setupSubmissionsListener(false);
+        });
+      };
+
+      setupSubmissionsListener(true);
+
     } catch (e) {
       console.warn("⚠️ [Firebase] Gagal sinkronisasi awal (fallback mode offline):", e);
     }
@@ -126,6 +181,7 @@ window.FirebaseSync = {
         ...student,
         updatedAt: firebase.firestore.FieldValue.serverTimestamp()
       }, { merge: true });
+      console.log(`✅ [Firebase] Siswa ${student.name} tersimpan ke cloud Firestore.`);
     } catch (err) {
       console.error("❌ Gagal simpan siswa ke Firebase:", err);
     }
@@ -182,18 +238,22 @@ window.FirebaseSync = {
     }
   },
 
-  // Simpan riwayat hasil kuis siswa ke koleksi quiz_results
+  // Simpan riwayat hasil latihan soal & game ke koleksi quiz_results
   async recordQuizSubmission(submission) {
-    if (!this.isConnected()) return;
+    if (!this.isConnected() || !submission) return null;
     try {
-      await db.collection('quiz_results').add({
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' WIB, ' + now.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
+      const docRef = await db.collection('quiz_results').add({
         ...submission,
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-        createdAtFormatted: new Date().toLocaleString('id-ID')
+        createdAtFormatted: submission.createdAtFormatted || timeStr
       });
-      console.log("🏆 [Firebase] Hasil kuis berhasil disimpan ke koleksi quiz_results cloud!");
+      console.log("📊 [Firebase] Hasil latihan/game berhasil disimpan ke koleksi quiz_results cloud!");
+      return docRef.id;
     } catch (err) {
-      console.error("❌ Gagal simpan hasil kuis ke Firebase:", err);
+      console.error("❌ Gagal simpan hasil kuis/game ke Firebase:", err);
+      return null;
     }
   },
 

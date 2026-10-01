@@ -705,11 +705,99 @@ const ARABIC_DATA = {
   ],
 
   initialStudents: [
-    { id: 101, name: "Ahmad Fauzi", class: "IX-A", score: 95, progress: 100, lastActive: "Hari ini" },
-    { id: 102, name: "Siti Rahma", class: "IX-A", score: 88, progress: 90, lastActive: "Hari ini" },
-    { id: 103, name: "Muhammad Rizky", class: "IX-B", score: 92, progress: 95, lastActive: "Kemarin" },
-    { id: 104, name: "Aisyah Putri", class: "IX-A", score: 78, progress: 75, lastActive: "2 hari lalu" },
-    { id: 105, name: "Bilal Ramadhan", class: "IX-B", score: 85, progress: 85, lastActive: "Hari ini" }
+    { 
+      id: 101, 
+      name: "Ahmad Fauzi", 
+      class: "IX-A", 
+      score: 95, 
+      istimaScore: 90, 
+      kalamScore: 94, 
+      duelScore: 540, 
+      matchGameScore: 100, 
+      averageScore: 95, 
+      progress: 100, 
+      lastActive: "Hari ini 07:12 WIB",
+      submissions: [
+        { activityType: "Latihan Kuis Interaktif (Kahoot)", category: "latihan", score: 95, maxScore: 100, details: "19 dari 20 Soal Benar (4,850 Pts)", time: "07:12 WIB" },
+        { activityType: "Game Duel 1v1", category: "game", score: 540, maxScore: 1000, details: "Menang vs Ustadz AI (Combo x5)", time: "07:05 WIB" },
+        { activityType: "Praktik Kalam (Berbicara AI)", category: "latihan", score: 94, maxScore: 100, details: "Akurasi Pelafalan: Mumtaz", time: "06:50 WIB" }
+      ]
+    },
+    { 
+      id: 102, 
+      name: "Siti Rahma", 
+      class: "IX-A", 
+      score: 88, 
+      istimaScore: 85, 
+      kalamScore: 92, 
+      duelScore: 460, 
+      matchGameScore: 90, 
+      averageScore: 89, 
+      progress: 90, 
+      lastActive: "Hari ini 06:58 WIB",
+      submissions: [
+        { activityType: "Latihan Menyimak (Istima')", category: "latihan", score: 85, maxScore: 100, details: "8 dari 10 Soal Menyimak Benar", time: "06:58 WIB" },
+        { activityType: "Game Duel 1v1", category: "game", score: 460, maxScore: 1000, details: "Menang vs Siswa Teman", time: "06:40 WIB" }
+      ]
+    },
+    { 
+      id: 103, 
+      name: "Muhammad Rizky", 
+      class: "IX-B", 
+      score: 92, 
+      istimaScore: 95, 
+      kalamScore: 88, 
+      duelScore: 580, 
+      matchGameScore: 100, 
+      averageScore: 94, 
+      progress: 95, 
+      lastActive: "Kemarin 16:30 WIB",
+      submissions: [
+        { activityType: "Game Duel 1v1", category: "game", score: 580, maxScore: 1000, details: "Skor Tertinggi Kelas (Menang vs Ustadz AI)", time: "Kemarin" },
+        { activityType: "Latihan Kuis Interaktif (Kahoot)", category: "latihan", score: 92, maxScore: 100, details: "18 dari 20 Soal Benar", time: "Kemarin" }
+      ]
+    },
+    { 
+      id: 104, 
+      name: "Aisyah Putri", 
+      class: "IX-A", 
+      score: 78, 
+      istimaScore: 80, 
+      kalamScore: 82, 
+      duelScore: 320, 
+      matchGameScore: 80, 
+      averageScore: 80, 
+      progress: 75, 
+      lastActive: "2 hari lalu",
+      submissions: [
+        { activityType: "Latihan Kuis Interaktif (Kahoot)", category: "latihan", score: 78, maxScore: 100, details: "15 dari 20 Soal Benar", time: "2 hari lalu" }
+      ]
+    },
+    { 
+      id: 105, 
+      name: "Bilal Ramadhan", 
+      class: "IX-B", 
+      score: 85, 
+      istimaScore: 80, 
+      kalamScore: 86, 
+      duelScore: 410, 
+      matchGameScore: 90, 
+      averageScore: 85, 
+      progress: 85, 
+      lastActive: "Hari ini 06:20 WIB",
+      submissions: [
+        { activityType: "Game Tebak Gambar Audio", category: "game", score: 90, maxScore: 100, details: "Semua Pasangan Gambar Cocok", time: "06:20 WIB" }
+      ]
+    }
+  ],
+
+  initialSubmissions: [
+    { id: "sub_1", studentName: "Ahmad Fauzi", class: "IX-A", activityType: "Latihan Kuis Interaktif (Kahoot)", category: "latihan", score: 95, maxScore: 100, details: "19 dari 20 Soal Benar (4,850 Pts)", createdAtFormatted: "Hari ini 07:12 WIB", timestamp: { seconds: Math.floor(Date.now() / 1000) - 300 } },
+    { id: "sub_2", studentName: "Ahmad Fauzi", class: "IX-A", activityType: "Game Duel 1v1", category: "game", score: 540, maxScore: 1000, details: "Menang vs Ustadz AI (Combo x5)", createdAtFormatted: "Hari ini 07:05 WIB", timestamp: { seconds: Math.floor(Date.now() / 1000) - 600 } },
+    { id: "sub_3", studentName: "Siti Rahma", class: "IX-A", activityType: "Latihan Menyimak (Istima')", category: "latihan", score: 85, maxScore: 100, details: "8 dari 10 Soal Menyimak Benar", createdAtFormatted: "Hari ini 06:58 WIB", timestamp: { seconds: Math.floor(Date.now() / 1000) - 900 } },
+    { id: "sub_4", studentName: "Ahmad Fauzi", class: "IX-A", activityType: "Praktik Kalam (Berbicara AI)", category: "latihan", score: 94, maxScore: 100, details: "Akurasi Pelafalan: Mumtaz", createdAtFormatted: "Hari ini 06:50 WIB", timestamp: { seconds: Math.floor(Date.now() / 1000) - 1400 } },
+    { id: "sub_5", studentName: "Siti Rahma", class: "IX-A", activityType: "Game Duel 1v1", category: "game", score: 460, maxScore: 1000, details: "Menang vs Siswa Teman", createdAtFormatted: "Hari ini 06:40 WIB", timestamp: { seconds: Math.floor(Date.now() / 1000) - 2000 } },
+    { id: "sub_6", studentName: "Bilal Ramadhan", class: "IX-B", activityType: "Game Tebak Gambar Audio", category: "game", score: 90, maxScore: 100, details: "Semua Pasangan Gambar Cocok", createdAtFormatted: "Hari ini 06:20 WIB", timestamp: { seconds: Math.floor(Date.now() / 1000) - 3200 } }
   ],
 
   initialTeachers: [

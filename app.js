@@ -229,8 +229,35 @@ document.addEventListener('DOMContentLoaded', () => {
     quizSubmitted: false,
     quizScore: 0,
     vocabFilter: 'All',
-    students: [...ARABIC_DATA.initialStudents],
+    students: (() => {
+      const saved = localStorage.getItem('arabic_app_students');
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        } catch(e) {}
+      }
+      return [...ARABIC_DATA.initialStudents];
+    })(),
     teachers: [...(ARABIC_DATA.initialTeachers || [])],
+    submissions: (() => {
+      const saved = localStorage.getItem('arabic_app_submissions');
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        } catch(e) {}
+      }
+      return [...(ARABIC_DATA.initialSubmissions || [])];
+    })(),
+    studentsTab: 'table', // 'table' or 'feed'
+    studentsSearch: '',
+    studentsClassFilter: 'all',
+    selectedStudentDetail: null,
+    listeningQuizSubmitted: false,
+    listeningQuizScore: 0,
+    listeningQuizCorrect: 0,
+    matchGameSubmitted: false,
     customVocab: [],
     // Maharah Kalam (Kemahiran Berbicara) State
     kalamState: {
@@ -280,6 +307,8 @@ document.addEventListener('DOMContentLoaded', () => {
     kahootShowFeedback: false,
     kahootLastCorrect: false,
     kahootPointsEarned: 0,
+
+
     // 1v1 Fast Quiz Duel State
     duelState: {
       selectedSetIdx: 0, // 0: Paket A, 1: Paket B, 2: Paket C
@@ -306,6 +335,233 @@ document.addEventListener('DOMContentLoaded', () => {
       history: []
     }
   };
+
+  // Toast Notification System
+  window.showToast = showToast;
+  function showToast(message, type = 'info') {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+
+    const toast = document.createElement('div');
+    const isSuccess = type === 'success';
+    const isError = type === 'error';
+    const isWarning = type === 'warning';
+
+    const bgClass = isSuccess 
+      ? 'bg-emerald-900/95 text-white border-emerald-500 shadow-emerald-900/30' 
+      : (isError 
+        ? 'bg-rose-900/95 text-white border-rose-500 shadow-rose-900/30' 
+        : (isWarning 
+          ? 'bg-amber-900/95 text-white border-amber-500 shadow-amber-900/30' 
+          : 'bg-teal-900/95 text-white border-teal-500 shadow-teal-900/30'));
+
+    const icon = isSuccess 
+      ? 'fa-circle-check text-emerald-400' 
+      : (isError 
+        ? 'fa-triangle-exclamation text-rose-400' 
+        : (isWarning 
+          ? 'fa-circle-exclamation text-amber-400' 
+          : 'fa-circle-info text-teal-400'));
+
+    toast.className = `pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-2xl border shadow-xl backdrop-blur-md text-xs font-semibold transform transition-all duration-300 translate-y-[-10px] opacity-0 ${bgClass}`;
+    toast.innerHTML = `
+      <i class="fa-solid ${icon} text-base shrink-0"></i>
+      <span class="flex-1 leading-snug">${message}</span>
+    `;
+
+    container.appendChild(toast);
+
+    requestAnimationFrame(() => {
+      toast.classList.remove('translate-y-[-10px]', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+    });
+
+    setTimeout(() => {
+      toast.classList.remove('translate-y-0', 'opacity-100');
+      toast.classList.add('translate-y-[-10px]', 'opacity-0');
+      setTimeout(() => {
+        if (toast.parentNode) toast.parentNode.removeChild(toast);
+      }, 300);
+    }, 3500);
+  }
+
+  // =========================================================================
+  // REAL-TIME SYNCHRONIZATION ENGINE & UNIFIED SCORE SUBMISSION
+  // Memastikan semua nilai latihan & game masuk ke akun guru secara realtime!
+  // =========================================================================
+  const learningSyncChannel = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('arabic_learning_sync') : null;
+  if (learningSyncChannel) {
+    learningSyncChannel.onmessage = (event) => {
+      const msg = event.data;
+      if (!msg) return;
+      if (msg.type === 'NEW_SUBMISSION') {
+        if (msg.submission) {
+          if (!state.submissions) state.submissions = [];
+          state.submissions = [msg.submission, ...state.submissions.filter(s => s.id !== msg.submission.id)].slice(0, 50);
+          localStorage.setItem('arabic_app_submissions', JSON.stringify(state.submissions));
+        }
+        if (msg.student) {
+          const idx = state.students.findIndex(s => s.id === msg.student.id || (s.name && msg.student.name && s.name.toLowerCase() === msg.student.name.toLowerCase()));
+          if (idx !== -1) {
+            state.students[idx] = { ...state.students[idx], ...msg.student };
+          } else {
+            state.students.unshift(msg.student);
+          }
+          localStorage.setItem('arabic_app_students', JSON.stringify(state.students));
+        }
+        // Notifikasi visual & audio seketika jika Guru sedang membuka aplikasi
+        if (state.currentUser && state.currentUser.role === 'guru') {
+          showToast(`🔔 Nilai Baru Masuk: ${msg.submission.studentName} menyelesaikan ${msg.submission.activityType} (Skor: ${msg.submission.score})!`, 'success');
+          if (typeof playSoundEffect === 'function') playSoundEffect('combo');
+          if (state.currentView === 'students' || state.currentView === 'dashboard') {
+            render();
+          }
+        }
+      }
+    };
+  }
+
+  // Cross-tab storage event listener
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'arabic_app_students' && e.newValue) {
+      try {
+        state.students = JSON.parse(e.newValue);
+        if (state.currentUser && state.currentUser.role === 'guru' && (state.currentView === 'students' || state.currentView === 'dashboard')) {
+          render();
+        }
+      } catch (err) {}
+    }
+    if (e.key === 'arabic_app_submissions' && e.newValue) {
+      try {
+        state.submissions = JSON.parse(e.newValue);
+        if (state.currentUser && state.currentUser.role === 'guru' && (state.currentView === 'students' || state.currentView === 'dashboard')) {
+          render();
+        }
+      } catch (err) {}
+    }
+  });
+
+  // Fungsi Terpusat: Kirim Semua Nilai Latihan Soal & Game ke Akun Guru Realtime
+  function submitStudentActivity({ activityType, category = 'latihan', score, maxScore = 100, details = '', additionalData = {} }) {
+    const studentName = state.currentUser ? state.currentUser.name : 'Siswa Tamu';
+    const studentRole = state.currentUser ? state.currentUser.role : 'siswa';
+
+    let student = state.students.find(s => 
+      (state.currentUser && state.currentUser.id && s.id === state.currentUser.id) || 
+      (s.name && s.name.toLowerCase() === studentName.toLowerCase())
+    );
+
+    if (!student && studentRole === 'siswa') {
+      student = {
+        id: (state.currentUser && state.currentUser.id) || Date.now(),
+        name: studentName,
+        class: (state.currentUser && state.currentUser.class) || 'IX-A',
+        score: 0,
+        istimaScore: 0,
+        kalamScore: 0,
+        duelScore: 0,
+        matchGameScore: 0,
+        averageScore: 0,
+        progress: 0,
+        lastActive: 'Baru Saja',
+        submissions: []
+      };
+      state.students.unshift(student);
+    }
+
+    if (student) {
+      if (activityType.includes('Kahoot') || activityType.includes('Kuis Interaktif')) {
+        student.score = score;
+      } else if (activityType.includes('Istima') || activityType.includes('Menyimak')) {
+        student.istimaScore = score;
+      } else if (activityType.includes('Kalam') || activityType.includes('Berbicara')) {
+        student.kalamScore = score;
+      } else if (activityType.includes('Duel')) {
+        student.duelScore = Math.max(student.duelScore || 0, score);
+        student.duelMatches = (student.duelMatches || 0) + 1;
+        if (details && details.includes('Menang')) student.duelWins = (student.duelWins || 0) + 1;
+      } else if (activityType.includes('Tebak Gambar') || activityType.includes('Match')) {
+        student.matchGameScore = score;
+      }
+
+      // Hitung Nilai Rata-rata Gabungan (Akademik & Praktik)
+      const academicScores = [];
+      if (typeof student.score === 'number' && student.score > 0) academicScores.push(student.score);
+      if (typeof student.istimaScore === 'number' && student.istimaScore > 0) academicScores.push(student.istimaScore);
+      if (typeof student.kalamScore === 'number' && student.kalamScore > 0) academicScores.push(student.kalamScore);
+      if (typeof student.matchGameScore === 'number' && student.matchGameScore > 0) academicScores.push(student.matchGameScore);
+      student.averageScore = academicScores.length > 0 
+        ? Math.round(academicScores.reduce((a, b) => a + b, 0) / academicScores.length)
+        : (student.score || 0);
+
+      // Hitung Progres Belajar Siswa (5 komponen aktivitas)
+      let doneCount = 0;
+      if (student.score > 0) doneCount++;
+      if (student.istimaScore > 0) doneCount++;
+      if (student.kalamScore > 0) doneCount++;
+      if (student.duelScore > 0) doneCount++;
+      if (student.matchGameScore > 0) doneCount++;
+      student.progress = Math.min(100, Math.round((doneCount / 5) * 100));
+
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' WIB';
+      student.lastActive = `Hari ini ${timeStr}`;
+
+      if (!student.submissions) student.submissions = [];
+      student.submissions.unshift({
+        activityType,
+        category,
+        score,
+        maxScore,
+        details,
+        time: timeStr
+      });
+      student.submissions = student.submissions.slice(0, 25);
+
+      localStorage.setItem('arabic_app_students', JSON.stringify(state.students));
+    }
+
+    const submissionId = 'sub_' + Date.now();
+    const now = new Date();
+    const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' WIB';
+    const newSub = {
+      id: submissionId,
+      studentName: student ? student.name : studentName,
+      studentId: student ? student.id : '',
+      class: student ? student.class : 'IX-A',
+      activityType,
+      category,
+      score,
+      maxScore,
+      details,
+      createdAtFormatted: `Hari ini ${timeStr}`,
+      timestamp: { seconds: Math.floor(Date.now() / 1000) },
+      ...additionalData
+    };
+
+    if (!state.submissions) state.submissions = [];
+    state.submissions = [newSub, ...state.submissions.filter(s => s.id !== submissionId)].slice(0, 50);
+    localStorage.setItem('arabic_app_submissions', JSON.stringify(state.submissions));
+
+    // Kirim langsung ke Firebase Firestore Cloud
+    if (window.FirebaseSync && window.FirebaseSync.isConnected()) {
+      if (student) {
+        window.FirebaseSync.saveStudent(student);
+      }
+      window.FirebaseSync.recordQuizSubmission(newSub);
+    }
+
+    // Broadcast ke tab browser lain (seperti tab guru yang sedang terbuka)
+    if (learningSyncChannel) {
+      learningSyncChannel.postMessage({
+        type: 'NEW_SUBMISSION',
+        submission: newSub,
+        student: student
+      });
+    }
+
+    showToast(`Nilai ${activityType} (${score}) otomatis masuk ke Akun Guru secara realtime! 🌟`, 'success');
+  }
 
   // Load persisted state if exists
   const savedUser = localStorage.getItem('arabic_app_user');
@@ -682,6 +938,41 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
           </div>
         </div>
+
+        ${isGuru ? `
+          <!-- Teacher Real-Time Incoming Scores Live Widget -->
+          <div class="bg-white p-6 rounded-3xl border-2 border-emerald-200 shadow-sm space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-emerald-100 pb-3">
+              <div class="flex items-center gap-2.5">
+                <span class="w-3 h-3 rounded-full bg-emerald-500 animate-ping"></span>
+                <div>
+                  <h3 class="font-extrabold text-emerald-950 text-base">🔴 Live Feed: Nilai Siswa Terbaru Masuk (Cloud Realtime)</h3>
+                  <p class="text-xs text-emerald-700">Setiap ada siswa yang selesai latihan kuis atau game di HP/PC mereka, nilai langsung muncul di sini secara seketika.</p>
+                </div>
+              </div>
+              <button onclick="document.querySelector('[data-view=students]').click()" class="px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-bold transition-all shadow-xs flex items-center gap-2 self-start sm:self-auto">
+                <span>Lihat Rekap Lengkap Semua Siswa</span>
+                <i class="fa-solid fa-arrow-right text-xs"></i>
+              </button>
+            </div>
+
+            <div class="grid sm:grid-cols-3 gap-3">
+              ${(state.submissions || []).slice(0, 3).map(sub => `
+                <div class="p-3.5 rounded-2xl bg-emerald-50/50 border border-emerald-100 flex items-center justify-between">
+                  <div>
+                    <span class="font-bold text-emerald-950 text-xs block">${sub.studentName} (${sub.class || 'IX-A'})</span>
+                    <span class="text-[11px] text-emerald-700 block truncate max-w-[150px]">${sub.activityType}</span>
+                    <span class="text-[10px] text-slate-400">${sub.createdAtFormatted || 'Baru Saja'}</span>
+                  </div>
+                  <div class="text-right">
+                    <span class="text-lg font-black text-emerald-800">${sub.score}</span>
+                    <span class="text-[9px] text-slate-500 block">${sub.category === 'game' ? 'Pts' : '/ 100'}</span>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        ` : ''}
 
         <!-- Main Features Grid (Arch Cards) -->
         <div class="space-y-5">
@@ -1275,6 +1566,58 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (activeTab === 'quiz') {
       const section = listening.sections.find(s => s.id === 'quiz');
+
+      // Tampilan Hasil Kuis Istima' saat Selesai
+      if (state.listeningQuizSubmitted) {
+        const total = section ? section.questions.length : 10;
+        const score = state.listeningQuizScore || 0;
+        const correct = state.listeningQuizCorrect || 0;
+        const isPassed = score >= 75;
+
+        return `
+          <div class="space-y-6 animate-fadeIn max-w-2xl mx-auto">
+            <div class="bg-gradient-to-br ${isPassed ? 'from-emerald-900 via-teal-900 to-emerald-950' : 'from-amber-900 via-amber-800 to-orange-950'} text-white p-6 sm:p-8 rounded-3xl text-center shadow-2xl border-2 ${isPassed ? 'border-emerald-400/40' : 'border-amber-400/40'} space-y-4">
+              <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full ${isPassed ? 'bg-emerald-500/30 text-emerald-300' : 'bg-amber-500/30 text-amber-300'} flex items-center justify-center text-3xl sm:text-4xl mx-auto shadow-inner border border-white/20">
+                <i class="fa-solid ${isPassed ? 'fa-award' : 'fa-rotate-right'}"></i>
+              </div>
+              <div>
+                <span class="px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-white/20 text-white inline-block mb-2">Hasil Evaluasi Maharah Istima'</span>
+                <h3 class="text-2xl sm:text-3xl font-extrabold">${isPassed ? 'Mumtaz! Luar Biasa! 🎉' : 'Bagus! Tetap Semangat! 💪'}</h3>
+                <p class="text-xs text-emerald-200 mt-1">Latihan Menyimak Pemahaman Teks Bahasa Arab (10 Soal Audio)</p>
+              </div>
+
+              <div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 sm:p-5 border border-white/15 max-w-md mx-auto grid grid-cols-2 gap-4 text-center">
+                <div>
+                  <div class="text-3xl sm:text-4xl font-extrabold text-yellow-300">${score}</div>
+                  <div class="text-[11px] text-emerald-100 font-semibold mt-0.5">Nilai Akhir (0-100)</div>
+                </div>
+                <div>
+                  <div class="text-3xl sm:text-4xl font-extrabold text-white">${correct} / ${total}</div>
+                  <div class="text-[11px] text-emerald-100 font-semibold mt-0.5">Jawaban Benar</div>
+                </div>
+              </div>
+
+              <!-- Realtime Notification Badge -->
+              <div class="inline-flex items-center gap-2 px-4 py-2 bg-emerald-500/30 border border-emerald-400/50 rounded-xl text-xs font-bold text-emerald-100">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
+                <span>✅ Nilai otomatis tersimpan & masuk ke Akun Guru secara Realtime!</span>
+              </div>
+
+              <div class="pt-3 flex flex-col sm:flex-row items-center justify-center gap-3">
+                <button id="istima-retry-btn" class="w-full sm:w-auto px-6 py-3 bg-white text-emerald-950 font-bold rounded-xl text-xs shadow-lg hover:bg-emerald-50 transition-all flex items-center justify-center gap-2">
+                  <i class="fa-solid fa-rotate-left"></i>
+                  <span>Ulangi Latihan Kuis</span>
+                </button>
+                <button id="istima-goto-match-btn" class="w-full sm:w-auto px-6 py-3 bg-emerald-500 hover:bg-emerald-400 text-white font-bold rounded-xl text-xs shadow-lg transition-all flex items-center justify-center gap-2">
+                  <span>Lanjut Game Mencocokkan</span>
+                  <i class="fa-solid fa-arrow-right"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
       const qIdx = state.listeningQuizIndex || 0;
       const currentQ = section.questions[qIdx];
 
@@ -1454,10 +1797,46 @@ document.addEventListener('DOMContentLoaded', () => {
           state.listeningQuizIndex++;
           render();
         } else {
-          alert("Selamat! Anda telah menyelesaikan seluruh Kuis Menyimak Audio Maharah Istima'!");
-          state.listeningQuizIndex = 0;
+          // Hitung nilai akhir kuis Istima'
+          let correctCount = 0;
+          sectionQuiz.questions.forEach(q => {
+            if (state.listeningQuizAnswers[q.id] === q.answer) correctCount++;
+          });
+          const score = Math.round((correctCount / sectionQuiz.questions.length) * 100);
+          state.listeningQuizSubmitted = true;
+          state.listeningQuizScore = score;
+          state.listeningQuizCorrect = correctCount;
+
+          submitStudentActivity({
+            activityType: "Latihan Menyimak (Istima')",
+            category: "latihan",
+            score: score,
+            maxScore: 100,
+            details: `${correctCount} dari ${sectionQuiz.questions.length} Soal Audio Terjawab Benar`,
+            additionalData: { correctCount, totalQuestions: sectionQuiz.questions.length }
+          });
+
           render();
         }
+      });
+    }
+
+    // Istima Retry & Goto Match buttons
+    const istimaRetryBtn = document.getElementById('istima-retry-btn');
+    if (istimaRetryBtn) {
+      istimaRetryBtn.addEventListener('click', () => {
+        state.listeningQuizSubmitted = false;
+        state.listeningQuizIndex = 0;
+        state.listeningQuizAnswers = {};
+        render();
+      });
+    }
+
+    const istimaGotoMatchBtn = document.getElementById('istima-goto-match-btn');
+    if (istimaGotoMatchBtn) {
+      istimaGotoMatchBtn.addEventListener('click', () => {
+        state.listeningActiveTab = 'match';
+        render();
       });
     }
 
@@ -1473,6 +1852,29 @@ document.addEventListener('DOMContentLoaded', () => {
           const isCorrect = game.options[oIdx].correct;
           playSoundEffect(isCorrect ? 'correct' : 'wrong');
         }
+
+        // Cek jika seluruh game matching telah dijawab
+        if (section && section.games) {
+          const allAnswered = section.games.every(g => state.listeningMatchSelected[g.id] !== undefined);
+          if (allAnswered && !state.matchGameSubmitted) {
+            state.matchGameSubmitted = true;
+            let correct = 0;
+            section.games.forEach(g => {
+              const sel = state.listeningMatchSelected[g.id];
+              if (g.options[sel] && g.options[sel].correct) correct++;
+            });
+            const matchScore = Math.round((correct / section.games.length) * 100);
+            submitStudentActivity({
+              activityType: "Game Tebak Gambar Audio",
+              category: "game",
+              score: matchScore,
+              maxScore: 100,
+              details: `${correct} dari ${section.games.length} Pasangan Gambar Cocok`,
+              additionalData: { correct, total: section.games.length }
+            });
+          }
+        }
+
         render();
       });
     });
@@ -2249,16 +2651,17 @@ document.addEventListener('DOMContentLoaded', () => {
       } catch (e) {}
 
       if (state.currentUser && state.currentUser.role === 'siswa') {
-        const studentObj = state.students.find(s => s.id === state.currentUser.id || s.name === state.currentUser.name);
-        if (studentObj) {
-          studentObj.kalamScore = calculateAverageKalamScore();
-          try {
-            localStorage.setItem('arabic_app_students', JSON.stringify(state.students));
-            if (window.FirebaseSync && typeof window.FirebaseSync.saveStudent === 'function') {
-              window.FirebaseSync.saveStudent(studentObj);
-            }
-          } catch (e) {}
-        }
+        submitStudentActivity({
+          activityType: 'Praktik Kalam (Berbicara AI)',
+          category: 'latihan',
+          score: result.finalScore,
+          maxScore: 100,
+          details: `Lafal: "${currentItem.arabic}" (${result.gradeTitle})`,
+          additionalData: {
+            arabic: currentItem.arabic,
+            grade: result.gradeTitle
+          }
+        });
       }
     }
 
@@ -4367,70 +4770,518 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 7. STUDENTS MONITORING VIEW (Guru Only)
   function renderStudents() {
+    const students = state.students || [];
+    const submissions = state.submissions || [];
+    const activeTab = state.studentsTab || 'table';
+
+    // Filter students by search and class
+    const search = (state.studentsSearch || '').toLowerCase().trim();
+    const classFilter = state.studentsClassFilter || 'all';
+
+    const filteredStudents = students.filter(s => {
+      const matchName = !search || (s.name && s.name.toLowerCase().includes(search)) || String(s.id).includes(search);
+      const matchClass = classFilter === 'all' || s.class === classFilter;
+      return matchName && matchClass;
+    });
+
+    // Calculate Class KPIs
+    const totalStudents = students.length;
+    const allAverages = students.map(s => s.averageScore || s.score || 0);
+    const classAvg = totalStudents > 0 ? Math.round(allAverages.reduce((a, b) => a + b, 0) / totalStudents) : 0;
+    const maxDuelScore = students.reduce((max, s) => Math.max(max, s.duelScore || 0), 0);
+    const tuntasCount = students.filter(s => (s.averageScore || s.score || 0) >= 75).length;
+    const tuntasPct = totalStudents > 0 ? Math.round((tuntasCount / totalStudents) * 100) : 0;
+
     return `
       <div class="space-y-6">
-        <div class="bg-white p-6 rounded-3xl border border-emerald-100 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <h2 class="text-2xl font-bold text-emerald-950">Monitoring & Releas Nilai Siswa</h2>
-            <p class="text-xs text-emerald-600 mt-0.5">Daftar pencapaian siswa pada materi الحفاظ على البيئة</p>
+        <!-- Top Command Header -->
+        <div class="bg-gradient-to-r from-emerald-900 via-teal-900 to-emerald-950 p-6 sm:p-8 rounded-3xl text-white shadow-xl border border-emerald-700/50 flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div class="space-y-2">
+            <div class="inline-flex items-center gap-2 bg-emerald-500/20 backdrop-blur-md px-3.5 py-1.5 rounded-full text-xs font-bold text-emerald-300 border border-emerald-400/30">
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span>Cloud Firestore Real-time Terhubung (db-lomba)</span>
+            </div>
+            <h2 class="text-2xl sm:text-3xl font-extrabold font-arabic tracking-tight">Monitoring & Rekap Nilai Siswa Real-time</h2>
+            <p class="text-xs sm:text-sm text-emerald-200 max-w-2xl">
+              Seluruh perolehan nilai latihan kuis, pemahaman audio menyimak (Istima'), praktik bicara AI (Kalam), dan game interaktif siswa otomatis tersinkronisasi ke sini secara langsung tanpa jeda.
+            </p>
           </div>
-          <button id="export-excel-btn" class="px-4 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-bold shadow-md flex items-center gap-2">
-            <i class="fa-solid fa-file-excel"></i> Export Rekap Data
-          </button>
+
+          <div class="flex flex-wrap items-center gap-2.5">
+            <button id="btn-export-excel" class="px-4 py-3 bg-emerald-400 hover:bg-emerald-300 text-emerald-950 rounded-2xl text-xs font-extrabold shadow-lg transition-all flex items-center gap-2 transform hover:scale-105 active:scale-95">
+              <i class="fa-solid fa-file-excel text-base"></i>
+              <span>Export Rekap Excel (CSV)</span>
+            </button>
+            <button id="btn-refresh-students" class="px-4 py-3 bg-white/10 hover:bg-white/20 text-white rounded-2xl text-xs font-bold backdrop-blur-md border border-white/20 transition-all flex items-center gap-2 active:scale-95">
+              <i class="fa-solid fa-rotate text-sm"></i>
+              <span>Segarkan</span>
+            </button>
+          </div>
         </div>
 
-        <div class="bg-white rounded-3xl border border-emerald-100 shadow-sm overflow-hidden">
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs">
-              <thead class="bg-emerald-50 text-emerald-900 font-bold border-b border-emerald-100">
-                <tr>
-                  <th class="p-4">ID Siswa</th>
-                  <th class="p-4">Nama Siswa</th>
-                  <th class="p-4">Kelas</th>
-                  <th class="p-4">Skor Kuis</th>
-                  <th class="p-4">Skor Kalam</th>
-                  <th class="p-4">Progres (%)</th>
-                  <th class="p-4">Aktivitas Terakhir</th>
-                  <th class="p-4 text-center">Status</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-emerald-50">
-                ${state.students.map(s => `
-                  <tr class="hover:bg-emerald-50/50 transition-colors">
-                    <td class="p-4 font-mono text-emerald-600">${s.id}</td>
-                    <td class="p-4 font-bold text-emerald-950">${s.name}</td>
-                    <td class="p-4 text-emerald-700">${s.class}</td>
-                    <td class="p-4">
-                      <span class="px-2.5 py-1 rounded-full text-xs font-extrabold ${s.score >= 80 ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">
-                        ${s.score} / 100
-                      </span>
-                    </td>
-                    <td class="p-4">
-                      <div class="w-24 bg-emerald-100 rounded-full h-2 overflow-hidden">
-                        <div class="bg-emerald-600 h-full rounded-full" style="width: ${s.progress}%"></div>
-                      </div>
-                    </td>
-                    <td class="p-4 text-emerald-600">${s.lastActive}</td>
-                    <td class="p-4 text-center">
-                      <span class="px-2 py-0.5 rounded-md text-[10px] font-bold ${s.score >= 75 ? 'bg-emerald-600 text-white' : 'bg-red-500 text-white'}">
-                        ${s.score >= 75 ? 'TUNTAS' : 'REMEDIAL'}
-                      </span>
-                    </td>
+        <!-- 4 KPI Summary Cards -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+          <div class="bg-white p-4 sm:p-5 rounded-2xl border border-emerald-100 shadow-sm flex items-center gap-3.5">
+            <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center text-xl shrink-0">
+              <i class="fa-solid fa-users"></i>
+            </div>
+            <div class="min-w-0">
+              <div class="text-xl sm:text-2xl font-black text-emerald-950">${totalStudents}</div>
+              <div class="text-[11px] text-emerald-600 font-semibold truncate">Siswa Terdaftar</div>
+            </div>
+          </div>
+
+          <div class="bg-white p-4 sm:p-5 rounded-2xl border border-emerald-100 shadow-sm flex items-center gap-3.5">
+            <div class="w-12 h-12 rounded-2xl bg-teal-100 text-teal-800 flex items-center justify-center text-xl shrink-0">
+              <i class="fa-solid fa-chart-line"></i>
+            </div>
+            <div class="min-w-0">
+              <div class="text-xl sm:text-2xl font-black text-emerald-950">${classAvg} <span class="text-xs font-normal text-slate-500">/ 100</span></div>
+              <div class="text-[11px] text-teal-600 font-semibold truncate">Rata-rata Nilai Kelas</div>
+            </div>
+          </div>
+
+          <div class="bg-white p-4 sm:p-5 rounded-2xl border border-emerald-100 shadow-sm flex items-center gap-3.5">
+            <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-800 flex items-center justify-center text-xl shrink-0">
+              <i class="fa-solid fa-bolt"></i>
+            </div>
+            <div class="min-w-0">
+              <div class="text-xl sm:text-2xl font-black text-emerald-950">${maxDuelScore} <span class="text-xs font-normal text-slate-500">Pts</span></div>
+              <div class="text-[11px] text-amber-600 font-semibold truncate">Skor Tertinggi Game Duel</div>
+            </div>
+          </div>
+
+          <div class="bg-white p-4 sm:p-5 rounded-2xl border border-emerald-100 shadow-sm flex items-center gap-3.5">
+            <div class="w-12 h-12 rounded-2xl bg-indigo-100 text-indigo-800 flex items-center justify-center text-xl shrink-0">
+              <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <div class="min-w-0">
+              <div class="text-xl sm:text-2xl font-black text-emerald-950">${tuntasPct}%</div>
+              <div class="text-[11px] text-indigo-600 font-semibold truncate">${tuntasCount} Siswa Tuntas (KKM 75)</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Navigation Tabs & Filter Bar -->
+        <div class="bg-white p-4 sm:p-5 rounded-3xl border border-emerald-100 shadow-sm space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-emerald-100 pb-3">
+            <div class="flex items-center gap-2 p-1 bg-emerald-50 rounded-2xl border border-emerald-100">
+              <button data-tab="table" class="tab-switch-btn px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${activeTab === 'table' ? 'bg-emerald-800 text-white shadow-md' : 'text-emerald-800 hover:bg-white'}">
+                <i class="fa-solid fa-table-list"></i>
+                <span>Tabel Rekap Nilai Lengkap</span>
+              </button>
+              <button data-tab="feed" class="tab-switch-btn px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 relative ${activeTab === 'feed' ? 'bg-emerald-800 text-white shadow-md' : 'text-emerald-800 hover:bg-white'}">
+                <span class="w-2 h-2 rounded-full bg-rose-500 animate-ping"></span>
+                <i class="fa-solid fa-satellite-dish"></i>
+                <span>Live Feed Nilai Masuk (${submissions.length})</span>
+              </button>
+            </div>
+
+            <!-- Search & Filter Options -->
+            <div class="flex items-center gap-2">
+              <div class="relative">
+                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-emerald-600 text-xs"></i>
+                <input type="text" id="students-search-input" value="${state.studentsSearch || ''}" placeholder="Cari nama siswa..." class="pl-9 pr-3 py-2 rounded-xl border border-emerald-200 bg-emerald-50/40 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:bg-white w-40 sm:w-56 transition-all">
+              </div>
+              <select id="students-class-filter" class="px-3 py-2 rounded-xl border border-emerald-200 bg-emerald-50/40 text-xs font-bold text-emerald-900 focus:outline-none focus:ring-2 focus:ring-emerald-600">
+                <option value="all" ${classFilter === 'all' ? 'selected' : ''}>Semua Kelas</option>
+                <option value="IX-A" ${classFilter === 'IX-A' ? 'selected' : ''}>Kelas IX-A</option>
+                <option value="IX-B" ${classFilter === 'IX-B' ? 'selected' : ''}>Kelas IX-B</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- TAB 1: TABEL REKAP NILAI LENGKAP -->
+          ${activeTab === 'table' ? `
+            <div class="overflow-x-auto rounded-2xl border border-emerald-100">
+              <table class="w-full text-left text-xs whitespace-nowrap">
+                <thead class="bg-emerald-50/80 text-emerald-950 font-bold border-b border-emerald-100">
+                  <tr>
+                    <th class="p-3.5 text-center">No</th>
+                    <th class="p-3.5">Nama Siswa</th>
+                    <th class="p-3.5 text-center">Kelas</th>
+                    <th class="p-3.5 text-center">Kuis Kahoot</th>
+                    <th class="p-3.5 text-center">Latihan Istima'</th>
+                    <th class="p-3.5 text-center">Praktik Kalam</th>
+                    <th class="p-3.5 text-center">Game Duel 1v1</th>
+                    <th class="p-3.5 text-center">Tebak Gambar</th>
+                    <th class="p-3.5 text-center">Nilai Rata-rata</th>
+                    <th class="p-3.5 text-center">Progres</th>
+                    <th class="p-3.5 text-center">Status</th>
+                    <th class="p-3.5 text-center">Aktivitas Terakhir</th>
+                    <th class="p-3.5 text-center">Aksi</th>
                   </tr>
+                </thead>
+                <tbody class="divide-y divide-emerald-50 bg-white">
+                  ${filteredStudents.length === 0 ? `
+                    <tr>
+                      <td colspan="13" class="p-8 text-center text-slate-400 font-medium">
+                        Tidak ada siswa yang sesuai dengan filter pencarian.
+                      </td>
+                    </tr>
+                  ` : filteredStudents.map((s, idx) => {
+                    const avg = s.averageScore || s.score || 0;
+                    const isTuntas = avg >= 75;
+                    return `
+                      <tr class="hover:bg-emerald-50/40 transition-colors">
+                        <td class="p-3.5 text-center font-mono text-emerald-700 font-bold">${idx + 1}</td>
+                        <td class="p-3.5">
+                          <div class="flex items-center gap-2.5">
+                            <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-800 font-bold flex items-center justify-center text-xs shrink-0 border border-emerald-200">
+                              ${(s.name || 'S').charAt(0).toUpperCase()}
+                            </div>
+                            <div>
+                              <div class="font-bold text-emerald-950 text-sm">${s.name}</div>
+                              <div class="text-[10px] text-slate-500 font-mono">ID: ${s.id}</div>
+                            </div>
+                          </div>
+                        </td>
+                        <td class="p-3.5 text-center font-bold text-emerald-800">
+                          <span class="px-2 py-0.5 rounded-lg bg-emerald-100 text-emerald-800 text-[11px] font-semibold">${s.class || 'IX-A'}</span>
+                        </td>
+                        <td class="p-3.5 text-center">
+                          <span class="px-2.5 py-1 rounded-xl text-xs font-bold ${(s.score || 0) >= 80 ? 'bg-purple-100 text-purple-800' : 'bg-slate-100 text-slate-700'}">
+                            ${s.score !== undefined ? s.score : 0}
+                          </span>
+                        </td>
+                        <td class="p-3.5 text-center">
+                          <span class="px-2.5 py-1 rounded-xl text-xs font-bold ${(s.istimaScore || 0) >= 80 ? 'bg-teal-100 text-teal-800' : 'bg-slate-100 text-slate-700'}">
+                            ${s.istimaScore !== undefined ? s.istimaScore : 0}
+                          </span>
+                        </td>
+                        <td class="p-3.5 text-center">
+                          <span class="px-2.5 py-1 rounded-xl text-xs font-bold ${(s.kalamScore || 0) >= 80 ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-700'}">
+                            ${s.kalamScore !== undefined ? s.kalamScore : 0}
+                          </span>
+                        </td>
+                        <td class="p-3.5 text-center">
+                          <span class="px-2.5 py-1 rounded-xl text-xs font-bold bg-amber-100 text-amber-900 border border-amber-200">
+                            ⚡ ${s.duelScore !== undefined ? s.duelScore : 0} Pts
+                          </span>
+                        </td>
+                        <td class="p-3.5 text-center">
+                          <span class="px-2.5 py-1 rounded-xl text-xs font-bold ${(s.matchGameScore || 0) >= 80 ? 'bg-indigo-100 text-indigo-800' : 'bg-slate-100 text-slate-700'}">
+                            ${s.matchGameScore !== undefined ? s.matchGameScore : 0}
+                          </span>
+                        </td>
+                        <td class="p-3.5 text-center">
+                          <span class="px-3 py-1 rounded-xl text-xs font-black ${isTuntas ? 'bg-emerald-700 text-white shadow-xs' : 'bg-red-500 text-white'}">
+                            ${avg}
+                          </span>
+                        </td>
+                        <td class="p-3.5 text-center">
+                          <div class="flex items-center justify-center gap-1.5">
+                            <div class="w-16 bg-slate-100 rounded-full h-2 overflow-hidden">
+                              <div class="bg-emerald-600 h-full rounded-full" style="width: ${s.progress || 0}%"></div>
+                            </div>
+                            <span class="text-[10px] text-slate-500 font-bold">${s.progress || 0}%</span>
+                          </div>
+                        </td>
+                        <td class="p-3.5 text-center">
+                          <span class="px-2.5 py-1 rounded-full text-[10px] font-extrabold ${isTuntas ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' : 'bg-rose-100 text-rose-800 border border-rose-300'}">
+                            ${isTuntas ? 'TUNTAS' : 'REMEDIAL'}
+                          </span>
+                        </td>
+                        <td class="p-3.5 text-center text-slate-600 font-medium text-[11px]">
+                          ${s.lastActive || 'Baru Saja'}
+                        </td>
+                        <td class="p-3.5 text-center">
+                          <button data-student-id="${s.id}" class="btn-view-detail px-3 py-1.5 bg-emerald-50 hover:bg-emerald-700 hover:text-white text-emerald-800 rounded-xl text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 mx-auto">
+                            <i class="fa-solid fa-chart-pie"></i>
+                            <span>Rincian</span>
+                          </button>
+                        </td>
+                      </tr>
+                    `;
+                  }).join('')}
+                </tbody>
+              </table>
+            </div>
+          ` : `
+            <!-- TAB 2: LIVE FEED ARUS NILAI REAL-TIME -->
+            <div class="space-y-3">
+              <div class="p-3 bg-emerald-50/60 rounded-2xl border border-emerald-100 flex items-center justify-between text-xs text-emerald-900">
+                <span class="font-bold flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+                  Arus Nilai Latihan Soal & Game yang Baru Masuk Secara Real-time:
+                </span>
+                <span class="text-[11px] text-slate-500">Otomatis update ketika siswa menekan selesai di HP/PC mereka</span>
+              </div>
+
+              ${submissions.length === 0 ? `
+                <div class="p-12 text-center text-slate-400 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
+                  <i class="fa-solid fa-satellite text-3xl mb-2 text-slate-300"></i>
+                  <p class="font-bold">Belum ada riwayat aktivitas yang terekam.</p>
+                  <p class="text-xs mt-1">Nilai latihan dan game siswa akan muncul di sini secara otomatis saat dikerjakan.</p>
+                </div>
+              ` : `
+                <div class="grid gap-3">
+                  ${submissions.map((sub, sIdx) => {
+                    const isGame = sub.category === 'game' || sub.activityType.includes('Game') || sub.activityType.includes('Duel');
+                    return `
+                      <div class="p-4 rounded-2xl bg-white border border-emerald-100 hover:border-emerald-300 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-all">
+                        <div class="flex items-start sm:items-center gap-3">
+                          <div class="w-10 h-10 rounded-2xl ${isGame ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800'} flex items-center justify-center text-lg shrink-0">
+                            <i class="fa-solid ${isGame ? 'fa-gamepad' : 'fa-graduation-cap'}"></i>
+                          </div>
+                          <div>
+                            <div class="flex items-center gap-2">
+                              <span class="font-bold text-emerald-950 text-sm">${sub.studentName}</span>
+                              <span class="px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800 text-[10px] font-bold">${sub.class || 'IX-A'}</span>
+                              <span class="px-2 py-0.5 rounded-md ${isGame ? 'bg-amber-50 text-amber-800 border border-amber-200' : 'bg-teal-50 text-teal-800 border border-teal-200'} text-[10px] font-bold">
+                                ${sub.activityType}
+                              </span>
+                            </div>
+                            <p class="text-xs text-slate-600 mt-0.5">${sub.details || 'Aktivitas selesai dikerjakan'}</p>
+                          </div>
+                        </div>
+
+                        <div class="flex items-center justify-between sm:justify-end gap-4 self-end sm:self-auto w-full sm:w-auto pt-2 sm:pt-0 border-t sm:border-0 border-slate-100">
+                          <div class="text-right">
+                            <div class="text-base sm:text-lg font-black ${isGame ? 'text-amber-600' : 'text-emerald-700'}">
+                              ${sub.score} <span class="text-xs font-normal text-slate-500">${isGame ? 'Pts' : '/ 100'}</span>
+                            </div>
+                            <div class="text-[10px] text-slate-400 font-medium">${sub.createdAtFormatted || 'Baru Saja'}</div>
+                          </div>
+                          <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 shrink-0" title="Terkonfirmasi Real-time"></span>
+                        </div>
+                      </div>
+                    `;
+                  }).join('')}
+                </div>
+              `}
+            </div>
+          `}
+        </div>
+
+        <!-- MODAL DETAIL NILAI SISWA (JIKA DIPILIH) -->
+        ${renderStudentDetailModal()}
+      </div>
+    `;
+  }
+
+  // Helper Modal Rincian Nilai Siswa
+  function renderStudentDetailModal() {
+    if (!state.selectedStudentDetail) return '';
+    const s = state.selectedStudentDetail;
+    const avg = s.averageScore || s.score || 0;
+    const isTuntas = avg >= 75;
+
+    // Filter submissions khusus siswa ini
+    const studentSubs = (state.submissions || []).filter(sub => 
+      (sub.studentId && s.id && String(sub.studentId) === String(s.id)) ||
+      (sub.studentName && s.name && sub.studentName.toLowerCase() === s.name.toLowerCase())
+    );
+
+    return `
+      <div id="student-detail-modal" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4 animate-fadeIn">
+        <div class="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-emerald-100 p-6 sm:p-8 space-y-6">
+          <div class="flex items-center justify-between border-b border-emerald-100 pb-4">
+            <div class="flex items-center gap-3">
+              <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-800 to-teal-600 text-white font-black flex items-center justify-center text-lg">
+                ${(s.name || 'S').charAt(0).toUpperCase()}
+              </div>
+              <div>
+                <h3 class="text-xl font-bold text-emerald-950">${s.name}</h3>
+                <p class="text-xs text-emerald-700">Kelas ${s.class || 'IX-A'} &bull; ID Siswa: ${s.id}</p>
+              </div>
+            </div>
+            <button id="btn-close-student-detail" class="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition-all">
+              <i class="fa-solid fa-xmark text-base"></i>
+            </button>
+          </div>
+
+          <!-- Rincian 5 Nilai Latihan Soal & Game -->
+          <div>
+            <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-3">Rincian Nilai Tiap Mata Pelajaran & Game:</h4>
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              <div class="p-3.5 bg-purple-50 rounded-2xl border border-purple-200">
+                <span class="text-[10px] font-bold text-purple-700 block">Kuis Utama (Kahoot)</span>
+                <span class="text-2xl font-black text-purple-900">${s.score !== undefined ? s.score : 0} <span class="text-xs font-normal text-purple-600">/ 100</span></span>
+              </div>
+              <div class="p-3.5 bg-teal-50 rounded-2xl border border-teal-200">
+                <span class="text-[10px] font-bold text-teal-700 block">Latihan Istima' (Menyimak)</span>
+                <span class="text-2xl font-black text-teal-900">${s.istimaScore !== undefined ? s.istimaScore : 0} <span class="text-xs font-normal text-teal-600">/ 100</span></span>
+              </div>
+              <div class="p-3.5 bg-emerald-50 rounded-2xl border border-emerald-200">
+                <span class="text-[10px] font-bold text-emerald-700 block">Praktik Kalam (Bicara AI)</span>
+                <span class="text-2xl font-black text-emerald-900">${s.kalamScore !== undefined ? s.kalamScore : 0} <span class="text-xs font-normal text-emerald-600">/ 100</span></span>
+              </div>
+              <div class="p-3.5 bg-amber-50 rounded-2xl border border-amber-200">
+                <span class="text-[10px] font-bold text-amber-700 block">Game Duel 1v1 (Poin)</span>
+                <span class="text-2xl font-black text-amber-900">${s.duelScore !== undefined ? s.duelScore : 0} <span class="text-xs font-normal text-amber-600">Pts</span></span>
+              </div>
+              <div class="p-3.5 bg-indigo-50 rounded-2xl border border-indigo-200">
+                <span class="text-[10px] font-bold text-indigo-700 block">Game Tebak Gambar</span>
+                <span class="text-2xl font-black text-indigo-900">${s.matchGameScore !== undefined ? s.matchGameScore : 0} <span class="text-xs font-normal text-indigo-600">/ 100</span></span>
+              </div>
+              <div class="p-3.5 ${isTuntas ? 'bg-emerald-700 text-white' : 'bg-red-600 text-white'} rounded-2xl shadow-sm">
+                <span class="text-[10px] font-bold opacity-80 block">Rata-rata Nilai Akhir</span>
+                <span class="text-2xl font-black">${avg}</span>
+                <span class="text-[10px] block mt-0.5 font-bold uppercase">${isTuntas ? 'Tuntas KKM' : 'Perlu Bimbingan'}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Riwayat Submissions Siswa Ini -->
+          <div>
+            <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-3">Log Pengerjaan Siswa Ini:</h4>
+            ${studentSubs.length === 0 ? `
+              <p class="text-xs text-slate-400 italic">Belum ada catatan aktivitas detail yang tersimpan.</p>
+            ` : `
+              <div class="space-y-2 max-h-48 overflow-y-auto">
+                ${studentSubs.map(item => `
+                  <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between text-xs">
+                    <div>
+                      <span class="font-bold text-emerald-950 block">${item.activityType}</span>
+                      <span class="text-[11px] text-slate-500">${item.details || 'Selesai'}</span>
+                    </div>
+                    <div class="text-right">
+                      <span class="font-black text-emerald-800 block text-sm">${item.score}</span>
+                      <span class="text-[10px] text-slate-400">${item.createdAtFormatted || 'Hari ini'}</span>
+                    </div>
+                  </div>
                 `).join('')}
-              </tbody>
-            </table>
+              </div>
+            `}
+          </div>
+
+          <div class="text-right pt-2 border-t border-slate-100">
+            <button id="btn-close-student-detail-2" class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-xl text-xs font-bold transition-all">
+              Tutup Rincian
+            </button>
           </div>
         </div>
       </div>
     `;
   }
 
+  // Export Data Rekap Nilai ke format CSV yang kompatibel Excel (UTF-8 BOM)
+  function exportStudentsCsv() {
+    const students = state.students || [];
+    if (students.length === 0) {
+      alert("Tidak ada data siswa untuk di-export.");
+      return;
+    }
+
+    const headers = [
+      "No", "ID Siswa", "Nama Lengkap Siswa", "Kelas", "Nilai Kuis Kahoot",
+      "Nilai Latihan Istima", "Nilai Praktik Kalam AI", "Skor Tertinggi Game Duel",
+      "Nilai Game Tebak Gambar", "Nilai Rata-rata", "Progres Belajar (%)",
+      "Status Ketuntasan", "Aktivitas Terakhir"
+    ];
+
+    const rows = students.map((s, idx) => {
+      const avg = s.averageScore || s.score || 0;
+      const status = avg >= 75 ? "TUNTAS" : "REMEDIAL";
+      return [
+        idx + 1,
+        s.id,
+        `"${(s.name || '').replace(/"/g, '""')}"`,
+        s.class || 'IX-A',
+        s.score !== undefined ? s.score : 0,
+        s.istimaScore !== undefined ? s.istimaScore : 0,
+        s.kalamScore !== undefined ? s.kalamScore : 0,
+        s.duelScore !== undefined ? s.duelScore : 0,
+        s.matchGameScore !== undefined ? s.matchGameScore : 0,
+        avg,
+        `${s.progress || 0}%`,
+        status,
+        `"${(s.lastActive || '').replace(/"/g, '""')}"`
+      ].join(',');
+    });
+
+    const csvContent = "\uFEFF" + [headers.join(','), ...rows].join('\r\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    const dateStr = new Date().toISOString().slice(0, 10);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `Rekap_Nilai_Siswa_Bahasa_Arab_${dateStr}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    showToast("File rekap nilai siswa (CSV/Excel) berhasil diunduh!", "success");
+  }
+
   function attachStudentEvents() {
-    const exportBtn = document.getElementById('export-excel-btn');
+    // Export Excel Buttons
+    const exportBtn = document.getElementById('btn-export-excel') || document.getElementById('export-excel-btn');
     if (exportBtn) {
       exportBtn.addEventListener('click', () => {
-        alert("Data rekap nilai siswa berhasil di-export ke format CSV/Excel!");
+        exportStudentsCsv();
+      });
+    }
+
+    // Refresh Button
+    const refreshBtn = document.getElementById('btn-refresh-students');
+    if (refreshBtn) {
+      refreshBtn.addEventListener('click', () => {
+        showToast("Memperbarui data nilai siswa dari cloud...", "info");
+        render();
+      });
+    }
+
+    // Tab Switch Buttons
+    document.querySelectorAll('.tab-switch-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const tab = e.currentTarget.getAttribute('data-tab');
+        state.studentsTab = tab;
+        render();
+      });
+    });
+
+    // Search Input
+    const searchInput = document.getElementById('students-search-input');
+    if (searchInput) {
+      searchInput.addEventListener('input', (e) => {
+        state.studentsSearch = e.target.value;
+        render();
+        const inputNow = document.getElementById('students-search-input');
+        if (inputNow) {
+          inputNow.focus();
+          inputNow.setSelectionRange(inputNow.value.length, inputNow.value.length);
+        }
+      });
+    }
+
+    // Class Filter Select
+    const classFilter = document.getElementById('students-class-filter');
+    if (classFilter) {
+      classFilter.addEventListener('change', (e) => {
+        state.studentsClassFilter = e.target.value;
+        render();
+      });
+    }
+
+    // View Student Detail Buttons
+    document.querySelectorAll('.btn-view-detail').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const studentId = e.currentTarget.getAttribute('data-student-id');
+        const student = (state.students || []).find(s => String(s.id) === String(studentId));
+        if (student) {
+          state.selectedStudentDetail = student;
+          render();
+        }
+      });
+    });
+
+    // Close Detail Modal Buttons
+    const closeBtn1 = document.getElementById('btn-close-student-detail');
+    const closeBtn2 = document.getElementById('btn-close-student-detail-2');
+    const modalBackdrop = document.getElementById('student-detail-modal');
+
+    const closeModal = () => {
+      state.selectedStudentDetail = null;
+      render();
+    };
+
+    if (closeBtn1) closeBtn1.addEventListener('click', closeModal);
+    if (closeBtn2) closeBtn2.addEventListener('click', closeModal);
+    if (modalBackdrop) {
+      modalBackdrop.addEventListener('click', (e) => {
+        if (e.target === modalBackdrop) closeModal();
       });
     }
   }
@@ -5101,36 +5952,18 @@ document.addEventListener('DOMContentLoaded', () => {
           state.quizScore = Math.round((correctCount / quizzes.length) * 100);
           state.quizSubmitted = true;
 
-          // Save student score if logged in
-          if (state.currentUser && state.currentUser.role === 'siswa') {
-            const sIdx = state.students.findIndex(s => s.name === state.currentUser.name);
-            if (sIdx !== -1) {
-              state.students[sIdx].score = state.quizScore;
-              state.students[sIdx].progress = 100;
-            } else {
-              state.students.push({
-                id: Date.now(),
-                name: state.currentUser.name,
-                class: "IX-A",
-                score: state.quizScore,
-                progress: 100,
-                lastActive: "Baru Saja"
-              });
+          submitStudentActivity({
+            activityType: 'Latihan Kuis Interaktif (Kahoot)',
+            category: 'latihan',
+            score: state.quizScore,
+            maxScore: 100,
+            details: `${correctCount} dari ${quizzes.length} Soal Benar (${state.kahootPoints} Pts)`,
+            additionalData: {
+              correctCount,
+              totalQuestions: quizzes.length,
+              kahootPoints: state.kahootPoints
             }
-            localStorage.setItem('arabic_app_students', JSON.stringify(state.students));
-            
-            // Sync to Firebase Cloud Database (db-lomba)
-            if (window.FirebaseSync) {
-              window.FirebaseSync.saveAllStudents(state.students);
-              window.FirebaseSync.recordQuizSubmission({
-                studentName: state.currentUser ? state.currentUser.name : 'Anonim',
-                score: state.quizScore,
-                correctCount: correctCount,
-                totalQuestions: quizzes.length,
-                quizType: 'Latihan Kuis Interaktif'
-              });
-            }
-          }
+          });
 
           render();
         }
@@ -6033,7 +6866,25 @@ document.addEventListener('DOMContentLoaded', () => {
         startDuelTimer();
       } else {
         duel.battleEnded = true;
-        if (duel.scorePlayer > duel.scoreOpponent) playSoundEffect('combo');
+        const isWin = duel.scorePlayer > duel.scoreOpponent;
+        const isDraw = duel.scorePlayer === duel.scoreOpponent;
+        const statusStr = isWin ? 'Menang 🏆' : (isDraw ? 'Seri 🤝' : 'Kalah');
+
+        submitStudentActivity({
+          activityType: 'Game Duel 1v1',
+          category: 'game',
+          score: duel.scorePlayer,
+          maxScore: 1000,
+          details: `${statusStr} vs ${duel.opponentName} (Skor: ${duel.scorePlayer} - ${duel.scoreOpponent})`,
+          additionalData: {
+            mode: duel.mode,
+            opponentName: duel.opponentName,
+            scoreOpponent: duel.scoreOpponent,
+            maxCombo: duel.maxCombo || duel.comboStreak
+          }
+        });
+
+        if (isWin) playSoundEffect('combo');
         render();
       }
     }, 2500);
@@ -6357,8 +7208,17 @@ document.addEventListener('DOMContentLoaded', () => {
     window.FirebaseSync.init(ARABIC_DATA.initialStudents, ARABIC_DATA.initialTeachers, (update) => {
       if (update.type === 'students' && update.data) {
         state.students = update.data;
-        if (state.currentView === 'students' || state.currentView === 'dashboard') {
-          render();
+        if (state.currentUser && state.currentUser.role === 'guru') {
+          if (state.currentView === 'students' || state.currentView === 'dashboard') {
+            render();
+          }
+        }
+      } else if (update.type === 'submissions' && update.data) {
+        state.submissions = update.data;
+        if (state.currentUser && state.currentUser.role === 'guru') {
+          if (state.currentView === 'students' || state.currentView === 'dashboard') {
+            render();
+          }
         }
       } else if (update.type === 'teachers' && update.data) {
         state.teachers = update.data;
