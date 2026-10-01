@@ -736,7 +736,7 @@ document.addEventListener('DOMContentLoaded', () => {
               </div>
               
               <h2 class="text-2xl sm:text-3xl font-bold font-arabic leading-tight mb-1.5 text-white drop-shadow-sm">الحفاظ على البيئة</h2>
-              <p class="text-xs text-emerald-200 font-medium">Materi Kelas 9 MTs / SMP Islam</p>
+              <p class="text-xs text-emerald-200 font-medium">Materi kelas 9 MTs Darussalam Jombang</p>
             </div>
 
             <!-- Card Content Body: Full width on mobile with smooth top curve, fills all remaining height down to screen edge -->

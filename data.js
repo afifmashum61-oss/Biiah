@@ -3,7 +3,7 @@
 const ARABIC_DATA = {
   meta: {
     title: "الحفاظ على البيئة",
-    subtitle: "Media Pembelajaran Bahasa Arab Kelas 9 MTs / SMP Islam",
+    subtitle: "Media Pembelajaran Bahasa Arab Kelas 9 MTs Darussalam Jombang",
     theme: "Saymana Modern Islamic Green"
   },
   
@@ -810,7 +810,7 @@ const ARABIC_DATA = {
     subtitle: "Pembelajaran Menyimak Video & Audio Bahasa Arab Interaktif",
     video: {
       title: "فِيدْيُو مَهَارَةِ الاِسْتِمَاعِ (Video Pembelajaran Istima')",
-      subtitle: "Materi Pembelajaran Bahasa Arab Kelas 9 MTs (الحفاظ على البيئة)",
+      subtitle: "Materi Pembelajaran Bahasa Arab Kelas 9 MTs Darussalam Jombang (الحفاظ على البيئة)",
       youtubeId: "CP2SheSB2mU",
       embedUrl: "https://www.youtube.com/embed/CP2SheSB2mU",
       youtubeUrl: "https://www.youtube.com/watch?v=CP2SheSB2mU"
