@@ -4797,10 +4797,6 @@ document.addEventListener('DOMContentLoaded', () => {
         <!-- Top Command Header -->
         <div class="bg-gradient-to-r from-emerald-900 via-teal-900 to-emerald-950 p-6 sm:p-8 rounded-3xl text-white shadow-xl border border-emerald-700/50 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div class="space-y-2">
-            <div class="inline-flex items-center gap-2 bg-emerald-500/20 backdrop-blur-md px-3.5 py-1.5 rounded-full text-xs font-bold text-emerald-300 border border-emerald-400/30">
-              <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span>Cloud Firestore Real-time Terhubung (db-lomba)</span>
-            </div>
             <h2 class="text-2xl sm:text-3xl font-extrabold font-arabic tracking-tight">Monitoring & Rekap Nilai Siswa Real-time</h2>
             <p class="text-xs sm:text-sm text-emerald-200 max-w-2xl">
               Seluruh perolehan nilai latihan kuis, pemahaman audio menyimak (Istima'), praktik bicara AI (Kalam), dan game interaktif siswa otomatis tersinkronisasi ke sini secara langsung tanpa jeda.
