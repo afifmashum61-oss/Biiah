@@ -1981,59 +1981,46 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  // Adaptive evaluation for student recordings when Speech Recognition returns acoustic fallback
-  function evaluateAudioAcousticFallback(currentItem, durationSeconds, maxVolume) {
+  // Adaptive evaluation for student recordings when Speech Recognition returns acoustic fallback (e.g., mobile without Arabic STT pack)
+  function evaluateAudioAcousticFallback(currentItem, durationSeconds, maxVolume, speechEnergyFrames = 0) {
     const rawWords = (currentItem.arabic || '').trim().split(/\s+/).filter(Boolean);
     const wordCount = Math.max(1, rawWords.length);
 
-    // Reading Arabic pacing for students: 1.0s to 2.5s per word
-    const expectedMin = Math.max(2, Math.round(wordCount * 0.9));
-    const expectedMax = Math.max(5, Math.round(wordCount * 3.0));
+    // Reading Arabic pacing for students: 0.8s to 2.5s per word
+    const expectedMin = Math.max(2, Math.round(wordCount * 0.8));
+    const expectedMax = Math.max(4, Math.round(wordCount * 2.8));
 
-    let baseScore = 85;
-    if (durationSeconds >= expectedMin && durationSeconds <= expectedMax) {
-      baseScore = 88 + Math.min(5, Math.floor(Math.random() * 4)); // 88 - 91%
+    // Verify if there was adequate sustained speech energy (at least ~0.3s of voice)
+    const minSpeechFrames = Math.max(18, Math.round(wordCount * 10));
+    const hasAdequateVoice = speechEnergyFrames >= minSpeechFrames;
+
+    let baseScore = 65;
+    if (durationSeconds >= expectedMin && durationSeconds <= expectedMax && hasAdequateVoice) {
+      baseScore = 70 + Math.min(5, Math.floor(Math.random() * 4)); // 70 - 73% (Jayyid)
     } else if (durationSeconds < expectedMin) {
-      baseScore = 80 + Math.floor(Math.random() * 5); // 80 - 84%
+      baseScore = 55 + Math.floor(Math.random() * 5); // 55 - 59% (Cukup)
     } else {
-      baseScore = 84 + Math.floor(Math.random() * 5); // 84 - 88%
+      baseScore = 60 + Math.floor(Math.random() * 5); // 60 - 64% (Sedang)
     }
 
-    if (maxVolume > 15) {
-      baseScore = Math.min(95, baseScore + 2);
-    }
+    const finalScore = Math.min(75, Math.max(50, baseScore)); // Max 75% because text is unverified by STT!
 
-    const finalScore = Math.min(95, Math.max(76, baseScore));
-
-    const wordMatches = rawWords.map((word, idx) => {
-      let status = 'exact';
-      let similarity = 95;
-      if (finalScore < 85 && idx === Math.floor(rawWords.length / 2)) {
-        status = 'close';
-        similarity = 80;
-      } else if (finalScore >= 90) {
-        status = 'exact';
-        similarity = 96;
-      }
+    const wordMatches = rawWords.map((word) => {
       return {
         rawWord: word,
         normWord: normalizeArabic(word),
-        status,
-        similarity
+        status: finalScore >= 70 ? 'close' : 'missed',
+        similarity: finalScore
       };
     });
 
-    let gradeBadge = 'جَيِّدٌ جِدًّا 🎖️';
-    let gradeTitle = 'Sangat Baik! (Jayyid Jiddan)';
-    let colorClass = 'text-teal-700 bg-teal-50 border-teal-300';
-    if (finalScore >= 90) {
-      gradeBadge = 'مُمْتَازٌ 🌟';
-      gradeTitle = 'Luar Biasa! (Mumtaz)';
-      colorClass = 'text-emerald-700 bg-emerald-50 border-emerald-300';
-    } else if (finalScore < 80) {
-      gradeBadge = 'مَقْبُولٌ 👍';
-      gradeTitle = 'Cukup Baik (Jayyid)';
-      colorClass = 'text-amber-700 bg-amber-50 border-amber-300';
+    let gradeBadge = 'جَيِّدٌ 👍';
+    let gradeTitle = 'Cukup Baik (Audio Tersimpan)';
+    let colorClass = 'text-amber-800 bg-amber-50 border-amber-300';
+    if (finalScore < 60) {
+      gradeBadge = 'حَاوِلْ مَرَّةً أُخْرَى 🔄';
+      gradeTitle = 'Perlu Artikulasi Lebih Jelas';
+      colorClass = 'text-rose-700 bg-rose-50 border-rose-300';
     }
 
     return {
@@ -2041,10 +2028,10 @@ document.addEventListener('DOMContentLoaded', () => {
       wordScore: finalScore,
       charScore: finalScore,
       wordMatches,
-      spokenTranscript: `🎙️ Rekaman vokal tersimpan (${durationSeconds} detik • ${wordCount} kata)`,
+      spokenTranscript: `🎙️ Rekaman vokal tersimpan (${durationSeconds} detik) — Teks belum terverifikasi`,
       gradeBadge,
       gradeTitle,
-      feedback: `Alhamdulillah! Rekaman suara Anda berhasil tersimpan dengan artikulasi ${durationSeconds} detik. Dengarkan dan bandingkan rekaman suara Anda dengan pelafalan Ustadz melalui pemutar audio di bawah!`,
+      feedback: `Alhamdulillah! Rekaman vokal Anda (${durationSeconds} detik) berhasil tersimpan. Karena sensor teks browser HP belum memverifikasi kata Arab secara otomatis, silakan dengarkan rekaman suara Anda pada pemutar audio di bawah dan bandingkan dengan contoh Ustadz!`,
       colorClass
     };
   }
@@ -2340,7 +2327,7 @@ document.addEventListener('DOMContentLoaded', () => {
           if (volume > state.kalamState.maxVolumeRecorded) {
             state.kalamState.maxVolumeRecorded = volume;
           }
-          if (volume >= 4) {
+          if (volume >= 10) {
             state.kalamState.speechEnergyFrames++;
           }
 
@@ -2356,12 +2343,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
           const statusEl = document.getElementById('kalam-meter-status');
           if (statusEl) {
-            if (volume >= 4) {
+            if (volume >= 10) {
               statusEl.innerHTML = `<span class="text-emerald-300 font-bold"><i class="fa-solid fa-circle-check text-emerald-400 mr-1"></i> Suara terdeteksi (${volume}%)! Teruskan membaca...</span>`;
-            } else if (state.kalamState.recordingSeconds >= 2 && state.kalamState.maxVolumeRecorded < 2) {
-              statusEl.innerHTML = `<span class="text-rose-300 font-bold animate-pulse"><i class="fa-solid fa-triangle-exclamation text-rose-400 mr-1"></i> Mikrofon hening (0%)! Cek Fn+F4 / pilih mic lain di atas!</span>`;
+            } else if (state.kalamState.recordingSeconds >= 2 && state.kalamState.maxVolumeRecorded < 10) {
+              statusEl.innerHTML = `<span class="text-rose-300 font-bold animate-pulse"><i class="fa-solid fa-triangle-exclamation text-rose-400 mr-1"></i> Suara belum terdeteksi... Bicaralah lebih dekat ke mic!</span>`;
             } else {
-              statusEl.innerHTML = '<span class="text-amber-200 font-medium"><i class="fa-solid fa-circle-dot text-amber-400 mr-1 animate-ping"></i> Bicaralah lebih dekat ke mikrofon laptop...</span>';
+              statusEl.innerHTML = '<span class="text-amber-200 font-medium"><i class="fa-solid fa-circle-dot text-amber-400 mr-1 animate-ping"></i> Menunggu suara... Silakan ucapkan kalimat</span>';
             }
           }
 
@@ -2409,14 +2396,15 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    // Web Speech API with continuous mode & auto-recovery for Desktop Chrome
+    // Web Speech API with continuous mode for Desktop & adaptive mode for Mobile
     const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (SpeechRec) {
       try {
+        const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         kalamSpeechRec = new SpeechRec();
         kalamSpeechRec.lang = 'ar-SA';
         kalamSpeechRec.interimResults = true;
-        kalamSpeechRec.continuous = true; // Essential for Desktop: keep listening!
+        kalamSpeechRec.continuous = !isMobileDevice; // continuous: false prevents mobile Chrome from aborting immediately
         kalamSpeechRec.maxAlternatives = 3;
 
         let accumulatedTranscript = '';
@@ -2559,9 +2547,16 @@ document.addEventListener('DOMContentLoaded', () => {
     if (spoken && spoken.length > 0) {
       // Speech recognition captured Arabic text!
       result = evaluateSpeechAccuracy(currentItem.arabic, spoken);
-    } else if (kalamAudioChunks.length > 0 || state.kalamState.recordedAudioUrl) {
-      // Check if mic was physically silent / muted (maxVolume < 2)
-      if (state.kalamState.maxVolumeRecorded < 2 && state.kalamState.recordingSeconds >= 2) {
+    } else {
+      // Check if user was silent, tapped accidentally, or recording too short / noise only
+      const recSecs = state.kalamState.recordingSeconds || 0;
+      const maxVol = state.kalamState.maxVolumeRecorded || 0;
+      const vocalFrames = state.kalamState.speechEnergyFrames || 0;
+
+      const isTooShort = recSecs < 1.5;
+      const isSilentOrNoiseOnly = maxVol < 10 || vocalFrames < 15;
+
+      if (isTooShort || isSilentOrNoiseOnly || kalamAudioChunks.length === 0) {
         result = {
           finalScore: 0,
           wordScore: 0,
@@ -2573,32 +2568,18 @@ document.addEventListener('DOMContentLoaded', () => {
             similarity: 0
           })),
           spokenTranscript: '',
-          gradeBadge: '🔇 MIKROFON TER-MUTE',
-          gradeTitle: 'Tidak Ada Sinyal Suara',
-          feedback: 'Sinyal suara mikrofon laptop Anda terdeteksi 0% (hening). Pastikan tombol Fn + F4 di keyboard laptop Anda tidak menyala oranye, atau ubah pilihan mikrofon ke "Microphone Array" pada menu pilihan di atas.',
+          gradeBadge: 'حَاوِلْ مَرَّةً أُخْرَى 🔄',
+          gradeTitle: isTooShort ? 'Durasi Terlalu Singkat' : 'Suara Belum Terdeteksi',
+          feedback: isTooShort 
+            ? 'Durasi rekaman terlalu singkat. Tekan tombol rekam, ucapkan kalimat Bahasa Arab dengan lengkap dan jelas, lalu tekan selesai.'
+            : 'Belum ada suara pelafalan yang terdeteksi oleh mikrofon HP/laptop Anda. Dekatkan mikrofon ke mulut, ucapkan kalimat Bahasa Arab dengan lantang dan jelas, lalu coba lagi.',
           colorClass: 'text-rose-700 bg-rose-50 border-rose-300',
           isSilentMic: true
         };
       } else {
-        result = evaluateAudioAcousticFallback(currentItem, Math.max(1, state.kalamState.recordingSeconds), state.kalamState.maxVolumeRecorded);
+        // User produced vocal sound, but browser Speech Recognition could not transcribe Arabic text (e.g. mobile offline)
+        result = evaluateAudioAcousticFallback(currentItem, Math.max(1, recSecs), maxVol, vocalFrames);
       }
-    } else {
-      result = {
-        finalScore: 0,
-        wordScore: 0,
-        charScore: 0,
-        wordMatches: (currentItem.arabic || '').trim().split(/\s+/).filter(Boolean).map(w => ({
-          rawWord: w,
-          normWord: normalizeArabic(w),
-          status: 'missed',
-          similarity: 0
-        })),
-        spokenTranscript: '',
-        gradeBadge: 'حَاوِلْ مَرَّةً أُخْرَى 🔄',
-        gradeTitle: 'Suara Tidak Terdeteksi',
-        feedback: 'Mikrofon laptop belum menangkap suara Anda. Pastikan volume mikrofon tidak di-mute, bicaralah lebih dekat dengan artikulasi jelas, lalu coba rekam kembali.',
-        colorClass: 'text-rose-700 bg-rose-50 border-rose-300'
-      };
     }
 
     state.kalamState.evaluationResult = result;
@@ -2717,43 +2698,6 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
           </div>
         </div>
-
-        <!-- Laptop Hardware Mic Reminder & Device Switcher Bar (Automatic Default) -->
-        <div class="bg-emerald-50/70 rounded-2xl p-3 sm:p-4 border border-emerald-200/80 shadow-2xs flex flex-col md:flex-row md:items-center justify-between gap-3 text-xs">
-          <div class="flex items-start sm:items-center gap-2.5">
-            <div class="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-sm shadow-xs shrink-0">
-              <i class="fa-solid fa-microphone-lines"></i>
-            </div>
-            <div>
-              <div class="font-bold text-emerald-950 flex items-center gap-2">
-                <span>Mikrofon Otomatis Aktif</span>
-                <span class="px-2 py-0.5 rounded-full bg-emerald-200 text-emerald-900 text-[10px] font-extrabold uppercase tracking-wide">Siap Rekam</span>
-              </div>
-              <div class="text-[11px] text-emerald-800">
-                Sistem otomatis menggunakan mikrofon laptop. Langsung tekan tombol <strong>Mulai Rekam Suara</strong> tanpa perlu memilih mic.
-              </div>
-            </div>
-          </div>
-
-          <!-- Microphone Device Selector (Optional fallback) -->
-          <div class="flex items-center gap-2 self-start md:self-center">
-            <label for="kalam-mic-select" class="text-[11px] font-bold text-emerald-900 shrink-0">
-              <i class="fa-solid fa-sliders text-emerald-600 mr-1"></i>Perangkat:
-            </label>
-            <select id="kalam-mic-select" class="bg-white border border-emerald-300 rounded-xl px-2.5 py-1.5 text-xs font-semibold text-emerald-950 focus:outline-none focus:ring-2 focus:ring-emerald-500 max-w-[200px] sm:max-w-[240px] truncate shadow-2xs">
-              <option value="" ${!selectedDeviceId ? 'selected' : ''}>Otomatis (Mikrofon Laptop)</option>
-              ${availableDevices.map((d, i) => `
-                <option value="${d.deviceId}" ${d.deviceId === selectedDeviceId ? 'selected' : ''}>
-                  ${d.label || `Mikrofon ${i + 1}`}
-                </option>
-              `).join('')}
-            </select>
-            <button id="kalam-refresh-mics-btn" title="Deteksi Ulang Mikrofon" class="w-8 h-8 rounded-xl bg-white hover:bg-emerald-100 text-emerald-800 border border-emerald-200 flex items-center justify-center transition-all shrink-0">
-              <i class="fa-solid fa-rotate text-xs"></i>
-            </button>
-          </div>
-        </div>
-
         <!-- Troubleshooting Banner (If Microphone Error) -->
         ${micError ? `
           <div class="bg-rose-50 border-2 border-rose-300 rounded-2xl sm:rounded-3xl p-5 text-rose-950 space-y-3 animate-fade-in shadow-md">
@@ -2763,13 +2707,13 @@ document.addEventListener('DOMContentLoaded', () => {
               </div>
               <div class="flex-1 space-y-1.5">
                 <h4 class="font-bold text-sm sm:text-base text-rose-900 flex items-center gap-2">
-                  <span>Akses Mikrofon Laptop Diperlukan</span>
+                  <span>Akses Mikrofon Diperlukan</span>
                   <span class="text-[11px] px-2 py-0.5 bg-rose-200 text-rose-800 rounded-full font-semibold">Izin Diblokir</span>
                 </h4>
                 <p class="text-xs text-rose-800 leading-relaxed">
                   ${micError === 'secure_context' 
                     ? 'Akses mikrofon membutuhkan koneksi aman (HTTPS atau localhost). Pastikan membuka website dengan https:// atau localhost.'
-                    : 'Browser laptop Anda belum mengizinkan akses ke mikrofon, sehingga suara tidak dapat terekam. Ikuti langkah praktis berikut:'}
+                    : 'Browser Anda belum mengizinkan akses ke mikrofon, sehingga suara tidak dapat terekam. Ikuti langkah praktis berikut:'}
                 </p>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 text-xs text-rose-900">
                   <div class="bg-white/80 p-2.5 rounded-xl border border-rose-200">
@@ -2935,7 +2879,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <p class="text-[11px] ${isRecording ? 'text-rose-800 font-medium' : 'text-teal-800'}">
                   ${isRecording 
                     ? 'Silakan tirukan dan ucapkan kalimat di atas dengan lantang dan jelas!' 
-                    : 'Tekan tombol di bawah untuk mulai merekam suara tiruan Anda di laptop.'}
+                    : 'Tekan tombol di bawah untuk mulai merekam suara tiruan Anda.'}
                 </p>
               </div>
 
@@ -3083,7 +3027,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <span>Teks Terdengar dari Suara Anda:</span>
                   </span>
                   <p class="font-arabic text-base sm:text-lg text-teal-950 font-bold leading-relaxed" dir="rtl">
-                    ${evalResult.spokenTranscript || '<span class="text-xs text-rose-600 font-sans italic">Belum ada kata terdeteksi. Bicaralah lebih dekat ke mikrofon laptop Anda.</span>'}
+                    ${evalResult.spokenTranscript || '<span class="text-xs text-rose-600 font-sans italic">Belum ada kata terdeteksi. Bicaralah lebih dekat ke mikrofon HP/laptop Anda.</span>'}
                   </p>
                 </div>
               </div>
