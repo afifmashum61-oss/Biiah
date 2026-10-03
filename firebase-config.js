@@ -177,10 +177,12 @@ window.FirebaseSync = {
     if (!this.isConnected() || !student) return;
     try {
       const docId = String(student.id || Date.now());
-      await db.collection('students').doc(docId).set({
-        ...student,
-        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-      }, { merge: true });
+      const payload = {};
+      Object.keys(student).forEach(k => {
+        if (student[k] !== undefined) payload[k] = student[k];
+      });
+      payload.updatedAt = firebase.firestore.FieldValue.serverTimestamp();
+      await db.collection('students').doc(docId).set(payload, { merge: true });
       console.log(`✅ [Firebase] Siswa ${student.name} tersimpan ke cloud Firestore.`);
     } catch (err) {
       console.error("❌ Gagal simpan siswa ke Firebase:", err);
@@ -244,11 +246,13 @@ window.FirebaseSync = {
     try {
       const now = new Date();
       const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' WIB, ' + now.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' });
-      const docRef = await db.collection('quiz_results').add({
-        ...submission,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-        createdAtFormatted: submission.createdAtFormatted || timeStr
+      const payload = {};
+      Object.keys(submission).forEach(k => {
+        if (submission[k] !== undefined) payload[k] = submission[k];
       });
+      payload.timestamp = firebase.firestore.FieldValue.serverTimestamp();
+      payload.createdAtFormatted = submission.createdAtFormatted || timeStr;
+      const docRef = await db.collection('quiz_results').add(payload);
       console.log("📊 [Firebase] Hasil latihan/game berhasil disimpan ke koleksi quiz_results cloud!");
       return docRef.id;
     } catch (err) {

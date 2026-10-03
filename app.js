@@ -417,6 +417,19 @@ document.addEventListener('DOMContentLoaded', () => {
             render();
           }
         }
+
+        // Sinkronisasi realtime jika akun siswa ini yang sedang dibuka di tab lain
+        if (state.currentUser && state.currentUser.role === 'siswa' && msg.student) {
+          const isCurrentStudent = (state.currentUser.id && String(msg.student.id) === String(state.currentUser.id)) ||
+            (msg.student.name && state.currentUser.name && msg.student.name.trim().toLowerCase() === state.currentUser.name.trim().toLowerCase());
+          if (isCurrentStudent) {
+            state.currentUser = { ...state.currentUser, ...msg.student };
+            localStorage.setItem('arabic_app_user', JSON.stringify(state.currentUser));
+            if (state.currentView === 'dashboard') {
+              render();
+            }
+          }
+        }
       }
     };
   }
@@ -426,6 +439,17 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.key === 'arabic_app_students' && e.newValue) {
       try {
         state.students = JSON.parse(e.newValue);
+        if (state.currentUser && state.currentUser.role === 'siswa') {
+          const st = state.students.find(s => 
+            (state.currentUser.id && String(s.id) === String(state.currentUser.id)) ||
+            (s.name && state.currentUser.name && s.name.trim().toLowerCase() === state.currentUser.name.trim().toLowerCase())
+          );
+          if (st) {
+            state.currentUser = { ...state.currentUser, ...st };
+            localStorage.setItem('arabic_app_user', JSON.stringify(state.currentUser));
+            if (state.currentView === 'dashboard') render();
+          }
+        }
         if (state.currentUser && state.currentUser.role === 'guru' && (state.currentView === 'students' || state.currentView === 'dashboard')) {
           render();
         }
@@ -434,6 +458,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.key === 'arabic_app_submissions' && e.newValue) {
       try {
         state.submissions = JSON.parse(e.newValue);
+        if (state.currentUser && state.currentUser.role === 'siswa' && state.currentView === 'dashboard') {
+          render();
+        }
         if (state.currentUser && state.currentUser.role === 'guru' && (state.currentView === 'students' || state.currentView === 'dashboard')) {
           render();
         }
@@ -441,19 +468,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Fungsi Terpusat: Kirim Semua Nilai Latihan Soal & Game ke Akun Guru Realtime
+  // Fungsi Terpusat: Simpan Semua Nilai Latihan Soal & Game Realtime ke Akun Siswa & Akun Guru di Cloud
   function submitStudentActivity({ activityType, category = 'latihan', score, maxScore = 100, details = '', additionalData = {} }) {
     const studentName = state.currentUser ? state.currentUser.name : 'Siswa Tamu';
     const studentRole = state.currentUser ? state.currentUser.role : 'siswa';
 
+    // Cari siswa dengan mencocokkan ID persis atau nama secara fleksibel & aman
     let student = state.students.find(s => 
-      (state.currentUser && state.currentUser.id && s.id === state.currentUser.id) || 
-      (s.name && s.name.toLowerCase() === studentName.toLowerCase())
+      (state.currentUser && state.currentUser.id && String(s.id) === String(state.currentUser.id)) || 
+      (s.name && s.name.trim().toLowerCase() === studentName.trim().toLowerCase())
     );
 
     if (!student && studentRole === 'siswa') {
+      const newStdId = (state.currentUser && state.currentUser.id) || ('std_' + Date.now());
       student = {
-        id: (state.currentUser && state.currentUser.id) || Date.now(),
+        id: newStdId,
         name: studentName,
         class: (state.currentUser && state.currentUser.class) || 'IX-A',
         score: 0,
@@ -464,18 +493,29 @@ document.addEventListener('DOMContentLoaded', () => {
         averageScore: 0,
         progress: 0,
         lastActive: 'Baru Saja',
-        submissions: []
+        submissions: [],
+        kalamHistory: []
       };
       state.students.unshift(student);
+      if (state.currentUser) {
+        state.currentUser.id = newStdId;
+      }
     }
 
     if (student) {
+      if (state.currentUser && !state.currentUser.id && student.id) {
+        state.currentUser.id = student.id;
+      }
+
       if (activityType.includes('Kahoot') || activityType.includes('Kuis Interaktif')) {
         student.score = score;
       } else if (activityType.includes('Istima') || activityType.includes('Menyimak')) {
         student.istimaScore = score;
       } else if (activityType.includes('Kalam') || activityType.includes('Berbicara')) {
         student.kalamScore = score;
+        if (state.kalamState && Array.isArray(state.kalamState.history)) {
+          student.kalamHistory = state.kalamState.history;
+        }
       } else if (activityType.includes('Duel')) {
         student.duelScore = Math.max(student.duelScore || 0, score);
         student.duelMatches = (student.duelMatches || 0) + 1;
@@ -519,6 +559,27 @@ document.addEventListener('DOMContentLoaded', () => {
       student.submissions = student.submissions.slice(0, 25);
 
       localStorage.setItem('arabic_app_students', JSON.stringify(state.students));
+
+      // SINKRONKAN LANGSUNG KE AKUN SISWA YANG SEDANG LOGIN (currentUser)
+      if (state.currentUser && state.currentUser.role === 'siswa') {
+        state.currentUser = {
+          ...state.currentUser,
+          id: student.id,
+          name: student.name,
+          class: student.class || state.currentUser.class || 'IX-A',
+          score: student.score,
+          istimaScore: student.istimaScore,
+          kalamScore: student.kalamScore,
+          duelScore: student.duelScore,
+          matchGameScore: student.matchGameScore,
+          averageScore: student.averageScore,
+          progress: student.progress,
+          lastActive: student.lastActive,
+          submissions: student.submissions,
+          kalamHistory: student.kalamHistory || (state.kalamState && state.kalamState.history) || []
+        };
+        localStorage.setItem('arabic_app_user', JSON.stringify(state.currentUser));
+      }
     }
 
     const submissionId = 'sub_' + Date.now();
@@ -543,7 +604,7 @@ document.addEventListener('DOMContentLoaded', () => {
     state.submissions = [newSub, ...state.submissions.filter(s => s.id !== submissionId)].slice(0, 50);
     localStorage.setItem('arabic_app_submissions', JSON.stringify(state.submissions));
 
-    // Kirim langsung ke Firebase Firestore Cloud
+    // Kirim langsung ke Firebase Firestore Cloud (Tersimpan realtime di cloud)
     if (window.FirebaseSync && window.FirebaseSync.isConnected()) {
       if (student) {
         window.FirebaseSync.saveStudent(student);
@@ -551,7 +612,7 @@ document.addEventListener('DOMContentLoaded', () => {
       window.FirebaseSync.recordQuizSubmission(newSub);
     }
 
-    // Broadcast ke tab browser lain (seperti tab guru yang sedang terbuka)
+    // Broadcast ke tab browser lain (seperti tab guru atau tab siswa di perangkat lain)
     if (learningSyncChannel) {
       learningSyncChannel.postMessage({
         type: 'NEW_SUBMISSION',
@@ -560,7 +621,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    showToast(`Nilai ${activityType} (${score}) otomatis masuk ke Akun Guru secara realtime! 🌟`, 'success');
+    showToast(`Nilai ${activityType} (${score}) otomatis tersimpan realtime di cloud & akun guru! 🌟`, 'success');
   }
 
   // Load persisted state if exists
@@ -569,6 +630,22 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       state.currentUser = JSON.parse(savedUser);
       state.currentView = 'dashboard';
+      if (state.currentUser && state.currentUser.role === 'siswa') {
+        if (typeof state.currentUser.score === 'number' && state.currentUser.score > 0) {
+          state.quizSubmitted = true;
+          state.quizScore = state.currentUser.score;
+        }
+        if (typeof state.currentUser.istimaScore === 'number' && state.currentUser.istimaScore > 0) {
+          state.listeningQuizSubmitted = true;
+          state.listeningQuizScore = state.currentUser.istimaScore;
+        }
+        if (typeof state.currentUser.matchGameScore === 'number' && state.currentUser.matchGameScore > 0) {
+          state.matchGameSubmitted = true;
+        }
+        if (Array.isArray(state.currentUser.kalamHistory) && state.currentUser.kalamHistory.length > 0) {
+          state.kalamState.history = state.currentUser.kalamHistory;
+        }
+      }
     } catch (e) {
       localStorage.removeItem('arabic_app_user');
     }
@@ -692,6 +769,12 @@ document.addEventListener('DOMContentLoaded', () => {
         logoutBtn.addEventListener('click', () => {
           state.currentUser = null;
           state.currentView = 'login';
+          state.quizSubmitted = false;
+          state.quizScore = 0;
+          state.listeningQuizSubmitted = false;
+          state.listeningQuizScore = 0;
+          state.matchGameSubmitted = false;
+          state.kalamState.history = [];
           localStorage.removeItem('arabic_app_user');
           toggleDrawer(false);
           render();
@@ -856,6 +939,44 @@ document.addEventListener('DOMContentLoaded', () => {
   // 2. DASHBOARD VIEW
   function renderDashboard() {
     const isGuru = state.currentUser && state.currentUser.role === 'guru';
+
+    // Perolehan nilai & riwayat siswa aktif secara realtime dari cloud
+    let curStd = null;
+    if (!isGuru && state.currentUser) {
+      curStd = (state.students || []).find(s => 
+        (state.currentUser.id && String(s.id) === String(state.currentUser.id)) || 
+        (s.name && state.currentUser.name && s.name.trim().toLowerCase() === state.currentUser.name.trim().toLowerCase())
+      ) || state.currentUser;
+    }
+
+    const studentScore = curStd && typeof curStd.score === 'number' ? curStd.score : (state.quizScore || 0);
+    const studentIstima = curStd && typeof curStd.istimaScore === 'number' ? curStd.istimaScore : (state.listeningQuizScore || 0);
+    const studentKalam = curStd && typeof curStd.kalamScore === 'number' ? curStd.kalamScore : 0;
+    const studentDuel = curStd && typeof curStd.duelScore === 'number' ? curStd.duelScore : 0;
+    const studentMatch = curStd && typeof curStd.matchGameScore === 'number' ? curStd.matchGameScore : 0;
+    
+    const validScores = [studentScore, studentIstima, studentKalam, studentMatch].filter(x => typeof x === 'number' && x > 0);
+    const studentAvg = curStd && typeof curStd.averageScore === 'number' && curStd.averageScore > 0 
+      ? curStd.averageScore 
+      : (validScores.length > 0 ? Math.round(validScores.reduce((a, b) => a + b, 0) / validScores.length) : (studentScore || 0));
+
+    let doneCount = 0;
+    if (studentScore > 0) doneCount++;
+    if (studentIstima > 0) doneCount++;
+    if (studentKalam > 0) doneCount++;
+    if (studentDuel > 0) doneCount++;
+    if (studentMatch > 0) doneCount++;
+    const studentProgress = curStd && typeof curStd.progress === 'number' && curStd.progress > 0 
+      ? curStd.progress 
+      : Math.min(100, Math.round((doneCount / 5) * 100));
+
+    const studentSubs = (curStd && Array.isArray(curStd.submissions) && curStd.submissions.length > 0)
+      ? curStd.submissions
+      : (state.submissions || []).filter(sub => 
+          (curStd && curStd.id && String(sub.studentId) === String(curStd.id)) ||
+          (sub.studentName && state.currentUser && sub.studentName.trim().toLowerCase() === state.currentUser.name.trim().toLowerCase())
+        );
+
     return `
       <div class="space-y-8">
         <!-- Hero Banner with Arch Frame & Saymana aesthetic -->
@@ -933,12 +1054,198 @@ document.addEventListener('DOMContentLoaded', () => {
               <i class="fa-solid fa-trophy"></i>
             </div>
             <div class="min-w-0">
-              <div class="text-lg sm:text-2xl font-bold text-emerald-950 truncate">${isGuru ? state.students.length : (state.quizSubmitted ? state.quizScore + ' Pts' : 'Belum')}</div>
+              <div class="text-lg sm:text-2xl font-bold text-emerald-950 truncate">${isGuru ? state.students.length : (studentScore > 0 ? studentScore + ' Pts' : (state.quizSubmitted ? state.quizScore + ' Pts' : 'Belum'))}</div>
               <div class="text-[10px] sm:text-xs text-emerald-600 font-medium truncate">${isGuru ? 'Siswa Terdaftar' : 'Skor Kuis Anda'}</div>
             </div>
           </div>
         </div>
 
+
+
+        ${!isGuru ? `
+        <!-- Rapor & Hasil Latihan Real-time Siswa (Tersimpan di Cloud) -->
+        <div class="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-7 shadow-lg border-2 border-emerald-300/80 space-y-5 animate-fadeIn">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-emerald-100 pb-4">
+            <div class="space-y-1">
+              <div class="flex flex-wrap items-center gap-2">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] sm:text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 shadow-2xs">
+                  <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                  <span>Cloud Firestore Aktif &bull; Realtime Antar-Perangkat</span>
+                </span>
+                <span class="text-[11px] text-slate-500 font-medium">
+                  Terakhir Aktif: <strong class="text-emerald-900">${curStd && curStd.lastActive ? curStd.lastActive : 'Hari ini'}</strong>
+                </span>
+              </div>
+              <h2 class="text-lg sm:text-2xl font-black text-emerald-950 flex items-center gap-2">
+                <i class="fa-solid fa-cloud-arrow-up text-emerald-600"></i>
+                <span>Hasil Latihan & Capaian Belajar Realtime</span>
+              </h2>
+              <p class="text-xs text-emerald-700">
+                Semua nilai kuis, latihan menyimak (Istima'), praktik bicara AI (Kalam), dan game otomatis tersimpan di akun Anda dan langsung masuk ke layar Guru secara realtime.
+              </p>
+            </div>
+            
+            <div class="flex items-center gap-2.5 bg-emerald-50 p-2.5 sm:p-3 rounded-2xl border border-emerald-200">
+              <div class="w-10 h-10 rounded-xl bg-emerald-700 text-white flex items-center justify-center font-black text-base shadow-xs">
+                ${(state.currentUser.name || 'S').charAt(0).toUpperCase()}
+              </div>
+              <div class="text-left min-w-0">
+                <div class="text-xs font-black text-emerald-950 truncate">${state.currentUser.name}</div>
+                <div class="text-[11px] text-emerald-700 font-semibold">Kelas ${state.currentUser.class || 'IX-A'} &bull; Akun Siswa</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 5 Kotak Nilai Latihan Soal & Game -->
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5 sm:gap-3.5">
+            <!-- 1. Kuis Interaktif (Kahoot) -->
+            <div class="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-gradient-to-br from-purple-50 to-purple-100/60 border border-purple-200 flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <span class="w-8 h-8 rounded-lg bg-purple-600 text-white flex items-center justify-center text-sm shadow-xs"><i class="fa-solid fa-gamepad"></i></span>
+                  <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${studentScore > 0 ? 'bg-purple-200 text-purple-800' : 'bg-slate-200 text-slate-600'}">
+                    ${studentScore > 0 ? 'Selesai' : 'Belum'}
+                  </span>
+                </div>
+                <div class="text-xs font-bold text-purple-950 font-arabic">التدريبات (Kuis)</div>
+                <div class="text-[10px] text-purple-700 font-medium">Kahoot Interaktif</div>
+              </div>
+              <div class="mt-3 pt-2 border-t border-purple-200/80 flex items-baseline justify-between">
+                <span class="text-xl sm:text-2xl font-black text-purple-950">${studentScore}</span>
+                <span class="text-[10px] text-purple-600 font-semibold">/ 100</span>
+              </div>
+            </div>
+
+            <!-- 2. Maharah Istima' -->
+            <div class="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-gradient-to-br from-indigo-50 to-indigo-100/60 border border-indigo-200 flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <span class="w-8 h-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center text-sm shadow-xs"><i class="fa-solid fa-headphones"></i></span>
+                  <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${studentIstima > 0 ? 'bg-indigo-200 text-indigo-800' : 'bg-slate-200 text-slate-600'}">
+                    ${studentIstima > 0 ? 'Selesai' : 'Belum'}
+                  </span>
+                </div>
+                <div class="text-xs font-bold text-indigo-950 font-arabic">الاستماع (Menyimak)</div>
+                <div class="text-[10px] text-indigo-700 font-medium">Latihan Audio Arab</div>
+              </div>
+              <div class="mt-3 pt-2 border-t border-indigo-200/80 flex items-baseline justify-between">
+                <span class="text-xl sm:text-2xl font-black text-indigo-950">${studentIstima}</span>
+                <span class="text-[10px] text-indigo-600 font-semibold">/ 100</span>
+              </div>
+            </div>
+
+            <!-- 3. Maharah Kalam -->
+            <div class="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-gradient-to-br from-teal-50 to-teal-100/60 border border-teal-200 flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <span class="w-8 h-8 rounded-lg bg-teal-600 text-white flex items-center justify-center text-sm shadow-xs"><i class="fa-solid fa-microphone"></i></span>
+                  <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${studentKalam > 0 ? 'bg-teal-200 text-teal-800' : 'bg-slate-200 text-slate-600'}">
+                    ${studentKalam > 0 ? 'Selesai' : 'Belum'}
+                  </span>
+                </div>
+                <div class="text-xs font-bold text-teal-950 font-arabic">الكلام (Berbicara)</div>
+                <div class="text-[10px] text-teal-700 font-medium">Evaluasi Suara AI</div>
+              </div>
+              <div class="mt-3 pt-2 border-t border-teal-200/80 flex items-baseline justify-between">
+                <span class="text-xl sm:text-2xl font-black text-teal-950">${studentKalam}</span>
+                <span class="text-[10px] text-teal-600 font-semibold">/ 100</span>
+              </div>
+            </div>
+
+            <!-- 4. Duel 1v1 -->
+            <div class="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-gradient-to-br from-amber-50 to-amber-100/60 border border-amber-200 flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <span class="w-8 h-8 rounded-lg bg-amber-600 text-white flex items-center justify-center text-sm shadow-xs"><i class="fa-solid fa-bolt"></i></span>
+                  <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${studentDuel > 0 ? 'bg-amber-200 text-amber-800' : 'bg-slate-200 text-slate-600'}">
+                    ${studentDuel > 0 ? 'Aktif' : 'Belum'}
+                  </span>
+                </div>
+                <div class="text-xs font-bold text-amber-950 font-arabic">مبارزة (Duel 1v1)</div>
+                <div class="text-[10px] text-amber-700 font-medium">Adu Cepat Qawa'id</div>
+              </div>
+              <div class="mt-3 pt-2 border-t border-amber-200/80 flex items-baseline justify-between">
+                <span class="text-xl sm:text-2xl font-black text-amber-950">${studentDuel}</span>
+                <span class="text-[10px] text-amber-600 font-semibold">Pts</span>
+              </div>
+            </div>
+
+            <!-- 5. Tebak Gambar -->
+            <div class="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-gradient-to-br from-emerald-50 to-emerald-100/60 border border-emerald-200 flex flex-col justify-between col-span-2 sm:col-span-1">
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <span class="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center text-sm shadow-xs"><i class="fa-solid fa-images"></i></span>
+                  <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${studentMatch > 0 ? 'bg-emerald-200 text-emerald-800' : 'bg-slate-200 text-slate-600'}">
+                    ${studentMatch > 0 ? 'Selesai' : 'Belum'}
+                  </span>
+                </div>
+                <div class="text-xs font-bold text-emerald-950 font-arabic">تطابق (Tebak Gambar)</div>
+                <div class="text-[10px] text-emerald-700 font-medium">Cocok Suara & Gambar</div>
+              </div>
+              <div class="mt-3 pt-2 border-t border-emerald-200/80 flex items-baseline justify-between">
+                <span class="text-xl sm:text-2xl font-black text-emerald-950">${studentMatch}</span>
+                <span class="text-[10px] text-emerald-600 font-semibold">/ 100</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bar Rata-rata Nilai & Progres Belajar -->
+          <div class="bg-gradient-to-r from-emerald-900 to-teal-900 text-white rounded-2xl p-4 sm:p-5 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 shadow-sm">
+            <div class="flex items-center gap-3.5">
+              <div class="w-12 h-12 rounded-xl bg-white/10 backdrop-blur-xs flex items-center justify-center text-2xl text-emerald-300 flex-shrink-0">
+                <i class="fa-solid fa-award"></i>
+              </div>
+              <div>
+                <div class="text-xs text-emerald-200 font-medium">Nilai Rata-rata Gabungan:</div>
+                <div class="text-2xl sm:text-3xl font-extrabold flex items-baseline gap-2">
+                  <span>${studentAvg}</span>
+                  <span class="text-xs font-normal text-emerald-300">/ 100</span>
+                  <span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full ${studentAvg >= 75 ? 'bg-emerald-400 text-emerald-950' : 'bg-amber-400 text-amber-950'} uppercase tracking-wider ml-1">
+                    ${studentAvg >= 75 ? 'Tuntas KKM 🏆' : (studentAvg > 0 ? 'Perlu Ditingkatkan ✍️' : 'Mulai Latihan')}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex-1 max-w-md space-y-1.5">
+              <div class="flex justify-between text-xs font-semibold text-emerald-200">
+                <span>Progres Belajar Keseluruhan</span>
+                <span>${studentProgress}%</span>
+              </div>
+              <div class="w-full h-3 bg-white/20 rounded-full overflow-hidden">
+                <div class="h-full bg-gradient-to-r from-emerald-400 to-teal-300 transition-all duration-700 rounded-full" style="width: ${studentProgress}%"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Riwayat Pengerjaan Terakhir (Real-time Submissions) -->
+          ${studentSubs.length > 0 ? `
+            <div class="pt-2">
+              <div class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2 flex items-center gap-2">
+                <i class="fa-solid fa-clock-rotate-left text-emerald-600"></i>
+                <span>Riwayat Latihan Terakhir Anda (Tersimpan ke Guru):</span>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+                ${studentSubs.slice(0, 3).map(sub => `
+                  <div class="p-3 bg-slate-50 hover:bg-emerald-50/50 rounded-xl border border-slate-200/80 transition-all text-xs space-y-1">
+                    <div class="flex items-center justify-between">
+                      <span class="font-bold text-emerald-950 truncate">${sub.activityType}</span>
+                      <span class="font-black px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded-md text-[11px]">${sub.score} Pts</span>
+                    </div>
+                    <div class="text-[11px] text-slate-500 truncate">${sub.details || 'Latihan Mandiri'}</div>
+                    <div class="text-[10px] text-slate-400">${sub.time || sub.createdAtFormatted || 'Hari ini'}</div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          ` : `
+            <div class="p-3.5 bg-emerald-50/60 rounded-xl border border-emerald-100 text-xs text-emerald-800 flex items-center gap-2.5">
+              <i class="fa-solid fa-circle-info text-emerald-600 text-base"></i>
+              <span>Belum ada latihan yang diselesaikan. Silakan pilih menu di bawah (Kuis, Istima', Kalam, atau Duel) untuk mulai mengumpulkan nilai!</span>
+            </div>
+          `}
+        </div>
+        ` : ''}
 
 
         <!-- Main Features Grid (Arch Cards) -->
@@ -5634,11 +5941,40 @@ document.addEventListener('DOMContentLoaded', () => {
           }
 
           state.currentUser = {
+            id: matchedStudent.id || ('std_' + Date.now()),
             name: matchedStudent.name,
             role: 'siswa',
-            class: matchedStudent.class || 'IX-A'
+            class: matchedStudent.class || 'IX-A',
+            score: typeof matchedStudent.score === 'number' ? matchedStudent.score : 0,
+            istimaScore: typeof matchedStudent.istimaScore === 'number' ? matchedStudent.istimaScore : 0,
+            kalamScore: typeof matchedStudent.kalamScore === 'number' ? matchedStudent.kalamScore : 0,
+            duelScore: typeof matchedStudent.duelScore === 'number' ? matchedStudent.duelScore : 0,
+            matchGameScore: typeof matchedStudent.matchGameScore === 'number' ? matchedStudent.matchGameScore : 0,
+            averageScore: typeof matchedStudent.averageScore === 'number' ? matchedStudent.averageScore : 0,
+            progress: typeof matchedStudent.progress === 'number' ? matchedStudent.progress : 0,
+            lastActive: matchedStudent.lastActive || 'Baru Saja',
+            submissions: Array.isArray(matchedStudent.submissions) ? matchedStudent.submissions : [],
+            kalamHistory: Array.isArray(matchedStudent.kalamHistory) ? matchedStudent.kalamHistory : []
           };
           localStorage.setItem('arabic_app_user', JSON.stringify(state.currentUser));
+
+          // Pulihkan status pengerjaan latihan di perangkat ini
+          if (matchedStudent.score > 0) {
+            state.quizSubmitted = true;
+            state.quizScore = matchedStudent.score;
+          }
+          if (matchedStudent.istimaScore > 0) {
+            state.listeningQuizSubmitted = true;
+            state.listeningQuizScore = matchedStudent.istimaScore;
+          }
+          if (matchedStudent.matchGameScore > 0) {
+            state.matchGameSubmitted = true;
+          }
+          if (Array.isArray(matchedStudent.kalamHistory) && matchedStudent.kalamHistory.length > 0) {
+            state.kalamState.history = matchedStudent.kalamHistory;
+            localStorage.setItem('arabic_kalam_history', JSON.stringify(matchedStudent.kalamHistory));
+          }
+
           state.currentView = 'dashboard';
           render();
           return;
@@ -5674,15 +6010,22 @@ document.addEventListener('DOMContentLoaded', () => {
           return;
         }
 
-        // Buat objek siswa baru
+        // Buat objek siswa baru lengkap dengan seluruh komponen nilai latihan
         const newStudent = {
-          id: Date.now(),
+          id: 'std_' + Date.now(),
           name: regName,
           class: regClass,
           password: regPwd,
           score: 0,
+          istimaScore: 0,
+          kalamScore: 0,
+          duelScore: 0,
+          matchGameScore: 0,
+          averageScore: 0,
           progress: 0,
-          lastActive: "Baru Mendaftar"
+          lastActive: "Baru Mendaftar",
+          submissions: [],
+          kalamHistory: []
         };
 
         // Simpan ke state lokal
@@ -7178,30 +7521,91 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Initialize Real-time Cloud Sync with Firebase (Cloud Firestore)
-  if (window.FirebaseSync && window.FirebaseSync.isConnected()) {
-    window.FirebaseSync.init(ARABIC_DATA.initialStudents, ARABIC_DATA.initialTeachers, (update) => {
-      if (update.type === 'students' && update.data) {
-        state.students = update.data;
-        if (state.currentUser && state.currentUser.role === 'guru') {
-          if (state.currentView === 'students' || state.currentView === 'dashboard') {
+  function startFirebaseSync() {
+    if (window.FirebaseSync && window.FirebaseSync.isConnected()) {
+      window.FirebaseSync.init(ARABIC_DATA.initialStudents, ARABIC_DATA.initialTeachers, (update) => {
+        if (update.type === 'students' && update.data) {
+          state.students = update.data;
+
+          // 1. Sinkronisasi Realtime untuk Akun Siswa di Perangkat Manapun (HP / Komputer)
+          if (state.currentUser && state.currentUser.role === 'siswa') {
+            const freshStudent = update.data.find(s => 
+              (state.currentUser.id && String(s.id) === String(state.currentUser.id)) ||
+              (s.name && state.currentUser.name && s.name.trim().toLowerCase() === state.currentUser.name.trim().toLowerCase())
+            );
+            if (freshStudent) {
+              state.currentUser = {
+                ...state.currentUser,
+                id: freshStudent.id,
+                name: freshStudent.name,
+                class: freshStudent.class || state.currentUser.class || 'IX-A',
+                score: typeof freshStudent.score === 'number' ? freshStudent.score : 0,
+                istimaScore: typeof freshStudent.istimaScore === 'number' ? freshStudent.istimaScore : 0,
+                kalamScore: typeof freshStudent.kalamScore === 'number' ? freshStudent.kalamScore : 0,
+                duelScore: typeof freshStudent.duelScore === 'number' ? freshStudent.duelScore : 0,
+                matchGameScore: typeof freshStudent.matchGameScore === 'number' ? freshStudent.matchGameScore : 0,
+                averageScore: typeof freshStudent.averageScore === 'number' ? freshStudent.averageScore : 0,
+                progress: typeof freshStudent.progress === 'number' ? freshStudent.progress : 0,
+                lastActive: freshStudent.lastActive || state.currentUser.lastActive,
+                submissions: Array.isArray(freshStudent.submissions) ? freshStudent.submissions : [],
+                kalamHistory: Array.isArray(freshStudent.kalamHistory) ? freshStudent.kalamHistory : (state.currentUser.kalamHistory || [])
+              };
+              localStorage.setItem('arabic_app_user', JSON.stringify(state.currentUser));
+
+              if (freshStudent.score > 0) {
+                state.quizSubmitted = true;
+                state.quizScore = freshStudent.score;
+              }
+              if (freshStudent.istimaScore > 0) {
+                state.listeningQuizSubmitted = true;
+                state.listeningQuizScore = freshStudent.istimaScore;
+              }
+              if (freshStudent.matchGameScore > 0) {
+                state.matchGameSubmitted = true;
+              }
+              if (Array.isArray(freshStudent.kalamHistory) && freshStudent.kalamHistory.length > 0) {
+                state.kalamState.history = freshStudent.kalamHistory;
+                localStorage.setItem('arabic_kalam_history', JSON.stringify(freshStudent.kalamHistory));
+              }
+
+              if (state.currentView === 'dashboard') {
+                render();
+              }
+            }
+          }
+
+          // 2. Sinkronisasi Realtime untuk Akun Guru (Dashboard & Tabel Siswa)
+          if (state.currentUser && state.currentUser.role === 'guru') {
+            if (state.currentView === 'students' || state.currentView === 'dashboard') {
+              render();
+            }
+          }
+        } else if (update.type === 'submissions' && update.data) {
+          state.submissions = update.data;
+          if (state.currentUser && state.currentUser.role === 'siswa' && state.currentView === 'dashboard') {
+            render();
+          }
+          if (state.currentUser && state.currentUser.role === 'guru') {
+            if (state.currentView === 'students' || state.currentView === 'dashboard') {
+              render();
+            }
+          }
+        } else if (update.type === 'teachers' && update.data) {
+          state.teachers = update.data;
+          if (state.currentView === 'settings') {
             render();
           }
         }
-      } else if (update.type === 'submissions' && update.data) {
-        state.submissions = update.data;
-        if (state.currentUser && state.currentUser.role === 'guru') {
-          if (state.currentView === 'students' || state.currentView === 'dashboard') {
-            render();
-          }
+      });
+    } else {
+      setTimeout(() => {
+        if (window.FirebaseSync && window.FirebaseSync.isConnected()) {
+          startFirebaseSync();
         }
-      } else if (update.type === 'teachers' && update.data) {
-        state.teachers = update.data;
-        if (state.currentView === 'settings') {
-          render();
-        }
-      }
-    });
+      }, 300);
+    }
   }
+  startFirebaseSync();
 
   // Initial Boot
   render();
