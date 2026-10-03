@@ -2130,10 +2130,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const btn = document.getElementById('kalam-replay-student-btn');
     if (!btn) return;
     if (isPlaying) {
-      btn.innerHTML = '<i class="fa-solid fa-pause text-amber-300"></i> <span>Jeda Suara</span>';
+      btn.innerHTML = '<i class="fa-solid fa-pause text-amber-300 text-[10px]"></i> <span>Jeda</span>';
       btn.classList.add('ring-2', 'ring-teal-300', 'bg-teal-700');
     } else {
-      btn.innerHTML = '<i class="fa-solid fa-play text-[11px]"></i> <span>Putar Suara</span>';
+      btn.innerHTML = '<i class="fa-solid fa-play text-[10px]"></i> <span>Putar</span>';
       btn.classList.remove('ring-2', 'ring-teal-300', 'bg-teal-700');
     }
   }
@@ -3065,26 +3065,26 @@ document.addEventListener('DOMContentLoaded', () => {
                   </div>
 
                   <!-- Box Suara Siswa Sendiri -->
-                  <div class="bg-white p-3.5 rounded-2xl border border-teal-200 shadow-2xs flex flex-col justify-between gap-2.5">
-                    <div class="flex items-center justify-between gap-2">
-                      <div class="flex items-center gap-2">
+                  <div class="bg-white p-3 sm:p-3.5 rounded-2xl border border-teal-200 shadow-2xs flex flex-col justify-between gap-2.5 overflow-hidden">
+                    <div class="flex flex-wrap sm:flex-nowrap items-center justify-between gap-2">
+                      <div class="flex items-center gap-2 min-w-0">
                         <div class="w-8 h-8 rounded-xl bg-teal-100 text-teal-800 flex items-center justify-center text-xs shrink-0">
                           <i class="fa-solid fa-microphone-lines"></i>
                         </div>
-                        <div>
-                          <div class="text-xs font-bold text-teal-950">Rekaman Suara Anda</div>
-                          <div class="text-[10px] text-slate-500">
+                        <div class="min-w-0">
+                          <div class="text-xs font-bold text-teal-950 truncate">Rekaman Suara Anda</div>
+                          <div class="text-[10px] text-slate-500 truncate">
                             ${state.kalamState.recordedAudioUrl ? (state.kalamState.recordingDuration || state.kalamState.recordingSeconds || 2) + ' Detik Tersimpan' : 'Belum Ada Audio'}
                           </div>
                         </div>
                       </div>
                       ${state.kalamState.recordedAudioUrl ? `
-                        <div class="flex items-center gap-1.5 shrink-0">
-                          <button id="kalam-replay-student-btn" class="px-3 py-1.5 bg-teal-600 hover:bg-teal-700 text-white rounded-xl font-bold text-xs shadow-xs flex items-center gap-1.5 transition-all active:scale-95">
+                        <div class="flex items-center gap-1.5 shrink-0 ml-auto sm:ml-0">
+                          <button id="kalam-replay-student-btn" class="px-2.5 sm:px-3 py-1.5 bg-teal-600 hover:bg-teal-700 text-white rounded-xl font-bold text-xs shadow-xs flex items-center gap-1.5 transition-all active:scale-95">
                             <i class="fa-solid fa-play text-[10px]"></i>
-                            <span>Putar Suara</span>
+                            <span>Putar</span>
                           </button>
-                          <button id="kalam-boost-btn" title="Perkeras volume suara jika terdengar pelan di laptop" class="px-2.5 py-1.5 bg-amber-500 hover:bg-amber-600 text-white rounded-xl font-bold text-xs shadow-xs flex items-center gap-1 transition-all active:scale-95">
+                          <button id="kalam-boost-btn" title="Perkeras volume suara jika pelan" class="px-2 sm:px-2.5 py-1.5 bg-amber-500 hover:bg-amber-600 text-white rounded-xl font-bold text-xs shadow-xs flex items-center gap-1 transition-all active:scale-95">
                             <i class="fa-solid fa-volume-high text-[10px]"></i>
                             <span>+200%</span>
                           </button>
@@ -3094,9 +3094,9 @@ document.addEventListener('DOMContentLoaded', () => {
                       `}
                     </div>
 
-                    <!-- Native HTML5 Audio Player for reliable laptop audio playback -->
+                    <!-- Native HTML5 Audio Player -->
                     ${state.kalamState.recordedAudioUrl ? `
-                      <div class="pt-1">
+                      <div class="pt-0.5 w-full overflow-hidden">
                         <audio id="kalam-native-player" controls preload="auto" class="w-full h-8 rounded-lg accent-teal-600 bg-slate-50" src="${state.kalamState.recordedAudioUrl}"></audio>
                       </div>
                     ` : ''}
