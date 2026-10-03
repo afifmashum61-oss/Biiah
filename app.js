@@ -1007,61 +1007,6 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
         </div>
 
-        <!-- Quick Stats Cards (Mobile Responsive) -->
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5 sm:gap-4">
-                    <div class="bg-white p-3.5 sm:p-5 rounded-xl sm:rounded-2xl shadow-sm border border-emerald-100 flex items-center gap-2.5 sm:gap-4 min-w-0">
-            <div class="w-9 h-9 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-teal-100 text-teal-700 flex items-center justify-center text-base sm:text-xl font-bold flex-shrink-0">
-              <i class="fa-solid fa-microphone-lines"></i>
-            </div>
-            <div class="min-w-0">
-              <div class="text-lg sm:text-2xl font-bold text-emerald-950 truncate">${(ARABIC_DATA.kalam && ARABIC_DATA.kalam.items) ? ARABIC_DATA.kalam.items.length : 15}</div>
-              <div class="text-[10px] sm:text-xs text-emerald-600 font-medium truncate">Latihan مهارة الكلام</div>
-            </div>
-          </div>
-
-<div class="bg-white p-3.5 sm:p-5 rounded-xl sm:rounded-2xl shadow-sm border border-emerald-100 flex items-center gap-2.5 sm:gap-4 min-w-0">
-            <div class="w-9 h-9 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-base sm:text-xl font-bold flex-shrink-0">
-              <i class="fa-solid fa-book font-arabic"></i>
-            </div>
-            <div class="min-w-0">
-              <div class="text-lg sm:text-2xl font-bold text-emerald-950 truncate">${ARABIC_DATA.vocabularies.length}</div>
-              <div class="text-[10px] sm:text-xs text-emerald-600 font-medium truncate">Total المفردات</div>
-            </div>
-          </div>
-
-          <div class="bg-white p-3.5 sm:p-5 rounded-xl sm:rounded-2xl shadow-sm border border-emerald-100 flex items-center gap-2.5 sm:gap-4 min-w-0">
-            <div class="w-9 h-9 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-teal-100 text-teal-700 flex items-center justify-center text-base sm:text-xl font-bold flex-shrink-0">
-              <i class="fa-solid fa-file-lines"></i>
-            </div>
-            <div class="min-w-0">
-              <div class="text-lg sm:text-2xl font-bold text-emerald-950 truncate">3</div>
-              <div class="text-[10px] sm:text-xs text-emerald-600 font-medium truncate">Paragraf القراءة</div>
-            </div>
-          </div>
-
-          <div class="bg-white p-3.5 sm:p-5 rounded-xl sm:rounded-2xl shadow-sm border border-emerald-100 flex items-center gap-2.5 sm:gap-4 min-w-0">
-            <div class="w-9 h-9 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center text-base sm:text-xl font-bold flex-shrink-0">
-              <i class="fa-solid fa-question"></i>
-            </div>
-            <div class="min-w-0">
-              <div class="text-lg sm:text-2xl font-bold text-emerald-950 truncate">${ARABIC_DATA.quizzes.length}</div>
-              <div class="text-[10px] sm:text-xs text-emerald-600 font-medium truncate">Soal Kuis Interaktif</div>
-            </div>
-          </div>
-
-          <div class="bg-white p-3.5 sm:p-5 rounded-xl sm:rounded-2xl shadow-sm border border-emerald-100 flex items-center gap-2.5 sm:gap-4 min-w-0">
-            <div class="w-9 h-9 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-emerald-700 text-white flex items-center justify-center text-base sm:text-xl font-bold flex-shrink-0">
-              <i class="fa-solid fa-trophy"></i>
-            </div>
-            <div class="min-w-0">
-              <div class="text-lg sm:text-2xl font-bold text-emerald-950 truncate">${isGuru ? state.students.length : (studentScore > 0 ? studentScore + ' Pts' : (state.quizSubmitted ? state.quizScore + ' Pts' : 'Belum'))}</div>
-              <div class="text-[10px] sm:text-xs text-emerald-600 font-medium truncate">${isGuru ? 'Siswa Terdaftar' : 'Skor Kuis Anda'}</div>
-            </div>
-          </div>
-        </div>
-
-
-
         ${!isGuru ? `
         <!-- Hasil Latihan & Capaian Belajar Siswa (Simple & Clean) -->
         <div class="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-sm border border-emerald-100 space-y-4 animate-fadeIn">
