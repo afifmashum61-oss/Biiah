@@ -285,7 +285,7 @@ document.addEventListener('DOMContentLoaded', () => {
     activeDialogueId: 1,
     dialogueMode: 'chat', // 'chat' or 'roleplay'
     roleplayStep: 0,
-    showDialogueTranslation: true,
+    showDialogueTranslation: false,
     myRole: 'all',
     // Qiraah Reading State
     showQiraahTranslation: false, // Hidden by default as requested
@@ -4187,24 +4187,32 @@ document.addEventListener('DOMContentLoaded', () => {
     return `
       <div class="space-y-6 max-w-5xl mx-auto">
         
-        <!-- Header Banner -->
-        <div class="bg-white p-6 sm:p-8 rounded-[2.5rem] border border-emerald-100 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div>
-            <span class="text-xs font-bold text-emerald-700 uppercase tracking-widest bg-emerald-50 px-3.5 py-1 rounded-full border border-emerald-200">الْحِوَارُ الإِسْتِمَاعِيُّ وَالتَّفَاعُلِيُّ</span>
-            <h2 class="text-3xl font-bold font-arabic text-emerald-950 mt-2">${currentDialogue.title}</h2>
-            ${currentDialogue.subtitle ? `<p class="text-xs sm:text-sm text-emerald-700 mt-1">${currentDialogue.subtitle}</p>` : ''}
-          </div>
+        <!-- Header Banner (Clean, Balanced & Mobile-Optimized) -->
+        <div class="bg-white p-4 sm:p-7 rounded-2xl sm:rounded-3xl border border-emerald-100 shadow-sm space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div class="space-y-1.5 text-center sm:text-left">
+              <div class="inline-flex items-center gap-1.5 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200/80 shadow-2xs">
+                <i class="fa-solid fa-comments text-emerald-600 text-xs"></i>
+                <span class="text-xs font-bold text-emerald-800 font-arabic">الْحِوَارُ الإِسْتِمَاعِيُّ وَالتَّفَاعُلِيُّ</span>
+              </div>
+              <h2 class="text-2xl sm:text-3xl font-extrabold font-arabic text-emerald-950">${currentDialogue.title}</h2>
+              <div class="text-xs sm:text-sm text-emerald-700 font-medium font-arabic flex items-center justify-center sm:justify-start gap-1.5 pt-0.5" dir="rtl">
+                <i class="fa-solid fa-volume-high text-emerald-600 text-xs"></i>
+                <span>${currentDialogue.instruction}</span>
+              </div>
+            </div>
 
-          <!-- Quick Action Tools -->
-          <div class="flex flex-wrap items-center gap-2 self-stretch sm:self-auto justify-end">
-            <button id="toggle-dialogue-trans-btn" class="px-3.5 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 rounded-xl text-xs font-semibold border border-emerald-200 transition-all flex items-center gap-1.5 shadow-sm">
-              <i class="fa-solid ${state.showDialogueTranslation ? 'fa-eye-slash' : 'fa-eye'}"></i>
-              <span>${state.showDialogueTranslation ? 'Sembunyikan Arti' : 'Tampilkan Arti'}</span>
-            </button>
-            <button onclick="speakArabic('${currentDialogue.lines.map(l => l.arabic.replace(/\n/g, ' ')).join('. ')}')" class="px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-bold shadow-md transition-all flex items-center gap-2">
-              <i class="fa-solid fa-circle-play"></i>
-              <span>Putar Seluruh Percakapan</span>
-            </button>
+            <!-- Action Buttons (Balanced 2-Column Grid on Mobile) -->
+            <div class="grid grid-cols-2 sm:flex sm:items-center gap-2 w-full sm:w-auto">
+              <button id="toggle-dialogue-trans-btn" class="px-3 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 rounded-xl text-xs font-semibold border border-emerald-200 transition-all flex items-center justify-center gap-1.5 shadow-2xs active:scale-95">
+                <i class="fa-solid ${state.showDialogueTranslation ? 'fa-eye-slash' : 'fa-eye'} text-xs"></i>
+                <span>${state.showDialogueTranslation ? 'Sembunyikan Arti' : 'Tampilkan Arti'}</span>
+              </button>
+              <button onclick="speakArabic('${currentDialogue.lines.map(l => l.arabic.replace(/\n/g, ' ')).join('. ')}')" class="px-3.5 py-2 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-bold shadow-sm transition-all flex items-center justify-center gap-1.5 active:scale-95">
+                <i class="fa-solid fa-circle-play text-xs"></i>
+                <span>Putar Audio</span>
+              </button>
+            </div>
           </div>
         </div>
 
@@ -4219,21 +4227,6 @@ document.addEventListener('DOMContentLoaded', () => {
           `).join('')}
         </div>
         ` : ''}
-
-        <!-- Dialogue Header Instruction -->
-        <div class="bg-white p-4 rounded-3xl border border-emerald-100 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-3">
-          <div class="flex items-center gap-2">
-            <span class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-emerald-800 text-white shadow-sm flex items-center gap-1.5">
-              <i class="fa-solid fa-comment-dots"></i>
-              <span>Teks Percakapan Interaktif (Al-Hiwar)</span>
-            </span>
-          </div>
-
-          <div class="text-xs text-emerald-700 font-medium font-arabic flex items-center gap-2 bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-100">
-            <i class="fa-solid fa-volume-high text-emerald-600"></i>
-            <span>${currentDialogue.instruction}</span>
-          </div>
-        </div>
 
         <!-- Topic Images Showcase (If Available in Dialogue) -->
         ${currentDialogue.topicImages && currentDialogue.topicImages.length > 0 ? `
