@@ -3938,12 +3938,16 @@ document.addEventListener('DOMContentLoaded', () => {
     return `
       <div class="space-y-8">
         <!-- Main Container -->
-        <div class="bg-white rounded-[2.5rem] p-6 sm:p-10 border border-emerald-100 shadow-sm space-y-8">
+        <div class="bg-white rounded-2xl sm:rounded-3xl lg:rounded-[2.5rem] p-4 sm:p-8 lg:p-10 border border-emerald-100 shadow-sm space-y-6 sm:space-y-8">
           
           <!-- Header Banner -->
-          <div class="border-b border-emerald-100 pb-5 space-y-3 sm:space-y-4">
-            <span class="inline-block text-xs font-bold text-emerald-700 uppercase tracking-widest bg-emerald-50 px-3.5 py-1.5 rounded-full border border-emerald-200 shadow-xs">التَّرَاكِيبُ وَالْقَوَاعِدُ (Qawa'id & Gramatika)</span>
-            <h2 class="text-2xl sm:text-4xl font-bold font-arabic text-emerald-950 leading-[2.1] sm:leading-[2.3] pt-2 pb-1">${grammar.title}</h2>
+          <div class="border-b border-emerald-100 pb-4 sm:pb-5 space-y-2.5 sm:space-y-3">
+            <div class="inline-flex flex-wrap items-center gap-1.5 sm:gap-2 bg-emerald-50 px-3 sm:px-3.5 py-1 sm:py-1.5 rounded-full border border-emerald-200/80 shadow-2xs">
+              <span class="font-arabic font-bold text-xs sm:text-sm text-emerald-900">التَّرَاكِيبُ وَالْقَوَاعِدُ</span>
+              <span class="text-emerald-300">•</span>
+              <span class="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-emerald-700">Qawa'id & Gramatika</span>
+            </div>
+            <h2 class="text-lg sm:text-2xl lg:text-3xl font-bold font-arabic text-emerald-950 leading-relaxed sm:leading-[2.1] pt-1 pb-1" dir="rtl">${grammar.title}</h2>
             <p class="text-xs sm:text-sm text-emerald-700 leading-relaxed max-w-2xl">${grammar.explanation}</p>
           </div>
 
@@ -4088,20 +4092,20 @@ document.addEventListener('DOMContentLoaded', () => {
                   </div>
 
                   <!-- Derivation Diagram Boxes -->
-                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-xl mx-auto items-center">
+                  <div class="grid grid-cols-2 gap-2.5 sm:gap-4 max-w-xl mx-auto items-center">
                     
                     <!-- Right Box (Original Adjectives) -->
-                    <div class="bg-white p-4 rounded-2xl border-2 border-orange-300 text-center space-y-2 shadow-sm">
-                      <span class="text-[10px] font-bold text-orange-600 uppercase tracking-wider block">Kata Asal (Isim Sifat)</span>
-                      <div class="space-y-1 font-arabic text-xl font-bold text-orange-950">
+                    <div class="bg-white p-3 sm:p-4 rounded-2xl border-2 border-orange-300 text-center space-y-1.5 shadow-2xs">
+                      <span class="text-[9px] sm:text-[10px] font-bold text-orange-700 uppercase tracking-wider block">Kata Asal (Isim Sifat)</span>
+                      <div class="space-y-1 font-arabic text-base sm:text-xl font-bold text-orange-950">
                         ${tafdhil.keterangan[0].derivations.map(d => `<div class="py-0.5">${d.base}</div>`).join('')}
                       </div>
                     </div>
 
                     <!-- Left Box (Isim Tafdhil) -->
-                    <div class="bg-white p-4 rounded-2xl border-2 border-orange-300 text-center space-y-2 shadow-sm">
-                      <span class="text-[10px] font-bold text-emerald-600 uppercase tracking-wider block">Bentuk Isim Tafdhil</span>
-                      <div class="space-y-1 font-arabic text-xl font-bold text-emerald-700">
+                    <div class="bg-white p-3 sm:p-4 rounded-2xl border-2 border-emerald-400 text-center space-y-1.5 shadow-2xs">
+                      <span class="text-[9px] sm:text-[10px] font-bold text-emerald-700 uppercase tracking-wider block">Bentuk Isim Tafdhil</span>
+                      <div class="space-y-1 font-arabic text-base sm:text-xl font-bold text-emerald-800">
                         ${tafdhil.keterangan[0].derivations.map(d => `<div class="py-0.5">${d.tafdhil}</div>`).join('')}
                       </div>
                     </div>
@@ -4109,11 +4113,22 @@ document.addEventListener('DOMContentLoaded', () => {
                   </div>
 
                   <!-- Derivation Meaning Breakdown -->
-                  <div class="max-w-xl mx-auto bg-white p-3 rounded-2xl border border-emerald-100 text-xs text-emerald-900 space-y-1">
+                  <div class="max-w-xl mx-auto space-y-2">
                     ${tafdhil.keterangan[0].derivations.map(d => `
-                      <div class="flex items-center justify-between px-2 py-0.5 border-b border-emerald-50 last:border-none">
-                        <span class="font-arabic font-bold text-base text-emerald-800">${d.base} &rarr; ${d.tafdhil}</span>
-                        <span class="font-medium text-emerald-700">${d.meaning}</span>
+                      <div class="bg-white p-2.5 sm:p-3 rounded-2xl border border-emerald-200/90 shadow-2xs flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1.5 sm:gap-3">
+                        <!-- Arabic Pair in natural RTL order with neat badges -->
+                        <div class="flex items-center gap-2 font-arabic font-bold text-base sm:text-lg shrink-0" dir="rtl">
+                          <span class="px-2.5 py-0.5 bg-orange-50 text-orange-950 rounded-xl border border-orange-200 shadow-2xs">${d.base}</span>
+                          <span class="text-emerald-500 font-sans text-xs flex items-center px-0.5">
+                            <i class="fa-solid fa-arrow-left text-[11px]"></i>
+                          </span>
+                          <span class="px-2.5 py-0.5 bg-emerald-700 text-white rounded-xl shadow-2xs">${d.tafdhil}</span>
+                        </div>
+                        <!-- Meaning in Indonesian -->
+                        <div class="text-[11px] sm:text-xs text-emerald-800 font-medium sm:text-right flex items-center gap-1.5 pl-0.5 sm:pl-0 border-t sm:border-t-0 pt-1 sm:pt-0 border-emerald-100">
+                          <i class="fa-solid fa-circle-info text-[10px] text-emerald-500 shrink-0"></i>
+                          <span>${d.meaning}</span>
+                        </div>
                       </div>
                     `).join('')}
                   </div>
