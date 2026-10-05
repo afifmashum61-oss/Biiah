@@ -1,0 +1,30 @@
+{
+  "name": "Biiah 4.0 - Media Pembelajaran Bahasa Arab",
+  "short_name": "Biiah 4.0",
+  "description": "Media Pembelajaran Bahasa Arab Interaktif Kelas 9 MTs Darussalam Jombang - Materi الحفاظ على البيئة",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f8faf7",
+  "theme_color": "#166534",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "favicon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}

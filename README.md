@@ -53,7 +53,7 @@
    ```
 
 3. **Buka di Browser**:
-   Buka URL `http://localhost:8080/` pada peramban web pilihan Anda.
+   Buka URL `http://localhost:3000/` pada peramban web pilihan Anda.
 
 ---
 

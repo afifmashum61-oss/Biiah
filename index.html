@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id" class="h-full bg-[#f8faf7]">
 <head>
   <meta charset="UTF-8">
@@ -8,7 +8,12 @@
   <meta http-equiv="Expires" content="0">
   <title>Biiah 4.0</title>
   
-  <!-- Web App Icon & Favicon -->
+  <!-- Web App Icon, Manifest & Favicon -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Biiah 4.0">
   <link rel="icon" type="image/png" sizes="32x32" href="favicon.png?v=1790820579196">
   <link rel="icon" type="image/x-icon" href="favicon.ico?v=1790820579196">
   <link rel="shortcut icon" href="favicon.ico?v=1790820579196">
@@ -220,8 +225,12 @@
   <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-emerald-100 shadow-sm">
     <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-2">
       
-      <!-- Brand Logo -->
-      <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
+      <!-- Brand Logo & Back Button -->
+      <div class="flex items-center gap-2 sm:gap-3 min-w-0">
+        <!-- Header Back Button (Aktif & muncul saat membuka materi/latihan/pengaturan) -->
+        <button id="header-back-btn" aria-label="Kembali ke Beranda" class="hidden items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200/80 shadow-xs transition-all active:scale-95 shrink-0">
+          <i class="fa-solid fa-arrow-left text-sm sm:text-base"></i>
+        </button>
         <div class="w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-white p-1 sm:p-1.5 shadow-md shadow-emerald-900/10 border border-emerald-200/80 flex items-center justify-center flex-shrink-0">
           <img src="logo.png?v=1790820579196" alt="Logo" class="w-full h-full object-contain">
         </div>
@@ -325,6 +334,13 @@
       <p class="text-emerald-500">Dibuat untuk Guru dan Siswa oleh Afif Ma'shum, M.Pd</p>
     </div>
   </footer>
+
+  <!-- Edge Swipe Back Visual Indicator (Indikator Animasi Mengusap Samping Layar) -->
+  <div id="edge-swipe-indicator" class="fixed top-1/2 -translate-y-1/2 z-50 pointer-events-none transition-all duration-150 opacity-0 scale-75 hidden flex items-center justify-center">
+    <div id="edge-swipe-bubble" class="w-12 h-12 rounded-full bg-emerald-950/85 text-emerald-200 backdrop-blur-md shadow-2xl border border-emerald-400/50 flex items-center justify-center text-lg transition-all duration-150">
+      <i id="edge-swipe-icon" class="fa-solid fa-arrow-left"></i>
+    </div>
+  </div>
 
   <!-- Firebase Cloud Database SDK (Compat) -->
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
