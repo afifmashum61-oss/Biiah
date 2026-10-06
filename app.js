@@ -1984,12 +1984,12 @@ document.addEventListener('DOMContentLoaded', () => {
       const section = listening.sections.find(s => s.id === 'repeat');
       return `
         <div class="space-y-6 animate-fadeIn">
-          <div class="bg-emerald-50/60 p-4 sm:p-5 rounded-2xl border border-emerald-100 flex items-center justify-between">
-            <div>
-              <h3 class="text-lg font-bold text-emerald-950 font-arabic">${section.title}</h3>
-              <p class="text-xs text-emerald-700 mt-0.5">${section.desc}</p>
+          <div class="bg-emerald-50/60 p-4 sm:p-5 rounded-2xl border border-emerald-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
+            <div class="min-w-0 flex-1">
+              <h3 class="text-base sm:text-lg font-bold text-emerald-950 font-arabic">${section.title}</h3>
+              <p class="text-xs text-emerald-700 mt-0.5 leading-relaxed">${section.desc}</p>
             </div>
-            <button onclick="speakArabic('${section.items.map(i => i.arabic).join('. ')}')" class="px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-bold shadow transition-all flex items-center gap-2">
+            <button onclick="speakArabic('${section.items.map(i => i.arabic).join('. ')}')" class="px-4 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-bold shadow transition-all flex items-center justify-center gap-2 shrink-0 self-start sm:self-auto">
               <i class="fa-solid fa-play"></i> Putar Semua Audio
             </button>
           </div>
@@ -2077,18 +2077,29 @@ document.addEventListener('DOMContentLoaded', () => {
       const currentQ = section.questions[qIdx];
 
       return `
-        <div class="space-y-6 animate-fadeIn">
-          <div class="bg-teal-50/60 p-4 sm:p-5 rounded-2xl border border-teal-100 flex items-center justify-between">
-            <div>
-              <h3 class="text-lg font-bold text-teal-950 font-arabic">${section.title}</h3>
-              <p class="text-xs text-teal-700 mt-0.5">${section.desc}</p>
+        <div class="space-y-5 sm:space-y-6 animate-fadeIn">
+          <div class="bg-gradient-to-r from-teal-50 via-emerald-50/40 to-teal-50 p-4 sm:p-5 rounded-2xl border border-teal-100/90 shadow-xs space-y-3">
+            <div class="flex items-center justify-between gap-3">
+              <div class="flex items-center gap-2 min-w-0">
+                <span class="w-2.5 h-2.5 rounded-full bg-teal-600 animate-pulse shrink-0"></span>
+                <h3 class="text-base sm:text-lg font-bold text-teal-950 font-arabic truncate">${section.title}</h3>
+              </div>
+              <span class="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-teal-700 text-white rounded-full text-xs font-bold font-mono shrink-0 whitespace-nowrap shadow-xs tracking-wide">
+                <i class="fa-solid fa-list-check text-[10px] text-teal-200"></i>
+                <span>Soal ${qIdx + 1} / ${section.questions.length}</span>
+              </span>
             </div>
-            <span class="px-3 py-1 bg-teal-700 text-white rounded-full text-xs font-bold font-mono">Soal ${qIdx + 1} / ${section.questions.length}</span>
+            <p class="text-xs text-teal-700/90 leading-relaxed border-t border-teal-100/70 pt-2">${section.desc}</p>
+
+            <!-- Progress Bar Indikator Soal -->
+            <div class="w-full bg-teal-100/80 h-1.5 rounded-full overflow-hidden" role="progressbar" aria-valuenow="${qIdx + 1}" aria-valuemin="1" aria-valuemax="${section.questions.length}">
+              <div class="bg-teal-600 h-full rounded-full transition-all duration-300" style="width: ${((qIdx + 1) / section.questions.length) * 100}%"></div>
+            </div>
           </div>
 
           <!-- Audio Listening Stage Box -->
-          <div class="bg-gradient-to-br from-teal-950 via-emerald-900 to-teal-950 text-white p-6 sm:p-8 rounded-3xl border-2 border-teal-500/30 text-center space-y-4 shadow-xl">
-            <div class="w-16 h-16 rounded-full bg-teal-500/20 text-teal-300 border-2 border-teal-400 flex items-center justify-center text-3xl mx-auto shadow-lg animate-pulse">
+          <div class="bg-gradient-to-br from-teal-950 via-emerald-900 to-teal-950 text-white p-5 sm:p-8 rounded-3xl border-2 border-teal-500/30 text-center space-y-4 shadow-xl">
+            <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-teal-500/20 text-teal-300 border-2 border-teal-400 flex items-center justify-center text-2xl sm:text-3xl mx-auto shadow-lg animate-pulse">
               <i class="fa-solid fa-headphones"></i>
             </div>
             
@@ -2098,15 +2109,22 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
 
             <!-- Audio Play Big Trigger -->
-            <button onclick="speakArabic('${currentQ.audioText.replace(/'/g, "\\'")}')" class="px-8 py-3.5 bg-yellow-400 hover:bg-yellow-300 text-yellow-950 rounded-2xl text-sm font-extrabold shadow-xl transition-all flex items-center justify-center gap-3 mx-auto transform hover:scale-105">
-              <i class="fa-solid fa-circle-play text-xl"></i>
+            <button onclick="speakArabic('${currentQ.audioText.replace(/'/g, "\\'")}')" class="px-6 sm:px-8 py-3 sm:py-3.5 bg-yellow-400 hover:bg-yellow-300 text-yellow-950 rounded-2xl text-xs sm:text-sm font-extrabold shadow-xl transition-all flex items-center justify-center gap-2.5 sm:gap-3 mx-auto transform hover:scale-105 active:scale-95">
+              <i class="fa-solid fa-circle-play text-lg sm:text-xl"></i>
               <span>Putar Rekaman Suara Audio</span>
             </button>
           </div>
 
           <!-- Question & Options Card -->
-          <div class="bg-white p-6 sm:p-8 rounded-3xl border border-emerald-100 shadow-sm space-y-5">
-            <h4 class="text-base sm:text-lg font-bold text-emerald-950">${currentQ.question}</h4>
+          <div class="bg-white p-5 sm:p-8 rounded-3xl border border-emerald-100 shadow-sm space-y-5">
+            <div class="flex items-center justify-between pb-3 border-b border-emerald-100/70 gap-2">
+              <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-emerald-50 text-emerald-800 rounded-lg text-xs font-bold font-mono border border-emerald-200/60 shrink-0">
+                <i class="fa-solid fa-circle-question text-emerald-600"></i>
+                <span>Soal ${qIdx + 1} dari ${section.questions.length}</span>
+              </span>
+              <span class="text-[11px] font-semibold text-emerald-600 shrink-0">Pilihan Ganda</span>
+            </div>
+            <h4 class="text-base sm:text-lg font-bold text-emerald-950 leading-snug">${currentQ.question}</h4>
 
             <div class="grid sm:grid-cols-2 gap-3">
               ${currentQ.options.map((opt, oIdx) => {
