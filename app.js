@@ -681,7 +681,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Drawer Controls
   function toggleDrawer(open) {
-    state.isDrawerOpen = open !== undefined ? open : !state.isDrawerOpen;
+    const shouldOpen = open !== undefined ? open : !state.isDrawerOpen;
+    if (state.isDrawerOpen === shouldOpen) return;
+    state.isDrawerOpen = shouldOpen;
+
     const navItemsContainer = document.getElementById('drawer-nav-items');
     if (state.isDrawerOpen) {
       drawer.classList.remove('translate-x-full');
@@ -700,6 +703,9 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       drawer.classList.add('translate-x-full');
       drawerOverlay.classList.add('hidden');
+      if (window.history.state && window.history.state.drawer) {
+        try { window.history.back(); } catch(e) {}
+      }
     }
   }
 
@@ -752,16 +758,14 @@ document.addEventListener('DOMContentLoaded', () => {
   window.navigateTo = navigateTo;
 
   // Handler Terpusat Aksi Kembali (Kembali ke Beranda / Tutup Modal / Konfirmasi Keluar)
-  function handleAppBack() {
+  function handleAppBack(isGesture = false) {
     if (typeof cancelKalamRecording === 'function') cancelKalamRecording();
     if (typeof stopStudentAudio === 'function') stopStudentAudio();
     if (typeof stopArabicAudio === 'function') stopArabicAudio();
 
     // 1. Jika menu samping (drawer) sedang terbuka, tutup drawer saja
     if (state.isDrawerOpen) {
-      state.isDrawerOpen = false;
-      drawer.classList.add('translate-x-full');
-      drawerOverlay.classList.add('hidden');
+      toggleDrawer(false);
       return;
     }
 
@@ -774,16 +778,28 @@ document.addEventListener('DOMContentLoaded', () => {
         studentModal.remove();
       }
       state.selectedStudentDetail = null;
+      render();
       return;
     }
 
     // 3. Jika sedang membuka modul pembelajaran/kuis/pengaturan, kembali ke Beranda (Dashboard)
     if (state.currentUser && state.currentView !== 'dashboard' && state.currentView !== 'login') {
-      navigateTo('dashboard');
+      // Gunakan history.back() jika ada riwayat browser, agar tumpukan riwayat mundur secara wajar tanpa penumpukan
+      if (window.history && window.history.length > 1) {
+        window.history.back();
+      } else {
+        navigateTo('dashboard', false);
+      }
       return;
     }
 
-    // 4. Jika sudah di Beranda (Dashboard), cegah aplikasi langsung tertutup (Double-back to exit)
+    // 4. Jika aksi ini dipicu oleh GESTUR USAP LAYAR di Beranda:
+    // Tidak melakukan apapun agar gestur di beranda bersih & tidak memicu popup konfirmasi keluar yang mengganggu
+    if (isGesture) {
+      return;
+    }
+
+    // 5. Jika tombol fisik / tombol navigasi browser ditekan saat sudah di Beranda (Dashboard):
     if (state.currentUser && state.currentView === 'dashboard') {
       const now = Date.now();
       if (window._lastBackPressTime && (now - window._lastBackPressTime < 2500)) {
@@ -793,7 +809,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       } else {
         window._lastBackPressTime = now;
-        showToast('Usap atau tekan sekali lagi untuk keluar dari aplikasi', 'info');
+        showToast('Tekan sekali lagi untuk keluar dari aplikasi', 'info');
         if (window.history && window.history.pushState) {
           try {
             window.history.pushState({ view: 'dashboard', root: true }, '', '#dashboard');
@@ -807,12 +823,14 @@ document.addEventListener('DOMContentLoaded', () => {
   // Sambungkan tombol Back di Header jika diklik
   if (headerBackBtn) {
     headerBackBtn.addEventListener('click', () => {
-      handleAppBack();
+      handleAppBack(false);
     });
   }
 
-  // Tangani event PopState (Gestur Usap Sistem Bawaan Android & iOS)
+  // Tangani event PopState (Gestur Usap Sistem Bawaan Android & iOS atau Tombol Back HP)
   window.addEventListener('popstate', (e) => {
+    window._lastPopStateTime = Date.now();
+
     if (typeof cancelKalamRecording === 'function') cancelKalamRecording();
     if (typeof stopStudentAudio === 'function') stopStudentAudio();
     if (typeof stopArabicAudio === 'function') stopArabicAudio();
@@ -834,6 +852,7 @@ document.addEventListener('DOMContentLoaded', () => {
         studentModal.remove();
       }
       state.selectedStudentDetail = null;
+      render();
       return;
     }
 
@@ -851,11 +870,11 @@ document.addEventListener('DOMContentLoaded', () => {
       render();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else if (state.currentView === 'dashboard') {
-      // Notifikasi konfirmasi keluar
+      // Notifikasi konfirmasi keluar (hanya saat tombol kembali sistem ditekan pada halaman beranda)
       const now = Date.now();
       if (!window._lastBackPressTime || (now - window._lastBackPressTime > 2500)) {
         window._lastBackPressTime = now;
-        showToast('Usap atau tekan sekali lagi untuk keluar dari aplikasi', 'info');
+        showToast('Tekan sekali lagi untuk keluar dari aplikasi', 'info');
         try {
           window.history.pushState({ view: 'dashboard', root: true }, '', '#dashboard');
         } catch (err) {}
@@ -865,7 +884,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // =========================================================================
   // DETEKSI GESTUR USAP SAMPING LAYAR DI DALAM APLIKASI (Edge-Swipe Gesture)
-  // Menampilkan animasi panah melayang saat jari mengusap dari tepi layar
+  // Berjalan hening, halus, dan responsif layaknya aplikasi mobile native profesional
+  // Tanpa tombol panah melayang yang mengganggu tampilan UI
   // =========================================================================
   (function initEdgeSwipeGesture() {
     let touchStartX = 0;
@@ -874,50 +894,23 @@ document.addEventListener('DOMContentLoaded', () => {
     let touchCurrentY = 0;
     let isEdgeSwipeActive = false;
     let swipeSide = null; // 'left' or 'right'
-    const EDGE_THRESHOLD = 45; // Jarak jari dari tepi layar (px) untuk memulai gestur
-    const TRIGGER_DISTANCE = 65; // Jarak minimal usapan untuk memicu kembali (px)
-
-    const indicator = document.getElementById('edge-swipe-indicator');
-    const bubble = document.getElementById('edge-swipe-bubble');
-    const icon = document.getElementById('edge-swipe-icon');
-
-    function updateIndicator(deltaX, reachedThreshold) {
-      if (!indicator || !bubble || !icon) return;
-      indicator.classList.remove('hidden');
-      indicator.classList.remove('opacity-0', 'scale-75');
-      indicator.classList.add('opacity-100', 'scale-100');
-
-      if (swipeSide === 'left') {
-        indicator.style.left = Math.min(65, Math.max(12, deltaX * 0.45)) + 'px';
-        indicator.style.right = 'auto';
-        icon.className = 'fa-solid fa-arrow-left';
-      } else {
-        indicator.style.right = Math.min(65, Math.max(12, deltaX * 0.45)) + 'px';
-        indicator.style.left = 'auto';
-        icon.className = 'fa-solid fa-arrow-right';
-      }
-
-      if (reachedThreshold) {
-        bubble.className = "w-12 h-12 rounded-full bg-emerald-600 text-white backdrop-blur-md shadow-2xl border-2 border-white flex items-center justify-center text-lg transform scale-110 transition-all duration-150 animate-pulse";
-      } else {
-        bubble.className = "w-11 h-11 rounded-full bg-emerald-950/85 text-emerald-200 backdrop-blur-md shadow-lg border border-emerald-400/40 flex items-center justify-center text-base transform scale-100 transition-all duration-150";
-      }
-    }
-
-    function hideIndicator() {
-      if (!indicator) return;
-      indicator.classList.remove('opacity-100', 'scale-100');
-      indicator.classList.add('opacity-0', 'scale-75');
-      setTimeout(() => {
-        if (!isEdgeSwipeActive) indicator.classList.add('hidden');
-      }, 180);
-    }
+    const EDGE_THRESHOLD = 40; // Jarak jari dari tepi layar (px) untuk memulai gestur
+    const TRIGGER_DISTANCE = 50; // Jarak minimal usapan untuk memicu kembali (px)
 
     window.addEventListener('touchstart', (e) => {
       // Hanya aktif jika user sudah login dan tidak sedang merekam suara
       if (!state.currentUser || state.currentView === 'login') return;
       if (state.kalamState && state.kalamState.isRecording) return;
       if (e.touches.length !== 1) return;
+
+      // PENTING: Jika sudah di Beranda dan tidak ada modal/drawer yang terbuka,
+      // jangan aktifkan gestur agar aktivitas di Beranda bebas hambatan
+      const studentModal = document.getElementById('student-detail-modal');
+      const canGoBack = state.isDrawerOpen || (studentModal && !studentModal.classList.contains('hidden')) || state.currentView !== 'dashboard';
+      if (!canGoBack) {
+        isEdgeSwipeActive = false;
+        return;
+      }
 
       const touch = e.touches[0];
       touchStartX = touch.clientX;
@@ -928,11 +921,11 @@ document.addEventListener('DOMContentLoaded', () => {
       const screenWidth = window.innerWidth;
 
       if (touchStartX <= EDGE_THRESHOLD) {
-        // Tepi kiri: usap ke kanan untuk kembali
+        // Tepi kiri: usap ke arah dalam layar untuk kembali
         isEdgeSwipeActive = true;
         swipeSide = 'left';
       } else if (touchStartX >= screenWidth - EDGE_THRESHOLD) {
-        // Tepi kanan: usap ke kiri untuk kembali
+        // Tepi kanan: usap ke arah dalam layar untuk kembali
         isEdgeSwipeActive = true;
         swipeSide = 'right';
       } else {
@@ -951,21 +944,10 @@ document.addEventListener('DOMContentLoaded', () => {
       const deltaX = swipeSide === 'left' ? (touchCurrentX - touchStartX) : (touchStartX - touchCurrentX);
       const deltaY = Math.abs(touchCurrentY - touchStartY);
 
-      // Batalkan jika pengguna sedang scrolling vertikal
-      if (deltaY > 40 && deltaY > deltaX) {
+      // Batalkan jika gerakan dominan vertikal (pengguna sedang scrolling)
+      if (deltaY > 35 && deltaY > deltaX) {
         isEdgeSwipeActive = false;
-        hideIndicator();
         return;
-      }
-
-      if (deltaX < 10) {
-        hideIndicator();
-        return;
-      }
-
-      if (deltaX >= 15) {
-        const reached = deltaX >= TRIGGER_DISTANCE;
-        updateIndicator(deltaX, reached);
       }
     }, { passive: true });
 
@@ -976,19 +958,22 @@ document.addEventListener('DOMContentLoaded', () => {
       const deltaY = Math.abs(touchCurrentY - touchStartY);
 
       isEdgeSwipeActive = false;
-      hideIndicator();
+
+      // Jika popstate browser sudah aktif dalam rentang waktu dekat, jangan picu lagi (cegah duplikasi)
+      if (Date.now() - (window._lastPopStateTime || 0) < 400) {
+        return;
+      }
 
       if (deltaX >= TRIGGER_DISTANCE && deltaX > deltaY) {
         if (navigator.vibrate) {
-          try { navigator.vibrate(25); } catch(err) {}
+          try { navigator.vibrate(20); } catch(err) {}
         }
-        handleAppBack();
+        handleAppBack(true);
       }
     }, { passive: true });
 
     window.addEventListener('touchcancel', () => {
       isEdgeSwipeActive = false;
-      hideIndicator();
     }, { passive: true });
   })();
 
@@ -6133,6 +6118,9 @@ document.addEventListener('DOMContentLoaded', () => {
           };
           localStorage.setItem('arabic_app_user', JSON.stringify(state.currentUser));
           state.currentView = 'dashboard';
+          if (window.history && window.history.replaceState) {
+            try { window.history.replaceState({ view: 'dashboard', root: true }, '', '#dashboard'); } catch(e) {}
+          }
           render();
           return;
         }
@@ -6195,6 +6183,9 @@ document.addEventListener('DOMContentLoaded', () => {
           }
 
           state.currentView = 'dashboard';
+          if (window.history && window.history.replaceState) {
+            try { window.history.replaceState({ view: 'dashboard', root: true }, '', '#dashboard'); } catch(e) {}
+          }
           render();
           return;
         }
