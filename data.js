@@ -292,20 +292,84 @@ const ARABIC_DATA = {
     sections: [
       {
         type: "Fi'il Amr (فِعْلُ الأَمْرِ)",
+        theme: "emerald",
         desc: "Kata kerja yang digunakan untuk memerintah/meminta seseorang melakukan tindakan pelestarian lingkungan.",
+        badge: "Pola: فِعْلُ الأَمْرِ (Perintah)",
         examples: [
-          { arabic: "احْرِصْ عَلَى النَّظَافَةِ!", latin: "Iḥriṣ 'alan-naẓāfah!", indonesian: "Jagalah kebersihan!" },
-          { arabic: "اِغْرِسِ الأَشْجَارَ فِي الْحَدِيقَةِ!", latin: "Iġrisil-asy-jāra fil-ḥadīqah!", indonesian: "Tanamlah pohon di taman!" },
-          { arabic: "حَافِظُوا عَلَى نَظَافَةِ الْمَدْرَسَةِ!", latin: "Ḥāfiẓū 'alā naẓāfatil-madrasah!", indonesian: "Jagalah (kalian) kebersihan sekolah!" }
+          {
+            arabic: "احْرِصْ عَلَى النَّظَافَةِ!",
+            targetArabic: "احْرِصْ",
+            targetRole: "فِعْلُ أَمْرٍ",
+            roleDesc: "Kata Kerja Perintah (Mabni 'ala Sukun)",
+            latin: "Iḥriṣ 'alan-naẓāfah!",
+            targetLatin: "Iḥriṣ",
+            indonesian: "Jagalah kebersihan!",
+            targetIndonesian: "Jagalah",
+            explanation: "Kata «احْرِصْ» adalah Fi'il Amr yang menunjukkan perintah langsung: 'Jagalah!' (untuk mufrad mudzakkar)."
+          },
+          {
+            arabic: "اِغْرِسِ الأَشْجَارَ فِي الْحَدِيقَةِ!",
+            targetArabic: "اِغْرِسِ",
+            targetRole: "فِعْلُ أَمْرٍ",
+            roleDesc: "Kata Kerja Perintah (Dikasrahkan karena washal/pertemuan dua sukun)",
+            latin: "Iġrisil-asy-jāra fil-ḥadīqah!",
+            targetLatin: "Iġris",
+            indonesian: "Tanamlah pohon di taman!",
+            targetIndonesian: "Tanamlah",
+            explanation: "Kata «اِغْرِسِ» adalah Fi'il Amr: 'Tanamlah!'. Harakat asalnya sukun, berubah kasrah untuk menyambung alif lam."
+          },
+          {
+            arabic: "حَافِظُوا عَلَى نَظَافَةِ الْمَدْرَسَةِ!",
+            targetArabic: "حَافِظُوا",
+            targetRole: "فِعْلُ أَمْرٍ لِلْجَمْعِ",
+            roleDesc: "Kata Kerja Perintah Jamak (Mabni Hadzf Nun)",
+            latin: "Ḥāfiẓū 'alā naẓāfatil-madrasah!",
+            targetLatin: "Ḥāfiẓū",
+            indonesian: "Jagalah (kalian) kebersihan sekolah!",
+            targetIndonesian: "Jagalah (kalian)",
+            explanation: "Kata «حَافِظُوا» adalah Fi'il Amr untuk dhomir Jamak (Antum / kalian): 'Jagalah kalian!'."
+          }
         ]
       },
       {
         type: "Fi'il Nahi (فِعْلُ النَّهْيِ)",
+        theme: "rose",
         desc: "Kata kerja yang digunakan untuk melarang seseorang merusak lingkungan (Pola: لاَ + الفعل المضارع المجزوم).",
+        badge: "Pola: لاَ النَّاهِيَة + مُضَارِع مَجْزُوم",
         examples: [
-          { arabic: "لاَ تَرْمِ الْقُمَامَةَ فِي الشَّارِعِ!", latin: "Lā tarmi al-qumāmata fisy-syāri'!", indonesian: "Jangan buang sampah di jalan!" },
-          { arabic: "لاَ تُسْرِفْ فِي اسْتِهْلاَكِ الْمَاءِ!", latin: "Lā tusrif fī istihlākil-mā'!", indonesian: "Jangan boros dalam menggunakan air!" },
-          { arabic: "لاَ تَقْطَعُوا الأَشْجَارَ عَبَثًا!", latin: "Lā taqṭa'ūl-asy-jāra 'abaṡan!", indonesian: "Janganlah kalian memotong pohon sembarangan!" }
+          {
+            arabic: "لاَ تَرْمِ الْقُمَامَةَ فِي الشَّارِعِ!",
+            targetArabic: "لاَ تَرْمِ",
+            targetRole: "فِعْلُ نَهْيٍ",
+            roleDesc: "Larangan (Jazm dengan membuang huruf 'illat)",
+            latin: "Lā tarmi al-qumāmata fisy-syāri'!",
+            targetLatin: "Lā tarmi",
+            indonesian: "Jangan buang sampah di jalan!",
+            targetIndonesian: "Jangan buang",
+            explanation: "Frasa «لاَ تَرْمِ» adalah Fi'il Nahi: 'Jangan membuang!'. Huruf ya' di akhir dibuang karena jazm."
+          },
+          {
+            arabic: "لاَ تُسْرِفْ فِي اسْتِهْلاَكِ الْمَاءِ!",
+            targetArabic: "لاَ تُسْرِفْ",
+            targetRole: "فِعْلُ نَهْيٍ",
+            roleDesc: "Larangan (Jazm dengan tanda sukun)",
+            latin: "Lā tusrif fī istihlākil-mā'!",
+            targetLatin: "Lā tusrif",
+            indonesian: "Jangan boros dalam menggunakan air!",
+            targetIndonesian: "Jangan boros",
+            explanation: "Frasa «لاَ تُسْرِفْ» adalah Fi'il Nahi: 'Jangan berlebih-lebihan/boros!'. Huruf fa' disukunkan karena jazm."
+          },
+          {
+            arabic: "لاَ تَقْطَعُوا الأَشْجَارَ عَبَثًا!",
+            targetArabic: "لاَ تَقْطَعُوا",
+            targetRole: "فِعْلُ نَهْيٍ لِلْجَمْعِ",
+            roleDesc: "Larangan Jamak (Jazm dengan membuang nun)",
+            latin: "Lā taqṭa'ūl-asy-jāra 'abaṡan!",
+            targetLatin: "Lā taqṭa'ū",
+            indonesian: "Janganlah kalian memotong pohon sembarangan!",
+            targetIndonesian: "Janganlah kalian memotong",
+            explanation: "Frasa «لاَ تَقْطَعُوا» adalah Fi'il Nahi Jamak untuk kalian: 'Janganlah kalian memotong!'."
+          }
         ]
       }
     ],
@@ -313,29 +377,111 @@ const ARABIC_DATA = {
       badge: "لَاحِظْ",
       title: "إِسْمُ التَّفْضِيْلِ",
       source: "الشيخ مصطفى الغلاييني - جامع الدروس العربية، بيروت: دار الكتب العلمية، ٢٠١٢",
-      instruction: "Perhatikan contoh kalimat pada kedua kolom di bawah ini!",
+      instruction: "Perhatikan contoh kalimat pada kedua kolom di bawah ini! Fokuskan perhatian pada kata/frasa yang disorot warna:",
       pattern: "أَفْعَلُ",
       columnA: {
         title: "A",
-        label: "_lebih dari_",
+        label: "Bentuk Komparatif (Lebih ... dari ...)",
         color: "amber",
+        rule: "أَفْعَلُ + مِنْ + إِسْمٌ",
+        ruleDesc: "Isim Tafdhil + Harf Jar مِنْ + Isim Pembanding",
+        meaningGuide: "Menyatakan bahwa suatu hal memiliki kelebihan sifat dibandingkan obyek lainnya.",
         examples: [
-          { arabic: "أَنَا أَجْمَلُ مِنْكَ", indonesian: "Aku lebih tampan/indah dari kamu." },
-          { arabic: "خَالِدٌ أَكْبَرُ مِنْ أَخِيْهِ", indonesian: "Khalid lebih besar dari saudaranya." },
-          { arabic: "مَدْرَسَتِيْ أَوْسَعُ مِنْ مَدْرَسَتِكَ", indonesian: "Sekolahku lebih luas dari sekolahmu." }
-        ],
-        rule: "أَفْعَلُ + مِنْ + إِسْمٌ"
+          {
+            arabic: "أَنَا أَجْمَلُ مِنْكَ",
+            targetArabic: "أَجْمَلُ مِنْ",
+            targetRole: "إِسْمُ تَفْضِيْلٍ + مِنْ",
+            roleDesc: "Pola Komparatif: أَفْعَلُ مِنْ (Lebih tampan/indah dari)",
+            indonesian: "Aku lebih tampan/indah dari kamu.",
+            targetIndonesian: "lebih tampan/indah dari",
+            breakdown: [
+              { label: "Mufadhdhal (Subjek)", text: "أَنَا", desc: "Pihak yang diunggulkan (Aku)" },
+              { label: "Isim Tafdhil", text: "أَجْمَلُ", desc: "Wazan أَفْعَلُ (lebih tampan/indah)" },
+              { label: "Harf Pembanding", text: "مِنْ", desc: "Huruf jar pembanding (daripada/dari)" },
+              { label: "Mufadhdhal 'Alaih", text: "كَ", desc: "Obyek pembanding (kamu)" }
+            ]
+          },
+          {
+            arabic: "خَالِدٌ أَكْبَرُ مِنْ أَخِيْهِ",
+            targetArabic: "أَكْبَرُ مِنْ",
+            targetRole: "إِسْمُ تَفْضِيْلٍ + مِنْ",
+            roleDesc: "Pola Komparatif: أَفْعَلُ مِنْ (Lebih besar dari)",
+            indonesian: "Khalid lebih besar dari saudaranya.",
+            targetIndonesian: "lebih besar dari",
+            breakdown: [
+              { label: "Mufadhdhal (Subjek)", text: "خَالِدٌ", desc: "Pihak yang diunggulkan (Khalid)" },
+              { label: "Isim Tafdhil", text: "أَكْبَرُ", desc: "Wazan أَفْعَلُ (lebih besar)" },
+              { label: "Harf Pembanding", text: "مِنْ", desc: "Huruf jar pembanding (daripada/dari)" },
+              { label: "Mufadhdhal 'Alaih", text: "أَخِيْهِ", desc: "Obyek pembanding (saudaranya)" }
+            ]
+          },
+          {
+            arabic: "مَدْرَسَتِيْ أَوْسَعُ مِنْ مَدْرَسَتِكَ",
+            targetArabic: "أَوْسَعُ مِنْ",
+            targetRole: "إِسْمُ تَفْضِيْلٍ + مِنْ",
+            roleDesc: "Pola Komparatif: أَفْعَلُ مِنْ (Lebih luas dari)",
+            indonesian: "Sekolahku lebih luas dari sekolahmu.",
+            targetIndonesian: "lebih luas dari",
+            breakdown: [
+              { label: "Mufadhdhal (Subjek)", text: "مَدْرَسَتِيْ", desc: "Pihak yang diunggulkan (Sekolahku)" },
+              { label: "Isim Tafdhil", text: "أَوْسَعُ", desc: "Wazan أَفْعَلُ (lebih luas)" },
+              { label: "Harf Pembanding", text: "مِنْ", desc: "Huruf jar pembanding (daripada/dari)" },
+              { label: "Mufadhdhal 'Alaih", text: "مَدْرَسَتِكَ", desc: "Obyek pembanding (sekolahmu)" }
+            ]
+          }
+        ]
       },
       columnB: {
         title: "B",
-        label: "_paling/ter_",
+        label: "Bentuk Superlatif (Paling / Ter...)",
         color: "emerald",
+        rule: "أَفْعَلُ + جَمْعٌ",
+        ruleDesc: "Isim Tafdhil + Isim Jamak (Mudhaf Ilaih Majrur)",
+        meaningGuide: "Menyatakan bahwa suatu hal memiliki sifat PALING / TER- di antara seluruh anggota kelompoknya.",
         examples: [
-          { arabic: "فَصْلِيْ أَوْسَعُ الْفُصُوْلِ فِي الْمَدْرَسَةِ", indonesian: "Kelasku adalah kelas paling luas di sekolah." },
-          { arabic: "أَنَا أَجْمَلُ التَّلَامِيْذِ فِي الْفَصْلِ", indonesian: "Aku murid paling tampan di kelas." },
-          { arabic: "سُوْرَبَايَا أَكْبَرُ الْمُدُنِ فِي جَاوَى الشَّرْقِيَّةِ", indonesian: "Surabaya adalah kota terbesar di Jawa Timur." }
-        ],
-        rule: "أَفْعَلُ + جَمْعٌ"
+          {
+            arabic: "فَصْلِيْ أَوْسَعُ الْفُصُوْلِ فِي الْمَدْرَسَةِ",
+            targetArabic: "أَوْسَعُ الْفُصُوْلِ",
+            targetRole: "إِسْمُ تَفْضِيْلٍ + جَمْعٌ",
+            roleDesc: "Pola Superlatif: أَفْعَلُ + Jamak (Paling luas / terluas)",
+            indonesian: "Kelasku adalah kelas paling luas di sekolah.",
+            targetIndonesian: "paling luas",
+            breakdown: [
+              { label: "Mufadhdhal (Subjek)", text: "فَصْلِيْ", desc: "Pihak yang diunggulkan (Kelasku)" },
+              { label: "Isim Tafdhil", text: "أَوْسَعُ", desc: "Wazan أَفْعَلُ (paling luas/terluas)" },
+              { label: "Jamak (Mudhaf Ilaih)", text: "الْفُصُوْلِ", desc: "Kelompok pembanding (kelas-kelas)" },
+              { label: "Keterangan", text: "فِي الْمَدْرَسَةِ", desc: "Lingkup di lingkungan sekolah" }
+            ]
+          },
+          {
+            arabic: "أَنَا أَجْمَلُ التَّلَامِيْذِ فِي الْفَصْلِ",
+            targetArabic: "أَجْمَلُ التَّلَامِيْذِ",
+            targetRole: "إِسْمُ تَفْضِيْلٍ + جَمْعٌ",
+            roleDesc: "Pola Superlatif: أَفْعَلُ + Jamak (Paling tampan / tertampan)",
+            indonesian: "Aku murid paling tampan di kelas.",
+            targetIndonesian: "paling tampan",
+            breakdown: [
+              { label: "Mufadhdhal (Subjek)", text: "أَنَا", desc: "Pihak yang diunggulkan (Aku)" },
+              { label: "Isim Tafdhil", text: "أَجْمَلُ", desc: "Wazan أَفْعَلُ (paling tampan/tertampan)" },
+              { label: "Jamak (Mudhaf Ilaih)", text: "التَّلَامِيْذِ", desc: "Kelompok pembanding (murid-murid)" },
+              { label: "Keterangan", text: "فِي الْفَصْلِ", desc: "Lingkup di dalam kelas" }
+            ]
+          },
+          {
+            arabic: "سُوْرَبَايَا أَكْبَرُ الْمُدُنِ فِي جَاوَى الشَّرْقِيَّةِ",
+            targetArabic: "أَكْبَرُ الْمُدُنِ",
+            targetRole: "إِسْمُ تَفْضِيْلٍ + جَمْعٌ",
+            roleDesc: "Pola Superlatif: أَفْعَلُ + Jamak (Kota terbesar)",
+            indonesian: "Surabaya adalah kota terbesar di Jawa Timur.",
+            targetIndonesian: "terbesar",
+            breakdown: [
+              { label: "Mufadhdhal (Subjek)", text: "سُوْرَبَايَا", desc: "Pihak yang diunggulkan (Kota Surabaya)" },
+              { label: "Isim Tafdhil", text: "أَكْبَرُ", desc: "Wazan أَفْعَلُ (terbesar / paling besar)" },
+              { label: "Jamak (Mudhaf Ilaih)", text: "الْمُدُنِ", desc: "Kelompok pembanding (kota-kota)" },
+              { label: "Keterangan", text: "فِي جَاوَى الشَّرْقِيَّةِ", desc: "Lingkup di wilayah Jawa Timur" }
+            ]
+          }
+        ]
       },
       keterangan: [
         {
@@ -350,15 +496,29 @@ const ARABIC_DATA = {
         },
         {
           num: 2,
-          text: "Adapun susunan kalimat pada kolom (a), yaitu pada contoh (a):",
+          text: "Adapun susunan kalimat pada kolom (A) [Komparatif], yaitu pola perbandingan dua hal:",
           formula: "أَفْعَلُ + مِنْ + إِسْمٌ",
-          meaning: "Isim Tafdhil + MIN + Isim (Bermakna LEBIH ... DARI ...)"
+          formulaParts: [
+            { badge: "أَفْعَلُ", title: "Isim Tafdhil" },
+            { badge: "+", title: "" },
+            { badge: "مِنْ", title: "Huruf Pembanding (Daripada)" },
+            { badge: "+", title: "" },
+            { badge: "إِسْمٌ", title: "Obyek Pembanding" }
+          ],
+          meaning: "Isim Tafdhil + مِنْ + Isim (Bermakna: LEBIH ... DARI ...)",
+          exampleFormula: "Contoh: مَدْرَسَتِيْ (أَوْسَعُ مِنْ) مَدْرَسَتِكَ = Sekolahku LEBIH LUAS DARI sekolahmu."
         },
         {
           num: 3,
-          text: "Dan susunan kalimat pada kolom (b), yaitu pada contoh (b):",
+          text: "Dan susunan kalimat pada kolom (B) [Superlatif], yaitu pola sifat tertinggi dalam kelompok:",
           formula: "أَفْعَلُ + جَمْعٌ",
-          meaning: "Isim Tafdhil + Kata Jamak (Mudhaf Ilaihi) (Bermakna PALING / TER...)"
+          formulaParts: [
+            { badge: "أَفْعَلُ", title: "Isim Tafdhil" },
+            { badge: "+", title: "" },
+            { badge: "جَمْعٌ", title: "Kata Jamak (Mudhaf Ilaih)" }
+          ],
+          meaning: "Isim Tafdhil + Kata Jamak (Bermakna: PALING / TER...)",
+          exampleFormula: "Contoh: فَصْلِيْ (أَوْسَعُ الْفُصُوْلِ) = Kelasku PALING LUAS di antara seluruh kelas."
         }
       ]
     }

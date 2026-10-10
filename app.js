@@ -4426,6 +4426,59 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
       // 4B. QAWA'ID VIEW (Tata Bahasa Arab: Fi'il Amr, Nahi & Isim Tafdhil)
+  function highlightArabicGrammar(fullArabic, targetArabic, theme) {
+    if (!targetArabic || !fullArabic) return fullArabic || '';
+    if (!fullArabic.includes(targetArabic)) return fullArabic;
+
+    let badgeClass = '';
+    if (theme === 'amber') {
+      badgeClass = 'bg-gradient-to-r from-amber-500 to-amber-600 text-white font-extrabold px-3 py-1 rounded-xl shadow-md ring-2 ring-amber-300/80 inline-block mx-1 tracking-normal transition-all duration-200 hover:scale-105 select-none';
+    } else if (theme === 'emerald') {
+      badgeClass = 'bg-gradient-to-r from-emerald-600 to-teal-700 text-white font-extrabold px-3 py-1 rounded-xl shadow-md ring-2 ring-emerald-300/80 inline-block mx-1 tracking-normal transition-all duration-200 hover:scale-105 select-none';
+    } else if (theme === 'rose') {
+      badgeClass = 'bg-gradient-to-r from-rose-600 to-red-600 text-white font-extrabold px-2.5 py-1 rounded-xl shadow-md ring-2 ring-rose-300/80 inline-block mx-1 tracking-normal transition-all duration-200 hover:scale-105 select-none';
+    } else {
+      badgeClass = 'bg-gradient-to-r from-teal-600 to-emerald-700 text-white font-extrabold px-2.5 py-1 rounded-xl shadow-md ring-2 ring-teal-300/80 inline-block mx-1 tracking-normal transition-all duration-200 hover:scale-105 select-none';
+    }
+
+    const parts = fullArabic.split(targetArabic);
+    return `${parts[0]}<span class="${badgeClass}">${targetArabic}</span>${parts.slice(1).join(targetArabic)}`;
+  }
+
+  function highlightIndoGrammar(fullIndo, targetIndo, theme) {
+    if (!targetIndo || !fullIndo) return fullIndo || '';
+    if (!fullIndo.includes(targetIndo)) return fullIndo;
+
+    let hlClass = '';
+    if (theme === 'amber') {
+      hlClass = 'font-extrabold text-amber-950 bg-amber-200/90 px-2 py-0.5 rounded-md border border-amber-300 shadow-2xs inline-block';
+    } else if (theme === 'emerald') {
+      hlClass = 'font-extrabold text-emerald-950 bg-emerald-200/90 px-2 py-0.5 rounded-md border border-emerald-300 shadow-2xs inline-block';
+    } else if (theme === 'rose') {
+      hlClass = 'font-extrabold text-rose-950 bg-rose-200/90 px-2 py-0.5 rounded-md border border-rose-300 shadow-2xs inline-block';
+    } else {
+      hlClass = 'font-extrabold text-teal-950 bg-teal-200/90 px-2 py-0.5 rounded-md border border-teal-300 shadow-2xs inline-block';
+    }
+
+    const parts = fullIndo.split(targetIndo);
+    return `${parts[0]}<strong class="${hlClass}">${targetIndo}</strong>${parts.slice(1).join(targetIndo)}`;
+  }
+
+  function highlightLatinGrammar(fullLatin, targetLatin, theme) {
+    if (!targetLatin || !fullLatin) return fullLatin || '';
+    if (!fullLatin.includes(targetLatin)) return fullLatin;
+
+    let latClass = '';
+    if (theme === 'rose') {
+      latClass = 'font-bold text-rose-800 bg-rose-100/90 px-1 py-0.5 rounded';
+    } else {
+      latClass = 'font-bold text-emerald-800 bg-emerald-100/90 px-1 py-0.5 rounded';
+    }
+
+    const parts = fullLatin.split(targetLatin);
+    return `${parts[0]}<span class="${latClass}">${targetLatin}</span>${parts.slice(1).join(targetLatin)}`;
+  }
+
   function renderQawaid() {
     const grammar = ARABIC_DATA.grammar;
     const tafdhil = grammar.tafdhil;
@@ -4436,43 +4489,103 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="bg-white rounded-2xl sm:rounded-3xl lg:rounded-[2.5rem] p-4 sm:p-8 lg:p-10 border border-emerald-100 shadow-sm space-y-6 sm:space-y-8">
           
           <!-- Header Banner -->
-          <div class="border-b border-emerald-100 pb-4 sm:pb-5 space-y-2.5 sm:space-y-3">
-            <div class="inline-flex flex-wrap items-center gap-1.5 sm:gap-2 bg-emerald-50 px-3 sm:px-3.5 py-1 sm:py-1.5 rounded-full border border-emerald-200/80 shadow-2xs">
+          <div class="border-b border-emerald-100 pb-5 sm:pb-6 space-y-3 sm:space-y-4">
+            <div class="inline-flex flex-wrap items-center gap-1.5 sm:gap-2 bg-emerald-50 px-3.5 sm:px-4 py-1 sm:py-1.5 rounded-full border border-emerald-200/80 shadow-2xs">
+              <i class="fa-solid fa-spell-check text-emerald-600 text-xs"></i>
               <span class="font-arabic font-bold text-xs sm:text-sm text-emerald-900">التَّرَاكِيبُ وَالْقَوَاعِدُ</span>
               <span class="text-emerald-300">•</span>
-              <span class="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-emerald-700">Qawa'id & Gramatika</span>
+              <span class="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-emerald-700">Qawa'id & Gramatika Bahasa Arab</span>
             </div>
-            <h2 class="text-lg sm:text-2xl lg:text-3xl font-bold font-arabic text-emerald-950 leading-relaxed sm:leading-[2.1] pt-1 pb-1" dir="rtl">${grammar.title}</h2>
-            <p class="text-xs sm:text-sm text-emerald-700 leading-relaxed max-w-2xl">${grammar.explanation}</p>
+            <h2 class="text-xl sm:text-2xl lg:text-3xl font-bold font-arabic text-emerald-950 leading-relaxed sm:leading-[2.2] pt-1 pb-1" dir="rtl">${grammar.title}</h2>
+            <p class="text-xs sm:text-sm text-emerald-700 leading-relaxed max-w-3xl">${grammar.explanation}</p>
+
+            <!-- Pedagogical Visual Focus Legend -->
+            <div class="bg-gradient-to-r from-emerald-50 via-teal-50 to-amber-50/60 p-3 sm:p-4 rounded-2xl border border-emerald-200/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-2xs">
+              <div class="flex items-center gap-2 text-emerald-950 font-bold text-xs sm:text-sm">
+                <i class="fa-solid fa-lightbulb text-amber-500 text-base"></i>
+                <span>Panduan Fokus Kaidah (Fokus Sorotan Kata):</span>
+              </div>
+              <div class="flex flex-wrap items-center gap-2 text-[10px] sm:text-xs font-semibold">
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-500 text-white font-bold shadow-2xs">
+                  <span class="font-arabic text-xs">أَوْسَعُ مِنْ</span> (Isim Tafdhil Komparatif)
+                </span>
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-700 text-white font-bold shadow-2xs">
+                  <span class="font-arabic text-xs">أَوْسَعُ الْفُصُوْلِ</span> (Isim Tafdhil Superlatif)
+                </span>
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-700 text-white font-bold shadow-2xs">
+                  <span class="font-arabic text-xs">احْرِصْ</span> (Fi'il Amr)
+                </span>
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-rose-600 text-white font-bold shadow-2xs">
+                  <span class="font-arabic text-xs">لاَ تَرْمِ</span> (Fi'il Nahi)
+                </span>
+              </div>
+            </div>
           </div>
 
           <!-- Section 1: Fi'il Amr & Fi'il Nahi -->
           <div class="space-y-4">
-            <h3 class="text-lg font-bold text-emerald-900 border-l-4 border-emerald-600 pl-3 flex items-center gap-2">
+            <h3 class="text-base sm:text-lg font-bold text-emerald-900 border-l-4 border-emerald-600 pl-3 flex items-center gap-2">
               <i class="fa-solid fa-book-open text-emerald-600 text-sm"></i>
-              <span>Bagian 1: فِعْلُ الأَمْرِ وَفِعْلُ النَّهْيِ</span>
+              <span>Bagian 1: فِعْلُ الأَمْرِ (Perintah) وَفِعْلُ النَّهْيِ (Larangan)</span>
             </h3>
             
             <div class="grid md:grid-cols-2 gap-6">
               ${grammar.sections.map(sec => `
-                <div class="bg-emerald-50/50 rounded-3xl p-6 border border-emerald-200/70 space-y-4 shadow-sm hover:shadow-md transition-all">
-                  <div class="bg-emerald-800 text-white px-4 py-2 rounded-xl text-sm font-bold inline-block font-arabic shadow-sm">
-                    ${sec.type}
+                <div class="bg-emerald-50/40 rounded-3xl p-5 sm:p-6 border border-emerald-200/80 space-y-4 shadow-sm hover:shadow-md transition-all">
+                  <div class="flex items-center justify-between gap-2">
+                    <div class="${sec.theme === 'rose' ? 'bg-gradient-to-r from-rose-700 to-red-800' : 'bg-gradient-to-r from-emerald-800 to-teal-800'} text-white px-4 py-2 rounded-xl text-sm font-bold inline-flex items-center gap-2 font-arabic shadow-sm">
+                      <i class="fa-solid ${sec.theme === 'rose' ? 'fa-ban' : 'fa-bullhorn'} text-xs"></i>
+                      <span>${sec.type}</span>
+                    </div>
+                    <span class="text-[10px] font-bold ${sec.theme === 'rose' ? 'text-rose-700 bg-rose-100' : 'text-emerald-700 bg-emerald-100'} px-2.5 py-1 rounded-full border ${sec.theme === 'rose' ? 'border-rose-200' : 'border-emerald-200'}">
+                      ${sec.badge || ''}
+                    </span>
                   </div>
-                  <p class="text-xs text-emerald-900 leading-relaxed font-medium">${sec.desc}</p>
+
+                  <p class="text-xs text-emerald-950 leading-relaxed font-medium">${sec.desc}</p>
                   
                   <div class="space-y-3 pt-2">
-                    <h4 class="text-xs font-bold text-emerald-900 uppercase tracking-wider">Contoh Kalimat:</h4>
+                    <h4 class="text-xs font-bold text-emerald-900 uppercase tracking-wider flex items-center gap-1.5">
+                      <i class="fa-solid fa-list-check text-emerald-600"></i>
+                      <span>Contoh Kalimat & Kaidah Inti:</span>
+                    </h4>
+                    
                     ${sec.examples.map(ex => `
-                      <div class="bg-white p-3.5 rounded-2xl border border-emerald-100 space-y-1 shadow-sm">
-                        <div class="flex items-center justify-between">
-                          <span class="text-lg font-bold font-arabic text-emerald-950 text-right leading-snug">${ex.arabic}</span>
-                          <button data-speech="${ex.arabic}" class="speech-btn w-8 h-8 rounded-full bg-emerald-50 hover:bg-emerald-700 hover:text-white text-emerald-700 flex items-center justify-center transition-all shadow-sm">
+                      <div class="bg-white p-4 rounded-2xl border ${sec.theme === 'rose' ? 'border-rose-200 hover:border-rose-300' : 'border-emerald-200 hover:border-emerald-300'} space-y-2.5 shadow-2xs hover:shadow-sm transition-all">
+                        <div class="flex items-center justify-between gap-3">
+                          <button data-speech="${ex.arabic}" class="speech-btn w-8 h-8 rounded-full ${sec.theme === 'rose' ? 'bg-rose-50 text-rose-700 hover:bg-rose-600 hover:text-white' : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-600 hover:text-white'} flex items-center justify-center transition-all shadow-2xs shrink-0" title="Dengarkan Pengucapan">
                             <i class="fa-solid fa-volume-high text-xs"></i>
                           </button>
+                          <div class="text-right flex-1 font-arabic text-xl sm:text-2xl font-bold ${sec.theme === 'rose' ? 'text-rose-950' : 'text-emerald-950'} leading-loose" dir="rtl">
+                            ${highlightArabicGrammar(ex.arabic, ex.targetArabic, sec.theme)}
+                          </div>
                         </div>
-                        <div class="text-[11px] font-semibold text-emerald-600">${ex.latin}</div>
-                        <div class="text-xs text-emerald-900 font-sans">${ex.indonesian}</div>
+
+                        <!-- Role Badge & Translation -->
+                        <div class="space-y-1 pt-1 border-t ${sec.theme === 'rose' ? 'border-rose-100' : 'border-emerald-100'}">
+                          <div class="flex flex-wrap items-center gap-1.5">
+                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[10px] font-bold ${sec.theme === 'rose' ? 'bg-rose-100 text-rose-900 border border-rose-300' : 'bg-emerald-100 text-emerald-900 border border-emerald-300'}">
+                              <i class="fa-solid fa-tag text-[8px]"></i>
+                              ${ex.targetRole || ''}
+                            </span>
+                            <span class="text-[10px] text-gray-500 font-medium">${ex.roleDesc || ''}</span>
+                          </div>
+
+                          <div class="text-xs sm:text-sm text-slate-800 font-sans leading-relaxed pt-1">
+                            ${highlightIndoGrammar(ex.indonesian, ex.targetIndonesian, sec.theme)}
+                          </div>
+
+                          <div class="text-[11px] font-semibold text-slate-500 italic pt-0.5">
+                            ${highlightLatinGrammar(ex.latin, ex.targetLatin, sec.theme)}
+                          </div>
+                        </div>
+
+                        ${ex.explanation ? `
+                          <div class="p-2.5 rounded-xl ${sec.theme === 'rose' ? 'bg-rose-50/80 border border-rose-200 text-rose-950' : 'bg-emerald-50/80 border border-emerald-200 text-emerald-950'} text-[11px] leading-relaxed flex items-start gap-1.5 mt-1">
+                            <i class="fa-solid fa-circle-info text-[11px] mt-0.5 ${sec.theme === 'rose' ? 'text-rose-500' : 'text-emerald-500'} shrink-0"></i>
+                            <span>${ex.explanation}</span>
+                          </div>
+                        ` : ''}
                       </div>
                     `).join('')}
                   </div>
@@ -4487,79 +4600,165 @@ document.addEventListener('DOMContentLoaded', () => {
               
               <!-- Document Header Block -->
               <div class="bg-gradient-to-r from-emerald-50 via-teal-50/50 to-emerald-50 p-6 rounded-3xl border border-emerald-200 text-center relative overflow-hidden space-y-2">
-                <div class="inline-flex items-center gap-1.5 px-4 py-1.5 bg-emerald-600 text-white font-arabic font-bold text-lg rounded-full shadow-sm mb-1">
+                <div class="inline-flex items-center gap-1.5 px-4 py-1.5 bg-emerald-700 text-white font-arabic font-bold text-lg rounded-full shadow-sm mb-1">
                   <span>${tafdhil.badge}</span>
                 </div>
                 <h3 class="text-3xl sm:text-4xl font-bold font-arabic text-emerald-950">${tafdhil.title}</h3>
                 <p class="text-[11px] text-gray-500 font-arabic italic">${tafdhil.source}</p>
-                <p class="text-xs font-semibold text-emerald-800 pt-2">${tafdhil.instruction}</p>
+                <p class="text-xs sm:text-sm font-semibold text-emerald-900 pt-2 max-w-xl mx-auto">${tafdhil.instruction}</p>
               </div>
 
               <!-- Two Columns Grid (Kolom A vs Kolom B) -->
               <div class="grid md:grid-cols-2 gap-6">
                 
-                <!-- KOLOM A: Lebih dari -->
-                <div class="bg-amber-50/40 rounded-3xl p-6 border-2 border-amber-200/80 space-y-4 relative shadow-sm">
+                <!-- KOLOM A: Lebih dari (Komparatif) -->
+                <div class="bg-amber-50/40 rounded-3xl p-5 sm:p-6 border-2 border-amber-300 space-y-4 relative shadow-sm">
                   <!-- Top Badge Container -->
                   <div class="flex flex-col items-center">
-                    <span class="w-9 h-9 rounded-xl bg-purple-900 text-white font-bold flex items-center justify-center text-sm shadow-md mb-2">A</span>
-                    <span class="px-5 py-1.5 bg-cyan-100 text-cyan-900 rounded-lg text-xs font-bold border border-cyan-300">
+                    <span class="w-10 h-10 rounded-2xl bg-amber-600 text-white font-extrabold flex items-center justify-center text-base shadow-md mb-2">A</span>
+                    <span class="px-5 py-1.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-xl text-xs sm:text-sm font-bold shadow-xs flex items-center gap-1.5">
+                      <i class="fa-solid fa-scale-balanced text-[11px]"></i>
                       ${tafdhil.columnA.label}
+                    </span>
+                    <span class="text-[10px] text-amber-800 font-semibold mt-1">
+                      ${tafdhil.columnA.meaningGuide || ''}
                     </span>
                   </div>
 
                   <!-- Yellow Box Content -->
-                  <div class="bg-amber-100/70 p-5 rounded-2xl border border-amber-300 space-y-3 text-right">
-                    ${tafdhil.columnA.examples.map(ex => `
-                      <div class="flex items-center justify-between gap-2 bg-white/80 p-3 rounded-xl border border-amber-200">
-                        <button data-speech="${ex.arabic}" class="speech-btn w-7 h-7 rounded-full bg-amber-100 text-amber-800 hover:bg-amber-700 hover:text-white flex items-center justify-center transition-all">
-                          <i class="fa-solid fa-volume-high text-[11px]"></i>
-                        </button>
-                        <div class="text-right flex-1">
-                          <span class="text-xl font-bold font-arabic text-amber-950 block">${ex.arabic}</span>
-                          <span class="text-[11px] text-amber-800 font-sans block text-left font-medium mt-0.5">${ex.indonesian}</span>
+                  <div class="bg-amber-100/70 p-4 sm:p-5 rounded-2xl border border-amber-300 space-y-4 text-right">
+                    ${tafdhil.columnA.examples.map((ex, idx) => `
+                      <div class="bg-white/95 p-4 rounded-2xl border-2 border-amber-200 hover:border-amber-400 space-y-2.5 transition-all shadow-2xs">
+                        <div class="flex items-center justify-between gap-3">
+                          <button data-speech="${ex.arabic}" class="speech-btn w-8 h-8 rounded-full bg-amber-100 text-amber-800 hover:bg-amber-600 hover:text-white flex items-center justify-center transition-all shadow-2xs shrink-0" title="Dengarkan Pengucapan Kalimat">
+                            <i class="fa-solid fa-volume-high text-xs"></i>
+                          </button>
+                          <div class="text-right flex-1 font-arabic text-xl sm:text-2xl font-bold text-amber-950 leading-loose" dir="rtl">
+                            ${highlightArabicGrammar(ex.arabic, ex.targetArabic, 'amber')}
+                          </div>
                         </div>
+
+                        <!-- Meaning & Kaidah Tag -->
+                        <div class="space-y-1.5 pt-1 border-t border-amber-100 text-left">
+                          <div class="flex flex-wrap items-center justify-between gap-1.5">
+                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-[10px] sm:text-[11px] font-bold bg-amber-100 text-amber-950 border border-amber-300 shadow-2xs">
+                              <i class="fa-solid fa-highlighter text-[9px] text-amber-600"></i>
+                              ${ex.targetRole || 'Isim Tafdhil + مِنْ'}
+                            </span>
+                            <button type="button" class="qawaid-toggle-breakdown-btn text-[11px] font-bold text-amber-800 hover:text-amber-950 flex items-center gap-1 px-2 py-0.5 rounded-lg hover:bg-amber-100 transition-colors" data-target="breakdown-colA-${idx}">
+                              <span>Rincian Kaidah</span>
+                              <i class="fa-solid fa-chevron-down text-[9px] transition-transform duration-200"></i>
+                            </button>
+                          </div>
+
+                          <div class="text-xs sm:text-sm text-slate-800 font-sans leading-relaxed pt-0.5">
+                            ${highlightIndoGrammar(ex.indonesian, ex.targetIndonesian, 'amber')}
+                          </div>
+                        </div>
+
+                        <!-- Expandable Breakdown Unsur Arkanut Tafdhil -->
+                        ${ex.breakdown && ex.breakdown.length > 0 ? `
+                          <div id="breakdown-colA-${idx}" class="hidden pt-2.5 border-t border-amber-200/80 space-y-2 text-left">
+                            <div class="flex items-center justify-between">
+                              <span class="text-[10px] font-bold text-amber-900 uppercase tracking-wider">Unsur Pembentuk Kalimat (أَرْكَانُ التَّفْضِيل):</span>
+                              <span class="text-[9px] text-amber-700 bg-amber-100 px-2 py-0.2 rounded font-medium">Bentuk Komparatif</span>
+                            </div>
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
+                              ${ex.breakdown.map(b => `
+                                <div class="bg-amber-50/90 p-2 rounded-xl border border-amber-200 text-center">
+                                  <span class="font-arabic font-bold text-base text-amber-950 block" dir="rtl">${b.text}</span>
+                                  <span class="text-[9px] font-bold text-amber-800 block uppercase mt-0.5">${b.label}</span>
+                                  <span class="text-[9px] text-slate-600 block mt-0.5 leading-tight">${b.desc}</span>
+                                </div>
+                              `).join('')}
+                            </div>
+                          </div>
+                        ` : ''}
+
                       </div>
                     `).join('')}
                   </div>
 
                   <!-- Pattern Footer -->
                   <div class="text-center pt-2">
-                    <span class="text-xs font-bold text-amber-900 bg-amber-200/60 px-3 py-1 rounded-full">
-                      Pola (A): ${tafdhil.columnA.rule}
+                    <span class="text-xs sm:text-sm font-bold text-amber-900 bg-amber-200/80 border border-amber-300 px-4 py-1.5 rounded-full shadow-2xs">
+                      Pola Rumus (A): ${tafdhil.columnA.rule}
                     </span>
                   </div>
                 </div>
 
-                <!-- KOLOM B: Paling / Ter -->
-                <div class="bg-emerald-50/40 rounded-3xl p-6 border-2 border-emerald-200/80 space-y-4 relative shadow-sm">
+                <!-- KOLOM B: Paling / Ter (Superlatif) -->
+                <div class="bg-emerald-50/40 rounded-3xl p-5 sm:p-6 border-2 border-emerald-300 space-y-4 relative shadow-sm">
                   <!-- Top Badge Container -->
                   <div class="flex flex-col items-center">
-                    <span class="w-9 h-9 rounded-xl bg-purple-900 text-white font-bold flex items-center justify-center text-sm shadow-md mb-2">B</span>
-                    <span class="px-5 py-1.5 bg-purple-100 text-purple-900 rounded-lg text-xs font-bold border border-purple-300">
+                    <span class="w-10 h-10 rounded-2xl bg-emerald-700 text-white font-extrabold flex items-center justify-center text-base shadow-md mb-2">B</span>
+                    <span class="px-5 py-1.5 bg-gradient-to-r from-emerald-600 to-teal-700 text-white rounded-xl text-xs sm:text-sm font-bold shadow-xs flex items-center gap-1.5">
+                      <i class="fa-solid fa-trophy text-[11px]"></i>
                       ${tafdhil.columnB.label}
+                    </span>
+                    <span class="text-[10px] text-emerald-800 font-semibold mt-1">
+                      ${tafdhil.columnB.meaningGuide || ''}
                     </span>
                   </div>
 
                   <!-- Green Box Content -->
-                  <div class="bg-emerald-100/70 p-5 rounded-2xl border border-emerald-300 space-y-3 text-right">
-                    ${tafdhil.columnB.examples.map(ex => `
-                      <div class="flex items-center justify-between gap-2 bg-white/80 p-3 rounded-xl border border-emerald-200">
-                        <button data-speech="${ex.arabic}" class="speech-btn w-7 h-7 rounded-full bg-emerald-100 text-emerald-800 hover:bg-emerald-700 hover:text-white flex items-center justify-center transition-all">
-                          <i class="fa-solid fa-volume-high text-[11px]"></i>
-                        </button>
-                        <div class="text-right flex-1">
-                          <span class="text-xl font-bold font-arabic text-emerald-950 block">${ex.arabic}</span>
-                          <span class="text-[11px] text-emerald-800 font-sans block text-left font-medium mt-0.5">${ex.indonesian}</span>
+                  <div class="bg-emerald-100/70 p-4 sm:p-5 rounded-2xl border border-emerald-300 space-y-4 text-right">
+                    ${tafdhil.columnB.examples.map((ex, idx) => `
+                      <div class="bg-white/95 p-4 rounded-2xl border-2 border-emerald-200 hover:border-emerald-400 space-y-2.5 transition-all shadow-2xs">
+                        <div class="flex items-center justify-between gap-3">
+                          <button data-speech="${ex.arabic}" class="speech-btn w-8 h-8 rounded-full bg-emerald-100 text-emerald-800 hover:bg-emerald-600 hover:text-white flex items-center justify-center transition-all shadow-2xs shrink-0" title="Dengarkan Pengucapan Kalimat">
+                            <i class="fa-solid fa-volume-high text-xs"></i>
+                          </button>
+                          <div class="text-right flex-1 font-arabic text-xl sm:text-2xl font-bold text-emerald-950 leading-loose" dir="rtl">
+                            ${highlightArabicGrammar(ex.arabic, ex.targetArabic, 'emerald')}
+                          </div>
                         </div>
+
+                        <!-- Meaning & Kaidah Tag -->
+                        <div class="space-y-1.5 pt-1 border-t border-emerald-100 text-left">
+                          <div class="flex flex-wrap items-center justify-between gap-1.5">
+                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-[10px] sm:text-[11px] font-bold bg-emerald-100 text-emerald-950 border border-emerald-300 shadow-2xs">
+                              <i class="fa-solid fa-highlighter text-[9px] text-emerald-600"></i>
+                              ${ex.targetRole || 'Isim Tafdhil + Jamak'}
+                            </span>
+                            <button type="button" class="qawaid-toggle-breakdown-btn text-[11px] font-bold text-emerald-800 hover:text-emerald-950 flex items-center gap-1 px-2 py-0.5 rounded-lg hover:bg-emerald-100 transition-colors" data-target="breakdown-colB-${idx}">
+                              <span>Rincian Kaidah</span>
+                              <i class="fa-solid fa-chevron-down text-[9px] transition-transform duration-200"></i>
+                            </button>
+                          </div>
+
+                          <div class="text-xs sm:text-sm text-slate-800 font-sans leading-relaxed pt-0.5">
+                            ${highlightIndoGrammar(ex.indonesian, ex.targetIndonesian, 'emerald')}
+                          </div>
+                        </div>
+
+                        <!-- Expandable Breakdown Unsur Arkanut Tafdhil -->
+                        ${ex.breakdown && ex.breakdown.length > 0 ? `
+                          <div id="breakdown-colB-${idx}" class="hidden pt-2.5 border-t border-emerald-200/80 space-y-2 text-left">
+                            <div class="flex items-center justify-between">
+                              <span class="text-[10px] font-bold text-emerald-900 uppercase tracking-wider">Unsur Pembentuk Kalimat (أَرْكَانُ التَّفْضِيل):</span>
+                              <span class="text-[9px] text-emerald-700 bg-emerald-100 px-2 py-0.2 rounded font-medium">Bentuk Superlatif</span>
+                            </div>
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
+                              ${ex.breakdown.map(b => `
+                                <div class="bg-emerald-50/90 p-2 rounded-xl border border-emerald-200 text-center">
+                                  <span class="font-arabic font-bold text-base text-emerald-950 block" dir="rtl">${b.text}</span>
+                                  <span class="text-[9px] font-bold text-emerald-800 block uppercase mt-0.5">${b.label}</span>
+                                  <span class="text-[9px] text-slate-600 block mt-0.5 leading-tight">${b.desc}</span>
+                                </div>
+                              `).join('')}
+                            </div>
+                          </div>
+                        ` : ''}
+
                       </div>
                     `).join('')}
                   </div>
 
                   <!-- Pattern Footer -->
                   <div class="text-center pt-2">
-                    <span class="text-xs font-bold text-emerald-900 bg-emerald-200/60 px-3 py-1 rounded-full">
-                      Pola (B): ${tafdhil.columnB.rule}
+                    <span class="text-xs sm:text-sm font-bold text-emerald-900 bg-emerald-200/80 border border-emerald-300 px-4 py-1.5 rounded-full shadow-2xs">
+                      Pola Rumus (B): ${tafdhil.columnB.rule}
                     </span>
                   </div>
                 </div>
@@ -4567,23 +4766,25 @@ document.addEventListener('DOMContentLoaded', () => {
               </div>
 
               <!-- Keterangan & Formasi Isim Tafdhil Diagram -->
-              <div class="bg-emerald-50/60 p-6 rounded-3xl border border-emerald-200 space-y-6">
-                <h4 class="text-sm font-bold text-emerald-900 uppercase tracking-wider border-b border-emerald-200 pb-2">
-                  Keterangan & Kaidah Pembentukan Isim Tafdhil:
+              <div class="bg-emerald-50/60 p-5 sm:p-7 rounded-3xl border border-emerald-200 space-y-6">
+                <h4 class="text-sm font-bold text-emerald-900 uppercase tracking-wider border-b border-emerald-200 pb-2 flex items-center gap-2">
+                  <i class="fa-solid fa-graduation-cap text-emerald-600"></i>
+                  <span>Keterangan & Kaidah Pembentukan Isim Tafdhil:</span>
                 </h4>
 
                 <!-- Point 1 with Wazan Box & Arrow Diagram -->
                 <div class="space-y-4">
-                  <p class="text-xs sm:text-sm text-emerald-950 font-medium">
+                  <p class="text-xs sm:text-sm text-emerald-950 font-semibold">
                     <strong>1.</strong> ${tafdhil.keterangan[0].text}
                   </p>
 
                   <!-- Wazan Pattern Badge -->
                   <div class="flex flex-col items-center justify-center my-4 space-y-2">
-                    <div class="px-8 py-2.5 bg-emerald-700 text-white rounded-xl shadow-md font-arabic font-bold text-2xl tracking-wide">
+                    <div class="px-8 py-2.5 bg-gradient-to-r from-emerald-700 to-teal-800 text-white rounded-2xl shadow-md font-arabic font-bold text-2xl tracking-wide ring-2 ring-emerald-300">
                       ${tafdhil.pattern}
                     </div>
-                    <i class="fa-solid fa-arrow-down text-emerald-600 text-xl animate-bounce mt-1"></i>
+                    <span class="text-[11px] font-bold text-emerald-800 uppercase tracking-wider">Wazan Pokok Isim Tafdhil</span>
+                    <i class="fa-solid fa-arrow-down text-emerald-600 text-lg animate-bounce mt-1"></i>
                   </div>
 
                   <!-- Derivation Diagram Boxes -->
@@ -4593,15 +4794,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="bg-white p-3 sm:p-4 rounded-2xl border-2 border-orange-300 text-center space-y-1.5 shadow-2xs">
                       <span class="text-[9px] sm:text-[10px] font-bold text-orange-700 uppercase tracking-wider block">Kata Asal (Isim Sifat)</span>
                       <div class="space-y-1 font-arabic text-base sm:text-xl font-bold text-orange-950">
-                        ${tafdhil.keterangan[0].derivations.map(d => `<div class="py-0.5">${d.base}</div>`).join('')}
+                        ${tafdhil.keterangan[0].derivations.map(d => `<div class="py-1 px-2 rounded-lg bg-orange-50/80 border border-orange-100 my-1">${d.base}</div>`).join('')}
                       </div>
                     </div>
 
                     <!-- Left Box (Isim Tafdhil) -->
                     <div class="bg-white p-3 sm:p-4 rounded-2xl border-2 border-emerald-400 text-center space-y-1.5 shadow-2xs">
-                      <span class="text-[9px] sm:text-[10px] font-bold text-emerald-700 uppercase tracking-wider block">Bentuk Isim Tafdhil</span>
+                      <span class="text-[9px] sm:text-[10px] font-bold text-emerald-700 uppercase tracking-wider block">Bentuk Isim Tafdhil (Wazan أَفْعَلُ)</span>
                       <div class="space-y-1 font-arabic text-base sm:text-xl font-bold text-emerald-800">
-                        ${tafdhil.keterangan[0].derivations.map(d => `<div class="py-0.5">${d.tafdhil}</div>`).join('')}
+                        ${tafdhil.keterangan[0].derivations.map(d => `<div class="py-1 px-2 rounded-lg bg-emerald-700 text-white shadow-xs my-1">${d.tafdhil}</div>`).join('')}
                       </div>
                     </div>
 
@@ -4610,17 +4811,17 @@ document.addEventListener('DOMContentLoaded', () => {
                   <!-- Derivation Meaning Breakdown -->
                   <div class="max-w-xl mx-auto space-y-2">
                     ${tafdhil.keterangan[0].derivations.map(d => `
-                      <div class="bg-white p-2.5 sm:p-3 rounded-2xl border border-emerald-200/90 shadow-2xs flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1.5 sm:gap-3">
+                      <div class="bg-white p-3 rounded-2xl border border-emerald-200/90 shadow-2xs flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1.5 sm:gap-3 hover:border-emerald-400 transition-colors">
                         <!-- Arabic Pair in natural RTL order with neat badges -->
                         <div class="flex items-center gap-2 font-arabic font-bold text-base sm:text-lg shrink-0" dir="rtl">
-                          <span class="px-2.5 py-0.5 bg-orange-50 text-orange-950 rounded-xl border border-orange-200 shadow-2xs">${d.base}</span>
+                          <span class="px-3 py-1 bg-orange-50 text-orange-950 rounded-xl border border-orange-200 shadow-2xs">${d.base}</span>
                           <span class="text-emerald-500 font-sans text-xs flex items-center px-0.5">
                             <i class="fa-solid fa-arrow-left text-[11px]"></i>
                           </span>
-                          <span class="px-2.5 py-0.5 bg-emerald-700 text-white rounded-xl shadow-2xs">${d.tafdhil}</span>
+                          <span class="px-3 py-1 bg-emerald-700 text-white rounded-xl shadow-2xs font-extrabold">${d.tafdhil}</span>
                         </div>
                         <!-- Meaning in Indonesian -->
-                        <div class="text-[11px] sm:text-xs text-emerald-800 font-medium sm:text-right flex items-center gap-1.5 pl-0.5 sm:pl-0 border-t sm:border-t-0 pt-1 sm:pt-0 border-emerald-100">
+                        <div class="text-[11px] sm:text-xs text-emerald-900 font-medium sm:text-right flex items-center gap-1.5 pl-0.5 sm:pl-0 border-t sm:border-t-0 pt-1 sm:pt-0 border-emerald-100">
                           <i class="fa-solid fa-circle-info text-[10px] text-emerald-500 shrink-0"></i>
                           <span>${d.meaning}</span>
                         </div>
@@ -4632,16 +4833,50 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 <!-- Points 2 & 3 Formulas -->
                 <div class="grid sm:grid-cols-2 gap-4 pt-2">
-                  <div class="bg-white p-4 rounded-2xl border border-emerald-200 space-y-1">
-                    <p class="text-xs text-emerald-950 font-semibold">2. Susunan Kalimat Kolom (A) [Komparatif]:</p>
-                    <div class="font-arabic font-bold text-lg text-emerald-800 dir-rtl text-right my-1">${tafdhil.keterangan[1].formula}</div>
-                    <p class="text-[11px] text-emerald-700 font-medium">${tafdhil.keterangan[1].meaning}</p>
+                  <!-- Point 2 Formula Card -->
+                  <div class="bg-white p-5 rounded-2xl border-2 border-amber-300 space-y-3 shadow-2xs">
+                    <div class="flex items-center gap-2">
+                      <span class="w-6 h-6 rounded-lg bg-amber-500 text-white font-bold text-xs flex items-center justify-center">2</span>
+                      <h5 class="text-xs sm:text-sm text-amber-950 font-bold">Susunan Kolom (A) [Komparatif - Lebih dari]:</h5>
+                    </div>
+                    
+                    <!-- Visual formula badges -->
+                    <div class="flex flex-wrap items-center justify-center gap-1.5 font-arabic text-lg sm:text-xl font-bold my-2" dir="rtl">
+                      <span class="px-3 py-1 bg-amber-500 text-white rounded-xl shadow-xs ring-2 ring-amber-300/80">أَفْعَلُ</span>
+                      <span class="text-amber-600 font-sans text-sm font-bold">+</span>
+                      <span class="px-3 py-1 bg-amber-600 text-white rounded-xl shadow-xs ring-2 ring-amber-300/80">مِنْ</span>
+                      <span class="text-amber-600 font-sans text-sm font-bold">+</span>
+                      <span class="px-3 py-1 bg-amber-100 text-amber-950 border border-amber-300 rounded-xl shadow-xs">إِسْمٌ</span>
+                    </div>
+
+                    <p class="text-xs text-amber-950 font-semibold bg-amber-50 p-2.5 rounded-xl border border-amber-200">
+                      ${tafdhil.keterangan[1].meaning}
+                    </p>
+                    <p class="text-[11px] text-amber-900 font-medium leading-relaxed">
+                      ${tafdhil.keterangan[1].exampleFormula || ''}
+                    </p>
                   </div>
 
-                  <div class="bg-white p-4 rounded-2xl border border-emerald-200 space-y-1">
-                    <p class="text-xs text-emerald-950 font-semibold">3. Susunan Kalimat Kolom (B) [Superlatif]:</p>
-                    <div class="font-arabic font-bold text-lg text-emerald-800 dir-rtl text-right my-1">${tafdhil.keterangan[2].formula}</div>
-                    <p class="text-[11px] text-emerald-700 font-medium">${tafdhil.keterangan[2].meaning}</p>
+                  <!-- Point 3 Formula Card -->
+                  <div class="bg-white p-5 rounded-2xl border-2 border-emerald-300 space-y-3 shadow-2xs">
+                    <div class="flex items-center gap-2">
+                      <span class="w-6 h-6 rounded-lg bg-emerald-700 text-white font-bold text-xs flex items-center justify-center">3</span>
+                      <h5 class="text-xs sm:text-sm text-emerald-950 font-bold">Susunan Kolom (B) [Superlatif - Paling/Ter-]:</h5>
+                    </div>
+                    
+                    <!-- Visual formula badges -->
+                    <div class="flex flex-wrap items-center justify-center gap-1.5 font-arabic text-lg sm:text-xl font-bold my-2" dir="rtl">
+                      <span class="px-3 py-1 bg-emerald-700 text-white rounded-xl shadow-xs ring-2 ring-emerald-300/80">أَفْعَلُ</span>
+                      <span class="text-emerald-600 font-sans text-sm font-bold">+</span>
+                      <span class="px-3 py-1 bg-emerald-100 text-emerald-950 border border-emerald-300 rounded-xl shadow-xs">جَمْعٌ (مُضَافٌ إِلَيْهِ)</span>
+                    </div>
+
+                    <p class="text-xs text-emerald-950 font-semibold bg-emerald-50 p-2.5 rounded-xl border border-emerald-200">
+                      ${tafdhil.keterangan[2].meaning}
+                    </p>
+                    <p class="text-[11px] text-emerald-900 font-medium leading-relaxed">
+                      ${tafdhil.keterangan[2].exampleFormula || ''}
+                    </p>
                   </div>
                 </div>
 
@@ -4653,6 +4888,28 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       </div>
     `;
+  }
+
+  function attachQawaidEvents() {
+    // Interactive toggle for breakdown analysis
+    document.querySelectorAll('.qawaid-toggle-breakdown-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const targetId = btn.getAttribute('data-target');
+        const panel = document.getElementById(targetId);
+        if (!panel) return;
+        const isHidden = panel.classList.contains('hidden');
+        if (isHidden) {
+          panel.classList.remove('hidden');
+          const icon = btn.querySelector('i');
+          if (icon) icon.classList.add('rotate-180');
+        } else {
+          panel.classList.add('hidden');
+          const icon = btn.querySelector('i');
+          if (icon) icon.classList.remove('rotate-180');
+        }
+      });
+    });
   }
 
   // 5. DIALOGUE VIEW (Interactive Hiwar: Balon Kata & Roleplay Simulator)
@@ -5203,6 +5460,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Filter students by search and class
     const search = (state.studentsSearch || '').toLowerCase().trim();
     const classFilter = state.studentsClassFilter || 'all';
+    const allClasses = Array.from(new Set(['IX-A', 'IX-B', ...students.map(s => s.class).filter(Boolean)]));
 
     const filteredStudents = students.filter(s => {
       const matchName = !search || (s.name && s.name.toLowerCase().includes(search)) || String(s.id).includes(search);
@@ -5307,8 +5565,7 @@ document.addEventListener('DOMContentLoaded', () => {
               </div>
               <select id="students-class-filter" class="px-3 py-2 rounded-xl border border-emerald-200 bg-emerald-50/40 text-xs font-bold text-emerald-900 focus:outline-none focus:ring-2 focus:ring-emerald-600">
                 <option value="all" ${classFilter === 'all' ? 'selected' : ''}>Semua Kelas</option>
-                <option value="IX-A" ${classFilter === 'IX-A' ? 'selected' : ''}>Kelas IX-A</option>
-                <option value="IX-B" ${classFilter === 'IX-B' ? 'selected' : ''}>Kelas IX-B</option>
+                ${allClasses.map(c => `<option value="${c}" ${classFilter === c ? 'selected' : ''}>Kelas ${c}</option>`).join('')}
               </select>
             </div>
           </div>
@@ -5815,6 +6072,7 @@ document.addEventListener('DOMContentLoaded', () => {
         break;
       case 'qawaid':
         appContainer.innerHTML = renderQawaid();
+        attachQawaidEvents();
         break;
       case 'dialogue':
         appContainer.innerHTML = renderDialogue();
@@ -6076,12 +6334,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 3. Form Login Satu Pintu (Siswa & Guru Terdeteksi Otomatis)
     if (loginForm) {
-      loginForm.addEventListener('submit', (e) => {
+      loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         if (loginErrorMsg) loginErrorMsg.classList.add('hidden');
 
         const inputName = (document.getElementById('login-name').value || '').trim();
         const inputPassword = (document.getElementById('login-password').value || '').trim();
+        const submitBtn = document.getElementById('btn-submit-login');
 
         if (!inputName) {
           showLoginError("Silakan isi nama akun Anda.");
@@ -6126,10 +6385,56 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // 3B. Deteksi Apakah Siswa
-        const matchedStudent = (state.students || []).find(s => 
+        let matchedStudent = (state.students || []).find(s => 
           s.name.toLowerCase() === cleanInput ||
           s.name.toLowerCase().includes(cleanInput)
         );
+
+        // Jika belum ditemukan di memori lokal, lakukan live fetch ke Firestore (antisipasi jika baru daftar dari HP lain)
+        if (!matchedStudent && window.db) {
+          try {
+            if (submitBtn) {
+              submitBtn.disabled = true;
+              submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Memeriksa data cloud...';
+            }
+            const snap = await window.db.collection('students').get();
+            if (!snap.empty) {
+              const cloudStudents = [];
+              snap.forEach(doc => {
+                const data = doc.data() || {};
+                cloudStudents.push({
+                  id: data.id || doc.id,
+                  name: data.name || '',
+                  class: data.class || 'IX-A',
+                  password: data.password || '',
+                  score: typeof data.score === 'number' ? data.score : 0,
+                  istimaScore: typeof data.istimaScore === 'number' ? data.istimaScore : 0,
+                  kalamScore: typeof data.kalamScore === 'number' ? data.kalamScore : 0,
+                  duelScore: typeof data.duelScore === 'number' ? data.duelScore : 0,
+                  matchGameScore: typeof data.matchGameScore === 'number' ? data.matchGameScore : 0,
+                  averageScore: typeof data.averageScore === 'number' ? data.averageScore : 0,
+                  progress: typeof data.progress === 'number' ? data.progress : 0,
+                  lastActive: data.lastActive || 'Aktif',
+                  submissions: Array.isArray(data.submissions) ? data.submissions : [],
+                  ...data
+                });
+              });
+              state.students = cloudStudents;
+              localStorage.setItem('arabic_app_students', JSON.stringify(cloudStudents));
+              matchedStudent = state.students.find(s => 
+                s.name.toLowerCase() === cleanInput ||
+                s.name.toLowerCase().includes(cleanInput)
+              );
+            }
+          } catch(err) {
+            console.warn("⚠️ Live fetch login:", err);
+          } finally {
+            if (submitBtn) {
+              submitBtn.disabled = false;
+              submitBtn.innerHTML = '<span>Masuk ke Pembelajaran</span> <i class="fa-solid fa-arrow-right text-xs"></i>';
+            }
+          }
+        }
 
         if (matchedStudent) {
           // Jika siswa sudah memiliki kata sandi tersimpan, cocokkan
@@ -6197,8 +6502,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 4. Form Pendaftaran Akun Siswa Baru (Nama, Kelas, Password)
     if (registerForm) {
-      registerForm.addEventListener('submit', (e) => {
+      registerForm.addEventListener('submit', async (e) => {
         e.preventDefault();
+        const regSubmitBtn = registerForm.querySelector('button[type="submit"]');
         const regName = (document.getElementById('reg-name').value || '').trim();
         const regClass = (document.getElementById('reg-class').value || '').trim();
         const regPwd = (document.getElementById('reg-password').value || '').trim();
@@ -6218,6 +6524,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (isDuplicate) {
           showRegAlert("Nama siswa sudah terdaftar! Silakan langsung login dengan nama tersebut.", "error");
           return;
+        }
+
+        if (regSubmitBtn) {
+          regSubmitBtn.disabled = true;
+          regSubmitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Mendaftarkan akun...';
         }
 
         // Buat objek siswa baru lengkap dengan seluruh komponen nilai latihan
@@ -6244,7 +6555,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Sinkronisasi langsung ke Firebase Firestore Cloud
         if (window.FirebaseSync) {
-          window.FirebaseSync.saveStudent(newStudent);
+          await window.FirebaseSync.saveStudent(newStudent);
+        }
+
+        if (regSubmitBtn) {
+          regSubmitBtn.disabled = false;
+          regSubmitBtn.innerHTML = '<span>Daftar Sekarang</span> <i class="fa-solid fa-arrow-right text-xs"></i>';
         }
 
         showRegAlert("Alhamdulillah! Pendaftaran berhasil. Mengalihkan ke menu masuk...", "success");
@@ -6552,9 +6868,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Delete Student Buttons
     document.querySelectorAll('.delete-student-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
-        const studentId = parseInt(e.currentTarget.getAttribute('data-del-student'));
+        const studentId = e.currentTarget.getAttribute('data-del-student');
         if (confirm("Apakah Anda yakin ingin menghapus akun siswa ini?")) {
-          state.students = state.students.filter(s => s.id !== studentId);
+          state.students = state.students.filter(s => String(s.id) !== String(studentId));
           localStorage.setItem('arabic_app_students', JSON.stringify(state.students));
           if (window.FirebaseSync) {
             window.FirebaseSync.deleteStudent(studentId);
@@ -7784,9 +8100,9 @@ document.addEventListener('DOMContentLoaded', () => {
             }
           }
 
-          // 2. Sinkronisasi Realtime untuk Akun Guru (Dashboard & Tabel Siswa)
+          // 2. Sinkronisasi Realtime untuk Akun Guru (Dashboard, Tabel Siswa, & Pengaturan Akun)
           if (state.currentUser && state.currentUser.role === 'guru') {
-            if (state.currentView === 'students' || state.currentView === 'dashboard') {
+            if (state.currentView === 'students' || state.currentView === 'dashboard' || state.currentView === 'settings') {
               render();
             }
           }

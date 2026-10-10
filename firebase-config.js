@@ -68,7 +68,7 @@ window.FirebaseSync = {
           querySnap.forEach(doc => {
             const data = doc.data() || {};
             cloudStudents.push({
-              id: data.id || Number(doc.id) || Date.now(),
+              id: data.id || doc.id || ('std_' + Date.now()),
               name: data.name || '',
               class: data.class || 'IX-A',
               password: data.password || '',
@@ -174,7 +174,7 @@ window.FirebaseSync = {
 
   // Simpan / update data satu siswa ke Firestore
   async saveStudent(student) {
-    if (!this.isConnected() || !student) return;
+    if (!this.isConnected() || !student) return false;
     try {
       const docId = String(student.id || Date.now());
       const payload = {};
@@ -184,8 +184,10 @@ window.FirebaseSync = {
       payload.updatedAt = firebase.firestore.FieldValue.serverTimestamp();
       await db.collection('students').doc(docId).set(payload, { merge: true });
       console.log(`✅ [Firebase] Siswa ${student.name} tersimpan ke cloud Firestore.`);
+      return true;
     } catch (err) {
       console.error("❌ Gagal simpan siswa ke Firebase:", err);
+      return false;
     }
   },
 
