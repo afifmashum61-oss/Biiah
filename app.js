@@ -6525,7 +6525,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (footerEl) footerEl.classList.add('hidden');
       if (bottomNav) bottomNav.classList.add('hidden');
       if (bottomNavScrim) bottomNavScrim.classList.add('hidden');
-      if (mainEl) mainEl.className = "flex-1 w-full p-0 m-0 min-h-screen";
+      if (mainEl) mainEl.className = "w-full p-0 m-0 min-h-screen";
       if (headerBackBtn) {
         headerBackBtn.classList.add('hidden');
         headerBackBtn.classList.remove('flex');
@@ -6539,8 +6539,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (headerEl) headerEl.classList.remove('hidden');
     // Footer hanya tampil di Desktop/Tablet (md:block) dan selalu disembunyikan di HP (hidden md:block)
     // agar teks hak cipta/kredit tidak bertumpuk atau mengganggu di belakang floating bottom navigation
-    if (footerEl) footerEl.className = "hidden md:block bg-white border-t border-emerald-100 py-6 mt-12";
-    if (mainEl) mainEl.className = "flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8 pb-32 sm:pb-36 md:pb-8 overflow-x-hidden";
+    if (footerEl) footerEl.className = "hidden md:block bg-white border border-emerald-100 rounded-2xl py-6 mt-12 shadow-xs";
+    if (mainEl) mainEl.className = "w-full max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8 pb-32 sm:pb-36 md:pb-12 min-h-[calc(100vh-14rem)]";
 
     // Kontrol tombol kembali di Header: Tampil saat membuka materi/kuis/pengaturan, sembunyi di Beranda
     if (headerBackBtn) {
