@@ -308,32 +308,35 @@
   <!-- Toast Notification Container (Pengganti alert pop-up) -->
   <div id="toast-container" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 pointer-events-none flex flex-col items-center gap-2 w-full max-w-sm px-4"></div>
 
-  <!-- Mobile Bottom Navigation Bar (Bilah Menu Bawah di HP - Tidak Pop-up) -->
-  <nav id="bottom-nav" class="hidden md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-emerald-100 shadow-[0_-4px_25px_rgba(0,0,0,0.08)] px-2 py-1.5 transition-all">
-    <div class="max-w-md mx-auto grid grid-cols-6 gap-0.5 sm:gap-1 text-center">
-      <button data-view="dashboard" class="bottom-nav-item flex flex-col items-center justify-center py-1.5 px-0.5 rounded-xl transition-all text-slate-500 hover:text-emerald-700">
-        <i class="fa-solid fa-house text-sm sm:text-base"></i>
-        <span class="text-[9px] sm:text-[10px] font-semibold mt-0.5 truncate">Beranda</span>
+  <!-- Mobile Bottom Navigation Bar (Bilah Menu Bawah di HP - 4 Tab Utama Sesuai Permintaan) -->
+  <nav id="bottom-nav" class="hidden md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-emerald-100 shadow-[0_-4px_25px_rgba(0,0,0,0.08)] px-2 py-1 safe-area-bottom transition-all">
+    <div class="max-w-md mx-auto grid grid-cols-4 gap-1 text-center">
+      <!-- 1. Beranda (الرئيسية) -->
+      <button data-view="dashboard" class="bottom-nav-item flex flex-col items-center justify-center py-1.5 px-0.5 rounded-2xl transition-all text-slate-500 hover:text-emerald-700">
+        <i class="fa-solid fa-house text-base sm:text-lg"></i>
+        <span class="text-[10px] font-bold mt-0.5 leading-tight truncate">Beranda</span>
+        <span class="text-[9px] font-arabic font-semibold opacity-80 leading-none truncate">الرئيسية</span>
       </button>
-      <button data-view="mufradat" class="bottom-nav-item flex flex-col items-center justify-center py-1.5 px-0.5 rounded-xl transition-all text-slate-500 hover:text-emerald-700">
-        <i class="fa-solid fa-layer-group text-sm sm:text-base"></i>
-        <span class="text-[9px] sm:text-[10px] font-semibold mt-0.5 truncate">Kosakata</span>
+
+      <!-- 2. Tugas / Latihan (التدريبات) -->
+      <button data-view="quiz" class="bottom-nav-item flex flex-col items-center justify-center py-1.5 px-0.5 rounded-2xl transition-all text-slate-500 hover:text-emerald-700">
+        <i class="fa-solid fa-pen-to-square text-base sm:text-lg"></i>
+        <span class="text-[10px] font-bold mt-0.5 leading-tight truncate">Latihan</span>
+        <span class="text-[9px] font-arabic font-semibold opacity-80 leading-none truncate">التدريبات</span>
       </button>
-      <button data-view="istima" class="bottom-nav-item flex flex-col items-center justify-center py-1.5 px-0.5 rounded-xl transition-all text-slate-500 hover:text-emerald-700">
-        <i class="fa-solid fa-headphones text-sm sm:text-base"></i>
-        <span class="text-[9px] sm:text-[10px] font-semibold mt-0.5 truncate">Istima'</span>
+
+      <!-- 3. Peringkat (ترتيب الفصل) -->
+      <button data-view="leaderboard" class="bottom-nav-item flex flex-col items-center justify-center py-1.5 px-0.5 rounded-2xl transition-all text-slate-500 hover:text-emerald-700">
+        <i class="fa-solid fa-trophy text-base sm:text-lg"></i>
+        <span class="text-[10px] font-bold mt-0.5 leading-tight truncate">Peringkat</span>
+        <span class="text-[9px] font-arabic font-semibold opacity-80 leading-none truncate">ترتيب الفصل</span>
       </button>
-      <button data-view="kalam" class="bottom-nav-item flex flex-col items-center justify-center py-1.5 px-0.5 rounded-xl transition-all text-slate-500 hover:text-emerald-700">
-        <i class="fa-solid fa-microphone-lines text-sm sm:text-base"></i>
-        <span class="text-[9px] sm:text-[10px] font-semibold mt-0.5 truncate">Kalam</span>
-      </button>
-      <button data-view="qiraah" class="bottom-nav-item flex flex-col items-center justify-center py-1.5 px-0.5 rounded-xl transition-all text-slate-500 hover:text-emerald-700">
-        <i class="fa-solid fa-book-open text-sm sm:text-base"></i>
-        <span class="text-[9px] sm:text-[10px] font-semibold mt-0.5 truncate">Qira'ah</span>
-      </button>
-      <button id="bottom-nav-more-btn" class="bottom-nav-item flex flex-col items-center justify-center py-1.5 px-0.5 rounded-xl transition-all text-slate-500 hover:text-emerald-700">
-        <i class="fa-solid fa-bars text-sm sm:text-base"></i>
-        <span class="text-[9px] sm:text-[10px] font-semibold mt-0.5 truncate">Lainnya</span>
+
+      <!-- 4. Profil / Lainnya (المزيد) -->
+      <button data-view="profile" class="bottom-nav-item flex flex-col items-center justify-center py-1.5 px-0.5 rounded-2xl transition-all text-slate-500 hover:text-emerald-700">
+        <i class="fa-solid fa-circle-user text-base sm:text-lg"></i>
+        <span class="text-[10px] font-bold mt-0.5 leading-tight truncate">Profil</span>
+        <span class="text-[9px] font-arabic font-semibold opacity-80 leading-none truncate">المزيد</span>
       </button>
     </div>
   </nav>

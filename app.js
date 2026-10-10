@@ -746,7 +746,7 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       state.currentUser = JSON.parse(savedUser);
       const hashView = window.location.hash.replace('#', '');
-      const validViews = ['dashboard', 'mufradat', 'istima', 'kalam', 'qiraah', 'qawaid', 'dialogue', 'quiz', 'duelgame', 'students', 'settings'];
+      const validViews = ['dashboard', 'mufradat', 'istima', 'kalam', 'qiraah', 'qawaid', 'dialogue', 'quiz', 'duelgame', 'leaderboard', 'profile', 'students', 'settings'];
       if (hashView && validViews.includes(hashView)) {
         state.currentView = hashView;
       } else {
@@ -975,7 +975,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!state.currentUser || state.currentView === 'login') return;
 
     const targetView = (e.state && e.state.view) ? e.state.view : (window.location.hash.replace('#', '') || 'dashboard');
-    const validViews = ['dashboard', 'mufradat', 'istima', 'kalam', 'qiraah', 'qawaid', 'dialogue', 'quiz', 'duelgame', 'students', 'settings'];
+    const validViews = ['dashboard', 'mufradat', 'istima', 'kalam', 'qiraah', 'qawaid', 'dialogue', 'quiz', 'duelgame', 'leaderboard', 'profile', 'students', 'settings'];
 
     if (validViews.includes(targetView) && targetView !== state.currentView) {
       state.currentView = targetView;
@@ -1173,6 +1173,38 @@ document.addEventListener('DOMContentLoaded', () => {
             window.history.replaceState({ view: 'login' }, '', '#login');
           } catch(e) {}
           render();
+        });
+      }
+    }
+
+    // Kontrol Navigasi Bawah di HP (Mobile Bottom Navigation - 4 Tab)
+    const bottomNav = document.getElementById('bottom-nav');
+    if (bottomNav) {
+      if (!state.currentUser || state.currentView === 'login') {
+        bottomNav.classList.add('hidden');
+      } else {
+        bottomNav.classList.remove('hidden');
+
+        // Berikan highlight visual pada tab yang aktif saat ini
+        const bottomBtns = bottomNav.querySelectorAll('.bottom-nav-item');
+        bottomBtns.forEach(btn => {
+          const btnView = btn.getAttribute('data-view');
+          const isActive = state.currentView === btnView || (btnView === 'profile' && state.currentView === 'settings');
+
+          if (isActive) {
+            btn.className = "bottom-nav-item flex flex-col items-center justify-center py-1.5 px-0.5 rounded-2xl transition-all text-emerald-800 bg-emerald-50/90 font-bold shadow-xs scale-105 border-b-2 border-emerald-600";
+            const icon = btn.querySelector('i');
+            if (icon) icon.className = icon.className.replace(/text-slate-\d+/, 'text-emerald-700');
+          } else {
+            btn.className = "bottom-nav-item flex flex-col items-center justify-center py-1.5 px-0.5 rounded-2xl transition-all text-slate-500 hover:text-emerald-700";
+            const icon = btn.querySelector('i');
+            if (icon) icon.className = icon.className.replace(/text-emerald-\d+/, 'text-slate-500');
+          }
+
+          btn.onclick = (e) => {
+            const targetView = e.currentTarget.getAttribute('data-view');
+            if (targetView) navigateTo(targetView);
+          };
         });
       }
     }
@@ -6376,6 +6408,9 @@ document.addEventListener('DOMContentLoaded', () => {
         case 'settings':
           title = 'Biiah 4.0 - Pengaturan akun';
           break;
+        case 'profile':
+          title = 'Biiah 4.0 - Data Diri & Profil Siswa';
+          break;
         default:
           title = 'Biiah 4.0';
       }
@@ -6390,10 +6425,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const footerEl = document.querySelector('footer');
     const mainEl = document.querySelector('main');
     const headerBackBtn = document.getElementById('header-back-btn');
+    const bottomNav = document.getElementById('bottom-nav');
 
     if (!state.currentUser || state.currentView === 'login') {
       if (headerEl) headerEl.classList.add('hidden');
       if (footerEl) footerEl.classList.add('hidden');
+      if (bottomNav) bottomNav.classList.add('hidden');
       if (mainEl) mainEl.className = "flex-1 w-full p-0 m-0 min-h-screen";
       if (headerBackBtn) {
         headerBackBtn.classList.add('hidden');
@@ -6466,6 +6503,10 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
         attachLeaderboardEvents();
         break;
+      case 'profile':
+        appContainer.innerHTML = renderProfile();
+        attachProfileEvents();
+        break;
       case 'students':
         if (state.currentUser && state.currentUser.role === 'guru') {
           appContainer.innerHTML = renderStudents();
@@ -6499,6 +6540,359 @@ document.addEventListener('DOMContentLoaded', () => {
         speakArabic(text);
       });
     });
+  }
+
+  // =========================================================================
+  // 👤 PROFILE & ACCOUNT VIEW (Data Diri Siswa, Statistik Skor & Logout Merah)
+  // =========================================================================
+  function renderProfile() {
+    const user = state.currentUser;
+    if (!user) return renderDashboard();
+
+    const isSiswa = user.role === 'siswa';
+    const isGuru = user.role === 'guru';
+
+    // Perhitungan statistik siswa
+    const quizScore = typeof user.score === 'number' ? user.score : 0;
+    const istimaScore = typeof user.istimaScore === 'number' ? user.istimaScore : 0;
+    const kalamScore = typeof user.kalamScore === 'number' ? user.kalamScore : 0;
+    const duelScore = typeof user.duelScore === 'number' ? user.duelScore : 0;
+    const matchScore = typeof user.matchGameScore === 'number' ? user.matchGameScore : 0;
+    const avgScore = typeof user.averageScore === 'number' ? user.averageScore : Math.round((quizScore + istimaScore + kalamScore + matchScore) / 4);
+
+    // Ambil data siswa segar dari state.students jika ada
+    let studentObj = user;
+    if (isSiswa && state.students && state.students.length > 0) {
+      const found = state.students.find(s => (user.id && String(s.id) === String(user.id)) || (s.name && s.name.trim().toLowerCase() === user.name.trim().toLowerCase()));
+      if (found) studentObj = found;
+    }
+
+    const submissions = Array.isArray(studentObj.submissions) ? studentObj.submissions : (Array.isArray(user.submissions) ? user.submissions : []);
+
+    return `
+      <div class="space-y-6 sm:space-y-8 max-w-4xl mx-auto px-1 sm:px-4 pb-12 animate-fadeIn">
+        <!-- Profile Banner Card -->
+        <div class="bg-gradient-to-br from-emerald-800 via-emerald-900 to-teal-950 rounded-3xl sm:rounded-[2.5rem] p-6 sm:p-8 text-white shadow-xl border border-emerald-500/30 relative overflow-hidden">
+          <!-- Background Calligraphy & Ambient Orbs -->
+          <div class="absolute -right-10 -bottom-10 w-60 h-60 bg-emerald-400/20 rounded-full blur-3xl pointer-events-none"></div>
+          <div class="absolute -left-10 -top-10 w-60 h-60 bg-amber-400/15 rounded-full blur-3xl pointer-events-none"></div>
+          
+          <div class="relative z-10 flex flex-col sm:flex-row items-center sm:items-start gap-5 sm:gap-6 text-center sm:text-left">
+            <!-- Avatar -->
+            <div class="relative shrink-0">
+              <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl bg-gradient-to-br from-amber-400 to-emerald-400 p-1 shadow-2xl">
+                <div class="w-full h-full rounded-[1.35rem] bg-emerald-950 flex items-center justify-center overflow-hidden">
+                  ${isSiswa ? `
+                    <img src="${(user.gender === 'P' || (user.name && /siswi|putri|siti|nur|anisa|fatimah|rahma|ayu|alya|zahr/i.test(user.name))) ? 'avatar-siswi.jpg' : 'avatar-siswa.jpg'}" 
+                         alt="${user.name}" 
+                         class="w-full h-full object-cover" 
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+                    <span class="hidden w-full h-full text-3xl font-black text-amber-300 items-center justify-center">${user.name[0].toUpperCase()}</span>
+                  ` : `
+                    <img src="avatar-guru.jpg" alt="${user.name}" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+                    <span class="hidden w-full h-full text-3xl font-black text-amber-300 items-center justify-center">👨‍🏫</span>
+                  `}
+                </div>
+              </div>
+              <span class="absolute -bottom-1.5 -right-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500 text-white text-[10px] font-black shadow-md border-2 border-emerald-950 flex items-center gap-1">
+                <span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
+                <span>Aktif</span>
+              </span>
+            </div>
+
+            <!-- Profile Info Text -->
+            <div class="flex-1 space-y-2">
+              <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+                <span class="px-3 py-1 bg-white/15 backdrop-blur-md text-amber-300 rounded-full text-xs font-bold border border-white/20">
+                  <i class="fa-solid ${isSiswa ? 'fa-graduation-cap' : 'fa-chalkboard-user'} text-xs"></i> 
+                  ${isSiswa ? `Siswa Kelas ${user.class || 'IX-A'}` : 'Guru Pengampu'}
+                </span>
+                <span class="px-2.5 py-1 bg-emerald-500/20 text-emerald-200 rounded-full text-xs font-semibold border border-emerald-400/30">
+                  ID: ${user.id || '-'}
+                </span>
+              </div>
+
+              <h1 class="text-2xl sm:text-3xl font-black text-white font-sans tracking-tight">
+                ${user.name}
+              </h1>
+
+              <p class="text-xs sm:text-sm text-emerald-100/90 leading-relaxed max-w-xl">
+                MTs Darussalam Jombang • Materi: <span class="font-arabic font-bold text-amber-200 text-sm">الحفاظ على البيئة</span>
+              </p>
+
+              <div class="pt-2 flex flex-wrap items-center justify-center sm:justify-start gap-3 text-xs text-emerald-200">
+                <span class="flex items-center gap-1.5">
+                  <i class="fa-solid fa-cloud-arrow-up text-emerald-400"></i> Cloud Firestore Sync
+                </span>
+                <span>•</span>
+                <span class="flex items-center gap-1.5">
+                  <i class="fa-solid fa-school text-emerald-400"></i> Kelas 9 Semester Genap
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        ${isSiswa ? `
+          <!-- CARD 1: DATA DIRI SISWA (BIODATA) -->
+          <div class="bg-white rounded-3xl p-6 sm:p-7 shadow-sm border border-emerald-100 space-y-5">
+            <div class="flex items-center justify-between border-b border-emerald-50 pb-3">
+              <div class="flex items-center gap-2.5">
+                <div class="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-base font-black">
+                  <i class="fa-solid fa-id-card"></i>
+                </div>
+                <div>
+                  <h2 class="text-base sm:text-lg font-bold text-emerald-950">Data Diri Siswa</h2>
+                  <p class="text-xs text-slate-500">Informasi identitas akun pembelajaran terdaftar</p>
+                </div>
+              </div>
+              <span class="text-xs font-arabic font-bold text-emerald-800 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
+                بيانات الطالب
+              </span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 text-xs sm:text-sm">
+              <div class="p-3.5 bg-slate-50/70 rounded-2xl border border-slate-100 flex items-center justify-between">
+                <span class="text-slate-500 font-medium">Nama Lengkap</span>
+                <span class="font-bold text-emerald-950 text-right">${user.name}</span>
+              </div>
+              <div class="p-3.5 bg-slate-50/70 rounded-2xl border border-slate-100 flex items-center justify-between">
+                <span class="text-slate-500 font-medium">Nomor Induk / ID</span>
+                <span class="font-mono font-bold text-emerald-900 text-right">${user.id || '-'}</span>
+              </div>
+              <div class="p-3.5 bg-slate-50/70 rounded-2xl border border-slate-100 flex items-center justify-between">
+                <span class="text-slate-500 font-medium">Rombongan Belajar</span>
+                <span class="font-bold text-emerald-900 text-right">Kelas ${user.class || 'IX-A'}</span>
+              </div>
+              <div class="p-3.5 bg-slate-50/70 rounded-2xl border border-slate-100 flex items-center justify-between">
+                <span class="text-slate-500 font-medium">Peran / Status</span>
+                <span class="font-bold text-emerald-700 text-right">Siswa (طالب نشط)</span>
+              </div>
+              <div class="p-3.5 bg-slate-50/70 rounded-2xl border border-slate-100 flex items-center justify-between">
+                <span class="text-slate-500 font-medium">Madrasah</span>
+                <span class="font-bold text-slate-800 text-right">MTs Darussalam Jombang</span>
+              </div>
+              <div class="p-3.5 bg-slate-50/70 rounded-2xl border border-slate-100 flex items-center justify-between">
+                <span class="text-slate-500 font-medium">Guru Pengampu</span>
+                <span class="font-bold text-slate-800 text-right">Afif Ma'shum, M.Pd</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- CARD 2: STATISTIK SKOR & CAPAIAN BELAJAR -->
+          <div class="bg-white rounded-3xl p-6 sm:p-7 shadow-sm border border-emerald-100 space-y-6">
+            <div class="flex items-center justify-between border-b border-emerald-50 pb-3">
+              <div class="flex items-center gap-2.5">
+                <div class="w-9 h-9 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center text-base font-black">
+                  <i class="fa-solid fa-chart-simple"></i>
+                </div>
+                <div>
+                  <h2 class="text-base sm:text-lg font-bold text-emerald-950">Statistik Skor & Evaluasi</h2>
+                  <p class="text-xs text-slate-500">Hasil pengerjaan latihan, kemahiran berbicara & kuis</p>
+                </div>
+              </div>
+              <span class="text-xs font-arabic font-bold text-amber-800 bg-amber-50 px-3 py-1 rounded-full border border-amber-200">
+                إحصائيات الدرجات
+              </span>
+            </div>
+
+            <!-- Average Score Highlight Banner -->
+            <div class="p-5 rounded-2xl bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 text-white shadow-md flex items-center justify-between gap-4">
+              <div class="space-y-1">
+                <span class="text-xs font-bold uppercase tracking-wider text-emerald-200">Rata-Rata Nilai Keseluruhan</span>
+                <div class="text-3xl sm:text-4xl font-black">${avgScore} <span class="text-sm font-medium text-emerald-200">/ 100</span></div>
+                <p class="text-[11px] text-emerald-100">
+                  ${avgScore >= 85 ? '🌟 Predikat Sangat Baik (ممتاز)' : (avgScore >= 75 ? '👍 Predikat Baik (جيد جدا)' : '💪 Terus tingkatkan latihan (مقبول)')}
+                </p>
+              </div>
+              <button onclick="navigateTo('leaderboard')" class="px-4 py-2.5 bg-white text-emerald-900 hover:bg-emerald-50 font-bold rounded-xl text-xs shadow-md transition-all flex items-center gap-1.5 shrink-0">
+                <i class="fa-solid fa-trophy text-amber-500"></i>
+                <span>Lihat Peringkat</span>
+              </button>
+            </div>
+
+            <!-- 5 Score Category Cards Grid -->
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3.5">
+              <!-- Kuis Pilihan Ganda -->
+              <div class="p-4 rounded-2xl bg-emerald-50/60 border border-emerald-200 space-y-1">
+                <div class="flex items-center justify-between text-xs text-emerald-800 font-bold">
+                  <span class="flex items-center gap-1.5"><i class="fa-solid fa-pen-to-square"></i> Kuis Utama</span>
+                </div>
+                <div class="text-2xl font-black text-emerald-950">${quizScore} <span class="text-xs font-normal text-slate-500">/ 100</span></div>
+                <div class="text-[11px] font-semibold text-emerald-700">
+                  ${quizScore > 0 ? '✓ Selesai' : 'Belum Dikerjakan'}
+                </div>
+              </div>
+
+              <!-- Istima' (Menyimak) -->
+              <div class="p-4 rounded-2xl bg-sky-50/60 border border-sky-200 space-y-1">
+                <div class="flex items-center justify-between text-xs text-sky-800 font-bold">
+                  <span class="flex items-center gap-1.5"><i class="fa-solid fa-headphones"></i> Istima'</span>
+                </div>
+                <div class="text-2xl font-black text-sky-950">${istimaScore} <span class="text-xs font-normal text-slate-500">/ 100</span></div>
+                <div class="text-[11px] font-semibold text-sky-700">
+                  ${istimaScore > 0 ? '✓ Selesai' : 'Belum Selesai'}
+                </div>
+              </div>
+
+              <!-- Kalam (Berbicara) -->
+              <div class="p-4 rounded-2xl bg-purple-50/60 border border-purple-200 space-y-1">
+                <div class="flex items-center justify-between text-xs text-purple-800 font-bold">
+                  <span class="flex items-center gap-1.5"><i class="fa-solid fa-microphone-lines"></i> Kalam (Suara)</span>
+                </div>
+                <div class="text-2xl font-black text-purple-950">${kalamScore} <span class="text-xs font-normal text-slate-500">/ 100</span></div>
+                <div class="text-[11px] font-semibold text-purple-700">
+                  ${kalamScore > 0 ? '✓ ' + kalamScore + ' Pts' : 'Belum Rekam'}
+                </div>
+              </div>
+
+              <!-- Duel 1v1 Qawa'id -->
+              <div class="p-4 rounded-2xl bg-amber-50/60 border border-amber-200 space-y-1">
+                <div class="flex items-center justify-between text-xs text-amber-800 font-bold">
+                  <span class="flex items-center gap-1.5"><i class="fa-solid fa-bolt"></i> Adu Cepat 1v1</span>
+                </div>
+                <div class="text-2xl font-black text-amber-950">${duelScore} <span class="text-xs font-normal text-slate-500">Pts</span></div>
+                <div class="text-[11px] font-semibold text-amber-700">
+                  ${duelScore > 0 ? '✓ ' + duelScore + ' Poin' : '0 Pts'}
+                </div>
+              </div>
+
+              <!-- Match Game -->
+              <div class="p-4 rounded-2xl bg-teal-50/60 border border-teal-200 space-y-1 col-span-2 sm:col-span-1">
+                <div class="flex items-center justify-between text-xs text-teal-800 font-bold">
+                  <span class="flex items-center gap-1.5"><i class="fa-solid fa-puzzle-piece"></i> Menjodohkan</span>
+                </div>
+                <div class="text-2xl font-black text-teal-950">${matchScore} <span class="text-xs font-normal text-slate-500">/ 100</span></div>
+                <div class="text-[11px] font-semibold text-teal-700">
+                  ${matchScore > 0 ? '✓ Selesai' : 'Belum Selesai'}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CARD 3: MENU LAINNYA (AKSES CEPAT MODUL PEMBELAJARAN) -->
+          <div class="bg-white rounded-3xl p-6 sm:p-7 shadow-sm border border-emerald-100 space-y-4">
+            <div class="flex items-center justify-between border-b border-emerald-50 pb-3">
+              <div class="flex items-center gap-2.5">
+                <div class="w-9 h-9 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center text-base font-black">
+                  <i class="fa-solid fa-compass"></i>
+                </div>
+                <div>
+                  <h2 class="text-base sm:text-lg font-bold text-emerald-950">Akses Modul Lainnya</h2>
+                  <p class="text-xs text-slate-500">Buka materi dan aktivitas pembelajaran bahasa Arab</p>
+                </div>
+              </div>
+              <span class="text-xs font-arabic font-bold text-indigo-800 bg-indigo-50 px-3 py-1 rounded-full border border-indigo-200">
+                المزيد من الدروس
+              </span>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <button onclick="navigateTo('qiraah')" class="p-3.5 rounded-2xl bg-slate-50 hover:bg-emerald-50 border border-slate-200/70 hover:border-emerald-300 text-left transition-all flex flex-col justify-between gap-3 group">
+                <div class="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-sm shadow-sm group-hover:scale-110 transition-transform">
+                  <i class="fa-solid fa-book-open"></i>
+                </div>
+                <div>
+                  <div class="font-bold text-xs sm:text-sm text-slate-900">Qira'ah</div>
+                  <div class="text-[11px] text-slate-500 font-arabic">القراءة</div>
+                </div>
+              </button>
+
+              <button onclick="navigateTo('mufradat')" class="p-3.5 rounded-2xl bg-slate-50 hover:bg-emerald-50 border border-slate-200/70 hover:border-emerald-300 text-left transition-all flex flex-col justify-between gap-3 group">
+                <div class="w-8 h-8 rounded-xl bg-teal-600 text-white flex items-center justify-center text-sm shadow-sm group-hover:scale-110 transition-transform">
+                  <i class="fa-solid fa-layer-group"></i>
+                </div>
+                <div>
+                  <div class="font-bold text-xs sm:text-sm text-slate-900">Kosakata</div>
+                  <div class="text-[11px] text-slate-500 font-arabic">المفردات</div>
+                </div>
+              </button>
+
+              <button onclick="navigateTo('qawaid')" class="p-3.5 rounded-2xl bg-slate-50 hover:bg-emerald-50 border border-slate-200/70 hover:border-emerald-300 text-left transition-all flex flex-col justify-between gap-3 group">
+                <div class="w-8 h-8 rounded-xl bg-amber-600 text-white flex items-center justify-center text-sm shadow-sm group-hover:scale-110 transition-transform">
+                  <i class="fa-solid fa-spell-check"></i>
+                </div>
+                <div>
+                  <div class="font-bold text-xs sm:text-sm text-slate-900">Kaidah / Tata Bahasa</div>
+                  <div class="text-[11px] text-slate-500 font-arabic">القواعد</div>
+                </div>
+              </button>
+
+              <button onclick="navigateTo('duelgame')" class="p-3.5 rounded-2xl bg-slate-50 hover:bg-emerald-50 border border-slate-200/70 hover:border-emerald-300 text-left transition-all flex flex-col justify-between gap-3 group">
+                <div class="w-8 h-8 rounded-xl bg-rose-600 text-white flex items-center justify-center text-sm shadow-sm group-hover:scale-110 transition-transform">
+                  <i class="fa-solid fa-bolt"></i>
+                </div>
+                <div>
+                  <div class="font-bold text-xs sm:text-sm text-slate-900">Duel Adu Cepat 1v1</div>
+                  <div class="text-[11px] text-slate-500 font-arabic">مبارزة سريعة</div>
+                </div>
+              </button>
+            </div>
+          </div>
+        ` : `
+          <!-- TAMPILAN PROFIL UNTUK GURU -->
+          <div class="bg-white rounded-3xl p-6 sm:p-7 shadow-sm border border-emerald-100 space-y-5">
+            <h2 class="text-lg font-bold text-emerald-950 flex items-center gap-2">
+              <i class="fa-solid fa-chalkboard-user text-emerald-600"></i>
+              <span>Data Akun Guru Pengampu</span>
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+              <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100 flex items-center justify-between">
+                <span class="text-slate-500">Nama Guru:</span>
+                <span class="font-bold text-slate-900">${user.name}</span>
+              </div>
+              <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100 flex items-center justify-between">
+                <span class="text-slate-500">Mata Pelajaran:</span>
+                <span class="font-bold text-slate-900">Bahasa Arab (Kelas 9)</span>
+              </div>
+            </div>
+            <div class="pt-2 flex flex-col sm:flex-row gap-3">
+              <button onclick="navigateTo('students')" class="flex-1 py-3.5 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-2xl text-xs flex items-center justify-center gap-2 shadow-md">
+                <i class="fa-solid fa-users"></i> Tabel & Nilai Siswa
+              </button>
+              <button onclick="navigateTo('settings')" class="flex-1 py-3.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-2xl text-xs flex items-center justify-center gap-2">
+                <i class="fa-solid fa-gear"></i> Pengaturan Akun
+              </button>
+            </div>
+          </div>
+        `}
+
+        <!-- CARD 4: TOMBOL LOGOUT MERAH (تسجيل الخروج) -->
+        <div class="pt-4">
+          <button id="profile-logout-btn" class="w-full py-4 px-6 bg-rose-600 hover:bg-rose-700 active:bg-rose-800 text-white font-black rounded-2xl sm:rounded-3xl shadow-xl shadow-rose-600/25 transition-all text-sm sm:text-base flex items-center justify-center gap-3 cursor-pointer group hover:scale-[1.01]">
+            <i class="fa-solid fa-right-from-bracket text-lg group-hover:-translate-x-1 transition-transform"></i>
+            <span>Logout (تسجيل الخروج)</span>
+          </button>
+          <p class="text-center text-[11px] text-slate-400 mt-2">
+            Klik tombol di atas untuk keluar dari sesi akun Anda dengan aman.
+          </p>
+        </div>
+      </div>
+    `;
+  }
+
+  function attachProfileEvents() {
+    const logoutBtn = document.getElementById('profile-logout-btn');
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', () => {
+        if (confirm('Apakah Anda yakin ingin keluar dari akun (Logout)?')) {
+          state.currentUser = null;
+          state.currentView = 'login';
+          state.quizSubmitted = false;
+          state.quizScore = 0;
+          state.listeningQuizSubmitted = false;
+          state.listeningQuizScore = 0;
+          state.matchGameSubmitted = false;
+          state.kalamState.history = [];
+          localStorage.removeItem('arabic_app_user');
+          try {
+            window.history.replaceState({ view: 'login' }, '', '#login');
+          } catch(e) {}
+          render();
+          showToast('Anda telah berhasil keluar dari akun.', 'info');
+        }
+      });
+    }
   }
 
   // 8. SETTINGS VIEW (Pengaturan & Manajemen Akun Guru & Siswa)
