@@ -1369,11 +1369,11 @@ document.addEventListener('DOMContentLoaded', () => {
                   <!-- Pilihan Foto Profil / Avatar Siswa -->
                   <div>
                     <label class="block text-xs font-bold text-gray-700 mb-1.5 uppercase tracking-wider">Foto Profil / Avatar</label>
-                    <div class="flex items-center gap-3 p-3 bg-emerald-50/50 rounded-2xl border border-emerald-200/80">
-                      <!-- Avatar Preview -->
-                      <div class="relative shrink-0">
-                        <div class="w-13 h-13 sm:w-14 sm:h-14 rounded-full ring-2 ring-emerald-500/40 p-0.5 bg-gradient-to-tr from-amber-400 to-emerald-500 overflow-hidden shadow">
-                          <img id="reg-avatar-preview" src="avatar-siswa.jpg" alt="Preview Foto" class="w-full h-full object-cover rounded-full" />
+                    <div class="flex items-center gap-3.5 p-3 bg-emerald-50/50 rounded-2xl border border-emerald-200/80">
+                      <!-- Avatar Preview (Fixed 56px circle) -->
+                      <div class="shrink-0" style="width: 56px; height: 56px; min-width: 56px; min-height: 56px;">
+                        <div class="w-14 h-14 rounded-full ring-2 ring-emerald-500/40 p-0.5 bg-gradient-to-tr from-amber-400 to-emerald-500 overflow-hidden shadow-sm flex items-center justify-center" style="width: 56px; height: 56px; min-width: 56px; min-height: 56px;">
+                          <img id="reg-avatar-preview" src="avatar-siswa.jpg" alt="Preview Foto" class="w-full h-full object-cover rounded-full block" style="width: 56px; height: 56px; max-width: 56px; max-height: 56px; object-fit: cover;" />
                         </div>
                       </div>
                       
@@ -5466,18 +5466,18 @@ document.addEventListener('DOMContentLoaded', () => {
             </p>
           </div>
 
-          <!-- Class Filter Switcher Buttons -->
-          <div class="flex items-center gap-1 bg-black/40 p-1 rounded-2xl border border-white/15 self-start sm:self-auto flex-wrap">
-            <button data-rank-filter="current" class="rank-filter-btn px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${activeFilter === 'current' ? 'bg-yellow-400 text-yellow-950 shadow-md' : 'text-purple-200 hover:text-white'}">
-              Kelas Saya (${currentClass})
+          <!-- Class Filter Switcher Buttons (Clean 4-column Grid on Mobile, Flex on Desktop) -->
+          <div class="grid grid-cols-4 gap-1 bg-black/40 p-1 rounded-2xl border border-white/15 w-full sm:w-auto">
+            <button data-rank-filter="current" class="rank-filter-btn px-2.5 py-1.5 rounded-xl text-[11px] sm:text-xs font-bold transition-all text-center whitespace-nowrap ${activeFilter === 'current' ? 'bg-yellow-400 text-yellow-950 shadow-md' : 'text-purple-200 hover:text-white'}">
+              Kelas Saya
             </button>
-            <button data-rank-filter="IX-A" class="rank-filter-btn px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${activeFilter === 'IX-A' ? 'bg-yellow-400 text-yellow-950 shadow-md' : 'text-purple-200 hover:text-white'}">
+            <button data-rank-filter="IX-A" class="rank-filter-btn px-2.5 py-1.5 rounded-xl text-[11px] sm:text-xs font-bold transition-all text-center whitespace-nowrap ${activeFilter === 'IX-A' ? 'bg-yellow-400 text-yellow-950 shadow-md' : 'text-purple-200 hover:text-white'}">
               IX-A
             </button>
-            <button data-rank-filter="IX-B" class="rank-filter-btn px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${activeFilter === 'IX-B' ? 'bg-yellow-400 text-yellow-950 shadow-md' : 'text-purple-200 hover:text-white'}">
+            <button data-rank-filter="IX-B" class="rank-filter-btn px-2.5 py-1.5 rounded-xl text-[11px] sm:text-xs font-bold transition-all text-center whitespace-nowrap ${activeFilter === 'IX-B' ? 'bg-yellow-400 text-yellow-950 shadow-md' : 'text-purple-200 hover:text-white'}">
               IX-B
             </button>
-            <button data-rank-filter="all" class="rank-filter-btn px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${activeFilter === 'all' ? 'bg-yellow-400 text-yellow-950 shadow-md' : 'text-purple-200 hover:text-white'}">
+            <button data-rank-filter="all" class="rank-filter-btn px-2.5 py-1.5 rounded-xl text-[11px] sm:text-xs font-bold transition-all text-center whitespace-nowrap ${activeFilter === 'all' ? 'bg-yellow-400 text-yellow-950 shadow-md' : 'text-purple-200 hover:text-white'}">
               Semua
             </button>
           </div>
@@ -5486,20 +5486,20 @@ document.addEventListener('DOMContentLoaded', () => {
         <!-- Current Student Rank Callout Banner -->
         ${currentRank > 0 && state.currentUser ? `
           <div class="bg-gradient-to-r from-yellow-500/20 via-amber-500/20 to-emerald-500/20 border-2 border-yellow-400/50 rounded-2xl p-3 sm:p-4 flex items-center justify-between gap-3 shadow-lg">
-            <div class="flex items-center gap-3">
-              <div class="w-11 h-11 rounded-2xl bg-yellow-400 text-yellow-950 font-black text-xl flex items-center justify-center shadow-lg shrink-0">
+            <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
+              <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-yellow-400 text-yellow-950 font-black text-lg sm:text-xl flex items-center justify-center shadow-lg shrink-0">
                 #${currentRank}
               </div>
               <div class="min-w-0">
-                <div class="text-[11px] text-yellow-300 font-bold uppercase tracking-wider">Peringkat Anda Saat Ini</div>
+                <div class="text-[10px] sm:text-[11px] text-yellow-300 font-bold uppercase tracking-wider whitespace-nowrap">Peringkat Anda</div>
                 <div class="text-sm sm:text-base font-extrabold text-white truncate">
-                  ${state.currentUser.name} <span class="text-xs font-normal text-purple-200">(${classToUse === 'all' ? 'Semua Kelas' : `Kelas ${classToUse}`})</span>
+                  ${state.currentUser.name} <span class="text-xs font-normal text-purple-200">(${classToUse === 'all' ? 'Semua' : `Kelas ${classToUse}`})</span>
                 </div>
               </div>
             </div>
             <div class="text-right shrink-0">
-              <div class="text-[10px] text-purple-200 uppercase font-bold">Total Poin</div>
-              <div class="text-base sm:text-lg font-black text-yellow-300 font-mono">⭐ ${(state.kahootPoints || 0).toLocaleString()}</div>
+              <div class="text-[10px] text-purple-200 uppercase font-bold whitespace-nowrap">Total Poin</div>
+              <div class="text-base sm:text-lg font-black text-yellow-300 font-mono whitespace-nowrap">⭐ ${(state.kahootPoints || 0).toLocaleString()}</div>
             </div>
           </div>
         ` : ''}
@@ -6566,7 +6566,7 @@ document.addEventListener('DOMContentLoaded', () => {
         break;
       case 'leaderboard':
         appContainer.innerHTML = `
-          <div class="max-w-4xl mx-auto space-y-6">
+          <div class="max-w-4xl mx-auto space-y-6 pt-1 sm:pt-4">
             ${renderClassLeaderboard()}
           </div>
         `;
