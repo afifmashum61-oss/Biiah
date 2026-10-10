@@ -1230,11 +1230,11 @@ document.addEventListener('DOMContentLoaded', () => {
           const isActive = state.currentView === btnView || (btnView === 'profile' && state.currentView === 'settings');
 
           if (isActive) {
-            btn.className = "bottom-nav-item flex flex-col items-center justify-center py-1.5 px-1 rounded-full transition-all text-emerald-900 bg-emerald-100/90 font-black shadow-xs ring-1 ring-emerald-300/80";
+            btn.className = "bottom-nav-item flex flex-col items-center justify-center py-1.5 px-1 rounded-full transition-all active:scale-90 duration-100 text-emerald-900 bg-emerald-100/90 font-black shadow-xs ring-1 ring-emerald-300/80 cursor-pointer";
             const icon = btn.querySelector('i');
             if (icon) icon.className = icon.className.replace(/text-slate-\d+/, 'text-emerald-800');
           } else {
-            btn.className = "bottom-nav-item flex flex-col items-center justify-center py-1.5 px-1 rounded-full transition-all text-slate-500 hover:text-emerald-700 hover:bg-slate-50/60";
+            btn.className = "bottom-nav-item flex flex-col items-center justify-center py-1.5 px-1 rounded-full transition-all active:scale-90 duration-100 text-slate-500 hover:text-emerald-700 hover:bg-slate-50/60 cursor-pointer";
             const icon = btn.querySelector('i');
             if (icon) icon.className = icon.className.replace(/text-emerald-\d+/, 'text-slate-500');
           }
@@ -1456,15 +1456,15 @@ document.addEventListener('DOMContentLoaded', () => {
               <span class="text-white block sm:inline">Selamat Datang, </span>
               <span class="text-emerald-300 font-bold inline-block whitespace-nowrap sm:inline">${state.currentUser.name}!</span>
             </h1>
-            <p class="text-emerald-100 text-xs sm:text-sm lg:text-base mb-5 sm:mb-6 leading-relaxed">
+            <p class="text-emerald-100 text-xs sm:text-sm lg:text-base mb-6 sm:mb-8 lg:mb-9 leading-relaxed sm:leading-loose">
               Media pembelajaran Bahasa Arab interaktif untuk memahami pentingnya menjaga dan melestarikan lingkungan (<span dir="rtl" class="font-arabic font-semibold">الحفاظ على البيئة</span>) serta menguasai <span dir="rtl" class="font-arabic font-semibold">فِعْلُ الأَمْرِ</span> dan <span dir="rtl" class="font-arabic font-semibold">فِعْلُ النَّهْيِ</span>.
             </p>
-            <div class="flex flex-col sm:flex-row gap-2.5 sm:gap-3">
-              <button onclick="document.querySelector('[data-view=mufradat]').click()" class="w-full sm:w-auto px-5 sm:px-6 py-2.5 sm:py-3 bg-emerald-400 hover:bg-emerald-300 text-emerald-950 font-bold rounded-xl sm:rounded-2xl shadow-lg transition-all flex items-center justify-center gap-2 text-xs sm:text-sm">
+            <div class="flex flex-col sm:flex-row gap-3 sm:gap-4">
+              <button onclick="document.querySelector('[data-view=mufradat]').click()" class="w-full sm:w-auto px-5 sm:px-7 py-3 sm:py-3.5 bg-emerald-400 hover:bg-emerald-300 active:bg-emerald-500 text-emerald-950 font-bold rounded-xl sm:rounded-2xl shadow-lg hover:shadow-emerald-400/30 active:shadow-md transition-all active:scale-95 duration-150 flex items-center justify-center gap-2 text-xs sm:text-sm cursor-pointer">
                 <span>Mulai Belajar المفردات</span>
                 <i class="fa-solid fa-arrow-right"></i>
               </button>
-              <button onclick="document.querySelector('[data-view=quiz]').click()" class="w-full sm:w-auto px-5 sm:px-6 py-2.5 sm:py-3 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-xl sm:rounded-2xl backdrop-blur-md border border-white/20 transition-all flex items-center justify-center gap-2 text-xs sm:text-sm">
+              <button onclick="document.querySelector('[data-view=quiz]').click()" class="w-full sm:w-auto px-5 sm:px-7 py-3 sm:py-3.5 bg-white/10 hover:bg-white/20 active:bg-white/30 text-white font-semibold rounded-xl sm:rounded-2xl backdrop-blur-md border border-white/20 transition-all active:scale-95 duration-150 flex items-center justify-center gap-2 text-xs sm:text-sm cursor-pointer">
                 <i class="fa-solid fa-pen-nib"></i>
                 <span>Ikuti Kuis</span>
               </button>
@@ -1615,7 +1615,7 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
 
           <!-- Perintah / Misi Pembelajaran untuk Siswa -->
-          <div class="bg-gradient-to-r from-emerald-50 via-teal-50/80 to-emerald-100/70 border-2 border-emerald-300/80 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-sm">
+          <div class="bg-gradient-to-r from-emerald-50 via-teal-50/80 to-emerald-100/70 border-2 border-emerald-300/80 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-md">
             <div class="flex items-start gap-3 sm:gap-4">
               <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-gradient-to-br from-emerald-600 to-teal-700 text-white flex items-center justify-center text-base sm:text-xl shadow-md flex-shrink-0">
                 <i class="fa-solid fa-bullhorn"></i>
@@ -1632,7 +1632,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <h3 class="text-sm sm:text-lg font-bold text-emerald-950 leading-snug">
                   Instruksi: Selesaikan Seluruh Tantangan di Setiap Menu Modul Pembelajaran!
                 </h3>
-                <p class="text-xs sm:text-sm text-emerald-800 leading-relaxed font-medium">
+                <p class="text-xs sm:text-sm text-slate-700 leading-relaxed font-medium">
                   Kepada seluruh siswa, silakan pelajari secara tuntas dan selesaikan tantangan pada setiap menu modul di bawah ini:
                 </p>
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2 sm:gap-2.5 pt-1">
@@ -1657,7 +1657,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <span>5. Latih <strong>الكلام</strong> (Tirukan & Rekam Suara)</span>
                   </div>
                 </div>
-                <div class="flex items-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs text-emerald-700 pt-1 font-semibold">
+                <div class="flex items-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs text-slate-700 pt-1 font-semibold">
                   <i class="fa-solid fa-star text-amber-500 flex-shrink-0"></i>
                   <span>Lanjutkan juga tantangan <strong>الحوار (Percakapan)</strong>, <strong>Kuis Kahoot</strong>, dan <strong>Duel 1v1</strong> untuk skor maksimal!</span>
                 </div>
@@ -1667,165 +1667,165 @@ document.addEventListener('DOMContentLoaded', () => {
 
           <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             <!-- Card 1: Mufradat -->
-            <div class="bg-white rounded-[2rem] p-6 shadow-md border border-emerald-100 hover:shadow-xl transition-all flex flex-col justify-between group">
+            <div onclick="document.querySelector('[data-view=mufradat]').click()" class="bg-white rounded-[2rem] p-6 shadow-md hover:shadow-xl active:shadow-lg active:scale-[0.98] border border-emerald-100/90 transition-all duration-200 flex flex-col justify-between group cursor-pointer select-none">
               <div>
-                <div class="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
+                <div class="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 group-active:scale-95 transition-transform duration-200 shadow-2xs">
                   <i class="fa-solid fa-language"></i>
                 </div>
-                <h3 class="text-base font-bold text-emerald-900 mb-1 font-arabic">المفردات (Kosakata)</h3>
-                <p class="text-xs text-emerald-700 leading-relaxed mb-4">
+                <h3 class="text-base font-bold text-emerald-950 mb-1 font-arabic">المفردات (Kosakata)</h3>
+                <p class="text-xs text-slate-600 font-medium leading-relaxed mb-4">
                   Kosakata lingkungan hidup lengkap dengan harakat, audio pelafalan asli, dan contoh kalimat.
                 </p>
               </div>
-              <button onclick="document.querySelector('[data-view=mufradat]').click()" class="w-full py-2.5 bg-emerald-50 hover:bg-emerald-700 hover:text-white text-emerald-800 rounded-xl font-semibold text-xs transition-all flex items-center justify-center gap-2">
+              <button type="button" class="w-full py-2.5 bg-emerald-50 hover:bg-emerald-700 hover:text-white text-emerald-800 rounded-xl font-semibold text-xs transition-all active:scale-95 duration-150 flex items-center justify-center gap-2">
                 <span>Buka Kosakata</span>
-                <i class="fa-solid fa-chevron-right"></i>
+                <i class="fa-solid fa-chevron-right text-[11px]"></i>
               </button>
             </div>
 
             <!-- Card 2: Maharah Istima' -->
-            <div class="bg-white rounded-[2rem] p-6 shadow-md border border-emerald-100 hover:shadow-xl transition-all flex flex-col justify-between group">
+            <div onclick="document.querySelector('[data-view=istima]').click()" class="bg-white rounded-[2rem] p-6 shadow-md hover:shadow-xl active:shadow-lg active:scale-[0.98] border border-emerald-100/90 transition-all duration-200 flex flex-col justify-between group cursor-pointer select-none">
               <div>
-                <div class="w-14 h-14 rounded-2xl bg-indigo-50 text-indigo-700 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
+                <div class="w-14 h-14 rounded-2xl bg-indigo-50 text-indigo-700 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 group-active:scale-95 transition-transform duration-200 shadow-2xs">
                   <i class="fa-solid fa-headphones"></i>
                 </div>
-                <h3 class="text-base font-bold text-emerald-900 mb-1 font-arabic">مهارة الاستماع (Listening)</h3>
-                <p class="text-xs text-emerald-700 leading-relaxed mb-4">
+                <h3 class="text-base font-bold text-emerald-950 mb-1 font-arabic">مهارة الاستماع (Listening)</h3>
+                <p class="text-xs text-slate-600 font-medium leading-relaxed mb-4">
                   Latihan menyimak audio Arab, menirukan pelafalan, kuis audio, dan mencocokkan suara gambar.
                 </p>
               </div>
-              <button onclick="document.querySelector('[data-view=istima]').click()" class="w-full py-2.5 bg-indigo-50 hover:bg-indigo-700 hover:text-white text-indigo-800 rounded-xl font-semibold text-xs transition-all flex items-center justify-center gap-2">
+              <button type="button" class="w-full py-2.5 bg-indigo-50 hover:bg-indigo-700 hover:text-white text-indigo-800 rounded-xl font-semibold text-xs transition-all active:scale-95 duration-150 flex items-center justify-center gap-2">
                 <span>Menyimak Audio</span>
-                <i class="fa-solid fa-chevron-right"></i>
+                <i class="fa-solid fa-chevron-right text-[11px]"></i>
               </button>
             </div>
 
             <!-- Card 2.5: Maharah Kalam (Kemahiran Berbicara & Rekam Suara) -->
-            <div class="bg-white rounded-[2rem] p-6 shadow-md border border-teal-100 hover:shadow-xl transition-all flex flex-col justify-between group">
+            <div onclick="document.querySelector('[data-view=kalam]').click()" class="bg-white rounded-[2rem] p-6 shadow-md hover:shadow-xl active:shadow-lg active:scale-[0.98] border border-teal-100/90 transition-all duration-200 flex flex-col justify-between group cursor-pointer select-none">
               <div>
-                <div class="w-14 h-14 rounded-2xl bg-teal-50 text-teal-700 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
+                <div class="w-14 h-14 rounded-2xl bg-teal-50 text-teal-700 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 group-active:scale-95 transition-transform duration-200 shadow-2xs">
                   <i class="fa-solid fa-microphone-lines"></i>
                 </div>
                 <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-teal-100/80 text-teal-800 rounded-full text-[10px] font-bold mb-2">
                   <span class="w-1.5 h-1.5 rounded-full bg-teal-500 animate-pulse"></span>
                   <span>Rekam & Evaluasi Suara</span>
                 </div>
-                <h3 class="text-base font-bold text-emerald-900 mb-1 font-arabic">مهارة الكلام (Speaking)</h3>
-                <p class="text-xs text-emerald-700 leading-relaxed mb-4">
+                <h3 class="text-base font-bold text-emerald-950 mb-1 font-arabic">مهارة الكلام (Speaking)</h3>
+                <p class="text-xs text-slate-600 font-medium leading-relaxed mb-4">
                   Latihan menirukan pelafalan Ustadz, rekam suara dengan mikrofon, dan dapatkan evaluasi persentase kemiripan makhraj & tajwid otomatis.
                 </p>
               </div>
-              <button onclick="document.querySelector('[data-view=kalam]').click()" class="w-full py-2.5 bg-teal-50 hover:bg-teal-700 hover:text-white text-teal-800 rounded-xl font-semibold text-xs transition-all flex items-center justify-center gap-2">
+              <button type="button" class="w-full py-2.5 bg-teal-50 hover:bg-teal-700 hover:text-white text-teal-800 rounded-xl font-semibold text-xs transition-all active:scale-95 duration-150 flex items-center justify-center gap-2">
                 <span>Latihan Kalam</span>
-                <i class="fa-solid fa-chevron-right"></i>
+                <i class="fa-solid fa-chevron-right text-[11px]"></i>
               </button>
             </div>
 
             <!-- Card 2: Maharah Qira'ah -->
-            <div class="bg-white rounded-[2rem] p-6 shadow-md border border-emerald-100 hover:shadow-xl transition-all flex flex-col justify-between group">
+            <div onclick="document.querySelector('[data-view=qiraah]').click()" class="bg-white rounded-[2rem] p-6 shadow-md hover:shadow-xl active:shadow-lg active:scale-[0.98] border border-emerald-100/90 transition-all duration-200 flex flex-col justify-between group cursor-pointer select-none">
               <div>
-                <div class="w-14 h-14 rounded-2xl bg-teal-50 text-teal-700 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
+                <div class="w-14 h-14 rounded-2xl bg-teal-50 text-teal-700 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 group-active:scale-95 transition-transform duration-200 shadow-2xs">
                   <i class="fa-solid fa-book-open"></i>
                 </div>
-                <h3 class="text-base font-bold text-emerald-900 mb-1 font-arabic">مهارة القراءة (Reading)</h3>
-                <p class="text-xs text-emerald-700 leading-relaxed mb-4">
+                <h3 class="text-base font-bold text-emerald-950 mb-1 font-arabic">مهارة القراءة (Reading)</h3>
+                <p class="text-xs text-slate-600 font-medium leading-relaxed mb-4">
                   Membaca dan memahami teks cerita tentang pelestarian alam dilengkapi audio pelafalan.
                 </p>
               </div>
-              <button onclick="document.querySelector('[data-view=qiraah]').click()" class="w-full py-2.5 bg-teal-50 hover:bg-teal-700 hover:text-white text-teal-800 rounded-xl font-semibold text-xs transition-all flex items-center justify-center gap-2">
+              <button type="button" class="w-full py-2.5 bg-teal-50 hover:bg-teal-700 hover:text-white text-teal-800 rounded-xl font-semibold text-xs transition-all active:scale-95 duration-150 flex items-center justify-center gap-2">
                 <span>Baca Teks Qira'ah</span>
-                <i class="fa-solid fa-chevron-right"></i>
+                <i class="fa-solid fa-chevron-right text-[11px]"></i>
               </button>
             </div>
 
             <!-- Card 3: Qawa'id / Grammar -->
-            <div class="bg-white rounded-[2rem] p-6 shadow-md border border-emerald-100 hover:shadow-xl transition-all flex flex-col justify-between group">
+            <div onclick="document.querySelector('[data-view=qawaid]').click()" class="bg-white rounded-[2rem] p-6 shadow-md hover:shadow-xl active:shadow-lg active:scale-[0.98] border border-emerald-100/90 transition-all duration-200 flex flex-col justify-between group cursor-pointer select-none">
               <div>
-                <div class="w-14 h-14 rounded-2xl bg-amber-50 text-amber-700 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
+                <div class="w-14 h-14 rounded-2xl bg-amber-50 text-amber-700 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 group-active:scale-95 transition-transform duration-200 shadow-2xs">
                   <i class="fa-solid fa-spell-check"></i>
                 </div>
-                <h3 class="text-base font-bold text-emerald-900 mb-1 font-arabic">القواعد (Tata Bahasa)</h3>
-                <p class="text-xs text-emerald-700 leading-relaxed mb-4">
+                <h3 class="text-base font-bold text-emerald-950 mb-1 font-arabic">القواعد (Tata Bahasa)</h3>
+                <p class="text-xs text-slate-600 font-medium leading-relaxed mb-4">
                   Pembahasan gramatika فِعْلُ الأَمْرِ (perintah) dan فِعْلُ النَّهْيِ (larangan) beserta contohnya.
                 </p>
               </div>
-              <button onclick="document.querySelector('[data-view=qawaid]').click()" class="w-full py-2.5 bg-amber-50 hover:bg-amber-600 hover:text-white text-amber-800 rounded-xl font-semibold text-xs transition-all flex items-center justify-center gap-2">
+              <button type="button" class="w-full py-2.5 bg-amber-50 hover:bg-amber-600 hover:text-white text-amber-800 rounded-xl font-semibold text-xs transition-all active:scale-95 duration-150 flex items-center justify-center gap-2">
                 <span>Pelajari Qawa'id</span>
-                <i class="fa-solid fa-chevron-right"></i>
+                <i class="fa-solid fa-chevron-right text-[11px]"></i>
               </button>
             </div>
 
             <!-- Card 4: Dialogue -->
-            <div class="bg-white rounded-[2rem] p-6 shadow-md border border-emerald-100 hover:shadow-xl transition-all flex flex-col justify-between group">
+            <div onclick="document.querySelector('[data-view=dialogue]').click()" class="bg-white rounded-[2rem] p-6 shadow-md hover:shadow-xl active:shadow-lg active:scale-[0.98] border border-emerald-100/90 transition-all duration-200 flex flex-col justify-between group cursor-pointer select-none">
               <div>
-                <div class="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
+                <div class="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 group-active:scale-95 transition-transform duration-200 shadow-2xs">
                   <i class="fa-solid fa-comments"></i>
                 </div>
-                <h3 class="text-base font-bold text-emerald-900 mb-1 font-arabic">الحوار (Percakapan)</h3>
-                <p class="text-xs text-emerald-700 leading-relaxed mb-4">
+                <h3 class="text-base font-bold text-emerald-950 mb-1 font-arabic">الحوار (Percakapan)</h3>
+                <p class="text-xs text-slate-600 font-medium leading-relaxed mb-4">
                   Dialog interaktif percakapan seputar aksi menanam pohon dan kebersihan sekolah.
                 </p>
               </div>
-              <button onclick="document.querySelector('[data-view=dialogue]').click()" class="w-full py-2.5 bg-emerald-50 hover:bg-emerald-700 hover:text-white text-emerald-800 rounded-xl font-semibold text-xs transition-all flex items-center justify-center gap-2">
+              <button type="button" class="w-full py-2.5 bg-emerald-50 hover:bg-emerald-700 hover:text-white text-emerald-800 rounded-xl font-semibold text-xs transition-all active:scale-95 duration-150 flex items-center justify-center gap-2">
                 <span>Lihat Percakapan</span>
-                <i class="fa-solid fa-chevron-right"></i>
+                <i class="fa-solid fa-chevron-right text-[11px]"></i>
               </button>
             </div>
 
             <!-- Card 5: Tadribat Kahoot -->
-            <div class="bg-white rounded-[2rem] p-6 shadow-md border border-purple-100 hover:shadow-xl transition-all flex flex-col justify-between group">
+            <div onclick="document.querySelector('[data-view=quiz]').click()" class="bg-white rounded-[2rem] p-6 shadow-md hover:shadow-xl active:shadow-lg active:scale-[0.98] border border-purple-100/90 transition-all duration-200 flex flex-col justify-between group cursor-pointer select-none">
               <div>
-                <div class="w-14 h-14 rounded-2xl bg-purple-50 text-purple-700 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
+                <div class="w-14 h-14 rounded-2xl bg-purple-50 text-purple-700 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 group-active:scale-95 transition-transform duration-200 shadow-2xs">
                   <i class="fa-solid fa-gamepad"></i>
                 </div>
-                <h3 class="text-base font-bold text-emerald-900 mb-1 font-arabic">التدريبات (Kuis Kahoot)</h3>
-                <p class="text-xs text-emerald-700 leading-relaxed mb-4">
+                <h3 class="text-base font-bold text-emerald-950 mb-1 font-arabic">التدريبات (Kuis Kahoot)</h3>
+                <p class="text-xs text-slate-600 font-medium leading-relaxed mb-4">
                   Kuis interaktif santai (Pilihan 10, 15, atau 20 soal) dengan waktu 35 detik per soal, tampilan pas di layar HP, dan rekap peringkat kelas!
                 </p>
               </div>
-              <button onclick="document.querySelector('[data-view=quiz]').click()" class="w-full py-2.5 bg-purple-50 hover:bg-purple-700 hover:text-white text-purple-800 rounded-xl font-semibold text-xs transition-all flex items-center justify-center gap-2">
+              <button type="button" class="w-full py-2.5 bg-purple-50 hover:bg-purple-700 hover:text-white text-purple-800 rounded-xl font-semibold text-xs transition-all active:scale-95 duration-150 flex items-center justify-center gap-2">
                 <span>Main Kuis Kahoot</span>
-                <i class="fa-solid fa-chevron-right"></i>
+                <i class="fa-solid fa-chevron-right text-[11px]"></i>
               </button>
             </div>
 
             <!-- Card 5.5: 1v1 Fast Quiz Duel -->
-            <div class="bg-gradient-to-br from-amber-500 via-amber-600 to-orange-600 rounded-[2rem] p-6 shadow-xl border-2 border-amber-300 hover:shadow-2xl transition-all flex flex-col justify-between group text-white">
+            <div onclick="document.querySelector('[data-view=duelgame]').click()" class="bg-gradient-to-br from-amber-500 via-amber-600 to-orange-600 rounded-[2rem] p-6 shadow-xl hover:shadow-2xl active:shadow-lg active:scale-[0.98] border-2 border-amber-300 transition-all duration-200 flex flex-col justify-between group text-white cursor-pointer select-none">
               <div>
-                <div class="w-14 h-14 rounded-2xl bg-white text-amber-600 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform shadow-md">
+                <div class="w-14 h-14 rounded-2xl bg-white text-amber-600 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 group-active:scale-95 transition-transform duration-200 shadow-md">
                   <i class="fa-solid fa-bolt"></i>
                 </div>
                 <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-white/20 text-white rounded-full text-[10px] font-bold border border-white/30 mb-2">
                   <span>⚡ Modul Duel Cepat!</span>
                 </div>
                 <h3 class="text-base font-bold text-white mb-1 font-arabic">مُبَارَزَةُ السَّرِيعَةِ (1v1 Duel)</h3>
-                <p class="text-xs text-amber-100 leading-relaxed mb-4">
+                <p class="text-xs text-amber-50 font-medium leading-relaxed mb-4">
                   Duel adu cepat 10 detik lawan Ustadz AI atau Teman Sekelas! Kumpulkan Streak Combo 🔥 dan pelajari Qawa'id secara kilat!
                 </p>
               </div>
-              <button onclick="document.querySelector('[data-view=duelgame]').click()" class="w-full py-2.5 bg-white text-amber-900 hover:bg-amber-100 rounded-xl font-extrabold text-xs transition-all flex items-center justify-center gap-2 shadow-md">
+              <button type="button" class="w-full py-2.5 bg-white text-amber-900 hover:bg-amber-100 rounded-xl font-extrabold text-xs transition-all active:scale-95 duration-150 flex items-center justify-center gap-2 shadow-md">
                 <span>⚡ Main Duel 1v1</span>
-                <i class="fa-solid fa-play"></i>
+                <i class="fa-solid fa-play text-[11px]"></i>
               </button>
             </div>
 
             <!-- Card 6: Peringkat Kelas (Leaderboard) -->
-            <div class="bg-gradient-to-br from-indigo-900 via-indigo-950 to-purple-950 rounded-[2rem] p-6 shadow-xl border-2 border-yellow-400/40 hover:shadow-2xl transition-all flex flex-col justify-between group text-white">
+            <div onclick="document.querySelector('[data-view=leaderboard]').click()" class="bg-gradient-to-br from-indigo-900 via-indigo-950 to-purple-950 rounded-[2rem] p-6 shadow-xl hover:shadow-2xl active:shadow-lg active:scale-[0.98] border-2 border-yellow-400/40 transition-all duration-200 flex flex-col justify-between group text-white cursor-pointer select-none">
               <div>
-                <div class="w-14 h-14 rounded-2xl bg-yellow-400 text-yellow-950 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform shadow-md font-bold">
+                <div class="w-14 h-14 rounded-2xl bg-yellow-400 text-yellow-950 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 group-active:scale-95 transition-transform duration-200 shadow-md font-bold">
                   <i class="fa-solid fa-trophy"></i>
                 </div>
                 <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-yellow-400/20 text-yellow-300 rounded-full text-[10px] font-bold border border-yellow-400/30 mb-2">
                   <span>🏆 Rekap Satu Kelas</span>
                 </div>
                 <h3 class="text-base font-bold text-white mb-1 font-arabic">تَرْتِيبُ الْفَصْلِ (Peringkat Kelas)</h3>
-                <p class="text-xs text-purple-200 leading-relaxed mb-4">
+                <p class="text-xs text-purple-100 font-medium leading-relaxed mb-4">
                   Lihat klasemen rangking teman sekelas secara real-time, perolehan nilai kuis, dan akumulasi poin Kahoot!
                 </p>
               </div>
-              <button onclick="document.querySelector('[data-view=leaderboard]').click()" class="w-full py-2.5 bg-yellow-400 text-yellow-950 hover:bg-yellow-300 rounded-xl font-extrabold text-xs transition-all flex items-center justify-center gap-2 shadow-md">
+              <button type="button" class="w-full py-2.5 bg-yellow-400 text-yellow-950 hover:bg-yellow-300 rounded-xl font-extrabold text-xs transition-all active:scale-95 duration-150 flex items-center justify-center gap-2 shadow-md">
                 <span>🏆 Buka Peringkat Kelas</span>
-                <i class="fa-solid fa-arrow-right"></i>
+                <i class="fa-solid fa-arrow-right text-[11px]"></i>
               </button>
             </div>
 
@@ -2089,7 +2089,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="border-b border-emerald-100 pb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div class="space-y-2 sm:space-y-2.5">
               <h2 class="text-3xl sm:text-4xl md:text-5xl font-extrabold font-arabic text-emerald-950 leading-[1.8] sm:leading-[2] pb-1">${listening.title}</h2>
-              <p class="text-xs sm:text-sm text-emerald-700 font-medium leading-relaxed max-w-2xl">${listening.subtitle}</p>
+              <p class="text-xs sm:text-sm text-slate-600 font-medium leading-relaxed max-w-2xl">${listening.subtitle}</p>
             </div>
 
             <!-- Audio Speed Controls -->
@@ -2098,9 +2098,9 @@ document.addEventListener('DOMContentLoaded', () => {
               <div class="text-xs">
                 <span class="font-bold text-emerald-900 block mb-1">Kecepatan Suara Audio:</span>
                 <div class="flex items-center gap-1.5">
-                  <button data-speed="0.7" class="speed-rate-btn px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all ${state.audioSpeed === 0.7 ? 'bg-emerald-700 text-white shadow' : 'bg-white text-emerald-800 border border-emerald-200'}">0.7x (Lambat)</button>
-                  <button data-speed="0.85" class="speed-rate-btn px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all ${state.audioSpeed === 0.85 ? 'bg-emerald-700 text-white shadow' : 'bg-white text-emerald-800 border border-emerald-200'}">0.85x (Sedang)</button>
-                  <button data-speed="1.0" class="speed-rate-btn px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all ${state.audioSpeed === 1.0 ? 'bg-emerald-700 text-white shadow' : 'bg-white text-emerald-800 border border-emerald-200'}">1.0x (Normal)</button>
+                  <button data-speed="0.7" class="speed-rate-btn px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all active:scale-95 duration-150 ${state.audioSpeed === 0.7 ? 'bg-emerald-700 text-white shadow' : 'bg-white text-emerald-800 border border-emerald-200'}">0.7x (Lambat)</button>
+                  <button data-speed="0.85" class="speed-rate-btn px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all active:scale-95 duration-150 ${state.audioSpeed === 0.85 ? 'bg-emerald-700 text-white shadow' : 'bg-white text-emerald-800 border border-emerald-200'}">0.85x (Sedang)</button>
+                  <button data-speed="1.0" class="speed-rate-btn px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all active:scale-95 duration-150 ${state.audioSpeed === 1.0 ? 'bg-emerald-700 text-white shadow' : 'bg-white text-emerald-800 border border-emerald-200'}">1.0x (Normal)</button>
                 </div>
               </div>
             </div>
@@ -4176,7 +4176,7 @@ document.addEventListener('DOMContentLoaded', () => {
                   <i class="fa-solid fa-book-open text-emerald-600"></i>
                   <span>مَهَارَةُ الْقِرَاءَةِ وَتَحْلِيلُ الإِعْرَابِ</span>
                 </div>
-                <p class="text-xs sm:text-sm text-emerald-700 font-sans font-medium">
+                <p class="text-xs sm:text-sm text-slate-600 font-sans font-medium">
                   ${reading.titleTranslation || 'Pelestarian Lingkungan Hidup'}
                 </p>
               </div>
@@ -4704,7 +4704,7 @@ document.addEventListener('DOMContentLoaded', () => {
               <span class="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-emerald-700">Qawa'id & Gramatika Bahasa Arab</span>
             </div>
             <h2 class="text-xl sm:text-2xl lg:text-3xl font-bold font-arabic text-emerald-950 leading-relaxed sm:leading-[2.2] pt-1 pb-1" dir="rtl">${grammar.title}</h2>
-            <p class="text-xs sm:text-sm text-emerald-700 leading-relaxed max-w-3xl">${grammar.explanation}</p>
+            <p class="text-xs sm:text-sm text-slate-600 font-medium leading-relaxed max-w-3xl">${grammar.explanation}</p>
 
             <!-- Pedagogical Visual Focus Legend -->
             <div class="bg-gradient-to-r from-emerald-50 via-teal-50 to-amber-50/60 p-3 sm:p-4 rounded-2xl border border-emerald-200/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-2xs">
