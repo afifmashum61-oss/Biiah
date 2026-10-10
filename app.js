@@ -328,6 +328,11 @@
 })();
 
 document.addEventListener('DOMContentLoaded', () => {
+  // Matikan auto scroll restoration browser agar navigasi SPA di HP selalu mulai dari atas halaman
+  if (typeof history !== 'undefined' && 'scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+  }
+
   // Global State
   const state = {
     currentUser: null, // { name, role: 'siswa'|'guru', email }
@@ -872,6 +877,44 @@ document.addEventListener('DOMContentLoaded', () => {
   // Memastikan gestur usap samping HP maupun tombol kembali berfungsi sempurna!
   // =========================================================================
 
+  // Reset Scroll ke Paling Atas Layar Secara Instan & Tangguh untuk Semua Browser Mobile
+  function resetScrollToTop() {
+    try {
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    } catch (e) {
+      window.scrollTo(0, 0);
+    }
+    if (document.documentElement) document.documentElement.scrollTop = 0;
+    if (document.body) document.body.scrollTop = 0;
+    const mainEl = document.querySelector('main');
+    if (mainEl) mainEl.scrollTop = 0;
+    const appContainerEl = document.getElementById('app-content');
+    if (appContainerEl) appContainerEl.scrollTop = 0;
+
+    // Antisipasi reflow asynchronous layout & momentum gesture sentuhan jari di HP (Safari & Chrome)
+    if (typeof requestAnimationFrame !== 'undefined') {
+      requestAnimationFrame(() => {
+        try { window.scrollTo({ top: 0, left: 0, behavior: 'instant' }); } catch(e) { window.scrollTo(0, 0); }
+        if (document.documentElement) document.documentElement.scrollTop = 0;
+        if (document.body) document.body.scrollTop = 0;
+        if (mainEl) mainEl.scrollTop = 0;
+      });
+    }
+    setTimeout(() => {
+      try { window.scrollTo({ top: 0, left: 0, behavior: 'instant' }); } catch(e) { window.scrollTo(0, 0); }
+      if (document.documentElement) document.documentElement.scrollTop = 0;
+      if (document.body) document.body.scrollTop = 0;
+      if (mainEl) mainEl.scrollTop = 0;
+    }, 25);
+    setTimeout(() => {
+      try { window.scrollTo({ top: 0, left: 0, behavior: 'instant' }); } catch(e) { window.scrollTo(0, 0); }
+      if (document.documentElement) document.documentElement.scrollTop = 0;
+      if (document.body) document.body.scrollTop = 0;
+      if (mainEl) mainEl.scrollTop = 0;
+    }, 80);
+  }
+  window.resetScrollToTop = resetScrollToTop;
+
   function navigateTo(view, addToHistory = true) {
     if (typeof cancelKalamRecording === 'function') cancelKalamRecording();
     if (typeof stopStudentAudio === 'function') stopStudentAudio();
@@ -895,7 +938,12 @@ document.addEventListener('DOMContentLoaded', () => {
       state.selectedStudentDetail = null;
     }
 
-    if (state.currentView === view) return;
+    // Jika pengguna mengklik menu yang saat ini sedang aktif (misal klik tab Beranda saat sedang di bawah):
+    // Langsung scroll halaman ke paling atas!
+    if (state.currentView === view) {
+      resetScrollToTop();
+      return;
+    }
 
     state.currentView = view;
 
@@ -906,8 +954,9 @@ document.addEventListener('DOMContentLoaded', () => {
       } catch (e) {}
     }
 
+    resetScrollToTop();
     render();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    resetScrollToTop();
   }
   window.navigateTo = navigateTo;
 
@@ -1017,12 +1066,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (validViews.includes(targetView) && targetView !== state.currentView) {
       state.currentView = targetView;
+      resetScrollToTop();
       render();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      resetScrollToTop();
     } else if (state.currentView !== 'dashboard') {
       state.currentView = 'dashboard';
+      resetScrollToTop();
       render();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      resetScrollToTop();
     } else if (state.currentView === 'dashboard') {
       // Notifikasi konfirmasi keluar (hanya saat tombol kembali sistem ditekan pada halaman beranda)
       const now = Date.now();
@@ -1460,11 +1511,11 @@ document.addEventListener('DOMContentLoaded', () => {
               Media pembelajaran Bahasa Arab interaktif untuk memahami pentingnya menjaga dan melestarikan lingkungan (<span dir="rtl" class="font-arabic font-semibold">الحفاظ على البيئة</span>) serta menguasai <span dir="rtl" class="font-arabic font-semibold">فِعْلُ الأَمْرِ</span> dan <span dir="rtl" class="font-arabic font-semibold">فِعْلُ النَّهْيِ</span>.
             </p>
             <div class="flex flex-col sm:flex-row gap-3 sm:gap-4">
-              <button onclick="document.querySelector('[data-view=mufradat]').click()" class="w-full sm:w-auto px-5 sm:px-7 py-3 sm:py-3.5 bg-emerald-400 hover:bg-emerald-300 active:bg-emerald-500 text-emerald-950 font-bold rounded-xl sm:rounded-2xl shadow-lg hover:shadow-emerald-400/30 active:shadow-md transition-all active:scale-95 duration-150 flex items-center justify-center gap-2 text-xs sm:text-sm cursor-pointer">
+              <button onclick="navigateTo('mufradat')" class="w-full sm:w-auto px-5 sm:px-7 py-3 sm:py-3.5 bg-emerald-400 hover:bg-emerald-300 active:bg-emerald-500 text-emerald-950 font-bold rounded-xl sm:rounded-2xl shadow-lg hover:shadow-emerald-400/30 active:shadow-md transition-all active:scale-95 duration-150 flex items-center justify-center gap-2 text-xs sm:text-sm cursor-pointer">
                 <span>Mulai Belajar المفردات</span>
                 <i class="fa-solid fa-arrow-right"></i>
               </button>
-              <button onclick="document.querySelector('[data-view=quiz]').click()" class="w-full sm:w-auto px-5 sm:px-7 py-3 sm:py-3.5 bg-white/10 hover:bg-white/20 active:bg-white/30 text-white font-semibold rounded-xl sm:rounded-2xl backdrop-blur-md border border-white/20 transition-all active:scale-95 duration-150 flex items-center justify-center gap-2 text-xs sm:text-sm cursor-pointer">
+              <button onclick="navigateTo('quiz')" class="w-full sm:w-auto px-5 sm:px-7 py-3 sm:py-3.5 bg-white/10 hover:bg-white/20 active:bg-white/30 text-white font-semibold rounded-xl sm:rounded-2xl backdrop-blur-md border border-white/20 transition-all active:scale-95 duration-150 flex items-center justify-center gap-2 text-xs sm:text-sm cursor-pointer">
                 <i class="fa-solid fa-pen-nib"></i>
                 <span>Ikuti Kuis</span>
               </button>
@@ -1667,7 +1718,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
           <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             <!-- Card 1: Mufradat -->
-            <div onclick="document.querySelector('[data-view=mufradat]').click()" class="bg-white rounded-[2rem] p-6 shadow-md hover:shadow-xl active:shadow-lg active:scale-[0.98] border border-emerald-100/90 transition-all duration-200 flex flex-col justify-between group cursor-pointer select-none">
+            <div onclick="navigateTo('mufradat')" class="bg-white rounded-[2rem] p-6 shadow-md hover:shadow-xl active:shadow-lg active:scale-[0.98] border border-emerald-100/90 transition-all duration-200 flex flex-col justify-between group cursor-pointer select-none">
               <div>
                 <div class="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 group-active:scale-95 transition-transform duration-200 shadow-2xs">
                   <i class="fa-solid fa-language"></i>
@@ -1684,7 +1735,7 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
 
             <!-- Card 2: Maharah Istima' -->
-            <div onclick="document.querySelector('[data-view=istima]').click()" class="bg-white rounded-[2rem] p-6 shadow-md hover:shadow-xl active:shadow-lg active:scale-[0.98] border border-emerald-100/90 transition-all duration-200 flex flex-col justify-between group cursor-pointer select-none">
+            <div onclick="navigateTo('istima')" class="bg-white rounded-[2rem] p-6 shadow-md hover:shadow-xl active:shadow-lg active:scale-[0.98] border border-emerald-100/90 transition-all duration-200 flex flex-col justify-between group cursor-pointer select-none">
               <div>
                 <div class="w-14 h-14 rounded-2xl bg-indigo-50 text-indigo-700 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 group-active:scale-95 transition-transform duration-200 shadow-2xs">
                   <i class="fa-solid fa-headphones"></i>
@@ -1701,7 +1752,7 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
 
             <!-- Card 2.5: Maharah Kalam (Kemahiran Berbicara & Rekam Suara) -->
-            <div onclick="document.querySelector('[data-view=kalam]').click()" class="bg-white rounded-[2rem] p-6 shadow-md hover:shadow-xl active:shadow-lg active:scale-[0.98] border border-teal-100/90 transition-all duration-200 flex flex-col justify-between group cursor-pointer select-none">
+            <div onclick="navigateTo('kalam')" class="bg-white rounded-[2rem] p-6 shadow-md hover:shadow-xl active:shadow-lg active:scale-[0.98] border border-teal-100/90 transition-all duration-200 flex flex-col justify-between group cursor-pointer select-none">
               <div>
                 <div class="w-14 h-14 rounded-2xl bg-teal-50 text-teal-700 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 group-active:scale-95 transition-transform duration-200 shadow-2xs">
                   <i class="fa-solid fa-microphone-lines"></i>
@@ -1722,7 +1773,7 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
 
             <!-- Card 2: Maharah Qira'ah -->
-            <div onclick="document.querySelector('[data-view=qiraah]').click()" class="bg-white rounded-[2rem] p-6 shadow-md hover:shadow-xl active:shadow-lg active:scale-[0.98] border border-emerald-100/90 transition-all duration-200 flex flex-col justify-between group cursor-pointer select-none">
+            <div onclick="navigateTo('qiraah')" class="bg-white rounded-[2rem] p-6 shadow-md hover:shadow-xl active:shadow-lg active:scale-[0.98] border border-emerald-100/90 transition-all duration-200 flex flex-col justify-between group cursor-pointer select-none">
               <div>
                 <div class="w-14 h-14 rounded-2xl bg-teal-50 text-teal-700 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 group-active:scale-95 transition-transform duration-200 shadow-2xs">
                   <i class="fa-solid fa-book-open"></i>
@@ -1739,7 +1790,7 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
 
             <!-- Card 3: Qawa'id / Grammar -->
-            <div onclick="document.querySelector('[data-view=qawaid]').click()" class="bg-white rounded-[2rem] p-6 shadow-md hover:shadow-xl active:shadow-lg active:scale-[0.98] border border-emerald-100/90 transition-all duration-200 flex flex-col justify-between group cursor-pointer select-none">
+            <div onclick="navigateTo('qawaid')" class="bg-white rounded-[2rem] p-6 shadow-md hover:shadow-xl active:shadow-lg active:scale-[0.98] border border-emerald-100/90 transition-all duration-200 flex flex-col justify-between group cursor-pointer select-none">
               <div>
                 <div class="w-14 h-14 rounded-2xl bg-amber-50 text-amber-700 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 group-active:scale-95 transition-transform duration-200 shadow-2xs">
                   <i class="fa-solid fa-spell-check"></i>
@@ -1756,7 +1807,7 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
 
             <!-- Card 4: Dialogue -->
-            <div onclick="document.querySelector('[data-view=dialogue]').click()" class="bg-white rounded-[2rem] p-6 shadow-md hover:shadow-xl active:shadow-lg active:scale-[0.98] border border-emerald-100/90 transition-all duration-200 flex flex-col justify-between group cursor-pointer select-none">
+            <div onclick="navigateTo('dialogue')" class="bg-white rounded-[2rem] p-6 shadow-md hover:shadow-xl active:shadow-lg active:scale-[0.98] border border-emerald-100/90 transition-all duration-200 flex flex-col justify-between group cursor-pointer select-none">
               <div>
                 <div class="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 group-active:scale-95 transition-transform duration-200 shadow-2xs">
                   <i class="fa-solid fa-comments"></i>
@@ -1773,7 +1824,7 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
 
             <!-- Card 5: Tadribat Kahoot -->
-            <div onclick="document.querySelector('[data-view=quiz]').click()" class="bg-white rounded-[2rem] p-6 shadow-md hover:shadow-xl active:shadow-lg active:scale-[0.98] border border-purple-100/90 transition-all duration-200 flex flex-col justify-between group cursor-pointer select-none">
+            <div onclick="navigateTo('quiz')" class="bg-white rounded-[2rem] p-6 shadow-md hover:shadow-xl active:shadow-lg active:scale-[0.98] border border-purple-100/90 transition-all duration-200 flex flex-col justify-between group cursor-pointer select-none">
               <div>
                 <div class="w-14 h-14 rounded-2xl bg-purple-50 text-purple-700 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 group-active:scale-95 transition-transform duration-200 shadow-2xs">
                   <i class="fa-solid fa-gamepad"></i>
@@ -1790,7 +1841,7 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
 
             <!-- Card 5.5: 1v1 Fast Quiz Duel -->
-            <div onclick="document.querySelector('[data-view=duelgame]').click()" class="bg-gradient-to-br from-amber-500 via-amber-600 to-orange-600 rounded-[2rem] p-6 shadow-xl hover:shadow-2xl active:shadow-lg active:scale-[0.98] border-2 border-amber-300 transition-all duration-200 flex flex-col justify-between group text-white cursor-pointer select-none">
+            <div onclick="navigateTo('duelgame')" class="bg-gradient-to-br from-amber-500 via-amber-600 to-orange-600 rounded-[2rem] p-6 shadow-xl hover:shadow-2xl active:shadow-lg active:scale-[0.98] border-2 border-amber-300 transition-all duration-200 flex flex-col justify-between group text-white cursor-pointer select-none">
               <div>
                 <div class="w-14 h-14 rounded-2xl bg-white text-amber-600 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 group-active:scale-95 transition-transform duration-200 shadow-md">
                   <i class="fa-solid fa-bolt"></i>
@@ -1810,7 +1861,7 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
 
             <!-- Card 6: Peringkat Kelas (Leaderboard) -->
-            <div onclick="document.querySelector('[data-view=leaderboard]').click()" class="bg-gradient-to-br from-indigo-900 via-indigo-950 to-purple-950 rounded-[2rem] p-6 shadow-xl hover:shadow-2xl active:shadow-lg active:scale-[0.98] border-2 border-yellow-400/40 transition-all duration-200 flex flex-col justify-between group text-white cursor-pointer select-none">
+            <div onclick="navigateTo('leaderboard')" class="bg-gradient-to-br from-indigo-900 via-indigo-950 to-purple-950 rounded-[2rem] p-6 shadow-xl hover:shadow-2xl active:shadow-lg active:scale-[0.98] border-2 border-yellow-400/40 transition-all duration-200 flex flex-col justify-between group text-white cursor-pointer select-none">
               <div>
                 <div class="w-14 h-14 rounded-2xl bg-yellow-400 text-yellow-950 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 group-active:scale-95 transition-transform duration-200 shadow-md font-bold">
                   <i class="fa-solid fa-trophy"></i>
@@ -5666,7 +5717,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <i class="fa-solid fa-play"></i>
                 <span>Mainkan Lagi</span>
               </button>
-              <button onclick="document.querySelector('[data-view=dashboard]').click()" class="flex-1 py-3 sm:py-3.5 bg-white/20 hover:bg-white/30 text-white rounded-2xl text-xs sm:text-sm font-bold backdrop-blur-md transition-all flex items-center justify-center gap-2 border border-white/20">
+              <button onclick="navigateTo('dashboard')" class="flex-1 py-3 sm:py-3.5 bg-white/20 hover:bg-white/30 text-white rounded-2xl text-xs sm:text-sm font-bold backdrop-blur-md transition-all active:scale-95 duration-150 flex items-center justify-center gap-2 border border-white/20">
                 <i class="fa-solid fa-house"></i>
                 <span>Dashboard</span>
               </button>
@@ -6482,7 +6533,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (headerEl) headerEl.classList.remove('hidden');
     if (footerEl) footerEl.classList.remove('hidden');
-    if (mainEl) mainEl.className = "flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8";
+    if (mainEl) mainEl.className = "flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8 pb-28 sm:pb-24 md:pb-8 overflow-x-hidden";
 
     // Kontrol tombol kembali di Header: Tampil saat membuka materi/kuis/pengaturan, sembunyi di Beranda
     if (headerBackBtn) {
@@ -8688,7 +8739,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <span>Pilih Level Lain</span>
               </button>
 
-              <button onclick="document.querySelector('[data-view=dashboard]').click()" class="px-5 py-3.5 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-2xl border border-white/20 backdrop-blur-md transition-all flex items-center gap-2 text-xs">
+              <button onclick="navigateTo('dashboard')" class="px-5 py-3.5 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-2xl border border-white/20 backdrop-blur-md transition-all active:scale-95 duration-150 flex items-center gap-2 text-xs">
                 <i class="fa-solid fa-house"></i>
                 <span>Dashboard</span>
               </button>
