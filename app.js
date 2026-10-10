@@ -3558,29 +3558,34 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
 
           <!-- Target Arabic Text Display (Centered & Large) -->
-          <div class="bg-gradient-to-b from-[#f8faf7] to-white rounded-2xl sm:rounded-3xl p-6 sm:p-8 border border-emerald-100/80 text-center space-y-4">
-            <span class="text-[10px] sm:text-xs font-bold text-emerald-600 uppercase tracking-widest block font-sans">
-              Teks Kalimat yang Harus Ditirukan:
-            </span>
+          <div class="bg-gradient-to-b from-[#f8faf7] to-white rounded-2xl sm:rounded-3xl p-6 sm:p-8 border border-emerald-100/80 text-center space-y-3">
+            <div class="flex justify-center pb-2">
+              <span class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-emerald-50 text-emerald-800 text-[10px] sm:text-xs font-bold uppercase tracking-wider border border-emerald-200/80 shadow-2xs font-sans">
+                <i class="fa-solid fa-microphone-lines text-emerald-600 text-xs"></i>
+                <span>Teks Kalimat yang Harus Ditirukan:</span>
+              </span>
+            </div>
 
-            <div class="text-2xl sm:text-4xl lg:text-5xl font-arabic font-bold text-emerald-950 leading-[2.6] sm:leading-[2.8] tracking-normal select-all">
+            <div class="pt-4 pb-4 sm:pt-6 sm:pb-6 px-3 text-2xl sm:text-4xl lg:text-5xl font-arabic font-bold text-emerald-950 leading-[2.8] sm:leading-[3.2] tracking-normal select-all text-center">
               ${currentItem.arabic}
             </div>
 
-            <div class="space-y-1 pt-2 border-t border-emerald-100 max-w-xl mx-auto">
-              <div class="text-xs sm:text-sm font-semibold text-emerald-800 italic">
+            <div class="space-y-1.5 pt-4 border-t border-emerald-100 max-w-xl mx-auto">
+              <div class="text-sm sm:text-base font-semibold text-emerald-800 italic">
                 “ ${currentItem.latin} ”
               </div>
-              <div class="text-xs sm:text-sm text-slate-600">
+              <div class="text-xs sm:text-sm text-slate-600 font-medium leading-relaxed">
                 "${currentItem.translation}"
               </div>
             </div>
 
             <!-- Pronunciation / Tajwid Guidance Tip -->
             ${currentItem.phoneticTip ? `
-              <div class="inline-flex items-center gap-2 bg-amber-50 text-amber-900 border border-amber-200/80 px-3.5 py-1.5 rounded-full text-xs text-left max-w-md mx-auto shadow-2xs">
-                <i class="fa-solid fa-lightbulb text-amber-500 shrink-0"></i>
-                <span><strong>Tips Pelafalan:</strong> ${currentItem.phoneticTip}</span>
+              <div class="pt-2 flex justify-center">
+                <div class="inline-flex items-center gap-2.5 bg-amber-50/90 text-amber-900 border border-amber-200/90 px-4 py-2.5 rounded-2xl text-xs text-left max-w-md shadow-2xs">
+                  <i class="fa-solid fa-lightbulb text-amber-500 text-sm shrink-0"></i>
+                  <span class="leading-relaxed"><strong>Tips Pelafalan:</strong> ${currentItem.phoneticTip}</span>
+                </div>
               </div>
             ` : ''}
           </div>
