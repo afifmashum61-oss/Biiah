@@ -1192,11 +1192,11 @@ document.addEventListener('DOMContentLoaded', () => {
           const isActive = state.currentView === btnView || (btnView === 'profile' && state.currentView === 'settings');
 
           if (isActive) {
-            btn.className = "bottom-nav-item flex flex-col items-center justify-center py-1.5 px-0.5 rounded-2xl transition-all text-emerald-800 bg-emerald-50/90 font-bold shadow-xs scale-105 border-b-2 border-emerald-600";
+            btn.className = "bottom-nav-item flex flex-col items-center justify-center py-2 px-1 rounded-2xl transition-all text-emerald-800 bg-emerald-50/90 font-black shadow-xs scale-105 border-b-2 border-emerald-600";
             const icon = btn.querySelector('i');
             if (icon) icon.className = icon.className.replace(/text-slate-\d+/, 'text-emerald-700');
           } else {
-            btn.className = "bottom-nav-item flex flex-col items-center justify-center py-1.5 px-0.5 rounded-2xl transition-all text-slate-500 hover:text-emerald-700";
+            btn.className = "bottom-nav-item flex flex-col items-center justify-center py-2 px-1 rounded-2xl transition-all text-slate-500 hover:text-emerald-700";
             const icon = btn.querySelector('i');
             if (icon) icon.className = icon.className.replace(/text-emerald-\d+/, 'text-slate-500');
           }
