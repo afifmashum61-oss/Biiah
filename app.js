@@ -501,6 +501,44 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 3500);
   }
 
+  // Helper: Kompresi foto yang diunggah siswa agar hemat memori (Base64 JPEG ~25KB)
+  function compressImageFile(file, maxWidth = 300, maxHeight = 300, quality = 0.82) {
+    return new Promise((resolve, reject) => {
+      if (!file || !file.type.startsWith('image/')) {
+        return reject(new Error('File yang dipilih bukan gambar valid.'));
+      }
+      const reader = new FileReader();
+      reader.onerror = () => reject(new Error('Gagal membaca file gambar.'));
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onerror = () => reject(new Error('Gagal memuat gambar.'));
+        img.onload = () => {
+          let width = img.width;
+          let height = img.height;
+          if (width > height) {
+            if (width > maxWidth) {
+              height = Math.round((height * maxWidth) / width);
+              width = maxWidth;
+            }
+          } else {
+            if (height > maxHeight) {
+              width = Math.round((width * maxHeight) / height);
+              height = maxHeight;
+            }
+          }
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          resolve(canvas.toDataURL('image/jpeg', quality));
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
   // =========================================================================
   // REAL-TIME SYNCHRONIZATION ENGINE & UNIFIED SCORE SUBMISSION
   // Memastikan semua nilai latihan & game masuk ke akun guru secara realtime!
@@ -1325,6 +1363,37 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="relative">
                       <i class="fa-solid fa-school absolute left-4 top-3.5 text-emerald-600 text-sm"></i>
                       <input type="text" id="reg-class" required placeholder="Contoh: IX-A, IX-B, atau 9 MTs" class="w-full pl-11 pr-4 py-2.5 sm:py-3 rounded-2xl border border-emerald-200 bg-emerald-50/30 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:border-transparent text-base sm:text-sm font-semibold text-gray-800 placeholder-gray-400 transition-all">
+                    </div>
+                  </div>
+
+                  <!-- Pilihan Foto Profil / Avatar Siswa -->
+                  <div>
+                    <label class="block text-xs font-bold text-gray-700 mb-1.5 uppercase tracking-wider">Foto Profil / Avatar</label>
+                    <div class="flex items-center gap-3 p-3 bg-emerald-50/50 rounded-2xl border border-emerald-200/80">
+                      <!-- Avatar Preview -->
+                      <div class="relative shrink-0">
+                        <div class="w-13 h-13 sm:w-14 sm:h-14 rounded-full ring-2 ring-emerald-500/40 p-0.5 bg-gradient-to-tr from-amber-400 to-emerald-500 overflow-hidden shadow">
+                          <img id="reg-avatar-preview" src="avatar-siswa.jpg" alt="Preview Foto" class="w-full h-full object-cover rounded-full" />
+                        </div>
+                      </div>
+                      
+                      <!-- Pilihan Avatar Options -->
+                      <div class="flex-1 space-y-1.5 min-w-0">
+                        <div class="flex items-center gap-1.5 flex-wrap">
+                          <button type="button" id="reg-avatar-opt-putra" class="reg-avatar-btn px-2.5 py-1 rounded-xl text-xs font-bold bg-emerald-700 text-white shadow-xs transition-all border border-emerald-600 flex items-center gap-1 cursor-pointer">
+                            <span>👦 Putra</span>
+                          </button>
+                          <button type="button" id="reg-avatar-opt-putri" class="reg-avatar-btn px-2.5 py-1 rounded-xl text-xs font-bold bg-white text-emerald-800 hover:bg-emerald-100 transition-all border border-emerald-200 flex items-center gap-1 cursor-pointer">
+                            <span>🧕 Putri</span>
+                          </button>
+                          <label for="reg-avatar-file" id="reg-avatar-upload-btn" class="px-2.5 py-1 rounded-xl text-xs font-bold bg-white text-emerald-800 hover:bg-emerald-100 transition-all border border-emerald-200 flex items-center gap-1 cursor-pointer" title="Pilih foto dari Galeri HP / Kamera">
+                            <i class="fa-solid fa-camera text-[11px] text-emerald-600"></i>
+                            <span>Upload</span>
+                            <input type="file" id="reg-avatar-file" accept="image/*" class="hidden">
+                          </label>
+                        </div>
+                        <p id="reg-avatar-desc" class="text-[11px] text-gray-500 truncate">Pilih avatar atau upload foto dari HP</p>
+                      </div>
                     </div>
                   </div>
 
@@ -6583,17 +6652,25 @@ document.addEventListener('DOMContentLoaded', () => {
               <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-full p-1 bg-gradient-to-tr from-amber-400 via-emerald-400 to-teal-300 shadow-xl ring-4 ring-emerald-500/30">
                 <div class="w-full h-full rounded-full bg-emerald-950 flex items-center justify-center overflow-hidden">
                   ${isSiswa ? `
-                    <img src="${(user.gender === 'P' || (user.name && /siswi|putri|siti|nur|anisa|fatimah|rahma|ayu|alya|zahr/i.test(user.name))) ? 'avatar-siswi.jpg' : 'avatar-siswa.jpg'}" 
+                    <img id="profile-avatar-img"
+                         src="${(studentObj.avatar || user.avatar) ? (studentObj.avatar || user.avatar) : ((user.gender === 'P' || (user.name && /siswi|putri|siti|nur|anisa|fatimah|rahma|ayu|alya|zahr/i.test(user.name))) ? 'avatar-siswi.jpg' : 'avatar-siswa.jpg')}" 
                          alt="${user.name}" 
                          class="w-full h-full object-cover" 
                          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
                     <span class="hidden w-full h-full text-3xl font-black text-amber-300 items-center justify-center">${user.name[0].toUpperCase()}</span>
                   ` : `
-                    <img src="avatar-guru.jpg" alt="${user.name}" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+                    <img id="profile-avatar-img" src="${user.avatar || 'avatar-guru.jpg'}" alt="${user.name}" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
                     <span class="hidden w-full h-full text-3xl font-black text-amber-300 items-center justify-center">👨‍🏫</span>
                   `}
                 </div>
               </div>
+
+              <!-- Tombol Ganti / Upload Foto Kamera -->
+              <label for="profile-avatar-upload" class="absolute top-0 right-0 w-8 h-8 rounded-full bg-amber-400 hover:bg-amber-300 active:scale-90 text-amber-950 flex items-center justify-center text-xs shadow-lg border-2 border-emerald-950 cursor-pointer transition-all hover:scale-110 z-10" title="Ganti / Upload Foto Profil">
+                <i class="fa-solid fa-camera"></i>
+                <input type="file" id="profile-avatar-upload" accept="image/*" class="hidden">
+              </label>
+
               <span class="absolute bottom-0 right-1 px-2.5 py-0.5 rounded-full bg-emerald-500 text-white text-[10px] font-bold shadow-md border-2 border-emerald-950 flex items-center gap-1.5">
                 <span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
                 <span>Aktif</span>
@@ -6897,6 +6974,53 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
     }
+
+    // Event: Ganti / Upload Foto Profil dari Galeri HP / Kamera
+    const profileAvatarUpload = document.getElementById('profile-avatar-upload');
+    if (profileAvatarUpload) {
+      profileAvatarUpload.addEventListener('change', async (e) => {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+
+        try {
+          showToast('Mengompres dan memproses foto...', 'info');
+          const dataUrl = await compressImageFile(file, 280, 280, 0.85);
+
+          if (state.currentUser) {
+            state.currentUser.avatar = dataUrl;
+            localStorage.setItem('arabic_app_user', JSON.stringify(state.currentUser));
+
+            // Perbarui di state.students
+            if (Array.isArray(state.students)) {
+              const sIdx = state.students.findIndex(s => 
+                (state.currentUser.id && String(s.id) === String(state.currentUser.id)) ||
+                (s.name && s.name.trim().toLowerCase() === state.currentUser.name.trim().toLowerCase())
+              );
+              if (sIdx !== -1) {
+                state.students[sIdx].avatar = dataUrl;
+                localStorage.setItem('arabic_app_students', JSON.stringify(state.students));
+              }
+            }
+
+            // Sinkronisasi ke Firebase Cloud Firestore
+            if (window.FirebaseSync && typeof window.FirebaseSync.saveStudent === 'function') {
+              await window.FirebaseSync.saveStudent(state.currentUser);
+            }
+
+            // Tampilkan foto di UI secara instan
+            const avatarImg = document.getElementById('profile-avatar-img');
+            if (avatarImg) {
+              avatarImg.src = dataUrl;
+              avatarImg.style.display = 'block';
+            }
+            showToast('Alhamdulillah! Foto profil berhasil diperbarui. 🎉', 'success');
+          }
+        } catch (err) {
+          console.error("Gagal mengganti foto profil:", err);
+          showToast('Gagal memproses foto. Silakan coba pilih foto lain.', 'error');
+        }
+      });
+    }
   }
 
   // 8. SETTINGS VIEW (Pengaturan & Manajemen Akun Guru & Siswa)
@@ -6968,7 +7092,15 @@ document.addEventListener('DOMContentLoaded', () => {
                   <tbody class="divide-y divide-emerald-50">
                     ${state.students.map(s => `
                       <tr class="hover:bg-emerald-50/50">
-                        <td class="p-3 font-bold text-emerald-950">${s.name}</td>
+                        <td class="p-3 font-bold text-emerald-950">
+                          <div class="flex items-center gap-2.5">
+                            <div class="w-7 h-7 rounded-full overflow-hidden shrink-0 border border-emerald-300 bg-emerald-100 flex items-center justify-center shadow-xs">
+                              <img src="${s.avatar || ((s.gender === 'P' || (s.name && /siswi|putri|siti|nur|anisa|fatimah|rahma|ayu|alya|zahr/i.test(s.name))) ? 'avatar-siswi.jpg' : 'avatar-siswa.jpg')}" alt="${s.name}" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+                              <span class="hidden text-xs font-bold text-emerald-800">${s.name ? s.name[0].toUpperCase() : 'S'}</span>
+                            </div>
+                            <span class="truncate">${s.name}</span>
+                          </div>
+                        </td>
                         <td class="p-3 text-emerald-700">${s.class}</td>
                         <td class="p-3 text-center">
                           <button data-del-student="${s.id}" class="delete-student-btn px-2.5 py-1 bg-red-50 hover:bg-red-600 hover:text-white text-red-600 rounded-lg transition-all text-[11px] font-semibold border border-red-200">
@@ -7244,6 +7376,8 @@ document.addEventListener('DOMContentLoaded', () => {
             name: matchedStudent.name,
             role: 'siswa',
             class: matchedStudent.class || 'IX-A',
+            avatar: matchedStudent.avatar || '',
+            gender: matchedStudent.gender || '',
             score: typeof matchedStudent.score === 'number' ? matchedStudent.score : 0,
             istimaScore: typeof matchedStudent.istimaScore === 'number' ? matchedStudent.istimaScore : 0,
             kalamScore: typeof matchedStudent.kalamScore === 'number' ? matchedStudent.kalamScore : 0,
@@ -7287,7 +7421,77 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    // 4. Form Pendaftaran Akun Siswa Baru (Nama, Kelas, Password)
+    // 4. Form Pendaftaran Akun Siswa Baru & Pilihan Avatar
+    let regSelectedAvatar = 'avatar-siswa.jpg';
+    let regUserCustomAvatar = false;
+
+    const regAvatarPreview = document.getElementById('reg-avatar-preview');
+    const regAvatarOptPutra = document.getElementById('reg-avatar-opt-putra');
+    const regAvatarOptPutri = document.getElementById('reg-avatar-opt-putri');
+    const regAvatarUploadBtn = document.getElementById('reg-avatar-upload-btn');
+    const regAvatarFile = document.getElementById('reg-avatar-file');
+    const regAvatarDesc = document.getElementById('reg-avatar-desc');
+    const regNameInput = document.getElementById('reg-name');
+
+    function updateRegAvatarUI(type, customUrl = null, customLabel = null) {
+      if (type === 'putra') {
+        regSelectedAvatar = 'avatar-siswa.jpg';
+        regUserCustomAvatar = false;
+        if (regAvatarPreview) regAvatarPreview.src = 'avatar-siswa.jpg';
+        if (regAvatarOptPutra) regAvatarOptPutra.className = "reg-avatar-btn px-2.5 py-1 rounded-xl text-xs font-bold bg-emerald-700 text-white shadow-xs transition-all border border-emerald-600 flex items-center gap-1 cursor-pointer";
+        if (regAvatarOptPutri) regAvatarOptPutri.className = "reg-avatar-btn px-2.5 py-1 rounded-xl text-xs font-bold bg-white text-emerald-800 hover:bg-emerald-100 transition-all border border-emerald-200 flex items-center gap-1 cursor-pointer";
+        if (regAvatarUploadBtn) regAvatarUploadBtn.className = "px-2.5 py-1 rounded-xl text-xs font-bold bg-white text-emerald-800 hover:bg-emerald-100 transition-all border border-emerald-200 flex items-center gap-1 cursor-pointer";
+        if (regAvatarDesc) regAvatarDesc.textContent = "Avatar Santri Putra dipilih";
+      } else if (type === 'putri') {
+        regSelectedAvatar = 'avatar-siswi.jpg';
+        regUserCustomAvatar = false;
+        if (regAvatarPreview) regAvatarPreview.src = 'avatar-siswi.jpg';
+        if (regAvatarOptPutra) regAvatarOptPutra.className = "reg-avatar-btn px-2.5 py-1 rounded-xl text-xs font-bold bg-white text-emerald-800 hover:bg-emerald-100 transition-all border border-emerald-200 flex items-center gap-1 cursor-pointer";
+        if (regAvatarOptPutri) regAvatarOptPutri.className = "reg-avatar-btn px-2.5 py-1 rounded-xl text-xs font-bold bg-emerald-700 text-white shadow-xs transition-all border border-emerald-600 flex items-center gap-1 cursor-pointer";
+        if (regAvatarUploadBtn) regAvatarUploadBtn.className = "px-2.5 py-1 rounded-xl text-xs font-bold bg-white text-emerald-800 hover:bg-emerald-100 transition-all border border-emerald-200 flex items-center gap-1 cursor-pointer";
+        if (regAvatarDesc) regAvatarDesc.textContent = "Avatar Santri Putri dipilih";
+      } else if (type === 'custom' && customUrl) {
+        regSelectedAvatar = customUrl;
+        regUserCustomAvatar = true;
+        if (regAvatarPreview) regAvatarPreview.src = customUrl;
+        if (regAvatarOptPutra) regAvatarOptPutra.className = "reg-avatar-btn px-2.5 py-1 rounded-xl text-xs font-bold bg-white text-emerald-800 hover:bg-emerald-100 transition-all border border-emerald-200 flex items-center gap-1 cursor-pointer";
+        if (regAvatarOptPutri) regAvatarOptPutri.className = "reg-avatar-btn px-2.5 py-1 rounded-xl text-xs font-bold bg-white text-emerald-800 hover:bg-emerald-100 transition-all border border-emerald-200 flex items-center gap-1 cursor-pointer";
+        if (regAvatarUploadBtn) regAvatarUploadBtn.className = "px-2.5 py-1 rounded-xl text-xs font-bold bg-emerald-700 text-white shadow-xs transition-all border border-emerald-600 flex items-center gap-1 cursor-pointer";
+        if (regAvatarDesc) regAvatarDesc.textContent = customLabel || "✓ Foto profil kustom siap";
+      }
+    }
+
+    if (regAvatarOptPutra) {
+      regAvatarOptPutra.addEventListener('click', () => updateRegAvatarUI('putra'));
+    }
+    if (regAvatarOptPutri) {
+      regAvatarOptPutri.addEventListener('click', () => updateRegAvatarUI('putri'));
+    }
+    if (regAvatarFile) {
+      regAvatarFile.addEventListener('change', async (e) => {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+        try {
+          if (regAvatarDesc) regAvatarDesc.textContent = "Memproses foto...";
+          const dataUrl = await compressImageFile(file, 260, 260, 0.82);
+          updateRegAvatarUI('custom', dataUrl, `✓ Foto (${file.name.substring(0, 10)}...)`);
+        } catch(err) {
+          console.error("Gagal mengolah avatar upload:", err);
+          showRegAlert("Gagal memproses foto. Silakan coba file lain.", "error");
+        }
+      });
+    }
+
+    if (regNameInput) {
+      regNameInput.addEventListener('input', (e) => {
+        if (regUserCustomAvatar) return;
+        const val = e.target.value || '';
+        if (/siswi|putri|siti|nur|anisa|fatimah|rahma|ayu|alya|zahr/i.test(val)) {
+          updateRegAvatarUI('putri');
+        }
+      });
+    }
+
     if (registerForm) {
       registerForm.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -7318,12 +7522,16 @@ document.addEventListener('DOMContentLoaded', () => {
           regSubmitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Mendaftarkan akun...';
         }
 
-        // Buat objek siswa baru lengkap dengan seluruh komponen nilai latihan
+        const isPutri = regSelectedAvatar === 'avatar-siswi.jpg' || (regName && /siswi|putri|siti|nur|anisa|fatimah|rahma|ayu|alya|zahr/i.test(regName));
+
+        // Buat objek siswa baru lengkap dengan seluruh komponen nilai latihan & foto avatar
         const newStudent = {
           id: 'std_' + Date.now(),
           name: regName,
           class: regClass,
           password: regPwd,
+          avatar: regSelectedAvatar || 'avatar-siswa.jpg',
+          gender: isPutri ? 'P' : 'L',
           score: 0,
           istimaScore: 0,
           kalamScore: 0,
@@ -7357,8 +7565,9 @@ document.addEventListener('DOMContentLoaded', () => {
           registerBox.classList.add('hidden');
           loginBox.classList.remove('hidden');
 
-          // Reset form pendaftaran
+          // Reset form pendaftaran & avatar UI
           registerForm.reset();
+          updateRegAvatarUI('putra');
           if (regMsg) regMsg.classList.add('hidden');
 
           // Isi otomatis nama siswa di form login dan fokus ke password
