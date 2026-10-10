@@ -6578,10 +6578,10 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="absolute -left-10 -top-10 w-60 h-60 bg-amber-400/15 rounded-full blur-3xl pointer-events-none"></div>
           
           <div class="relative z-10 flex flex-col sm:flex-row items-center sm:items-start gap-5 sm:gap-6 text-center sm:text-left">
-            <!-- Avatar -->
-            <div class="relative shrink-0">
-              <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl bg-gradient-to-br from-amber-400 to-emerald-400 p-1 shadow-2xl">
-                <div class="w-full h-full rounded-[1.35rem] bg-emerald-950 flex items-center justify-center overflow-hidden">
+            <!-- Avatar with Clean Modern Circular Frame -->
+            <div class="relative shrink-0 mx-auto sm:mx-0">
+              <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-full p-1 bg-gradient-to-tr from-amber-400 via-emerald-400 to-teal-300 shadow-xl ring-4 ring-emerald-500/30">
+                <div class="w-full h-full rounded-full bg-emerald-950 flex items-center justify-center overflow-hidden">
                   ${isSiswa ? `
                     <img src="${(user.gender === 'P' || (user.name && /siswi|putri|siti|nur|anisa|fatimah|rahma|ayu|alya|zahr/i.test(user.name))) ? 'avatar-siswi.jpg' : 'avatar-siswa.jpg'}" 
                          alt="${user.name}" 
@@ -6594,20 +6594,20 @@ document.addEventListener('DOMContentLoaded', () => {
                   `}
                 </div>
               </div>
-              <span class="absolute -bottom-1.5 -right-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500 text-white text-[10px] font-black shadow-md border-2 border-emerald-950 flex items-center gap-1">
+              <span class="absolute bottom-0 right-1 px-2.5 py-0.5 rounded-full bg-emerald-500 text-white text-[10px] font-bold shadow-md border-2 border-emerald-950 flex items-center gap-1.5">
                 <span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
                 <span>Aktif</span>
               </span>
             </div>
 
             <!-- Profile Info Text -->
-            <div class="flex-1 space-y-2">
+            <div class="flex-1 space-y-2.5 min-w-0">
               <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2">
-                <span class="px-3 py-1 bg-white/15 backdrop-blur-md text-amber-300 rounded-full text-xs font-bold border border-white/20">
+                <span class="px-3 py-1 bg-white/15 backdrop-blur-md text-amber-300 rounded-full text-xs font-bold border border-white/20 shadow-xs inline-flex items-center gap-1.5">
                   <i class="fa-solid ${isSiswa ? 'fa-graduation-cap' : 'fa-chalkboard-user'} text-xs"></i> 
                   ${isSiswa ? `Siswa Kelas ${user.class || 'IX-A'}` : 'Guru Pengampu'}
                 </span>
-                <span class="px-2.5 py-1 bg-emerald-500/20 text-emerald-200 rounded-full text-xs font-semibold border border-emerald-400/30">
+                <span class="px-2.5 py-1 bg-emerald-500/20 text-emerald-200 rounded-full text-xs font-semibold border border-emerald-400/30 shadow-xs">
                   ID: ${user.id || '-'}
                 </span>
               </div>
@@ -6616,18 +6616,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 ${user.name}
               </h1>
 
-              <p class="text-xs sm:text-sm text-emerald-100/90 leading-relaxed max-w-xl">
-                MTs Darussalam Jombang • Materi: <span class="font-arabic font-bold text-amber-200 text-sm">الحفاظ على البيئة</span>
-              </p>
-
-              <div class="pt-2 flex flex-wrap items-center justify-center sm:justify-start gap-3 text-xs text-emerald-200">
-                <span class="flex items-center gap-1.5">
-                  <i class="fa-solid fa-cloud-arrow-up text-emerald-400"></i> Cloud Firestore Sync
-                </span>
-                <span>•</span>
-                <span class="flex items-center gap-1.5">
-                  <i class="fa-solid fa-school text-emerald-400"></i> Kelas 9 Semester Genap
-                </span>
+              <div class="space-y-1.5 text-xs sm:text-sm text-emerald-100/90">
+                <div class="flex flex-wrap items-center justify-center sm:justify-start gap-x-2.5 gap-y-1 text-emerald-200">
+                  <span class="inline-flex items-center gap-1.5">
+                    <i class="fa-solid fa-school text-emerald-400 text-xs"></i> MTs Darussalam Jombang
+                  </span>
+                  <span class="text-emerald-500/60 hidden sm:inline">•</span>
+                  <span class="inline-flex items-center gap-1.5">
+                    <i class="fa-solid fa-calendar-check text-emerald-400 text-xs"></i> Kelas 9 Semester Genap
+                  </span>
+                </div>
+                <div class="pt-1 flex items-center justify-center sm:justify-start">
+                  <span class="inline-flex items-center gap-2 px-3 py-1 rounded-xl bg-emerald-950/40 border border-emerald-400/20 text-xs">
+                    <span class="text-emerald-300 font-medium">Materi:</span>
+                    <span class="font-arabic font-bold text-amber-300 text-sm">الحفاظ على البيئة</span>
+                  </span>
+                </div>
               </div>
             </div>
           </div>
@@ -6636,17 +6640,17 @@ document.addEventListener('DOMContentLoaded', () => {
         ${isSiswa ? `
           <!-- CARD 1: DATA DIRI SISWA (BIODATA) -->
           <div class="bg-white rounded-3xl p-6 sm:p-7 shadow-sm border border-emerald-100 space-y-5">
-            <div class="flex items-center justify-between border-b border-emerald-50 pb-3">
-              <div class="flex items-center gap-2.5">
-                <div class="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-base font-black">
+            <div class="flex items-center justify-between gap-3 border-b border-emerald-50 pb-3">
+              <div class="flex items-center gap-2.5 min-w-0">
+                <div class="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-base font-black shrink-0">
                   <i class="fa-solid fa-id-card"></i>
                 </div>
-                <div>
-                  <h2 class="text-base sm:text-lg font-bold text-emerald-950">Data Diri Siswa</h2>
-                  <p class="text-xs text-slate-500">Informasi identitas akun pembelajaran terdaftar</p>
+                <div class="min-w-0">
+                  <h2 class="text-base sm:text-lg font-bold text-emerald-950 truncate">Data Diri Siswa</h2>
+                  <p class="text-xs text-slate-500 truncate">Informasi identitas akun pembelajaran terdaftar</p>
                 </div>
               </div>
-              <span class="text-xs font-arabic font-bold text-emerald-800 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
+              <span class="shrink-0 whitespace-nowrap text-xs font-arabic font-bold text-emerald-800 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
                 بيانات الطالب
               </span>
             </div>
@@ -6681,17 +6685,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
           <!-- CARD 2: STATISTIK SKOR & CAPAIAN BELAJAR -->
           <div class="bg-white rounded-3xl p-6 sm:p-7 shadow-sm border border-emerald-100 space-y-6">
-            <div class="flex items-center justify-between border-b border-emerald-50 pb-3">
-              <div class="flex items-center gap-2.5">
-                <div class="w-9 h-9 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center text-base font-black">
+            <div class="flex items-center justify-between gap-3 border-b border-emerald-50 pb-3">
+              <div class="flex items-center gap-2.5 min-w-0">
+                <div class="w-9 h-9 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center text-base font-black shrink-0">
                   <i class="fa-solid fa-chart-simple"></i>
                 </div>
-                <div>
-                  <h2 class="text-base sm:text-lg font-bold text-emerald-950">Statistik Skor & Evaluasi</h2>
-                  <p class="text-xs text-slate-500">Hasil pengerjaan latihan, kemahiran berbicara & kuis</p>
+                <div class="min-w-0">
+                  <h2 class="text-base sm:text-lg font-bold text-emerald-950 truncate">Statistik Skor & Evaluasi</h2>
+                  <p class="text-xs text-slate-500 truncate">Hasil pengerjaan latihan & kuis</p>
                 </div>
               </div>
-              <span class="text-xs font-arabic font-bold text-amber-800 bg-amber-50 px-3 py-1 rounded-full border border-amber-200">
+              <span class="shrink-0 whitespace-nowrap text-xs font-arabic font-bold text-amber-800 bg-amber-50 px-3 py-1 rounded-full border border-amber-200">
                 إحصائيات الدرجات
               </span>
             </div>
@@ -6772,17 +6776,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
           <!-- CARD 3: MENU LAINNYA (AKSES CEPAT MODUL PEMBELAJARAN) -->
           <div class="bg-white rounded-3xl p-6 sm:p-7 shadow-sm border border-emerald-100 space-y-4">
-            <div class="flex items-center justify-between border-b border-emerald-50 pb-3">
-              <div class="flex items-center gap-2.5">
-                <div class="w-9 h-9 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center text-base font-black">
+            <div class="flex items-center justify-between gap-3 border-b border-emerald-50 pb-3">
+              <div class="flex items-center gap-2.5 min-w-0">
+                <div class="w-9 h-9 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center text-base font-black shrink-0">
                   <i class="fa-solid fa-compass"></i>
                 </div>
-                <div>
-                  <h2 class="text-base sm:text-lg font-bold text-emerald-950">Akses Modul Lainnya</h2>
-                  <p class="text-xs text-slate-500">Buka materi dan aktivitas pembelajaran bahasa Arab</p>
+                <div class="min-w-0">
+                  <h2 class="text-base sm:text-lg font-bold text-emerald-950 truncate">Akses Modul Lainnya</h2>
+                  <p class="text-xs text-slate-500 truncate">Buka materi & aktivitas bahasa Arab</p>
                 </div>
               </div>
-              <span class="text-xs font-arabic font-bold text-indigo-800 bg-indigo-50 px-3 py-1 rounded-full border border-indigo-200">
+              <span class="shrink-0 whitespace-nowrap text-xs font-arabic font-bold text-indigo-800 bg-indigo-50 px-3 py-1 rounded-full border border-indigo-200">
                 المزيد من الدروس
               </span>
             </div>
