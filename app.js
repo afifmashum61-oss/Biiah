@@ -1268,11 +1268,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Kontrol Navigasi Bawah di HP (Mobile Bottom Navigation - 4 Tab)
     const bottomNav = document.getElementById('bottom-nav');
+    const bottomNavScrim = document.getElementById('bottom-nav-scrim');
     if (bottomNav) {
       if (!state.currentUser || state.currentView === 'login') {
         bottomNav.classList.add('hidden');
+        if (bottomNavScrim) bottomNavScrim.classList.add('hidden');
       } else {
         bottomNav.classList.remove('hidden');
+        if (bottomNavScrim) bottomNavScrim.classList.remove('hidden');
 
         // Berikan highlight visual pada tab yang aktif saat ini
         const bottomBtns = bottomNav.querySelectorAll('.bottom-nav-item');
@@ -6515,11 +6518,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const mainEl = document.querySelector('main');
     const headerBackBtn = document.getElementById('header-back-btn');
     const bottomNav = document.getElementById('bottom-nav');
+    const bottomNavScrim = document.getElementById('bottom-nav-scrim');
 
     if (!state.currentUser || state.currentView === 'login') {
       if (headerEl) headerEl.classList.add('hidden');
       if (footerEl) footerEl.classList.add('hidden');
       if (bottomNav) bottomNav.classList.add('hidden');
+      if (bottomNavScrim) bottomNavScrim.classList.add('hidden');
       if (mainEl) mainEl.className = "flex-1 w-full p-0 m-0 min-h-screen";
       if (headerBackBtn) {
         headerBackBtn.classList.add('hidden');
@@ -6532,8 +6537,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (headerEl) headerEl.classList.remove('hidden');
-    if (footerEl) footerEl.classList.remove('hidden');
-    if (mainEl) mainEl.className = "flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8 pb-28 sm:pb-24 md:pb-8 overflow-x-hidden";
+    // Footer hanya tampil di Desktop/Tablet (md:block) dan selalu disembunyikan di HP (hidden md:block)
+    // agar teks hak cipta/kredit tidak bertumpuk atau mengganggu di belakang floating bottom navigation
+    if (footerEl) footerEl.className = "hidden md:block bg-white border-t border-emerald-100 py-6 mt-12";
+    if (mainEl) mainEl.className = "flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8 pb-32 sm:pb-36 md:pb-8 overflow-x-hidden";
 
     // Kontrol tombol kembali di Header: Tampil saat membuka materi/kuis/pengaturan, sembunyi di Beranda
     if (headerBackBtn) {

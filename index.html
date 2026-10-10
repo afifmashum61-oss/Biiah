@@ -305,7 +305,7 @@
   </aside>
 
   <!-- Main Content View Area -->
-  <main class="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8 pb-24 md:pb-8 overflow-x-hidden">
+  <main class="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8 pb-32 sm:pb-36 md:pb-8 overflow-x-hidden">
     <div id="app-content">
       <!-- Rendered dynamically by app.js -->
     </div>
@@ -314,8 +314,11 @@
   <!-- Toast Notification Container (Pengganti alert pop-up) -->
   <div id="toast-container" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 pointer-events-none flex flex-col items-center gap-2 w-full max-w-sm px-4"></div>
 
-  <!-- Floating Island Mobile Bottom Navigation (Melayang, Kompak, Berbayang Keren) -->
-  <nav id="bottom-nav" class="hidden md:hidden fixed bottom-3 left-3 right-3 sm:left-1/2 sm:-translate-x-1/2 sm:w-full max-w-[360px] mx-auto z-40 bg-white/92 backdrop-blur-xl rounded-full border border-emerald-200/80 shadow-[0_12px_36px_rgba(6,78,59,0.18),0_4px_14px_rgba(0,0,0,0.06)] px-2 py-1 transition-all">
+  <!-- Mobile Bottom Scroll Gradient Scrim (Transisi lembut agar konten scroll tidak tabrakan di belakang Bottom Nav) -->
+  <div id="bottom-nav-scrim" class="hidden md:hidden fixed bottom-0 left-0 right-0 h-28 bg-gradient-to-t from-[#f8faf7] via-[#f8faf7]/85 to-transparent pointer-events-none z-30"></div>
+
+  <!-- Floating Island Mobile Bottom Navigation (Melayang, Kompak, Solid 100% Opaque, Berbayang Elegan) -->
+  <nav id="bottom-nav" class="hidden md:hidden fixed bottom-3 left-3 right-3 sm:left-1/2 sm:-translate-x-1/2 sm:w-full max-w-[360px] mx-auto z-40 bg-white rounded-full border border-emerald-200/90 shadow-[0_12px_36px_rgba(6,78,59,0.22),0_4px_16px_rgba(0,0,0,0.08)] px-2 py-1 transition-all">
     <div class="grid grid-cols-4 items-center text-center gap-1">
       <!-- 1. Beranda -->
       <button data-view="dashboard" class="bottom-nav-item flex flex-col items-center justify-center py-1.5 px-1 rounded-full transition-all active:scale-90 duration-100 text-slate-500 hover:text-emerald-700 cursor-pointer">
@@ -343,9 +346,8 @@
     </div>
   </nav>
 
-
-  <!-- Footer -->
-  <footer class="bg-white border-t border-emerald-100 py-6 mt-12">
+  <!-- Footer (Hanya tampil di Desktop/Tablet, tersembunyi di HP agar tidak bertumpuk di belakang Bottom Navigation) -->
+  <footer class="hidden md:block bg-white border-t border-emerald-100 py-6 mt-12">
     <div class="max-w-7xl mx-auto px-4 text-center text-xs text-emerald-700 space-y-2">
       <p class="font-semibold">Media Pembelajaran Bahasa Arab Kelas 9 MTs Darussalam Jombang - Materi الحفاظ على البيئة</p>
       <p class="text-emerald-500">Dibuat untuk Guru dan Siswa oleh Afif Ma'shum, M.Pd</p>
