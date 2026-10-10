@@ -1,6 +1,6 @@
 // App logic for Media Pembelajaran Bahasa Arab Kelas 9: الحفاظ على البيئة
 
-// Ultra-Responsive Native Arabic Speech Engine (Desktop & Mobile Optimized)
+// Ultra-Responsive Dual-Engine Arabic Speech Engine (Desktop, Mobile & Android APK/WebView Optimized)
 (function() {
   const synth = window.speechSynthesis;
   let cachedVoices = [];
@@ -8,6 +8,15 @@
   let audioQueue = [];
   let isPlayingAudio = false;
   window.isPlayingAudio = false;
+
+  // Dedicated HTML5 Audio Fallback Engine for Android APK / WebView / Devices without Arabic offline voice
+  const fallbackAudio = new Audio();
+  fallbackAudio.crossOrigin = 'anonymous';
+
+  function isAndroidOrWebView() {
+    const ua = navigator.userAgent || '';
+    return /android/i.test(ua) || /(wv|WebView|Android.*Version\/[\d.]+)/i.test(ua);
+  }
 
   function loadVoices() {
     if (synth) {
@@ -37,11 +46,13 @@
     return v;
   }
 
-  // Pre-unlock audio on mobile touch (iOS Safari & Android Chrome)
+  // Pre-unlock audio on mobile touch (iOS Safari, Android Chrome & WebView APK)
   let audioUnlocked = false;
   function unlockMobileAudio() {
     if (audioUnlocked) return;
     audioUnlocked = true;
+
+    // 1. Unlock Web Speech API
     if (synth) {
       try {
         const dummy = new SpeechSynthesisUtterance(' ');
@@ -49,6 +60,27 @@
         synth.speak(dummy);
       } catch (e) {}
     }
+
+    // 2. Unlock HTML5 Audio element
+    try {
+      fallbackAudio.src = 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA';
+      fallbackAudio.play().then(() => {
+        fallbackAudio.pause();
+      }).catch(() => {});
+    } catch (e) {}
+
+    // 3. Unlock Web Audio API AudioContext
+    try {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (AudioCtx) {
+        if (!window.__appAudioCtx || window.__appAudioCtx.state === 'closed') {
+          window.__appAudioCtx = new AudioCtx();
+        }
+        if (window.__appAudioCtx.state === 'suspended') {
+          window.__appAudioCtx.resume();
+        }
+      }
+    } catch (e) {}
   }
   window.addEventListener('touchstart', unlockMobileAudio, { passive: true, once: true });
   window.addEventListener('touchend', unlockMobileAudio, { passive: true, once: true });
@@ -60,6 +92,12 @@
     if (synth) {
       try {
         synth.cancel();
+      } catch (e) {}
+    }
+    if (fallbackAudio) {
+      try {
+        fallbackAudio.pause();
+        fallbackAudio.currentTime = 0;
       } catch (e) {}
     }
     currentUtterance = null;
@@ -87,9 +125,7 @@
 
   function splitArabicSentences(text) {
     if (!text) return [];
-    // Clean string but preserve authentic Arabic diacritics / tashkeel
     const clean = text.replace(/[\u060C\u061F\.\,\:\;\!\?\"\'\(\)]/g, ' ').trim();
-    // Split on Arabic and standard sentence delimiters
     const rawChunks = text.split(/[\.\!\?\n\:\;\u061F]+/).map(s => s.trim()).filter(s => s.length > 0);
     const result = [];
     for (const chunk of rawChunks) {
@@ -117,6 +153,46 @@
       }
     }
     return result.length > 0 ? result : [text.substring(0, 160)];
+  }
+
+  // Play audio chunk using Google TTS HTTP Stream (Fail-safe for Android APK & WebViews)
+  function playChunkViaGoogleTTS(chunk, onFinished) {
+    try {
+      const clean = chunk.replace(/[\n\r]+/g, ' ').trim();
+      if (!clean) {
+        if (typeof onFinished === 'function') onFinished();
+        return;
+      }
+      const streamUrl = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=ar&q=${encodeURIComponent(clean.substring(0, 180))}`;
+      fallbackAudio.src = streamUrl;
+      fallbackAudio.playbackRate = 1.0;
+
+      let ended = false;
+      const done = () => {
+        if (ended) return;
+        ended = true;
+        fallbackAudio.onended = null;
+        fallbackAudio.onerror = null;
+        if (typeof onFinished === 'function') onFinished();
+      };
+
+      fallbackAudio.onended = done;
+      fallbackAudio.onerror = (e) => {
+        console.warn('Google TTS streaming failed, skipping chunk:', e);
+        done();
+      };
+
+      const playPromise = fallbackAudio.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(err => {
+          console.warn('Fallback audio playback error:', err);
+          done();
+        });
+      }
+    } catch (e) {
+      console.warn('Google TTS error:', e);
+      if (typeof onFinished === 'function') onFinished();
+    }
   }
 
   let activeSpeakCallback = null;
@@ -151,9 +227,18 @@
 
     audioQueue = [...chunks];
 
+    const arabicVoice = getBestArabicVoice();
+    // On Android APK / WebViews, or if no native Arabic voice is installed, use Google TTS stream engine!
+    const useGoogleStream = isAndroidOrWebView() || !arabicVoice;
+
     function playNext() {
       if (!isPlayingAudio || audioQueue.length === 0) {
+        const cb = activeSpeakCallback;
+        activeSpeakCallback = null;
         stopArabicAudio();
+        if (typeof cb === 'function') {
+          try { cb(); } catch (err) {}
+        }
         return;
       }
 
@@ -163,6 +248,24 @@
         return;
       }
 
+      // ENGINE A: Fallback Google TTS Stream (High-fidelity MP3 for Android APK / WebViews)
+      if (useGoogleStream) {
+        playChunkViaGoogleTTS(chunk, () => {
+          if (audioQueue.length > 0) {
+            setTimeout(playNext, 120);
+          } else {
+            const cb = activeSpeakCallback;
+            activeSpeakCallback = null;
+            stopArabicAudio();
+            if (typeof cb === 'function') {
+              try { cb(); } catch (err) {}
+            }
+          }
+        });
+        return;
+      }
+
+      // ENGINE B: Browser SpeechSynthesis (Desktop Chrome / Safari with Arabic voice pack)
       if (synth) {
         try {
           if (synth.speaking || synth.pending) {
@@ -172,9 +275,7 @@
           const utterance = new SpeechSynthesisUtterance(chunk);
           utterance.lang = 'ar-SA';
           utterance.rate = customRate || 0.85;
-
-          const voice = getBestArabicVoice();
-          if (voice) utterance.voice = voice;
+          if (arabicVoice) utterance.voice = arabicVoice;
 
           currentUtterance = utterance;
 
@@ -189,33 +290,41 @@
               activeSpeakCallback = null;
               stopArabicAudio();
               if (typeof cb === 'function') {
-                try { cb(); } catch (err) { console.warn('Speak callback error:', err); }
+                try { cb(); } catch (err) {}
               }
             }
           };
 
           utterance.onend = onFinish;
           utterance.onerror = (e) => {
-            console.warn('Utterance error:', e);
-            onFinish();
+            console.warn('Utterance error, switching to Google TTS stream:', e);
+            playChunkViaGoogleTTS(chunk, onFinish);
           };
 
           synth.speak(utterance);
           if (synth.paused) synth.resume();
           return;
         } catch (e) {
-          console.warn('Synth error:', e);
+          console.warn('Synth error, switching to Google TTS stream:', e);
+          playChunkViaGoogleTTS(chunk, () => {
+            if (audioQueue.length > 0) setTimeout(playNext, 120);
+            else stopArabicAudio();
+          });
+          return;
         }
       }
 
-      stopArabicAudio();
+      // If no synth, use Google stream
+      playChunkViaGoogleTTS(chunk, playNext);
     }
 
     playNext();
   }
 
   window.speakArabic = speakArabic;
+  window.playAudioText = speakArabic; // Universal alias for all views
   window.stopArabicAudio = stopArabicAudio;
+  window.unlockMobileAudio = unlockMobileAudio;
 })();
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -302,11 +411,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // Kahoot Gamified State
     kahootPoints: 0,
     kahootStreak: 0,
-    kahootTimeLeft: 20,
+    quizQuestionCount: 10, // Default 10 Soal (pilihan: 10, 15, 20)
+    kahootTimeLeft: 35, // 35 detik per soal (waktu nyaman & tidak terburu-buru)
+    kahootDefaultTime: 35,
     kahootTimerId: null,
     kahootShowFeedback: false,
     kahootLastCorrect: false,
     kahootPointsEarned: 0,
+    leaderboardClassFilter: 'current', // 'current' (kelas siswa), 'all', 'IX-A', 'IX-B'
 
 
     // 1v1 Fast Quiz Duel State
@@ -1009,7 +1121,8 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 'qawaid', icon: 'fa-spell-check', label: 'القواعد' },
         { id: 'dialogue', icon: 'fa-comments', label: 'الحوار' },
         { id: 'quiz', icon: 'fa-pen-to-square', label: 'التدريبات' },
-        { id: 'duelgame', icon: 'fa-bolt', label: 'مُبَارَزَةُ السَّرِيعَةِ' }
+        { id: 'duelgame', icon: 'fa-bolt', label: 'مُبَارَزَةُ السَّرِيعَةِ' },
+        { id: 'leaderboard', icon: 'fa-trophy', label: 'تَرْتِيبُ الْفَصْلِ (Peringkat)' }
       ];
 
       if (state.currentUser && state.currentUser.role === 'guru') {
@@ -1593,7 +1706,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
                 <h3 class="text-base font-bold text-emerald-900 mb-1 font-arabic">التدريبات (Kuis Kahoot)</h3>
                 <p class="text-xs text-emerald-700 leading-relaxed mb-4">
-                  20 Soal kuis interaktif berbatas waktu dengan animasi skor & streak gaya Kahoot!
+                  Kuis interaktif santai (Pilihan 10, 15, atau 20 soal) dengan waktu 35 detik per soal, tampilan pas di layar HP, dan rekap peringkat kelas!
                 </p>
               </div>
               <button onclick="document.querySelector('[data-view=quiz]').click()" class="w-full py-2.5 bg-purple-50 hover:bg-purple-700 hover:text-white text-purple-800 rounded-xl font-semibold text-xs transition-all flex items-center justify-center gap-2">
@@ -1619,6 +1732,26 @@ document.addEventListener('DOMContentLoaded', () => {
               <button onclick="document.querySelector('[data-view=duelgame]').click()" class="w-full py-2.5 bg-white text-amber-900 hover:bg-amber-100 rounded-xl font-extrabold text-xs transition-all flex items-center justify-center gap-2 shadow-md">
                 <span>⚡ Main Duel 1v1</span>
                 <i class="fa-solid fa-play"></i>
+              </button>
+            </div>
+
+            <!-- Card 6: Peringkat Kelas (Leaderboard) -->
+            <div class="bg-gradient-to-br from-indigo-900 via-indigo-950 to-purple-950 rounded-[2rem] p-6 shadow-xl border-2 border-yellow-400/40 hover:shadow-2xl transition-all flex flex-col justify-between group text-white">
+              <div>
+                <div class="w-14 h-14 rounded-2xl bg-yellow-400 text-yellow-950 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform shadow-md font-bold">
+                  <i class="fa-solid fa-trophy"></i>
+                </div>
+                <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-yellow-400/20 text-yellow-300 rounded-full text-[10px] font-bold border border-yellow-400/30 mb-2">
+                  <span>🏆 Rekap Satu Kelas</span>
+                </div>
+                <h3 class="text-base font-bold text-white mb-1 font-arabic">تَرْتِيبُ الْفَصْلِ (Peringkat Kelas)</h3>
+                <p class="text-xs text-purple-200 leading-relaxed mb-4">
+                  Lihat klasemen rangking teman sekelas secara real-time, perolehan nilai kuis, dan akumulasi poin Kahoot!
+                </p>
+              </div>
+              <button onclick="document.querySelector('[data-view=leaderboard]').click()" class="w-full py-2.5 bg-yellow-400 text-yellow-950 hover:bg-yellow-300 rounded-xl font-extrabold text-xs transition-all flex items-center justify-center gap-2 shadow-md">
+                <span>🏆 Buka Peringkat Kelas</span>
+                <i class="fa-solid fa-arrow-right"></i>
               </button>
             </div>
 
@@ -5152,24 +5285,237 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
   }
 
-  // 6. QUIZ VIEW (Kahoot Gamified Tadribat - 20 Soal Bahasa Arab)
-  function renderQuiz() {
-    const quizzes = ARABIC_DATA.quizzes;
-    const currentQ = quizzes[state.quizIndex];
+  // Helper to get active quiz questions based on selected question count (default 10)
+  function getActiveQuizQuestions() {
+    const count = state.quizQuestionCount || 10;
+    return ARABIC_DATA.quizzes.slice(0, count);
+  }
 
-    // CASE 1: KAHOOT PODIUM END SCREEN (SUDAH SELESAI)
+  // 🏆 REKAP RANGKING AKHIR KELAS (Leaderboard View & Embedded Component)
+  function renderClassLeaderboard(filterClass) {
+    const currentClass = (state.currentUser && state.currentUser.class) ? state.currentUser.class : 'IX-A';
+    const activeFilter = filterClass || state.leaderboardClassFilter || 'current';
+    
+    let classToUse = activeFilter === 'current' ? currentClass : activeFilter;
+    let studentList = [...(state.students || [])];
+    
+    // Ensure current logged-in student is included with latest real-time points
+    if (state.currentUser && state.currentUser.role === 'siswa') {
+      const idx = studentList.findIndex(s => 
+        (state.currentUser.id && String(s.id) === String(state.currentUser.id)) ||
+        (s.name && state.currentUser.name && s.name.trim().toLowerCase() === state.currentUser.name.trim().toLowerCase())
+      );
+      if (idx !== -1) {
+        studentList[idx] = {
+          ...studentList[idx],
+          score: Math.max(state.quizScore || 0, studentList[idx].score || 0),
+          kahootPoints: Math.max(state.kahootPoints || 0, studentList[idx].kahootPoints || 0)
+        };
+      } else {
+        studentList.push({
+          id: state.currentUser.id || 999,
+          name: state.currentUser.name || 'Siswa Aktif',
+          class: currentClass,
+          score: state.quizScore || 85,
+          kahootPoints: state.kahootPoints || 9500,
+          avatar: state.currentUser.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150'
+        });
+      }
+    }
+
+    if (classToUse !== 'all') {
+      studentList = studentList.filter(s => (s.class || '').toLowerCase() === classToUse.toLowerCase());
+    }
+
+    // Sort students by kahootPoints descending
+    studentList.sort((a, b) => {
+      const ptsA = (a.kahootPoints !== undefined) ? a.kahootPoints : (a.score ? a.score * 150 : 0);
+      const ptsB = (b.kahootPoints !== undefined) ? b.kahootPoints : (b.score ? b.score * 150 : 0);
+      return ptsB - ptsA;
+    });
+
+    // Find current student's rank
+    let currentRank = -1;
+    if (state.currentUser) {
+      currentRank = studentList.findIndex(s => 
+        (state.currentUser.id && String(s.id) === String(state.currentUser.id)) ||
+        (s.name && state.currentUser.name && s.name.trim().toLowerCase() === state.currentUser.name.trim().toLowerCase())
+      ) + 1;
+    }
+
+    return `
+      <div class="bg-gradient-to-br from-indigo-950 via-slate-900 to-purple-950 rounded-3xl p-4 sm:p-7 text-white shadow-2xl border-2 border-yellow-400/40 space-y-5 w-full max-w-full overflow-hidden">
+        
+        <!-- Header Leaderboard -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/10 pb-4">
+          <div>
+            <div class="inline-flex items-center gap-2 bg-yellow-400/20 text-yellow-300 px-3 py-1 rounded-full text-xs font-bold border border-yellow-400/30 mb-1.5">
+              <i class="fa-solid fa-trophy text-yellow-400"></i>
+              <span>Papan Peringkat Resmi Kelas</span>
+            </div>
+            <h3 class="text-xl sm:text-2xl font-extrabold font-arabic text-white">
+              تَرْتِيبُ النَّتَائِجِ لِلْفَصْلِ (${classToUse === 'all' ? 'Seluruh Siswa' : `Kelas ${classToUse}`})
+            </h3>
+            <p class="text-xs text-purple-200">
+              Rekap hasil nilai dan total poin Kahoot siswa dalam satu kelas (Dapat dilihat oleh seluruh siswa)
+            </p>
+          </div>
+
+          <!-- Class Filter Switcher Buttons -->
+          <div class="flex items-center gap-1 bg-black/40 p-1 rounded-2xl border border-white/15 self-start sm:self-auto flex-wrap">
+            <button data-rank-filter="current" class="rank-filter-btn px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${activeFilter === 'current' ? 'bg-yellow-400 text-yellow-950 shadow-md' : 'text-purple-200 hover:text-white'}">
+              Kelas Saya (${currentClass})
+            </button>
+            <button data-rank-filter="IX-A" class="rank-filter-btn px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${activeFilter === 'IX-A' ? 'bg-yellow-400 text-yellow-950 shadow-md' : 'text-purple-200 hover:text-white'}">
+              IX-A
+            </button>
+            <button data-rank-filter="IX-B" class="rank-filter-btn px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${activeFilter === 'IX-B' ? 'bg-yellow-400 text-yellow-950 shadow-md' : 'text-purple-200 hover:text-white'}">
+              IX-B
+            </button>
+            <button data-rank-filter="all" class="rank-filter-btn px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${activeFilter === 'all' ? 'bg-yellow-400 text-yellow-950 shadow-md' : 'text-purple-200 hover:text-white'}">
+              Semua
+            </button>
+          </div>
+        </div>
+
+        <!-- Current Student Rank Callout Banner -->
+        ${currentRank > 0 && state.currentUser ? `
+          <div class="bg-gradient-to-r from-yellow-500/20 via-amber-500/20 to-emerald-500/20 border-2 border-yellow-400/50 rounded-2xl p-3 sm:p-4 flex items-center justify-between gap-3 shadow-lg">
+            <div class="flex items-center gap-3">
+              <div class="w-11 h-11 rounded-2xl bg-yellow-400 text-yellow-950 font-black text-xl flex items-center justify-center shadow-lg shrink-0">
+                #${currentRank}
+              </div>
+              <div class="min-w-0">
+                <div class="text-[11px] text-yellow-300 font-bold uppercase tracking-wider">Peringkat Anda Saat Ini</div>
+                <div class="text-sm sm:text-base font-extrabold text-white truncate">
+                  ${state.currentUser.name} <span class="text-xs font-normal text-purple-200">(${classToUse === 'all' ? 'Semua Kelas' : `Kelas ${classToUse}`})</span>
+                </div>
+              </div>
+            </div>
+            <div class="text-right shrink-0">
+              <div class="text-[10px] text-purple-200 uppercase font-bold">Total Poin</div>
+              <div class="text-base sm:text-lg font-black text-yellow-300 font-mono">⭐ ${(state.kahootPoints || 0).toLocaleString()}</div>
+            </div>
+          </div>
+        ` : ''}
+
+        <!-- Top 3 Podium Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3">
+          ${studentList.slice(0, 3).map((st, i) => {
+            const medals = ['🥇 Juara 1', '🥈 Juara 2', '🥉 Juara 3'];
+            const borderColors = ['border-yellow-400 bg-yellow-400/10', 'border-slate-300 bg-slate-300/10', 'border-amber-600 bg-amber-600/10'];
+            const badgeColors = ['bg-yellow-400 text-yellow-950', 'bg-slate-200 text-slate-900', 'bg-amber-600 text-white'];
+            const pts = (st.kahootPoints !== undefined) ? st.kahootPoints : (st.score ? st.score * 150 : 0);
+            const isMe = state.currentUser && (
+              (state.currentUser.id && String(st.id) === String(state.currentUser.id)) ||
+              (st.name && state.currentUser.name && st.name.trim().toLowerCase() === state.currentUser.name.trim().toLowerCase())
+            );
+
+            return `
+              <div class="p-3 sm:p-4 rounded-2xl border ${borderColors[i]} ${isMe ? 'ring-2 ring-yellow-400 shadow-xl' : ''} flex items-center gap-3 relative overflow-hidden">
+                <div class="w-10 h-10 rounded-full font-black text-base flex items-center justify-center shrink-0 shadow-md ${badgeColors[i]}">
+                  ${i + 1}
+                </div>
+                <div class="min-w-0 flex-1">
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-yellow-300">${medals[i]}</span>
+                    ${isMe ? '<span class="text-[9px] bg-yellow-400 text-yellow-950 font-bold px-1.5 py-0.2 rounded-full">Anda</span>' : ''}
+                  </div>
+                  <h4 class="font-bold text-sm text-white truncate">${st.name}</h4>
+                  <div class="text-xs text-purple-200 flex items-center gap-2 font-mono mt-0.5">
+                    <span class="text-yellow-300 font-bold">⭐ ${pts.toLocaleString()}</span>
+                    <span>• ${st.class || 'IX-A'}</span>
+                  </div>
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+
+        <!-- Full Ranking Table (Responsive with No Horizontal Scrollbar Blowout) -->
+        <div class="bg-black/30 rounded-2xl border border-white/10 overflow-hidden shadow-inner w-full">
+          <div class="max-h-72 overflow-y-auto overflow-x-auto">
+            <table class="w-full text-left text-xs sm:text-sm">
+              <thead class="bg-white/10 text-purple-200 uppercase text-[10px] sm:text-[11px] font-bold sticky top-0 backdrop-blur-md">
+                <tr>
+                  <th class="py-2.5 px-2.5 sm:px-4 text-center w-12">Rank</th>
+                  <th class="py-2.5 px-2.5 sm:px-4">Nama Siswa</th>
+                  <th class="py-2.5 px-2 sm:px-3 text-center w-16">Kelas</th>
+                  <th class="py-2.5 px-2.5 sm:px-4 text-right">Poin</th>
+                  <th class="py-2.5 px-2 sm:px-3 text-center w-16">Nilai</th>
+                  <th class="py-2.5 px-2 sm:px-3 text-center w-20">Status</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-white/5">
+                ${studentList.map((st, idx) => {
+                  const pts = (st.kahootPoints !== undefined) ? st.kahootPoints : (st.score ? st.score * 150 : 0);
+                  const score = st.score || Math.round(pts / 150);
+                  const isMe = state.currentUser && (
+                    (state.currentUser.id && String(st.id) === String(state.currentUser.id)) ||
+                    (st.name && state.currentUser.name && st.name.trim().toLowerCase() === state.currentUser.name.trim().toLowerCase())
+                  );
+                  
+                  let rankBadge = `${idx + 1}`;
+                  if (idx === 0) rankBadge = '🥇 1';
+                  else if (idx === 1) rankBadge = '🥈 2';
+                  else if (idx === 2) rankBadge = '🥉 3';
+
+                  return `
+                    <tr class="${isMe ? 'bg-yellow-400/20 font-bold text-yellow-200 border-l-4 border-yellow-400' : 'hover:bg-white/5 text-purple-100'} transition-colors">
+                      <td class="py-2 px-2.5 sm:px-4 text-center font-bold font-mono">
+                        ${rankBadge}
+                      </td>
+                      <td class="py-2 px-2.5 sm:px-4">
+                        <div class="flex items-center gap-1.5">
+                          <span class="truncate max-w-[120px] sm:max-w-xs font-semibold ${isMe ? 'text-yellow-300' : 'text-white'}">${st.name}</span>
+                          ${isMe ? '<span class="text-[9px] bg-yellow-400 text-yellow-950 px-1.5 py-0.2 rounded-full font-bold shrink-0">Saya</span>' : ''}
+                        </div>
+                      </td>
+                      <td class="py-2 px-2 sm:px-3 text-center text-xs font-mono text-purple-200">
+                        ${st.class || 'IX-A'}
+                      </td>
+                      <td class="py-2 px-2.5 sm:px-4 text-right font-mono font-bold text-yellow-300 whitespace-nowrap">
+                        ⭐ ${pts.toLocaleString()}
+                      </td>
+                      <td class="py-2 px-2 sm:px-3 text-center font-mono font-bold">
+                        <span class="${score >= 75 ? 'text-emerald-400' : 'text-amber-400'}">${score}</span>
+                      </td>
+                      <td class="py-2 px-2 sm:px-3 text-center">
+                        <span class="px-2 py-0.5 rounded-full text-[9px] font-bold ${score >= 90 ? 'bg-emerald-400/20 text-emerald-300 border border-emerald-400/30' : (score >= 75 ? 'bg-teal-400/20 text-teal-300 border border-teal-400/30' : 'bg-amber-400/20 text-amber-300 border border-amber-400/30')}">
+                          ${score >= 90 ? 'Sempurna' : (score >= 75 ? 'Tuntas' : 'Latihan')}
+                        </span>
+                      </td>
+                    </tr>
+                  `;
+                }).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    `;
+  }
+
+  // 6. QUIZ VIEW (Kahoot Gamified Tadribat - Pilihan 10 / 15 / 20 Soal)
+  function renderQuiz() {
+    const quizzes = getActiveQuizQuestions();
+    const currentQ = quizzes[state.quizIndex] || quizzes[0];
+    const totalQCount = quizzes.length;
+
+    // CASE 1: KAHOOT PODIUM END SCREEN (SUDAH SELESAI + REKAP RANKING KELAS)
     if (state.quizSubmitted) {
       let correctCount = 0;
       quizzes.forEach(q => {
         if (state.quizAnswers[q.id] === q.answer) correctCount++;
       });
-      const accuracyPct = Math.round((correctCount / quizzes.length) * 100);
+      const accuracyPct = Math.round((correctCount / totalQCount) * 100);
 
       return `
-        <div class="max-w-4xl mx-auto space-y-8">
+        <div class="max-w-4xl mx-auto space-y-6 sm:space-y-8 px-2 sm:px-4 w-full max-w-full overflow-x-hidden">
           
           <!-- Kahoot Champion Podium Stage Header -->
-          <div class="bg-gradient-to-br from-indigo-950 via-purple-900 to-emerald-950 rounded-[2.5rem] p-8 sm:p-12 text-white shadow-2xl border-4 border-yellow-400/40 text-center space-y-6 relative overflow-hidden">
+          <div class="bg-gradient-to-br from-indigo-950 via-purple-900 to-emerald-950 rounded-[2.5rem] p-6 sm:p-12 text-white shadow-2xl border-4 border-yellow-400/40 text-center space-y-6 relative overflow-hidden">
             
             <!-- Confetti / Ambient Lighting Orbs -->
             <div class="absolute -top-10 -left-10 w-40 h-40 bg-yellow-400/20 rounded-full blur-2xl pointer-events-none"></div>
@@ -5177,60 +5523,76 @@ document.addEventListener('DOMContentLoaded', () => {
 
             <div class="inline-flex items-center gap-2 bg-yellow-400/20 backdrop-blur-md px-4 py-1.5 rounded-full text-xs font-bold text-yellow-300 border border-yellow-400/30">
               <i class="fa-solid fa-trophy text-yellow-400"></i>
-              <span>منصة التتويج (Kahoot Champions Leaderboard)</span>
+              <span>منصة التتويج (Kahoot Champions Podium)</span>
             </div>
 
             <div>
-              <h2 class="text-4xl sm:text-5xl font-extrabold font-arabic text-white">نَتِيجَةُ الاِخْتِبَارِ النهَائِيَّةُ!</h2>
-              <p class="text-sm text-purple-200 mt-1">Selamat! Anda telah menyelesaikan 20 Soal Kuis Kahoot Bahasa Arab</p>
+              <h2 class="text-3xl sm:text-5xl font-extrabold font-arabic text-white">نَتِيجَةُ الاِخْتِبَارِ النهَائِيَّةُ</h2>
+              <p class="text-xs sm:text-sm text-purple-200 mt-1">Selamat! Anda telah menyelesaikan ${totalQCount} Soal Kuis Kahoot Bahasa Arab</p>
             </div>
 
             <!-- Kahoot Score & Points Card -->
-            <div class="grid sm:grid-cols-3 gap-4 max-w-2xl mx-auto pt-2">
-              <div class="bg-white/10 backdrop-blur-md p-5 rounded-3xl border border-white/20 text-center space-y-1">
-                <span class="text-[11px] uppercase font-bold text-purple-200 block">Total Poin Kahoot</span>
-                <span class="text-3xl font-extrabold text-yellow-300 font-mono">⭐ ${state.kahootPoints.toLocaleString()}</span>
+            <div class="grid grid-cols-3 gap-2.5 sm:gap-4 max-w-2xl mx-auto pt-2">
+              <div class="bg-white/10 backdrop-blur-md p-3 sm:p-5 rounded-2xl sm:rounded-3xl border border-white/20 text-center space-y-1">
+                <span class="text-[10px] sm:text-[11px] uppercase font-bold text-purple-200 block">Total Poin</span>
+                <span class="text-lg sm:text-3xl font-extrabold text-yellow-300 font-mono">⭐ ${state.kahootPoints.toLocaleString()}</span>
               </div>
-              <div class="bg-white/10 backdrop-blur-md p-5 rounded-3xl border border-white/20 text-center space-y-1">
-                <span class="text-[11px] uppercase font-bold text-purple-200 block">Tingkat Akurasi</span>
-                <span class="text-3xl font-extrabold text-emerald-400 font-mono">${accuracyPct}%</span>
+              <div class="bg-white/10 backdrop-blur-md p-3 sm:p-5 rounded-2xl sm:rounded-3xl border border-white/20 text-center space-y-1">
+                <span class="text-[10px] sm:text-[11px] uppercase font-bold text-purple-200 block">Akurasi</span>
+                <span class="text-lg sm:text-3xl font-extrabold text-emerald-400 font-mono">${accuracyPct}%</span>
               </div>
-              <div class="bg-white/10 backdrop-blur-md p-5 rounded-3xl border border-white/20 text-center space-y-1">
-                <span class="text-[11px] uppercase font-bold text-purple-200 block">Jawaban Benar</span>
-                <span class="text-3xl font-extrabold text-cyan-300 font-mono">${correctCount} / ${quizzes.length}</span>
+              <div class="bg-white/10 backdrop-blur-md p-3 sm:p-5 rounded-2xl sm:rounded-3xl border border-white/20 text-center space-y-1">
+                <span class="text-[10px] sm:text-[11px] uppercase font-bold text-purple-200 block">Benar</span>
+                <span class="text-lg sm:text-3xl font-extrabold text-cyan-300 font-mono">${correctCount} / ${totalQCount}</span>
               </div>
             </div>
 
             <!-- Kahoot Podium Graphics -->
-            <div class="flex items-end justify-center gap-3 sm:gap-6 pt-6 pb-2">
+            <div class="flex items-end justify-center gap-3 sm:gap-6 pt-4 pb-2">
               <!-- 2nd Place -->
               <div class="flex flex-col items-center">
-                <div class="w-12 h-12 rounded-full bg-slate-300 text-slate-900 font-bold flex items-center justify-center text-xl shadow-lg border-2 border-white mb-2">🥈</div>
-                <div class="w-20 sm:w-24 h-24 bg-gradient-to-t from-slate-600 to-slate-400 rounded-t-2xl flex items-center justify-center text-white font-bold text-lg shadow-lg">2</div>
+                <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-slate-300 text-slate-900 font-bold flex items-center justify-center text-lg sm:text-xl shadow-lg border-2 border-white mb-2">🥈</div>
+                <div class="w-16 sm:w-24 h-20 sm:h-24 bg-gradient-to-t from-slate-600 to-slate-400 rounded-t-2xl flex items-center justify-center text-white font-bold text-base sm:text-lg shadow-lg">2</div>
               </div>
               <!-- 1st Place (Champion) -->
               <div class="flex flex-col items-center">
-                <div class="w-16 h-16 rounded-full bg-yellow-400 text-yellow-950 font-bold flex items-center justify-center text-2xl shadow-xl border-4 border-white mb-2 animate-bounce">🥇</div>
-                <div class="w-24 sm:w-28 h-36 bg-gradient-to-t from-yellow-600 via-amber-500 to-yellow-400 rounded-t-2xl flex flex-col items-center justify-center text-yellow-950 font-extrabold shadow-2xl border-t-2 border-yellow-200">
-                  <span class="text-xs uppercase font-sans">Juara 1</span>
-                  <span class="text-xl font-arabic truncate px-1">${state.currentUser ? state.currentUser.name.split(' ')[0] : 'Siswa'}</span>
-                  <span class="text-2xl mt-1">1</span>
+                <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-yellow-400 text-yellow-950 font-bold flex items-center justify-center text-xl sm:text-2xl shadow-xl border-4 border-white mb-2 animate-bounce">🥇</div>
+                <div class="w-20 sm:w-28 h-28 sm:h-36 bg-gradient-to-t from-yellow-600 via-amber-500 to-yellow-400 rounded-t-2xl flex flex-col items-center justify-center text-yellow-950 font-extrabold shadow-2xl border-t-2 border-yellow-200">
+                  <span class="text-[10px] sm:text-xs uppercase font-sans">Juara 1</span>
+                  <span class="text-base sm:text-xl font-arabic truncate px-1">${state.currentUser ? state.currentUser.name.split(' ')[0] : 'Siswa'}</span>
+                  <span class="text-xl sm:text-2xl mt-0.5 sm:mt-1">1</span>
                 </div>
               </div>
               <!-- 3rd Place -->
               <div class="flex flex-col items-center">
-                <div class="w-12 h-12 rounded-full bg-amber-700 text-white font-bold flex items-center justify-center text-xl shadow-lg border-2 border-white mb-2">🥉</div>
-                <div class="w-20 sm:w-24 h-16 bg-gradient-to-t from-amber-800 to-amber-600 rounded-t-2xl flex items-center justify-center text-white font-bold text-lg shadow-lg">3</div>
+                <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-amber-700 text-white font-bold flex items-center justify-center text-lg sm:text-xl shadow-lg border-2 border-white mb-2">🥉</div>
+                <div class="w-16 sm:w-24 h-14 sm:h-16 bg-gradient-to-t from-amber-800 to-amber-600 rounded-t-2xl flex items-center justify-center text-white font-bold text-base sm:text-lg shadow-lg">3</div>
+              </div>
+            </div>
+
+            <!-- Question Count Mode Selector for Next Play -->
+            <div class="bg-black/30 p-3 sm:p-4 rounded-2xl border border-white/10 max-w-md mx-auto space-y-2">
+              <span class="text-[11px] font-bold text-yellow-300 block uppercase">Pilih Mode Jumlah Soal:</span>
+              <div class="flex items-center justify-center gap-2">
+                <button data-count="10" class="quiz-count-btn flex-1 py-2 rounded-xl text-xs font-bold transition-all ${state.quizQuestionCount === 10 ? 'bg-yellow-400 text-yellow-950 shadow-md font-extrabold' : 'bg-white/10 text-white hover:bg-white/20'}">
+                  10 Soal (Cepat)
+                </button>
+                <button data-count="15" class="quiz-count-btn flex-1 py-2 rounded-xl text-xs font-bold transition-all ${state.quizQuestionCount === 15 ? 'bg-yellow-400 text-yellow-950 shadow-md font-extrabold' : 'bg-white/10 text-white hover:bg-white/20'}">
+                  15 Soal
+                </button>
+                <button data-count="20" class="quiz-count-btn flex-1 py-2 rounded-xl text-xs font-bold transition-all ${state.quizQuestionCount === 20 ? 'bg-yellow-400 text-yellow-950 shadow-md font-extrabold' : 'bg-white/10 text-white hover:bg-white/20'}">
+                  20 Soal (Lengkap)
+                </button>
               </div>
             </div>
 
             <!-- Action Buttons -->
-            <div class="flex flex-wrap gap-3 max-w-md mx-auto pt-4">
-              <button id="retry-quiz-btn" class="flex-1 py-3.5 bg-yellow-400 hover:bg-yellow-300 text-yellow-950 rounded-2xl text-xs sm:text-sm font-extrabold shadow-lg transition-all flex items-center justify-center gap-2">
+            <div class="flex flex-wrap gap-2.5 sm:gap-3 max-w-md mx-auto pt-2">
+              <button id="retry-quiz-btn" class="flex-1 py-3 sm:py-3.5 bg-yellow-400 hover:bg-yellow-300 text-yellow-950 rounded-2xl text-xs sm:text-sm font-extrabold shadow-lg transition-all flex items-center justify-center gap-2">
                 <i class="fa-solid fa-play"></i>
-                <span>Mainkan Lagi (Reset Kahoot)</span>
+                <span>Mainkan Lagi</span>
               </button>
-              <button onclick="document.querySelector('[data-view=dashboard]').click()" class="flex-1 py-3.5 bg-white/20 hover:bg-white/30 text-white rounded-2xl text-xs sm:text-sm font-bold backdrop-blur-md transition-all flex items-center justify-center gap-2 border border-white/20">
+              <button onclick="document.querySelector('[data-view=dashboard]').click()" class="flex-1 py-3 sm:py-3.5 bg-white/20 hover:bg-white/30 text-white rounded-2xl text-xs sm:text-sm font-bold backdrop-blur-md transition-all flex items-center justify-center gap-2 border border-white/20">
                 <i class="fa-solid fa-house"></i>
                 <span>Dashboard</span>
               </button>
@@ -5238,35 +5600,38 @@ document.addEventListener('DOMContentLoaded', () => {
 
           </div>
 
+          <!-- EMBEDDED CLASS LEADERBOARD RECAP (Terlihat untuk Siswa) -->
+          ${renderClassLeaderboard()}
+
           <!-- Kahoot Detailed Pembahasan Review -->
-          <div class="bg-white rounded-[2.5rem] p-6 sm:p-8 border border-emerald-100 shadow-md space-y-6">
-            <h3 class="text-lg font-bold text-emerald-950 border-b border-emerald-100 pb-3 font-arabic flex items-center justify-between">
+          <div class="bg-white rounded-[2rem] sm:rounded-[2.5rem] p-4 sm:p-8 border border-emerald-100 shadow-md space-y-4 sm:space-y-6">
+            <h3 class="text-base sm:text-lg font-bold text-emerald-950 border-b border-emerald-100 pb-3 font-arabic flex items-center justify-between">
               <span>مُرَاجَعَةُ الْأَجْوِبَةِ (Pembahasan Kunci Jawaban Kahoot)</span>
-              <span class="text-xs text-emerald-600 font-sans">20 Soal Pembahasan</span>
+              <span class="text-xs text-emerald-600 font-sans">${totalQCount} Soal Pembahasan</span>
             </h3>
 
-            <div class="space-y-4 max-h-[600px] overflow-y-auto pr-2">
+            <div class="space-y-3 sm:space-y-4 max-h-[600px] overflow-y-auto pr-1">
               ${quizzes.map((q, idx) => {
                 const userAns = state.quizAnswers[q.id];
                 const isCorrect = userAns === q.answer;
                 
                 return `
-                  <div class="p-5 rounded-2xl border ${isCorrect ? 'bg-emerald-50/60 border-emerald-200' : 'bg-red-50/50 border-red-200'} space-y-2">
+                  <div class="p-4 sm:p-5 rounded-2xl border ${isCorrect ? 'bg-emerald-50/60 border-emerald-200' : 'bg-red-50/50 border-red-200'} space-y-2">
                     <div class="flex items-center justify-between text-xs font-bold">
                       <span class="${isCorrect ? 'text-emerald-800' : 'text-red-800'}">Soal #${idx + 1}</span>
-                      <span class="px-3 py-1 rounded-full text-[10px] ${isCorrect ? 'bg-emerald-100 text-emerald-900' : 'bg-red-100 text-red-900'}">
+                      <span class="px-3 py-0.5 rounded-full text-[10px] ${isCorrect ? 'bg-emerald-100 text-emerald-900' : 'bg-red-100 text-red-900'}">
                         ${isCorrect ? '✓ Benar' : '✗ Salah'}
                       </span>
                     </div>
-                    <p class="text-xl font-bold font-arabic text-emerald-950 text-right dir-rtl leading-relaxed">${q.question}</p>
+                    <p dir="rtl" class="text-base sm:text-lg font-bold font-arabic text-emerald-950 text-right leading-relaxed" style="unicode-bidi: isolate;">${q.question}</p>
                     <div class="text-xs space-y-1 font-sans">
-                      <div class="text-emerald-950">Jawaban Anda: <strong class="${isCorrect ? 'text-emerald-700' : 'text-red-600 line-through'} font-arabic text-base">${userAns !== undefined && userAns !== -1 ? q.options[userAns] : 'Waktu Habis'}</strong></div>
-                      ${!isCorrect ? `<div class="text-emerald-950">Jawaban Benar: <strong class="text-emerald-700 font-arabic text-base">${q.options[q.answer]}</strong></div>` : ''}
+                      <div class="text-emerald-950">Jawaban Anda: <strong dir="rtl" class="${isCorrect ? 'text-emerald-700' : 'text-red-600 line-through'} font-arabic text-sm sm:text-base inline-block" style="unicode-bidi: isolate;">${userAns !== undefined && userAns !== -1 ? q.options[userAns] : 'Waktu Habis'}</strong></div>
+                      ${!isCorrect ? `<div class="text-emerald-950">Jawaban Benar: <strong dir="rtl" class="text-emerald-700 font-arabic text-sm sm:text-base inline-block" style="unicode-bidi: isolate;">${q.options[q.answer]}</strong></div>` : ''}
                     </div>
                     ${q.explanation ? `
-                      <div class="bg-white p-3 rounded-xl border border-emerald-100 text-xs text-emerald-900 space-y-0.5 mt-2">
-                        <strong class="text-emerald-800 font-arabic block text-sm">الشَّرْحُ:</strong>
-                        <p class="font-arabic text-base text-right text-emerald-950">${q.explanation}</p>
+                      <div class="bg-white p-3 rounded-xl border border-emerald-100 text-xs text-emerald-950 space-y-0.5 mt-2">
+                        <strong class="text-emerald-800 font-arabic block text-xs sm:text-sm">الشَّرْحُ:</strong>
+                        <p dir="rtl" class="font-arabic text-sm sm:text-base text-right text-emerald-950" style="unicode-bidi: isolate;">${q.explanation}</p>
                       </div>
                     ` : ''}
                   </div>
@@ -5279,42 +5644,42 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
     }
 
-    // CASE 2: KAHOOT IMMEDIATE ANSWER FEEDBACK SCREEN (Correct or Incorrect Feedback Transisi)
+    // CASE 2: KAHOOT IMMEDIATE ANSWER FEEDBACK SCREEN
     if (state.kahootShowFeedback) {
       const isCorrect = state.kahootLastCorrect;
       
       return `
-        <div class="max-w-2xl mx-auto space-y-6">
-          <div class="${isCorrect ? 'bg-gradient-to-br from-emerald-600 via-teal-700 to-emerald-900 border-emerald-400' : 'bg-gradient-to-br from-red-600 via-rose-700 to-red-900 border-red-400'} rounded-[2.5rem] p-8 sm:p-12 text-white shadow-2xl border-4 text-center space-y-6 relative overflow-hidden">
+        <div class="max-w-2xl mx-auto space-y-6 px-2 sm:px-4 w-full max-w-full overflow-x-hidden">
+          <div class="${isCorrect ? 'bg-gradient-to-br from-emerald-600 via-teal-700 to-emerald-900 border-emerald-400' : 'bg-gradient-to-br from-red-600 via-rose-700 to-red-900 border-red-400'} rounded-[2.5rem] p-6 sm:p-12 text-white shadow-2xl border-4 text-center space-y-5 sm:space-y-6 relative overflow-hidden">
             
             <!-- Large Feedback Icon -->
-            <div class="w-24 h-24 ${isCorrect ? 'bg-emerald-400/30 text-white' : 'bg-red-400/30 text-white'} rounded-full flex items-center justify-center text-5xl mx-auto shadow-2xl border-4 border-white/40 ${isCorrect ? 'animate-bounce' : 'animate-pulse'}">
+            <div class="w-20 h-20 sm:w-24 sm:h-24 ${isCorrect ? 'bg-emerald-400/30 text-white' : 'bg-red-400/30 text-white'} rounded-full flex items-center justify-center text-4xl sm:text-5xl mx-auto shadow-2xl border-4 border-white/40 ${isCorrect ? 'animate-bounce' : 'animate-pulse'}">
               <i class="fa-solid ${isCorrect ? 'fa-check' : 'fa-xmark'}"></i>
             </div>
 
             <!-- Headline -->
             <div class="space-y-1">
-              <h2 class="text-4xl sm:text-5xl font-extrabold font-arabic text-white drop-shadow">
-                ${isCorrect ? 'إِجَابَةٌ صَحِيحَةٌ!' : 'إِجَابَةٌ خَاطِئَةٌ!'}
+              <h2 dir="rtl" class="text-3xl sm:text-5xl font-extrabold font-arabic text-white drop-shadow" style="unicode-bidi: isolate;">
+                ${isCorrect ? 'إِجَابَةٌ صَحِيحَةٌ' : 'إِجَابَةٌ خَاطِئَةٌ'}
               </h2>
-              <p class="text-sm font-semibold text-white/90">
+              <p class="text-xs sm:text-sm font-semibold text-white/90">
                 ${isCorrect ? 'Luar biasa! Jawaban Anda Tepat Sekali!' : 'Belum tepat, mari pelajari penjelasannya!'}
               </p>
             </div>
 
             <!-- Points & Streak Badge -->
-            <div class="flex items-center justify-center gap-4 py-2">
+            <div class="flex items-center justify-center gap-3 sm:gap-4 py-1">
               ${isCorrect ? `
-                <div class="px-5 py-2 bg-yellow-400 text-yellow-950 rounded-2xl font-extrabold text-lg shadow-lg font-mono">
+                <div class="px-4 py-2 bg-yellow-400 text-yellow-950 rounded-2xl font-extrabold text-base sm:text-lg shadow-lg font-mono">
                   +${state.kahootPointsEarned.toLocaleString()} Poin!
                 </div>
                 ${state.kahootStreak > 1 ? `
-                  <div class="px-5 py-2 bg-orange-500 text-white rounded-2xl font-extrabold text-lg shadow-lg font-mono animate-pulse">
+                  <div class="px-4 py-2 bg-orange-500 text-white rounded-2xl font-extrabold text-base sm:text-lg shadow-lg font-mono animate-pulse">
                     🔥 Streak x${state.kahootStreak}!
                   </div>
                 ` : ''}
               ` : `
-                <div class="px-5 py-2 bg-black/30 text-white rounded-2xl font-bold text-sm border border-white/20">
+                <div class="px-4 py-2 bg-black/30 text-white rounded-2xl font-bold text-xs sm:text-sm border border-white/20">
                   🔥 Streak Reset Ke 0
                 </div>
               `}
@@ -5322,22 +5687,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
             <!-- Show Correct Answer if Wrong -->
             ${!isCorrect ? `
-              <div class="bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/20 space-y-1 max-w-md mx-auto">
-                <span class="text-xs uppercase font-bold text-red-200 block">Jawaban Yang Benar Adalah:</span>
-                <p class="font-arabic font-bold text-2xl text-yellow-300 leading-snug">${currentQ.options[currentQ.answer]}</p>
+              <div class="bg-white/10 backdrop-blur-md p-3.5 sm:p-4 rounded-2xl border border-white/20 space-y-1 max-w-md mx-auto">
+                <span class="text-[11px] uppercase font-bold text-red-200 block">Jawaban Yang Benar Adalah:</span>
+                <p dir="rtl" class="font-arabic font-bold text-lg sm:text-2xl text-yellow-300 leading-snug" style="unicode-bidi: isolate;">${currentQ.options[currentQ.answer]}</p>
               </div>
             ` : ''}
 
             <!-- Arabic Explanation Card -->
-            <div class="bg-white/10 backdrop-blur-md p-5 rounded-3xl border border-white/20 text-right space-y-1 max-w-lg mx-auto">
-              <span class="text-xs font-extrabold text-yellow-300 block uppercase font-sans border-b border-white/10 pb-1">الشَّرْحُ (Penjelasan):</span>
-              <p class="font-arabic font-bold text-xl text-white leading-relaxed pt-1">${currentQ.explanation}</p>
+            <div class="bg-white/10 backdrop-blur-md p-4 sm:p-5 rounded-2xl sm:rounded-3xl border border-white/20 text-right space-y-1 max-w-lg mx-auto">
+              <span class="text-[11px] font-extrabold text-yellow-300 block uppercase font-sans border-b border-white/10 pb-1">الشَّرْحُ (Penjelasan):</span>
+              <p dir="rtl" class="font-arabic font-bold text-base sm:text-xl text-white leading-relaxed pt-1" style="unicode-bidi: isolate;">${currentQ.explanation}</p>
             </div>
 
             <!-- Next Question Control Button -->
-            <div class="pt-4">
-              <button id="kahoot-next-btn" class="w-full sm:w-auto px-10 py-4 ${isCorrect ? 'bg-yellow-400 hover:bg-yellow-300 text-yellow-950' : 'bg-white hover:bg-gray-100 text-red-950'} rounded-2xl font-extrabold text-base shadow-2xl transition-all flex items-center justify-center gap-3 mx-auto transform hover:scale-105">
-                <span>${state.quizIndex === quizzes.length - 1 ? 'Kirim & Selesai Kuis 🚀' : 'Soal Berikutnya ➔'}</span>
+            <div class="pt-2 sm:pt-4">
+              <button id="kahoot-next-btn" class="w-full sm:w-auto px-8 sm:px-10 py-3.5 sm:py-4 ${isCorrect ? 'bg-yellow-400 hover:bg-yellow-300 text-yellow-950' : 'bg-white hover:bg-gray-100 text-red-950'} rounded-2xl font-extrabold text-sm sm:text-base shadow-2xl transition-all flex items-center justify-center gap-3 mx-auto transform hover:scale-105">
+                <span>${state.quizIndex === totalQCount - 1 ? 'Kirim & Lihat Peringkat Kelas 🏆' : 'Soal Berikutnya ➔'}</span>
               </button>
             </div>
 
@@ -5346,24 +5711,24 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
     }
 
-    // CASE 3: KAHOOT LIVE GAMEPLAY QUESTION STAGE (COMPACT SINGLE SCREEN)
+    // CASE 3: KAHOOT LIVE GAMEPLAY QUESTION STAGE (SINGLE COLUMN ON MOBILE - ZERO HORIZONTAL SCROLL)
     return `
-      <div class="max-w-4xl mx-auto space-y-2.5 sm:space-y-4">
+      <div class="max-w-4xl mx-auto space-y-2.5 sm:space-y-4 px-2 sm:px-4 w-full max-w-full overflow-x-hidden">
         
-        <!-- Kahoot Stage Top Scoreboard Bar (Compact) -->
-        <div class="bg-gradient-to-r from-purple-950 via-indigo-900 to-purple-950 px-3 py-2 sm:px-5 sm:py-2.5 rounded-2xl border border-purple-500/30 text-white shadow-md flex items-center justify-between gap-2">
+        <!-- Kahoot Stage Top Scoreboard Bar -->
+        <div class="bg-gradient-to-r from-purple-950 via-indigo-900 to-purple-950 px-3 py-2 sm:px-5 sm:py-2.5 rounded-2xl border border-purple-500/30 text-white shadow-md flex items-center justify-between gap-2 w-full max-w-full">
           
-          <!-- Question Pill Badge -->
-          <div class="flex items-center gap-1.5 sm:gap-2">
-            <span class="px-3 py-1 bg-purple-800 text-purple-200 rounded-full text-xs font-bold border border-purple-600 shadow-inner">
-              Soal ${state.quizIndex + 1}/${quizzes.length}
+          <!-- Question Pill Badge & TTS -->
+          <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+            <span class="px-2.5 sm:px-3 py-1 bg-purple-800 text-purple-200 rounded-full text-xs font-bold border border-purple-600 shadow-inner">
+              Soal ${state.quizIndex + 1}/${totalQCount}
             </span>
             <button onclick="speakArabic('${currentQ.question.replace(/\n/g, ' ')}')" class="p-1.5 sm:p-2 bg-white/10 hover:bg-white/20 text-white rounded-xl text-xs transition-all border border-white/10" title="Baca Soal">
               <i class="fa-solid fa-volume-high"></i>
             </button>
           </div>
 
-          <!-- Circular Live Countdown Timer Gauge -->
+          <!-- Circular Live Countdown Timer Gauge (35s Default) -->
           <div class="flex items-center gap-2">
             <div class="relative w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-full bg-purple-950 border-2 ${state.kahootTimeLeft <= 5 ? 'border-red-500 animate-ping' : 'border-yellow-400'} shadow-md">
               <span class="kahoot-stage-timer text-sm sm:text-base font-extrabold font-mono ${state.kahootTimeLeft <= 5 ? 'text-red-400' : 'text-yellow-300'}">${state.kahootTimeLeft}</span>
@@ -5371,7 +5736,7 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
 
           <!-- Points & Streak Badges -->
-          <div class="flex items-center gap-1.5 sm:gap-2">
+          <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
             <div class="px-2.5 py-1 bg-yellow-400/20 text-yellow-300 rounded-xl text-xs font-bold border border-yellow-400/40 flex items-center gap-1">
               <span>⭐</span>
               <span class="font-mono text-xs sm:text-sm">${state.kahootPoints.toLocaleString()}</span>
@@ -5386,62 +5751,62 @@ document.addEventListener('DOMContentLoaded', () => {
 
         </div>
 
-        <!-- Main Kahoot Stage Question Card (Compact Single Screen) -->
-        <div class="bg-gradient-to-br from-indigo-950 via-purple-950 to-slate-950 rounded-2xl sm:rounded-3xl p-3 sm:p-5 border-2 border-purple-500/40 text-white shadow-xl space-y-2.5 sm:space-y-4 relative overflow-hidden">
+        <!-- Main Kahoot Stage Question Card (RTL isolated typography, zero side scroll) -->
+        <div class="bg-gradient-to-br from-indigo-950 via-purple-950 to-slate-950 rounded-2xl sm:rounded-3xl p-3 sm:p-5 border-2 border-purple-500/40 text-white shadow-xl space-y-3 sm:space-y-4 relative w-full max-w-full overflow-hidden">
           
-          <!-- Compact Question Container -->
-          <div class="bg-white/10 backdrop-blur-md px-3.5 py-2.5 sm:px-6 sm:py-3.5 rounded-xl sm:rounded-2xl border border-white/15 text-center shadow-inner">
-            <span class="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-purple-300 block font-sans mb-1">السُّؤَالُ (Pertanyaan):</span>
-            <h2 class="text-base sm:text-xl md:text-2xl font-bold font-arabic text-yellow-300 leading-snug sm:leading-relaxed text-center dir-rtl drop-shadow-sm whitespace-pre-line">
+          <!-- Question Container (Full Width, Wrap text, Punctuation Isolated) -->
+          <div class="bg-white/10 backdrop-blur-md px-3.5 py-3 sm:px-6 sm:py-4 rounded-xl sm:rounded-2xl border border-white/15 text-center shadow-inner w-full max-w-full overflow-hidden">
+            <span class="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-purple-300 block font-sans mb-1.5">السُّؤَالُ (Pertanyaan):</span>
+            <h2 dir="rtl" class="text-base sm:text-xl md:text-2xl font-bold font-arabic text-yellow-300 leading-snug sm:leading-relaxed text-center drop-shadow-sm whitespace-pre-line break-words px-1" style="unicode-bidi: isolate;">
               ${currentQ.question}
             </h2>
           </div>
 
-          <!-- 4 Iconic Kahoot 2x2 Answer Cards Grid (Fit on Single Screen) -->
-          <div class="grid grid-cols-2 gap-2 sm:gap-3.5">
+          <!-- 4 Answer Cards: 1 Kolom di HP (Full Width, No Horizontal Scroll), 2 Kolom di Tablet/Desktop -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3.5 w-full max-w-full">
             
             <!-- Red Triangle Card (Option 0 - أ) -->
-            <button data-opt="0" class="kahoot-card-btn group bg-gradient-to-r from-red-600 via-red-600 to-rose-700 hover:from-red-500 hover:to-rose-600 text-white p-2.5 sm:p-4 rounded-xl sm:rounded-2xl border border-red-300/40 shadow-md hover:shadow-red-500/40 transform hover:scale-[1.01] active:scale-95 transition-all flex items-center justify-between gap-1.5 sm:gap-3 text-right min-h-[56px] sm:min-h-[72px]">
+            <button data-opt="0" class="kahoot-card-btn group bg-gradient-to-r from-red-600 via-red-600 to-rose-700 hover:from-red-500 hover:to-rose-600 text-white p-3 sm:p-4 rounded-xl sm:rounded-2xl border border-red-300/40 shadow-md hover:shadow-red-500/40 active:scale-98 transition-all flex items-center justify-between gap-2.5 sm:gap-3 w-full max-w-full min-h-[52px] sm:min-h-[64px]">
               <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl bg-black/25 group-hover:bg-white/20 text-white flex items-center justify-center text-xs sm:text-sm font-bold font-arabic shrink-0 shadow-inner">
                 أ
               </div>
-              <span class="text-xs sm:text-base md:text-lg font-bold font-arabic flex-1 text-right leading-tight sm:leading-snug drop-shadow-sm line-clamp-2">
+              <span dir="rtl" class="text-sm sm:text-base md:text-lg font-bold font-arabic flex-1 text-right leading-snug drop-shadow-sm break-words px-1" style="unicode-bidi: isolate;">
                 ${currentQ.options[0]}
               </span>
-              <i class="fa-solid fa-play -rotate-90 text-sm sm:text-lg text-red-200 group-hover:scale-110 transition-transform shrink-0 opacity-80"></i>
+              <i class="fa-solid fa-play -rotate-90 text-xs sm:text-sm text-red-200 group-hover:scale-110 transition-transform shrink-0 opacity-80"></i>
             </button>
 
             <!-- Blue Diamond Card (Option 1 - ب) -->
-            <button data-opt="1" class="kahoot-card-btn group bg-gradient-to-r from-blue-600 via-blue-600 to-indigo-700 hover:from-blue-500 hover:to-indigo-600 text-white p-2.5 sm:p-4 rounded-xl sm:rounded-2xl border border-blue-300/40 shadow-md hover:shadow-blue-500/40 transform hover:scale-[1.01] active:scale-95 transition-all flex items-center justify-between gap-1.5 sm:gap-3 text-right min-h-[56px] sm:min-h-[72px]">
+            <button data-opt="1" class="kahoot-card-btn group bg-gradient-to-r from-blue-600 via-blue-600 to-indigo-700 hover:from-blue-500 hover:to-indigo-600 text-white p-3 sm:p-4 rounded-xl sm:rounded-2xl border border-blue-300/40 shadow-md hover:shadow-blue-500/40 active:scale-98 transition-all flex items-center justify-between gap-2.5 sm:gap-3 w-full max-w-full min-h-[52px] sm:min-h-[64px]">
               <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl bg-black/25 group-hover:bg-white/20 text-white flex items-center justify-center text-xs sm:text-sm font-bold font-arabic shrink-0 shadow-inner">
                 ب
               </div>
-              <span class="text-xs sm:text-base md:text-lg font-bold font-arabic flex-1 text-right leading-tight sm:leading-snug drop-shadow-sm line-clamp-2">
+              <span dir="rtl" class="text-sm sm:text-base md:text-lg font-bold font-arabic flex-1 text-right leading-snug drop-shadow-sm break-words px-1" style="unicode-bidi: isolate;">
                 ${currentQ.options[1]}
               </span>
-              <i class="fa-solid fa-diamond text-sm sm:text-lg text-blue-200 group-hover:scale-110 transition-transform shrink-0 opacity-80"></i>
+              <i class="fa-solid fa-diamond text-xs sm:text-sm text-blue-200 group-hover:scale-110 transition-transform shrink-0 opacity-80"></i>
             </button>
 
             <!-- Yellow Circle Card (Option 2 - ج) -->
-            <button data-opt="2" class="kahoot-card-btn group bg-gradient-to-r from-amber-500 via-amber-500 to-yellow-600 hover:from-amber-400 hover:to-yellow-500 text-white p-2.5 sm:p-4 rounded-xl sm:rounded-2xl border border-amber-300/40 shadow-md hover:shadow-amber-500/40 transform hover:scale-[1.01] active:scale-95 transition-all flex items-center justify-between gap-1.5 sm:gap-3 text-right min-h-[56px] sm:min-h-[72px]">
+            <button data-opt="2" class="kahoot-card-btn group bg-gradient-to-r from-amber-500 via-amber-500 to-yellow-600 hover:from-amber-400 hover:to-yellow-500 text-white p-3 sm:p-4 rounded-xl sm:rounded-2xl border border-amber-300/40 shadow-md hover:shadow-amber-500/40 active:scale-98 transition-all flex items-center justify-between gap-2.5 sm:gap-3 w-full max-w-full min-h-[52px] sm:min-h-[64px]">
               <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl bg-black/25 group-hover:bg-white/20 text-white flex items-center justify-center text-xs sm:text-sm font-bold font-arabic shrink-0 shadow-inner">
                 ج
               </div>
-              <span class="text-xs sm:text-base md:text-lg font-bold font-arabic flex-1 text-right leading-tight sm:leading-snug drop-shadow-sm line-clamp-2">
+              <span dir="rtl" class="text-sm sm:text-base md:text-lg font-bold font-arabic flex-1 text-right leading-snug drop-shadow-sm break-words px-1" style="unicode-bidi: isolate;">
                 ${currentQ.options[2]}
               </span>
-              <i class="fa-solid fa-circle text-sm sm:text-lg text-amber-100 group-hover:scale-110 transition-transform shrink-0 opacity-80"></i>
+              <i class="fa-solid fa-circle text-xs sm:text-sm text-amber-100 group-hover:scale-110 transition-transform shrink-0 opacity-80"></i>
             </button>
 
             <!-- Green Square Card (Option 3 - د) -->
-            <button data-opt="3" class="kahoot-card-btn group bg-gradient-to-r from-emerald-600 via-emerald-600 to-teal-700 hover:from-emerald-500 hover:to-teal-600 text-white p-2.5 sm:p-4 rounded-xl sm:rounded-2xl border border-emerald-300/40 shadow-md hover:shadow-emerald-500/40 transform hover:scale-[1.01] active:scale-95 transition-all flex items-center justify-between gap-1.5 sm:gap-3 text-right min-h-[56px] sm:min-h-[72px]">
+            <button data-opt="3" class="kahoot-card-btn group bg-gradient-to-r from-emerald-600 via-emerald-600 to-teal-700 hover:from-emerald-500 hover:to-teal-600 text-white p-3 sm:p-4 rounded-xl sm:rounded-2xl border border-emerald-300/40 shadow-md hover:shadow-emerald-500/40 active:scale-98 transition-all flex items-center justify-between gap-2.5 sm:gap-3 w-full max-w-full min-h-[52px] sm:min-h-[64px]">
               <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl bg-black/25 group-hover:bg-white/20 text-white flex items-center justify-center text-xs sm:text-sm font-bold font-arabic shrink-0 shadow-inner">
                 د
               </div>
-              <span class="text-xs sm:text-base md:text-lg font-bold font-arabic flex-1 text-right leading-tight sm:leading-snug drop-shadow-sm line-clamp-2">
+              <span dir="rtl" class="text-sm sm:text-base md:text-lg font-bold font-arabic flex-1 text-right leading-snug drop-shadow-sm break-words px-1" style="unicode-bidi: isolate;">
                 ${currentQ.options[3]}
               </span>
-              <i class="fa-solid fa-square text-sm sm:text-lg text-emerald-200 group-hover:scale-110 transition-transform shrink-0 opacity-80"></i>
+              <i class="fa-solid fa-square text-xs sm:text-sm text-emerald-200 group-hover:scale-110 transition-transform shrink-0 opacity-80"></i>
             </button>
 
           </div>
@@ -5998,6 +6363,9 @@ document.addEventListener('DOMContentLoaded', () => {
         case 'duelgame':
           title = 'Biiah 4.0 - Game Duel 1v1';
           break;
+        case 'leaderboard':
+          title = 'Biiah 4.0 - Peringkat Kelas';
+          break;
         case 'students':
           title = 'Biiah 4.0 - Monitoring';
           break;
@@ -6086,9 +6454,26 @@ document.addEventListener('DOMContentLoaded', () => {
         appContainer.innerHTML = renderSimpleDuelGame();
         attachSimpleDuelGameEvents();
         break;
+      case 'leaderboard':
+        appContainer.innerHTML = `
+          <div class="max-w-4xl mx-auto space-y-6">
+            ${renderClassLeaderboard()}
+          </div>
+        `;
+        attachLeaderboardEvents();
+        break;
       case 'students':
-        appContainer.innerHTML = renderStudents();
-        attachStudentEvents();
+        if (state.currentUser && state.currentUser.role === 'guru') {
+          appContainer.innerHTML = renderStudents();
+          attachStudentEvents();
+        } else {
+          appContainer.innerHTML = `
+            <div class="max-w-4xl mx-auto space-y-6">
+              ${renderClassLeaderboard()}
+            </div>
+          `;
+          attachLeaderboardEvents();
+        }
         break;
       case 'settings':
         if (state.currentUser && state.currentUser.role === 'guru') {
@@ -6701,8 +7086,46 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  function attachLeaderboardEvents() {
+    document.querySelectorAll('.rank-filter-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        state.leaderboardClassFilter = e.currentTarget.getAttribute('data-rank-filter');
+        render();
+      });
+    });
+  }
+
   function attachQuizEvents() {
-    const quizzes = ARABIC_DATA.quizzes;
+    const quizzes = getActiveQuizQuestions();
+    const defaultTime = state.kahootDefaultTime || 35;
+
+    // Attach leaderboard rank filter events on podium screen
+    attachLeaderboardEvents();
+
+    // Attach question count switcher buttons (10, 15, 20 Soal)
+    document.querySelectorAll('.quiz-count-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const count = parseInt(e.currentTarget.getAttribute('data-count'));
+        if (count && [10, 15, 20].includes(count)) {
+          if (state.kahootTimerId) {
+            clearInterval(state.kahootTimerId);
+            state.kahootTimerId = null;
+          }
+          state.quizQuestionCount = count;
+          state.quizIndex = 0;
+          state.quizAnswers = {};
+          state.quizSubmitted = false;
+          state.quizScore = 0;
+          state.kahootPoints = 0;
+          state.kahootStreak = 0;
+          state.kahootTimeLeft = defaultTime;
+          state.kahootShowFeedback = false;
+          state.kahootLastCorrect = false;
+          state.kahootPointsEarned = 0;
+          render();
+        }
+      });
+    });
 
     // Clear previous timer interval if any
     if (state.kahootTimerId) {
@@ -6715,7 +7138,7 @@ document.addEventListener('DOMContentLoaded', () => {
       state.kahootTimerId = setInterval(() => {
         if (state.kahootTimeLeft > 0) {
           state.kahootTimeLeft--;
-          // Update live timer element in DOM directly for smooth 60fps countdown
+          // Update live timer element in DOM directly for smooth countdown
           const timerEl = document.querySelector('.kahoot-stage-timer');
           if (timerEl) {
             timerEl.textContent = state.kahootTimeLeft;
@@ -6728,7 +7151,9 @@ document.addEventListener('DOMContentLoaded', () => {
           clearInterval(state.kahootTimerId);
           state.kahootTimerId = null;
           const currentQ = quizzes[state.quizIndex];
-          state.quizAnswers[currentQ.id] = -1; // timeout
+          if (currentQ) {
+            state.quizAnswers[currentQ.id] = -1; // timeout
+          }
           state.kahootLastCorrect = false;
           state.kahootStreak = 0;
           state.kahootPointsEarned = 0;
@@ -6751,6 +7176,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const optIdx = parseInt(e.currentTarget.getAttribute('data-opt'));
         const currentQ = quizzes[state.quizIndex];
+        if (!currentQ) return;
         const isCorrect = optIdx === currentQ.answer;
 
         state.quizAnswers[currentQ.id] = optIdx;
@@ -6781,7 +7207,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (kahootNextBtn) {
       kahootNextBtn.addEventListener('click', () => {
         state.kahootShowFeedback = false;
-        state.kahootTimeLeft = 20;
+        state.kahootTimeLeft = defaultTime;
 
         if (state.quizIndex < quizzes.length - 1) {
           state.quizIndex++;
@@ -6794,6 +7220,19 @@ document.addEventListener('DOMContentLoaded', () => {
           });
           state.quizScore = Math.round((correctCount / quizzes.length) * 100);
           state.quizSubmitted = true;
+
+          // Sync student record & ranking points in state.students
+          if (state.currentUser && state.currentUser.role === 'siswa') {
+            const curStd = (state.students || []).find(s => 
+              (state.currentUser.id && String(s.id) === String(state.currentUser.id)) ||
+              (s.name && state.currentUser.name && s.name.trim().toLowerCase() === state.currentUser.name.trim().toLowerCase())
+            );
+            if (curStd) {
+              curStd.score = Math.max(state.quizScore, curStd.score || 0);
+              curStd.kahootPoints = Math.max(state.kahootPoints, curStd.kahootPoints || 0);
+              localStorage.setItem('arabic_app_students', JSON.stringify(state.students));
+            }
+          }
 
           submitStudentActivity({
             activityType: 'Latihan Kuis Interaktif (Kahoot)',
@@ -6827,7 +7266,7 @@ document.addEventListener('DOMContentLoaded', () => {
         state.quizScore = 0;
         state.kahootPoints = 0;
         state.kahootStreak = 0;
-        state.kahootTimeLeft = 20;
+        state.kahootTimeLeft = defaultTime;
         state.kahootShowFeedback = false;
         state.kahootLastCorrect = false;
         state.kahootPointsEarned = 0;
