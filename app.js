@@ -1366,37 +1366,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                   </div>
 
-                  <!-- Pilihan Foto Profil / Avatar Siswa -->
-                  <div>
-                    <label class="block text-xs font-bold text-gray-700 mb-1.5 uppercase tracking-wider">Foto Profil / Avatar</label>
-                    <div class="flex items-center gap-3.5 p-3 bg-emerald-50/50 rounded-2xl border border-emerald-200/80">
-                      <!-- Avatar Preview (Fixed 56px circle) -->
-                      <div class="shrink-0" style="width: 56px; height: 56px; min-width: 56px; min-height: 56px;">
-                        <div class="w-14 h-14 rounded-full ring-2 ring-emerald-500/40 p-0.5 bg-gradient-to-tr from-amber-400 to-emerald-500 overflow-hidden shadow-sm flex items-center justify-center" style="width: 56px; height: 56px; min-width: 56px; min-height: 56px;">
-                          <img id="reg-avatar-preview" src="avatar-siswa.jpg" alt="Preview Foto" class="w-full h-full object-cover rounded-full block" style="width: 56px; height: 56px; max-width: 56px; max-height: 56px; object-fit: cover;" />
-                        </div>
-                      </div>
-                      
-                      <!-- Pilihan Avatar Options -->
-                      <div class="flex-1 space-y-1.5 min-w-0">
-                        <div class="flex items-center gap-1.5 flex-wrap">
-                          <button type="button" id="reg-avatar-opt-putra" class="reg-avatar-btn px-2.5 py-1 rounded-xl text-xs font-bold bg-emerald-700 text-white shadow-xs transition-all border border-emerald-600 flex items-center gap-1 cursor-pointer">
-                            <span>👦 Putra</span>
-                          </button>
-                          <button type="button" id="reg-avatar-opt-putri" class="reg-avatar-btn px-2.5 py-1 rounded-xl text-xs font-bold bg-white text-emerald-800 hover:bg-emerald-100 transition-all border border-emerald-200 flex items-center gap-1 cursor-pointer">
-                            <span>🧕 Putri</span>
-                          </button>
-                          <label for="reg-avatar-file" id="reg-avatar-upload-btn" class="px-2.5 py-1 rounded-xl text-xs font-bold bg-white text-emerald-800 hover:bg-emerald-100 transition-all border border-emerald-200 flex items-center gap-1 cursor-pointer" title="Pilih foto dari Galeri HP / Kamera">
-                            <i class="fa-solid fa-camera text-[11px] text-emerald-600"></i>
-                            <span>Upload</span>
-                            <input type="file" id="reg-avatar-file" accept="image/*" class="hidden">
-                          </label>
-                        </div>
-                        <p id="reg-avatar-desc" class="text-[11px] text-gray-500 truncate">Pilih avatar atau upload foto dari HP</p>
-                      </div>
-                    </div>
-                  </div>
-
                   <div>
                     <label class="block text-xs font-bold text-gray-700 mb-1.5 uppercase tracking-wider">Kata Sandi</label>
                     <div class="relative">
@@ -6687,6 +6656,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 <span class="px-2.5 py-1 bg-emerald-500/20 text-emerald-200 rounded-full text-xs font-semibold border border-emerald-400/30 shadow-xs">
                   ID: ${user.id || '-'}
                 </span>
+                <label for="profile-avatar-upload" class="px-3 py-1 bg-amber-400/20 hover:bg-amber-400/30 active:scale-95 text-amber-300 rounded-full text-xs font-bold border border-amber-400/40 shadow-xs inline-flex items-center gap-1.5 cursor-pointer transition-all">
+                  <i class="fa-solid fa-camera text-xs"></i>
+                  <span>Ganti Foto</span>
+                </label>
               </div>
 
               <h1 class="text-2xl sm:text-3xl font-black text-white font-sans tracking-tight">
@@ -7421,77 +7394,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    // 4. Form Pendaftaran Akun Siswa Baru & Pilihan Avatar
-    let regSelectedAvatar = 'avatar-siswa.jpg';
-    let regUserCustomAvatar = false;
-
-    const regAvatarPreview = document.getElementById('reg-avatar-preview');
-    const regAvatarOptPutra = document.getElementById('reg-avatar-opt-putra');
-    const regAvatarOptPutri = document.getElementById('reg-avatar-opt-putri');
-    const regAvatarUploadBtn = document.getElementById('reg-avatar-upload-btn');
-    const regAvatarFile = document.getElementById('reg-avatar-file');
-    const regAvatarDesc = document.getElementById('reg-avatar-desc');
-    const regNameInput = document.getElementById('reg-name');
-
-    function updateRegAvatarUI(type, customUrl = null, customLabel = null) {
-      if (type === 'putra') {
-        regSelectedAvatar = 'avatar-siswa.jpg';
-        regUserCustomAvatar = false;
-        if (regAvatarPreview) regAvatarPreview.src = 'avatar-siswa.jpg';
-        if (regAvatarOptPutra) regAvatarOptPutra.className = "reg-avatar-btn px-2.5 py-1 rounded-xl text-xs font-bold bg-emerald-700 text-white shadow-xs transition-all border border-emerald-600 flex items-center gap-1 cursor-pointer";
-        if (regAvatarOptPutri) regAvatarOptPutri.className = "reg-avatar-btn px-2.5 py-1 rounded-xl text-xs font-bold bg-white text-emerald-800 hover:bg-emerald-100 transition-all border border-emerald-200 flex items-center gap-1 cursor-pointer";
-        if (regAvatarUploadBtn) regAvatarUploadBtn.className = "px-2.5 py-1 rounded-xl text-xs font-bold bg-white text-emerald-800 hover:bg-emerald-100 transition-all border border-emerald-200 flex items-center gap-1 cursor-pointer";
-        if (regAvatarDesc) regAvatarDesc.textContent = "Avatar Santri Putra dipilih";
-      } else if (type === 'putri') {
-        regSelectedAvatar = 'avatar-siswi.jpg';
-        regUserCustomAvatar = false;
-        if (regAvatarPreview) regAvatarPreview.src = 'avatar-siswi.jpg';
-        if (regAvatarOptPutra) regAvatarOptPutra.className = "reg-avatar-btn px-2.5 py-1 rounded-xl text-xs font-bold bg-white text-emerald-800 hover:bg-emerald-100 transition-all border border-emerald-200 flex items-center gap-1 cursor-pointer";
-        if (regAvatarOptPutri) regAvatarOptPutri.className = "reg-avatar-btn px-2.5 py-1 rounded-xl text-xs font-bold bg-emerald-700 text-white shadow-xs transition-all border border-emerald-600 flex items-center gap-1 cursor-pointer";
-        if (regAvatarUploadBtn) regAvatarUploadBtn.className = "px-2.5 py-1 rounded-xl text-xs font-bold bg-white text-emerald-800 hover:bg-emerald-100 transition-all border border-emerald-200 flex items-center gap-1 cursor-pointer";
-        if (regAvatarDesc) regAvatarDesc.textContent = "Avatar Santri Putri dipilih";
-      } else if (type === 'custom' && customUrl) {
-        regSelectedAvatar = customUrl;
-        regUserCustomAvatar = true;
-        if (regAvatarPreview) regAvatarPreview.src = customUrl;
-        if (regAvatarOptPutra) regAvatarOptPutra.className = "reg-avatar-btn px-2.5 py-1 rounded-xl text-xs font-bold bg-white text-emerald-800 hover:bg-emerald-100 transition-all border border-emerald-200 flex items-center gap-1 cursor-pointer";
-        if (regAvatarOptPutri) regAvatarOptPutri.className = "reg-avatar-btn px-2.5 py-1 rounded-xl text-xs font-bold bg-white text-emerald-800 hover:bg-emerald-100 transition-all border border-emerald-200 flex items-center gap-1 cursor-pointer";
-        if (regAvatarUploadBtn) regAvatarUploadBtn.className = "px-2.5 py-1 rounded-xl text-xs font-bold bg-emerald-700 text-white shadow-xs transition-all border border-emerald-600 flex items-center gap-1 cursor-pointer";
-        if (regAvatarDesc) regAvatarDesc.textContent = customLabel || "✓ Foto profil kustom siap";
-      }
-    }
-
-    if (regAvatarOptPutra) {
-      regAvatarOptPutra.addEventListener('click', () => updateRegAvatarUI('putra'));
-    }
-    if (regAvatarOptPutri) {
-      regAvatarOptPutri.addEventListener('click', () => updateRegAvatarUI('putri'));
-    }
-    if (regAvatarFile) {
-      regAvatarFile.addEventListener('change', async (e) => {
-        const file = e.target.files && e.target.files[0];
-        if (!file) return;
-        try {
-          if (regAvatarDesc) regAvatarDesc.textContent = "Memproses foto...";
-          const dataUrl = await compressImageFile(file, 260, 260, 0.82);
-          updateRegAvatarUI('custom', dataUrl, `✓ Foto (${file.name.substring(0, 10)}...)`);
-        } catch(err) {
-          console.error("Gagal mengolah avatar upload:", err);
-          showRegAlert("Gagal memproses foto. Silakan coba file lain.", "error");
-        }
-      });
-    }
-
-    if (regNameInput) {
-      regNameInput.addEventListener('input', (e) => {
-        if (regUserCustomAvatar) return;
-        const val = e.target.value || '';
-        if (/siswi|putri|siti|nur|anisa|fatimah|rahma|ayu|alya|zahr/i.test(val)) {
-          updateRegAvatarUI('putri');
-        }
-      });
-    }
-
+    // 4. Form Pendaftaran Akun Siswa Baru (Nama, Kelas, Password)
     if (registerForm) {
       registerForm.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -7522,15 +7425,15 @@ document.addEventListener('DOMContentLoaded', () => {
           regSubmitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Mendaftarkan akun...';
         }
 
-        const isPutri = regSelectedAvatar === 'avatar-siswi.jpg' || (regName && /siswi|putri|siti|nur|anisa|fatimah|rahma|ayu|alya|zahr/i.test(regName));
+        const isPutri = regName && /siswi|putri|siti|nur|anisa|fatimah|rahma|ayu|alya|zahr/i.test(regName);
 
-        // Buat objek siswa baru lengkap dengan seluruh komponen nilai latihan & foto avatar
+        // Buat objek siswa baru lengkap dengan seluruh komponen nilai latihan (avatar default otomatis)
         const newStudent = {
           id: 'std_' + Date.now(),
           name: regName,
           class: regClass,
           password: regPwd,
-          avatar: regSelectedAvatar || 'avatar-siswa.jpg',
+          avatar: isPutri ? 'avatar-siswi.jpg' : 'avatar-siswa.jpg',
           gender: isPutri ? 'P' : 'L',
           score: 0,
           istimaScore: 0,
@@ -7565,9 +7468,8 @@ document.addEventListener('DOMContentLoaded', () => {
           registerBox.classList.add('hidden');
           loginBox.classList.remove('hidden');
 
-          // Reset form pendaftaran & avatar UI
+          // Reset form pendaftaran
           registerForm.reset();
-          updateRegAvatarUI('putra');
           if (regMsg) regMsg.classList.add('hidden');
 
           // Isi otomatis nama siswa di form login dan fokus ke password
