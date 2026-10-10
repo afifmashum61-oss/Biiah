@@ -263,17 +263,88 @@ window.FirebaseSync = {
     }
   },
 
-  // Simpan kamar duel 1v1 agar bisa dimainkan antar perangkat
+  // ==========================================
+  // MULTIPLAYER 1V1 DUEL REAL-TIME CLOUD METHODS
+  // ==========================================
+
+  // Buat kamar duel baru di Firestore
+  async createDuelRoom(pin, hostData) {
+    if (!this.isConnected() || !pin) return null;
+    try {
+      const roomPayload = {
+        pin: String(pin),
+        hostName: hostData.name || 'Siswa Host',
+        hostId: hostData.id || '',
+        hostClass: hostData.class || 'IX-A',
+        guestName: null,
+        guestId: null,
+        guestClass: null,
+        hostScore: 0,
+        guestScore: 0,
+        hostQ: 0,
+        guestQ: 0,
+        setIdx: typeof hostData.setIdx === 'number' ? hostData.setIdx : 0,
+        status: 'waiting', // 'waiting' -> 'playing' -> 'ended'
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      };
+      await db.collection('duel_rooms').doc(String(pin)).set(roomPayload);
+      console.log(`🔑 [Firebase] Kamar duel PIN ${pin} berhasil dibuat di Cloud!`);
+      return roomPayload;
+    } catch (err) {
+      console.warn("⚠️ Gagal createDuelRoom di Firebase:", err);
+      return null;
+    }
+  },
+
+  // Simpan / update kamar duel (alias backward compatibility)
   async saveDuelRoom(pin, roomData) {
     if (!this.isConnected() || !pin) return;
     try {
       await db.collection('duel_rooms').doc(String(pin)).set({
         ...roomData,
         pin: String(pin),
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-      });
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      }, { merge: true });
     } catch (err) {
       console.warn("⚠️ Gagal simpan kamar duel:", err);
+    }
+  },
+
+  // Siswa tamu bergabung ke kamar duel berdasarkan kode PIN
+  async joinDuelRoom(pin, guestData) {
+    if (!this.isConnected() || !pin) return { success: false, message: "Koneksi cloud Firebase belum aktif." };
+    try {
+      const docRef = db.collection('duel_rooms').doc(String(pin));
+      const snap = await docRef.get();
+      if (!snap.exists) {
+        return { success: false, message: `Kamar dengan Kode PIN ${pin} tidak ditemukan!` };
+      }
+      const room = snap.data() || {};
+      if (room.status === 'ended') {
+        return { success: false, message: "Pertandingan di kamar ini sudah selesai." };
+      }
+
+      const updatedPayload = {
+        guestName: guestData.name || 'Siswa Lawan',
+        guestId: guestData.id || '',
+        guestClass: guestData.class || 'IX-A',
+        status: 'playing',
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      };
+      await docRef.update(updatedPayload);
+      console.log(`🚪 [Firebase] Siswa ${guestData.name} berhasil bergabung ke Kamar ${pin}!`);
+      
+      return { 
+        success: true, 
+        room: {
+          ...room,
+          ...updatedPayload
+        } 
+      };
+    } catch (err) {
+      console.warn("⚠️ Gagal joinDuelRoom:", err);
+      return { success: false, message: "Gagal masuk kamar: " + err.message };
     }
   },
 
@@ -289,5 +360,47 @@ window.FirebaseSync = {
       console.warn("⚠️ Gagal mencari kamar duel:", err);
     }
     return null;
+  },
+
+  // Pasang listener real-time pada kamar duel
+  listenDuelRoom(pin, onUpdate) {
+    if (!this.isConnected() || !pin) return null;
+    try {
+      return db.collection('duel_rooms').doc(String(pin)).onSnapshot(snap => {
+        if (snap.exists && typeof onUpdate === 'function') {
+          onUpdate(snap.data());
+        }
+      }, err => {
+        console.warn("⚠️ Realtime listener duel room error:", err);
+      });
+    } catch(err) {
+      console.warn("⚠️ Gagal memasang realtime listener duel room:", err);
+      return null;
+    }
+  },
+
+  // Update live skor & nomor soal pada pertandingan duel 1v1
+  async updateDuelScore(pin, isHost, score, currentQ) {
+    if (!this.isConnected() || !pin) return;
+    try {
+      const docRef = db.collection('duel_rooms').doc(String(pin));
+      const updateData = isHost 
+        ? { hostScore: score, hostQ: currentQ, updatedAt: firebase.firestore.FieldValue.serverTimestamp() }
+        : { guestScore: score, guestQ: currentQ, updatedAt: firebase.firestore.FieldValue.serverTimestamp() };
+      await docRef.update(updateData);
+    } catch (err) {
+      // Non-critical background update
+    }
+  },
+
+  // Akhiri kamar duel
+  async endDuelRoom(pin) {
+    if (!this.isConnected() || !pin) return;
+    try {
+      await db.collection('duel_rooms').doc(String(pin)).update({
+        status: 'ended',
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+    } catch(err) {}
   }
 };

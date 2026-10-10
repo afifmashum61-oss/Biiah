@@ -1,4 +1,4 @@
-﻿const http = require('http');
+const http = require('http');
 const https = require('https');
 const fs = require('fs');
 const path = require('path');
@@ -19,6 +19,9 @@ const MIME_TYPES = {
   '.mp3': 'audio/mpeg',
   '.ico': 'image/x-icon'
 };
+
+// In-Memory Duel Rooms Store for LAN / Classroom Multi-device Play
+const inMemoryDuelRooms = new Map();
 
 const server = http.createServer((req, res) => {
   // TTS Proxy Endpoint for authentic Arabic audio without Referer blocking
@@ -61,6 +64,114 @@ const server = http.createServer((req, res) => {
     } catch (err) {
       res.writeHead(500, { 'Content-Type': 'text/plain' });
       return res.end(`Server Error: ${err.message}`);
+    }
+  }
+
+  // 1v1 Fast Duel Multiplayer API Endpoints (Local LAN / Multi-device Sync)
+  if (req.url.startsWith('/api/duel')) {
+    try {
+      const urlObj = new URL(req.url, `http://${req.headers.host || 'localhost:3000'}`);
+      res.setHeader('Access-Control-Allow-Origin', '*');
+      res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+      res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+      if (req.method === 'OPTIONS') {
+        res.writeHead(204);
+        return res.end();
+      }
+
+      const pathname = urlObj.pathname;
+
+      // GET /api/duel/room?pin=1234
+      if (req.method === 'GET' && pathname === '/api/duel/room') {
+        const pin = String(urlObj.searchParams.get('pin') || '');
+        const room = inMemoryDuelRooms.get(pin);
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        if (room) {
+          return res.end(JSON.stringify({ success: true, room }));
+        } else {
+          return res.end(JSON.stringify({ success: false, message: 'Room not found' }));
+        }
+      }
+
+      // POST Endpoints
+      if (req.method === 'POST') {
+        let body = '';
+        req.on('data', chunk => { body += chunk; });
+        req.on('end', () => {
+          try {
+            const data = body ? JSON.parse(body) : {};
+            const pin = String(data.pin || '');
+
+            if (pathname === '/api/duel/create') {
+              const newRoom = {
+                pin,
+                hostName: data.hostName || 'Siswa Host',
+                hostClass: data.hostClass || 'IX-A',
+                hostScore: 0,
+                hostQ: 0,
+                guestName: null,
+                guestClass: null,
+                guestScore: 0,
+                guestQ: 0,
+                setIdx: typeof data.setIdx === 'number' ? data.setIdx : 0,
+                status: 'waiting',
+                createdAtTime: Date.now(),
+                updatedAtTime: Date.now()
+              };
+              inMemoryDuelRooms.set(pin, newRoom);
+              res.writeHead(200, { 'Content-Type': 'application/json' });
+              return res.end(JSON.stringify({ success: true, room: newRoom }));
+            }
+
+            if (pathname === '/api/duel/join') {
+              const room = inMemoryDuelRooms.get(pin);
+              if (!room) {
+                res.writeHead(404, { 'Content-Type': 'application/json' });
+                return res.end(JSON.stringify({ success: false, message: 'Kamar dengan PIN ' + pin + ' tidak ditemukan!' }));
+              }
+              room.guestName = data.guestName || 'Siswa Lawan';
+              room.guestClass = data.guestClass || 'IX-A';
+              room.status = 'playing';
+              room.updatedAtTime = Date.now();
+              inMemoryDuelRooms.set(pin, room);
+              res.writeHead(200, { 'Content-Type': 'application/json' });
+              return res.end(JSON.stringify({ success: true, room }));
+            }
+
+            if (pathname === '/api/duel/update') {
+              const room = inMemoryDuelRooms.get(pin);
+              if (room) {
+                if (data.isHost) {
+                  if (typeof data.score === 'number') room.hostScore = data.score;
+                  if (typeof data.currentQ === 'number') room.hostQ = data.currentQ;
+                } else {
+                  if (typeof data.score === 'number') room.guestScore = data.score;
+                  if (typeof data.currentQ === 'number') room.guestQ = data.currentQ;
+                }
+                if (data.status) room.status = data.status;
+                room.updatedAtTime = Date.now();
+                inMemoryDuelRooms.set(pin, room);
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                return res.end(JSON.stringify({ success: true, room }));
+              } else {
+                res.writeHead(404, { 'Content-Type': 'application/json' });
+                return res.end(JSON.stringify({ success: false, message: 'Room not found' }));
+              }
+            }
+
+            res.writeHead(404, { 'Content-Type': 'application/json' });
+            return res.end(JSON.stringify({ success: false, message: 'Endpoint not found' }));
+          } catch (e) {
+            res.writeHead(400, { 'Content-Type': 'application/json' });
+            return res.end(JSON.stringify({ success: false, message: 'Invalid JSON body' }));
+          }
+        });
+        return;
+      }
+    } catch(err) {
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      return res.end(JSON.stringify({ success: false, message: err.message }));
     }
   }
 

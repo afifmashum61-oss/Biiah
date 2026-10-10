@@ -429,6 +429,10 @@ document.addEventListener('DOMContentLoaded', () => {
       isHost: false,
       joinPinInput: '',
       pinError: '',
+      isJoining: false,
+      guestFound: false,
+      waitingCountdown: 3,
+      countdownStarted: false,
       mode: 'ai', // 'ai' or 'pvp'
       aiDifficulty: 'medium', // 'easy', 'medium', 'hard'
       opponentName: 'Ustadz AI (Bot)',
@@ -7467,33 +7471,326 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 1000);
   }
 
-  // Real-time Broadcast Channel for Multi-Tab & Local Network Sync
+  // =========================================================================
+  // ⚡ MULTIPLAYER DUEL NETWORK ENGINE (Firebase Cloud + Server API + Broadcast)
+  // =========================================================================
   const duelSyncChannel = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('arabic_duel_channel') : null;
+
+  const DuelNetwork = {
+    activePin: null,
+    pollTimer: null,
+    firebaseUnsub: null,
+    countdownTimer: null,
+
+    cleanup: function() {
+      if (this.pollTimer) {
+        clearInterval(this.pollTimer);
+        this.pollTimer = null;
+      }
+      if (this.firebaseUnsub) {
+        try { this.firebaseUnsub(); } catch(e) {}
+        this.firebaseUnsub = null;
+      }
+      if (this.countdownTimer) {
+        clearInterval(this.countdownTimer);
+        this.countdownTimer = null;
+      }
+      this.activePin = null;
+    },
+
+    createRoom: async function(pin, hostData) {
+      this.cleanup();
+      const pinStr = String(pin).trim();
+      this.activePin = pinStr;
+
+      const roomPayload = {
+        pin: pinStr,
+        hostName: hostData.name || 'Siswa Host',
+        hostClass: hostData.class || 'IX-A',
+        setIdx: typeof hostData.setIdx === 'number' ? hostData.setIdx : 0,
+        guestName: null,
+        guestClass: null,
+        status: 'waiting',
+        hostScore: 0,
+        guestScore: 0,
+        createdAt: Date.now()
+      };
+
+      // 1. LocalStorage
+      try {
+        localStorage.setItem(`arabic_duel_room_${pinStr}`, JSON.stringify(roomPayload));
+      } catch(e) {}
+
+      // 2. Node.js Server API
+      try {
+        fetch('/api/duel/create', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(roomPayload)
+        }).catch(() => {});
+      } catch(e) {}
+
+      // 3. Firebase Cloud Firestore
+      if (window.FirebaseSync && typeof window.FirebaseSync.createDuelRoom === 'function') {
+        try {
+          await window.FirebaseSync.createDuelRoom(pinStr, hostData);
+        } catch(e) {}
+      }
+
+      // Mulai pantau bergabungnya lawan
+      this.startListening(pinStr);
+    },
+
+    joinRoom: async function(pin, guestData) {
+      this.cleanup();
+      const pinStr = String(pin).trim();
+      let roomData = null;
+
+      // Prioritas 1: Node.js Server API (LAN / Local)
+      try {
+        const resp = await fetch('/api/duel/join', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            pin: pinStr,
+            guestName: guestData.name || 'Siswa Tamu',
+            guestClass: guestData.class || 'IX-A'
+          })
+        });
+        if (resp.ok) {
+          const json = await resp.json();
+          if (json && json.success && json.room) {
+            roomData = json.room;
+          }
+        }
+      } catch(e) {}
+
+      // Prioritas 2: Firebase Cloud Firestore (Internet Realtime)
+      if (!roomData && window.FirebaseSync && typeof window.FirebaseSync.joinDuelRoom === 'function') {
+        try {
+          const fbRes = await window.FirebaseSync.joinDuelRoom(pinStr, guestData);
+          if (fbRes && fbRes.success) {
+            roomData = fbRes.room;
+          }
+        } catch(e) {}
+      }
+
+      // Prioritas 3: LocalStorage (Satu browser / beda tab)
+      if (!roomData) {
+        try {
+          const localStr = localStorage.getItem(`arabic_duel_room_${pinStr}`);
+          if (localStr) {
+            roomData = JSON.parse(localStr);
+            roomData.guestName = guestData.name || 'Siswa Tamu';
+            roomData.status = 'matched';
+            localStorage.setItem(`arabic_duel_room_${pinStr}`, JSON.stringify(roomData));
+          }
+        } catch(e) {}
+      }
+
+      if (!roomData) {
+        return {
+          success: false,
+          message: `Kode PIN [${pinStr}] tidak ditemukan! Pastikan teman Anda sudah menekan 'Buat Kamar' dan kode 4 angka sudah benar.`
+        };
+      }
+
+      this.activePin = pinStr;
+
+      // Broadcast langsung ke tab sesama perangkat
+      if (duelSyncChannel) {
+        try {
+          duelSyncChannel.postMessage({
+            type: 'GUEST_JOINED',
+            pin: pinStr,
+            guestName: guestData.name || 'Siswa Tamu'
+          });
+        } catch(e) {}
+      }
+
+      // Mulai sinkronisasi skor pertandingan
+      this.startListening(pinStr);
+
+      return { success: true, room: roomData };
+    },
+
+    startListening: function(pin) {
+      const pinStr = String(pin);
+
+      // A. Realtime Snapshot Firestore
+      if (window.FirebaseSync && typeof window.FirebaseSync.listenDuelRoom === 'function') {
+        try {
+          this.firebaseUnsub = window.FirebaseSync.listenDuelRoom(pinStr, (room) => {
+            if (room) handleDuelRoomUpdate(room);
+          });
+        } catch(e) {}
+      }
+
+      // B. HTTP Polling Fallback (setiap 1 detik)
+      this.pollTimer = setInterval(async () => {
+        try {
+          const resp = await fetch(`/api/duel/room?pin=${pinStr}`);
+          if (resp.ok) {
+            const data = await resp.json();
+            if (data && data.room) {
+              handleDuelRoomUpdate(data.room);
+            }
+          }
+        } catch(e) {
+          try {
+            const localStr = localStorage.getItem(`arabic_duel_room_${pinStr}`);
+            if (localStr) {
+              handleDuelRoomUpdate(JSON.parse(localStr));
+            }
+          } catch(err) {}
+        }
+      }, 1000);
+    },
+
+    sendScore: async function(pin, isHost, score, currentQ) {
+      const pinStr = String(pin || this.activePin);
+      if (!pinStr) return;
+
+      // 1. BroadcastChannel (Same Device Tab)
+      if (duelSyncChannel) {
+        try {
+          duelSyncChannel.postMessage({
+            type: 'SCORE_UPDATE',
+            pin: pinStr,
+            isHost: !!isHost,
+            sender: state.currentUser ? state.currentUser.name : (isHost ? 'Host' : 'Guest'),
+            score: score,
+            currentQ: currentQ
+          });
+        } catch(e) {}
+      }
+
+      // 2. Server API (LAN / Wi-Fi Lokal)
+      try {
+        fetch('/api/duel/update', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ pin: pinStr, isHost: !!isHost, score, currentQ })
+        }).catch(() => {});
+      } catch(e) {}
+
+      // 3. Firebase Cloud Firestore
+      if (window.FirebaseSync && typeof window.FirebaseSync.updateDuelScore === 'function') {
+        try {
+          window.FirebaseSync.updateDuelScore(pinStr, isHost, score, currentQ);
+        } catch(e) {}
+      }
+    }
+  };
+
+  // Broadcast Channel Listener untuk multi-tab & perangkat yang sama
   if (duelSyncChannel) {
     duelSyncChannel.onmessage = (e) => {
       const msg = e.data;
       const duel = state.duelState;
       if (!msg) return;
 
-      if (msg.type === 'GUEST_JOINED' && duel.isHost && duel.roomPin === msg.pin) {
-        duel.opponentName = msg.guestName || 'Siswa Lawan';
-        duel.lobbyStep = 'playing';
-        duel.battleEnded = false;
-        render();
-        startDuelTimer();
-      } else if (msg.type === 'HOST_STARTED' && !duel.isHost && duel.roomPin === msg.pin) {
-        duel.lobbyStep = 'playing';
-        duel.battleEnded = false;
-        render();
-        startDuelTimer();
-      } else if (msg.type === 'SCORE_UPDATE' && duel.roomPin === msg.pin && duel.lobbyStep === 'playing') {
-        if (msg.sender !== (state.currentUser ? state.currentUser.name : 'Siswa')) {
+      if (msg.type === 'GUEST_JOINED' && duel.isHost && String(duel.roomPin) === String(msg.pin)) {
+        if (!duel.guestFound) {
+          duel.guestFound = true;
+          duel.opponentName = msg.guestName || 'Siswa Lawan';
+          duel.waitingCountdown = 3;
+          playSoundEffect('correct');
+          render();
+          startDuelCountdownTransition();
+        }
+      } else if (msg.type === 'SCORE_UPDATE' && String(duel.roomPin) === String(msg.pin) && duel.lobbyStep === 'playing') {
+        const myName = state.currentUser ? state.currentUser.name : 'Siswa';
+        if (msg.sender !== myName) {
           duel.scoreOpponent = msg.score;
           duel.opponentAnswered = true;
           render();
         }
       }
     };
+  }
+
+  function handleDuelRoomUpdate(room) {
+    const duel = state.duelState;
+    if (!room || !duel.roomPin || String(room.pin) !== String(duel.roomPin)) return;
+
+    // 1. Host mendeteksi Tamu bergabung
+    if (duel.isHost && duel.lobbyStep === 'create_room') {
+      if (room.guestName && !duel.guestFound) {
+        duel.guestFound = true;
+        duel.opponentName = room.guestName;
+        duel.waitingCountdown = 3;
+        playSoundEffect('correct');
+        render();
+        startDuelCountdownTransition();
+      }
+    }
+
+    // 2. Tamu mendeteksi Host
+    if (!duel.isHost && duel.lobbyStep === 'create_room') {
+      if (room.hostName && !duel.guestFound) {
+        duel.guestFound = true;
+        duel.opponentName = room.hostName;
+        duel.waitingCountdown = 3;
+        playSoundEffect('correct');
+        render();
+        startDuelCountdownTransition();
+      }
+    }
+
+    // 3. Update Skor Lawan secara Real-time saat Gameplay Berlangsung
+    if (duel.lobbyStep === 'playing') {
+      const oppScore = duel.isHost ? room.guestScore : room.hostScore;
+      if (typeof oppScore === 'number' && oppScore !== duel.scoreOpponent) {
+        duel.scoreOpponent = oppScore;
+        duel.opponentAnswered = true;
+        const oppScoreDisplay = document.querySelector('.opponent-score-display');
+        if (oppScoreDisplay) {
+          oppScoreDisplay.textContent = `${duel.scoreOpponent} Pts`;
+        } else {
+          render();
+        }
+      }
+    }
+  }
+
+  function startDuelCountdownTransition() {
+    const duel = state.duelState;
+    if (duel.countdownStarted) return;
+    duel.countdownStarted = true;
+
+    if (DuelNetwork.countdownTimer) clearInterval(DuelNetwork.countdownTimer);
+
+    DuelNetwork.countdownTimer = setInterval(() => {
+      duel.waitingCountdown--;
+
+      const cdEl = document.getElementById('duel-lobby-countdown-number');
+      if (cdEl) {
+        cdEl.textContent = duel.waitingCountdown > 0 ? duel.waitingCountdown : 'Mulai!';
+      }
+
+      if (duel.waitingCountdown <= 0) {
+        clearInterval(DuelNetwork.countdownTimer);
+        DuelNetwork.countdownTimer = null;
+
+        // Mulai Ronde 1 Bersama-sama!
+        duel.lobbyStep = 'playing';
+        duel.battleEnded = false;
+        duel.currentQuestionIdx = 0;
+        duel.scorePlayer = 0;
+        duel.scoreOpponent = 0;
+        duel.comboStreak = 0;
+        duel.maxCombo = 0;
+        duel.timeLeft = 10;
+        duel.isSubmitted = false;
+        duel.selectedAnswer = null;
+        duel.opponentAnswered = false;
+        duel.history = [];
+
+        render();
+        startDuelTimer();
+      }
+    }, 1000);
   }
 
   function getActiveDuelQuestions() {
@@ -7694,45 +7991,70 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
     }
 
-    // STEP 2A: HOST ROOM CREATED (Waiting for Opponent)
+    // STEP 2A: ROOM WAITING SCREEN (Host / Guest Matched Screen)
     if (duel.lobbyStep === 'create_room') {
+      const isPaired = duel.guestFound;
       return `
-        <div class="max-w-xl mx-auto bg-white rounded-[2.5rem] p-8 shadow-2xl border-4 border-amber-400 text-center space-y-6">
-          <div class="w-20 h-20 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center text-4xl mx-auto shadow-inner">
-            🔑
+        <div class="max-w-xl mx-auto bg-white rounded-[2.5rem] p-8 shadow-2xl border-4 ${isPaired ? 'border-emerald-500' : 'border-amber-400'} text-center space-y-6 animate-fadeIn">
+          <div class="w-20 h-20 rounded-full ${isPaired ? 'bg-emerald-100 text-emerald-600' : 'bg-amber-100 text-amber-600'} flex items-center justify-center text-4xl mx-auto shadow-inner">
+            ${isPaired ? '⚔️' : '🔑'}
           </div>
 
           <div>
-            <span class="px-3 py-1 bg-amber-100 text-amber-900 rounded-full text-xs font-extrabold uppercase tracking-wide">
-              Kamar Duel Berhasil Dibuat
+            <span class="px-3 py-1 ${isPaired ? 'bg-emerald-100 text-emerald-900 border border-emerald-300' : 'bg-amber-100 text-amber-900 border border-amber-300'} rounded-full text-xs font-extrabold uppercase tracking-wide">
+              ${isPaired ? '🎉 Lawan Ditemukan!' : (duel.isHost ? 'Kamar Duel Berhasil Dibuat' : 'Terhubung ke Kamar Duel')}
             </span>
-            <h2 class="text-2xl font-black text-emerald-950 mt-2">Bagikan Kode PIN Ini ke Temanmu</h2>
-            <p class="text-xs text-slate-600 mt-1">${activeSet.title} (${totalQ} Soal)</p>
+            <h2 class="text-2xl font-black text-emerald-950 mt-2">
+              ${isPaired ? 'Bersiap! Duel Segera Dimulai' : (duel.isHost ? 'Bagikan Kode PIN Ini ke Temanmu' : 'Menunggu Pertandingan Dimulai')}
+            </h2>
+            <p class="text-xs text-slate-600 mt-1">${activeSet.title} (${totalQ} Soal Qawa'id)</p>
           </div>
 
           <!-- Big PIN Box -->
-          <div class="bg-gradient-to-br from-amber-500 via-amber-600 to-amber-700 text-white p-6 rounded-3xl shadow-xl border-2 border-amber-300 space-y-2">
+          <div class="bg-gradient-to-br ${isPaired ? 'from-emerald-700 via-teal-800 to-emerald-900 border-emerald-300' : 'from-amber-500 via-amber-600 to-amber-700 border-amber-300'} text-white p-6 rounded-3xl shadow-xl border-2 space-y-2">
             <div class="text-xs font-bold uppercase tracking-widest text-amber-200">KODE PIN KAMAR DUEL</div>
             <div class="text-5xl font-black font-mono tracking-widest text-white drop-shadow-md">
               ${duel.roomPin}
             </div>
-            <div class="text-[11px] text-amber-100">Siswa lain memasukkan kode ini di menu "Masuk Kamar"</div>
+            <div class="text-[11px] ${isPaired ? 'text-emerald-200' : 'text-amber-100'}">
+              ${duel.isHost ? 'Teman memasukkan kode ini di menu "Masuk Kamar"' : 'Anda berhasil terhubung ke host'}
+            </div>
           </div>
 
-          <!-- Spinner Waiting -->
-          <div class="p-4 bg-emerald-50 rounded-2xl border border-emerald-200 flex items-center justify-center gap-3 text-xs font-bold text-emerald-900">
-            <i class="fa-solid fa-spinner animate-spin text-amber-600 text-lg"></i>
-            <span>Menunggu lawan memasukkan kode PIN...</span>
-          </div>
+          <!-- Waiting vs Paired Status Card -->
+          ${isPaired ? `
+            <div class="p-6 bg-gradient-to-r from-emerald-50 to-teal-50 rounded-2xl border-2 border-emerald-300 space-y-3">
+              <div class="flex items-center justify-center gap-2 text-emerald-900 font-extrabold text-sm sm:text-base">
+                <i class="fa-solid fa-circle-check text-emerald-600 text-xl"></i>
+                <span>Lawan Bertanding: <span class="text-emerald-950 font-black text-lg underline">${duel.opponentName}</span></span>
+              </div>
+              <div class="text-xs text-slate-600">
+                Kedua perangkat telah terhubung secara real-time. Memulai pertandingan dalam:
+              </div>
+              <div class="text-4xl font-black text-emerald-700 font-mono">
+                <span id="duel-lobby-countdown-number">${duel.waitingCountdown}</span>s
+              </div>
+            </div>
+          ` : `
+            <div class="p-5 bg-amber-50 rounded-2xl border border-amber-200 flex flex-col items-center justify-center gap-2 text-xs font-bold text-amber-950">
+              <div class="flex items-center gap-2">
+                <i class="fa-solid fa-spinner animate-spin text-amber-600 text-xl"></i>
+                <span class="text-sm font-extrabold">Menunggu teman memasukkan kode PIN...</span>
+              </div>
+              <p class="text-[11px] text-slate-500 font-normal">
+                Buka menu "Masuk Kamar (Join)" pada HP lawan dan ketikkan <strong>${duel.roomPin}</strong>.
+              </p>
+            </div>
 
-          <div class="flex flex-col sm:flex-row gap-3 pt-2">
-            <button id="btn-start-host-now" class="flex-1 py-3.5 bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold rounded-2xl shadow-lg transition-all text-xs flex items-center justify-center gap-2">
-              <i class="fa-solid fa-play"></i> Mulai Duel Langsung (Simulasi)
-            </button>
-            <button id="btn-back-to-lobby" class="px-6 py-3.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-2xl transition-all text-xs">
-              Kembali
-            </button>
-          </div>
+            <div class="flex flex-col sm:flex-row gap-3 pt-2">
+              <button id="btn-cancel-to-ai" class="flex-1 py-3.5 bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold rounded-2xl shadow-lg transition-all text-xs flex items-center justify-center gap-2">
+                <i class="fa-solid fa-robot"></i> Main vs Bot AI Saja
+              </button>
+              <button id="btn-back-to-lobby" class="px-6 py-3.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-2xl transition-all text-xs">
+                Batalkan
+              </button>
+            </div>
+          `}
         </div>
       `;
     }
@@ -7756,6 +8078,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 type="text" 
                 id="input-pin-code" 
                 maxlength="4" 
+                inputmode="numeric"
+                pattern="[0-9]*"
                 required 
                 placeholder="Contoh: 7892" 
                 value="${duel.joinPinInput || ''}"
@@ -7764,14 +8088,14 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
 
             ${duel.pinError ? `
-              <div class="p-3 bg-rose-50 border border-rose-300 text-rose-800 rounded-xl text-xs font-bold">
+              <div class="p-3 bg-rose-50 border border-rose-300 text-rose-800 rounded-xl text-xs font-bold leading-relaxed">
                 ⚠️ ${duel.pinError}
               </div>
             ` : ''}
 
             <div class="flex flex-col sm:flex-row gap-3 pt-2">
-              <button type="submit" class="flex-1 py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold rounded-2xl shadow-xl transition-all text-sm flex items-center justify-center gap-2">
-                <i class="fa-solid fa-gamepad"></i> GABUNG KAMAR & MULAI DUEL
+              <button type="submit" ${duel.isJoining ? 'disabled' : ''} class="flex-1 py-4 bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-400 text-white font-extrabold rounded-2xl shadow-xl transition-all text-sm flex items-center justify-center gap-2">
+                ${duel.isJoining ? '<i class="fa-solid fa-spinner animate-spin"></i> Menghubungkan...' : '<i class="fa-solid fa-gamepad"></i> GABUNG KAMAR & MULAI DUEL'}
               </button>
               <button type="button" id="btn-back-to-lobby" class="px-6 py-4 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-2xl transition-all text-xs">
                 Kembali
@@ -8090,39 +8414,25 @@ document.addEventListener('DOMContentLoaded', () => {
       playSoundEffect('wrong');
     }
 
-    // Broadcast score if in PIN room
-    if (duelSyncChannel && duel.roomPin) {
-      duelSyncChannel.postMessage({
-        type: 'SCORE_UPDATE',
-        pin: duel.roomPin,
-        sender: state.currentUser ? state.currentUser.name : 'Siswa',
-        score: duel.scorePlayer
-      });
+    // Broadcast score if in PIN room via DuelNetwork (Firebase Cloud + Server + BroadcastChannel)
+    if (duel.mode === 'pvp' && duel.roomPin) {
+      DuelNetwork.sendScore(duel.roomPin, duel.isHost, duel.scorePlayer, duel.currentQuestionIdx);
     }
 
-    // Level-based Opponent AI Simulation
-    if (!duel.opponentAnswered) {
-      if (duel.mode === 'ai') {
-        const levelIdx = duel.selectedSetIdx || 0;
-        const sets = ARABIC_DATA.duelQuestionSets || [];
-        const currentLevel = sets[levelIdx];
-        const botAcc = currentLevel && currentLevel.botAccuracy ? currentLevel.botAccuracy : 0.70;
-        const aiCorrect = Math.random() < botAcc;
-        if (aiCorrect) {
-          const minT = Math.min(6, 1 + levelIdx);
-          const maxT = Math.min(8, 4 + levelIdx);
-          const aiTimeLeft = Math.floor(Math.random() * (maxT - minT + 1)) + minT;
-          duel.scoreOpponent += 100 + (aiTimeLeft * 12);
-        }
-        duel.opponentAnswered = true;
-      } else {
-        const aiCorrect = Math.random() < 0.75;
-        if (aiCorrect) {
-          const aiTimeLeft = Math.floor(Math.random() * 6) + 3;
-          duel.scoreOpponent += 100 + (aiTimeLeft * 12);
-        }
-        duel.opponentAnswered = true;
+    // Level-based Opponent AI Simulation (HANYA dijalankan pada mode vs Bot AI, bukan PvP)
+    if (duel.mode === 'ai' && !duel.opponentAnswered) {
+      const levelIdx = duel.selectedSetIdx || 0;
+      const sets = ARABIC_DATA.duelQuestionSets || [];
+      const currentLevel = sets[levelIdx];
+      const botAcc = currentLevel && currentLevel.botAccuracy ? currentLevel.botAccuracy : 0.70;
+      const aiCorrect = Math.random() < botAcc;
+      if (aiCorrect) {
+        const minT = Math.min(6, 1 + levelIdx);
+        const maxT = Math.min(8, 4 + levelIdx);
+        const aiTimeLeft = Math.floor(Math.random() * (maxT - minT + 1)) + minT;
+        duel.scoreOpponent += 100 + (aiTimeLeft * 12);
       }
+      duel.opponentAnswered = true;
     }
 
     // Record history
@@ -8166,6 +8476,13 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         });
 
+        // Akhiri kamar duel di Firebase Cloud jika pemain adalah host
+        if (duel.mode === 'pvp' && duel.roomPin && duel.isHost && window.FirebaseSync) {
+          try {
+            window.FirebaseSync.endDuelRoom(duel.roomPin);
+          } catch(e) {}
+        }
+
         if (isWin) playSoundEffect('combo');
         render();
       }
@@ -8174,6 +8491,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function resetDuelState(mode = 'ai') {
     if (state.duelState && state.duelState.timerId) clearInterval(state.duelState.timerId);
+    DuelNetwork.cleanup();
     state.duelState = {
       selectedSetIdx: state.duelState ? (state.duelState.selectedSetIdx || 0) : 0,
       lobbyStep: 'lobby',
@@ -8181,6 +8499,10 @@ document.addEventListener('DOMContentLoaded', () => {
       isHost: false,
       joinPinInput: '',
       pinError: '',
+      isJoining: false,
+      guestFound: false,
+      waitingCountdown: 3,
+      countdownStarted: false,
       mode,
       aiDifficulty: 'medium',
       opponentName: mode === 'ai' ? 'Ustadz AI (Bot)' : 'Siswa Teman',
@@ -8328,25 +8650,24 @@ document.addEventListener('DOMContentLoaded', () => {
     // Create Room PIN Button (Host)
     const btnCreateRoom = document.getElementById('btn-create-room');
     if (btnCreateRoom) {
-      btnCreateRoom.addEventListener('click', () => {
+      btnCreateRoom.addEventListener('click', async () => {
         const generatedPin = Math.floor(1000 + Math.random() * 9000).toString();
         duel.mode = 'pvp';
         duel.isHost = true;
         duel.roomPin = generatedPin;
         duel.opponentName = 'Menunggu Lawan...';
+        duel.guestFound = false;
+        duel.waitingCountdown = 3;
+        duel.countdownStarted = false;
         duel.lobbyStep = 'create_room';
-        
-        // Save room info locally & to Firebase Cloud
-        const duelRoomInfo = {
-          pin: generatedPin,
-          hostName: state.currentUser ? state.currentUser.name : 'Siswa Host',
-          setIdx: duel.selectedSetIdx || 0
-        };
-        localStorage.setItem(`arabic_duel_room_${generatedPin}`, JSON.stringify(duelRoomInfo));
-        if (window.FirebaseSync) {
-          window.FirebaseSync.saveDuelRoom(generatedPin, duelRoomInfo);
-        }
 
+        const hostData = {
+          name: state.currentUser ? state.currentUser.name : 'Siswa Host',
+          class: state.currentUser ? (state.currentUser.class || 'IX-A') : 'IX-A',
+          setIdx: typeof duel.selectedSetIdx === 'number' ? duel.selectedSetIdx : 0
+        };
+
+        await DuelNetwork.createRoom(generatedPin, hostData);
         render();
       });
     }
@@ -8357,14 +8678,15 @@ document.addEventListener('DOMContentLoaded', () => {
       btnJoinStep.addEventListener('click', () => {
         duel.lobbyStep = 'join_room';
         duel.pinError = '';
+        duel.isJoining = false;
         render();
       });
     }
 
-    // Form Join PIN Submit
+    // Form Join PIN Submit (Guest)
     const formJoinPin = document.getElementById('form-join-pin');
     if (formJoinPin) {
-      formJoinPin.addEventListener('submit', (e) => {
+      formJoinPin.addEventListener('submit', async (e) => {
         e.preventDefault();
         const pinInput = document.getElementById('input-pin-code').value.trim();
         duel.joinPinInput = pinInput;
@@ -8375,72 +8697,47 @@ document.addEventListener('DOMContentLoaded', () => {
           return;
         }
 
-        const savedRoom = localStorage.getItem(`arabic_duel_room_${pinInput}`);
-        
+        duel.isJoining = true;
+        duel.pinError = '';
+        render();
+
+        const guestData = {
+          name: state.currentUser ? state.currentUser.name : 'Siswa Tamu',
+          class: state.currentUser ? (state.currentUser.class || 'IX-A') : 'IX-A'
+        };
+
+        const result = await DuelNetwork.joinRoom(pinInput, guestData);
+        duel.isJoining = false;
+
+        if (!result.success) {
+          duel.pinError = result.message || "Kode PIN tidak ditemukan atau belum dibuat!";
+          render();
+          return;
+        }
+
+        const room = result.room;
         duel.mode = 'pvp';
         duel.isHost = false;
         duel.roomPin = pinInput;
-        duel.lobbyStep = 'playing';
-        duel.battleEnded = false;
-        duel.currentQuestionIdx = 0;
-        duel.scorePlayer = 0;
-        duel.scoreOpponent = 0;
-        duel.comboStreak = 0;
-        duel.maxCombo = 0;
-        duel.timeLeft = 10;
-        duel.isSubmitted = false;
-        duel.selectedAnswer = null;
-        duel.opponentAnswered = false;
-        duel.history = [];
+        duel.opponentName = room.hostName || 'Host Siswa';
+        duel.selectedSetIdx = typeof room.setIdx === 'number' ? room.setIdx : 0;
+        duel.guestFound = true;
+        duel.waitingCountdown = 3;
+        duel.countdownStarted = false;
+        duel.lobbyStep = 'create_room';
 
-        if (savedRoom) {
-          try {
-            const parsed = JSON.parse(savedRoom);
-            duel.opponentName = parsed.hostName || 'Host Siswa';
-            duel.selectedSetIdx = parsed.setIdx || 0;
-          } catch(err) {}
-        } else {
-          duel.opponentName = 'Siswa PvP (Kamar ' + pinInput + ')';
-        }
-
-        // Notify host via broadcast channel
-        if (duelSyncChannel) {
-          duelSyncChannel.postMessage({
-            type: 'GUEST_JOINED',
-            pin: pinInput,
-            guestName: state.currentUser ? state.currentUser.name : 'Siswa Lawan'
-          });
-        }
-
+        playSoundEffect('correct');
         render();
+        startDuelCountdownTransition();
       });
     }
 
-    // Host Start Match Button (Simulated / Live)
-    const btnStartHostNow = document.getElementById('btn-start-host-now');
-    if (btnStartHostNow) {
-      btnStartHostNow.addEventListener('click', () => {
-        duel.opponentName = 'Ahmad Fauzi (IX-A)';
-        duel.lobbyStep = 'playing';
-        duel.battleEnded = false;
-        duel.currentQuestionIdx = 0;
-        duel.scorePlayer = 0;
-        duel.scoreOpponent = 0;
-        duel.comboStreak = 0;
-        duel.maxCombo = 0;
-        duel.timeLeft = 10;
-        duel.isSubmitted = false;
-        duel.selectedAnswer = null;
-        duel.opponentAnswered = false;
-        duel.history = [];
-
-        if (duelSyncChannel) {
-          duelSyncChannel.postMessage({
-            type: 'HOST_STARTED',
-            pin: duel.roomPin
-          });
-        }
-
+    // Cancel to AI Button (from Waiting Screen)
+    const btnCancelToAi = document.getElementById('btn-cancel-to-ai');
+    if (btnCancelToAi) {
+      btnCancelToAi.addEventListener('click', () => {
+        resetDuelState('ai');
+        duel.lobbyStep = 'ai_levels';
         render();
       });
     }
@@ -8448,8 +8745,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Back to Lobby Button
     document.querySelectorAll('#btn-back-to-lobby').forEach(btn => {
       btn.addEventListener('click', () => {
-        if (duel.timerId) clearInterval(duel.timerId);
-        duel.lobbyStep = 'lobby';
+        resetDuelState('ai');
         render();
       });
     });
