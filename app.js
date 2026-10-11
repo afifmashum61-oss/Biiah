@@ -873,46 +873,38 @@ document.addEventListener('DOMContentLoaded', () => {
   if (closeDrawerBtn) closeDrawerBtn.addEventListener('click', () => toggleDrawer(false));
   if (drawerOverlay) drawerOverlay.addEventListener('click', () => toggleDrawer(false));
 
+  // Tutup drawer secara otomatis jika berpindah ke mode HP atau saat rotasi layar
+  window.addEventListener('resize', () => {
+    if (window.innerWidth < 768 && state.isDrawerOpen) {
+      toggleDrawer(false);
+    }
+  }, { passive: true });
+
   // =========================================================================
   // SISTEM NAVIGASI & DUKUNGAN GESTUR KEMBALI HP (HISTORY API & MOBILE BACK)
   // Memastikan gestur usap samping HP maupun tombol kembali berfungsi sempurna!
   // =========================================================================
 
-  // Reset Scroll ke Paling Atas Layar Secara Instan & Tangguh untuk Semua Browser Mobile
+  // Reset Scroll ke Paling Atas Layar Secara Instan & Halus Tanpa Layout Thrashing
   function resetScrollToTop() {
     try {
       window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
     } catch (e) {
       window.scrollTo(0, 0);
     }
-    if (document.documentElement) document.documentElement.scrollTop = 0;
-    if (document.body) document.body.scrollTop = 0;
+    if (document.documentElement && document.documentElement.scrollTop !== 0) document.documentElement.scrollTop = 0;
+    if (document.body && document.body.scrollTop !== 0) document.body.scrollTop = 0;
     const mainEl = document.querySelector('main');
-    if (mainEl) mainEl.scrollTop = 0;
+    if (mainEl && mainEl.scrollTop !== 0) mainEl.scrollTop = 0;
     const appContainerEl = document.getElementById('app-content');
-    if (appContainerEl) appContainerEl.scrollTop = 0;
+    if (appContainerEl && appContainerEl.scrollTop !== 0) appContainerEl.scrollTop = 0;
 
-    // Antisipasi reflow asynchronous layout & momentum gesture sentuhan jari di HP (Safari & Chrome)
+    // Reflow asynchronous gesture recovery untuk HP (Safari iOS & Android WebView)
     if (typeof requestAnimationFrame !== 'undefined') {
       requestAnimationFrame(() => {
         try { window.scrollTo({ top: 0, left: 0, behavior: 'instant' }); } catch(e) { window.scrollTo(0, 0); }
-        if (document.documentElement) document.documentElement.scrollTop = 0;
-        if (document.body) document.body.scrollTop = 0;
-        if (mainEl) mainEl.scrollTop = 0;
       });
     }
-    setTimeout(() => {
-      try { window.scrollTo({ top: 0, left: 0, behavior: 'instant' }); } catch(e) { window.scrollTo(0, 0); }
-      if (document.documentElement) document.documentElement.scrollTop = 0;
-      if (document.body) document.body.scrollTop = 0;
-      if (mainEl) mainEl.scrollTop = 0;
-    }, 25);
-    setTimeout(() => {
-      try { window.scrollTo({ top: 0, left: 0, behavior: 'instant' }); } catch(e) { window.scrollTo(0, 0); }
-      if (document.documentElement) document.documentElement.scrollTop = 0;
-      if (document.body) document.body.scrollTop = 0;
-      if (mainEl) mainEl.scrollTop = 0;
-    }, 80);
   }
   window.resetScrollToTop = resetScrollToTop;
 
@@ -1330,7 +1322,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="relative w-full min-h-screen flex flex-col justify-start sm:justify-center items-stretch sm:items-center p-0 sm:p-6 lg:p-8 overflow-y-auto sm:overflow-hidden bg-[#062d1c] sm:bg-transparent">
         <!-- Background: High Quality Local Nature SVG + Emerald Overlay (Desktop) -->
         <div class="absolute inset-0 z-0 hidden sm:block">
-          <img src="bg-nature.svg" alt="Nature Background" class="w-full h-full object-cover object-center transform scale-105">
+          <img src="bg-nature.svg" alt="Nature Background" loading="lazy" decoding="async" class="w-full h-full object-cover object-center transform scale-105">
           <div class="absolute inset-0 bg-gradient-to-br from-emerald-950/40 via-emerald-900/30 to-teal-950/50"></div>
           
           <!-- Ambient Glowing Light Orbs -->
@@ -1918,7 +1910,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function getVocabIllustration(item) {
     if (item.image) {
       const pos = item.imagePosition ? ` style="object-position: ${item.imagePosition};"` : '';
-      return `<img src="${item.image}" alt="${item.meaning || item.title || ''}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"${pos}>`;
+      return `<img src="${item.image}" alt="${item.meaning || item.title || ''}" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"${pos}>`;
     }
     const key = item.svgKey || 'lingkungan';
     
@@ -2080,7 +2072,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <!-- Vocab 3D Flip Card Grid -->
         <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           ${vocabList.map(item => `
-            <div class="flip-card-container group" onclick="this.classList.toggle('is-flipped')">
+            <div class="flip-card-container group lazy-render" onclick="this.classList.toggle('is-flipped')">
               <div class="flip-card-inner">
                 
                 <!-- FRONT SIDE OF FLIP CARD -->
@@ -5299,7 +5291,7 @@ document.addEventListener('DOMContentLoaded', () => {
               ${currentDialogue.topicImages.map((img, i) => `
                 <div class="bg-white/10 backdrop-blur-md rounded-2xl p-3 border border-white/15 space-y-2 group hover:bg-white/20 transition-all">
                   <div class="w-full h-44 rounded-xl bg-emerald-950 overflow-hidden relative border border-white/20 shadow-inner">
-                    <img src="${img.url}" alt="${img.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onError="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                    <img src="${img.url}" alt="${img.title}" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onError="this.style.display='none'; this.nextElementSibling.style.display='flex'">
                     <div class="hidden absolute inset-0 items-center justify-center bg-emerald-800 p-4 text-center">
                       ${getVocabIllustration({ svgKey: img.fallbackSvg })}
                     </div>
@@ -5330,7 +5322,7 @@ document.addEventListener('DOMContentLoaded', () => {
                   <!-- Character Avatar Card -->
                   <div class="flex flex-col items-center gap-0.5 min-w-[55px] sm:min-w-[65px] pt-1">
                     <div class="relative">
-                      <img src="${line.avatar}" alt="${line.speaker}" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full object-cover border-2 ${isTeacher ? 'border-amber-400 ring-2 ring-amber-100' : 'border-emerald-500 ring-2 ring-emerald-100'} shadow-sm">
+                      <img src="${line.avatar}" alt="${line.speaker}" loading="lazy" decoding="async" class="w-10 h-10 sm:w-11 sm:h-11 rounded-full object-cover border-2 ${isTeacher ? 'border-amber-400 ring-2 ring-amber-100' : 'border-emerald-500 ring-2 ring-emerald-100'} shadow-sm">
                       <span class="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-emerald-600 text-white text-[9px] flex items-center justify-center font-bold shadow">${idx + 1}</span>
                     </div>
                     <span class="text-[11px] font-bold font-arabic text-emerald-950 text-center leading-tight mt-0.5">${line.speaker}</span>
@@ -5403,7 +5395,7 @@ document.addEventListener('DOMContentLoaded', () => {
               
               <!-- Character Header spotlight -->
               <div class="flex items-center gap-4">
-                <img src="${activeLine.avatar}" alt="${activeLine.speaker}" class="w-20 h-20 rounded-full object-cover border-4 border-emerald-400 ring-4 ring-white/20 shadow-xl">
+                <img src="${activeLine.avatar}" alt="${activeLine.speaker}" loading="lazy" decoding="async" class="w-20 h-20 rounded-full object-cover border-4 border-emerald-400 ring-4 ring-white/20 shadow-xl">
                 <div>
                   <span class="px-3 py-1 bg-emerald-400/20 text-emerald-300 rounded-full text-xs font-bold border border-emerald-400/30">${activeLine.role}</span>
                   <h3 class="text-3xl font-extrabold font-arabic text-white mt-1">${activeLine.speaker}</h3>
@@ -6761,11 +6753,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     <img id="profile-avatar-img"
                          src="${(studentObj.avatar || user.avatar) ? (studentObj.avatar || user.avatar) : ((user.gender === 'P' || (user.name && /siswi|putri|siti|nur|anisa|fatimah|rahma|ayu|alya|zahr/i.test(user.name))) ? 'avatar-siswi.jpg' : 'avatar-siswa.jpg')}" 
                          alt="${user.name}" 
+                         loading="lazy" 
+                         decoding="async" 
                          class="w-full h-full object-cover" 
                          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
                     <span class="hidden w-full h-full text-3xl font-black text-amber-300 items-center justify-center">${user.name[0].toUpperCase()}</span>
                   ` : `
-                    <img id="profile-avatar-img" src="${user.avatar || 'avatar-guru.jpg'}" alt="${user.name}" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+                    <img id="profile-avatar-img" src="${user.avatar || 'avatar-guru.jpg'}" alt="${user.name}" loading="lazy" decoding="async" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
                     <span class="hidden w-full h-full text-3xl font-black text-amber-300 items-center justify-center">👨‍🏫</span>
                   `}
                 </div>
@@ -7202,7 +7196,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <td class="p-3 font-bold text-emerald-950">
                           <div class="flex items-center gap-2.5">
                             <div class="w-7 h-7 rounded-full overflow-hidden shrink-0 border border-emerald-300 bg-emerald-100 flex items-center justify-center shadow-xs">
-                              <img src="${s.avatar || ((s.gender === 'P' || (s.name && /siswi|putri|siti|nur|anisa|fatimah|rahma|ayu|alya|zahr/i.test(s.name))) ? 'avatar-siswi.jpg' : 'avatar-siswa.jpg')}" alt="${s.name}" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+                              <img src="${s.avatar || ((s.gender === 'P' || (s.name && /siswi|putri|siti|nur|anisa|fatimah|rahma|ayu|alya|zahr/i.test(s.name))) ? 'avatar-siswi.jpg' : 'avatar-siswa.jpg')}" alt="${s.name}" loading="lazy" decoding="async" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
                               <span class="hidden text-xs font-bold text-emerald-800">${s.name ? s.name[0].toUpperCase() : 'S'}</span>
                             </div>
                             <div>
@@ -7321,7 +7315,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const currentPwd = s.password || '123456';
     return `
       <div id="edit-student-modal-overlay" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 animate-fadeIn">
-        <div class="bg-white rounded-3xl max-w-md w-full shadow-2xl border border-emerald-100 overflow-hidden animate-slideUp">
+        <div class="bg-white rounded-3xl max-w-md w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-emerald-100 animate-slideUp">
           <!-- Modal Header -->
           <div class="bg-gradient-to-r from-emerald-800 via-teal-800 to-emerald-900 p-5 text-white flex items-center justify-between">
             <div class="flex items-center gap-3">
