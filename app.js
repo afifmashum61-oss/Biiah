@@ -368,6 +368,7 @@ document.addEventListener('DOMContentLoaded', () => {
     studentsSearch: '',
     studentsClassFilter: 'all',
     selectedStudentDetail: null,
+    editingStudent: null,
     listeningQuizSubmitted: false,
     listeningQuizScore: 0,
     listeningQuizCorrect: 0,
@@ -936,6 +937,7 @@ document.addEventListener('DOMContentLoaded', () => {
         studentModal.remove();
       }
       state.selectedStudentDetail = null;
+      state.editingStudent = null;
     }
 
     // Jika pengguna mengklik menu yang saat ini sedang aktif (misal klik tab Beranda saat sedang di bawah):
@@ -981,6 +983,15 @@ document.addEventListener('DOMContentLoaded', () => {
         studentModal.remove();
       }
       state.selectedStudentDetail = null;
+      render();
+      return;
+    }
+
+    // 2B. Jika ada modal edit akun siswa sedang terbuka, tutup modal tersebut
+    const editModal = document.getElementById('edit-student-modal-overlay');
+    if (state.editingStudent || editModal) {
+      if (editModal) editModal.remove();
+      state.editingStudent = null;
       render();
       return;
     }
@@ -1055,6 +1066,15 @@ document.addEventListener('DOMContentLoaded', () => {
         studentModal.remove();
       }
       state.selectedStudentDetail = null;
+      render();
+      return;
+    }
+
+    // Jika ada modal edit siswa terbuka, tutup modal
+    const editModal = document.getElementById('edit-student-modal-overlay');
+    if (state.editingStudent || editModal) {
+      if (editModal) editModal.remove();
+      state.editingStudent = null;
       render();
       return;
     }
@@ -1381,6 +1401,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     <span>Masuk ke Pembelajaran</span>
                     <i class="fa-solid fa-arrow-right text-xs"></i>
                   </button>
+                  <p class="text-[11px] text-gray-500 mt-2 text-center flex items-center justify-center gap-1.5">
+                    <i class="fa-solid fa-circle-question text-emerald-600 text-xs"></i>
+                    <span>Lupa user atau kata sandi? Hubungi guru pengajar untuk mereset akun Anda.</span>
+                  </p>
                 </form>
 
                 <!-- Tombol Pindah ke Form Pendaftaran Siswa -->
@@ -6163,10 +6187,16 @@ document.addEventListener('DOMContentLoaded', () => {
                           ${s.lastActive || 'Baru Saja'}
                         </td>
                         <td class="p-3.5 text-center">
-                          <button data-student-id="${s.id}" class="btn-view-detail px-3 py-1.5 bg-emerald-50 hover:bg-emerald-700 hover:text-white text-emerald-800 rounded-xl text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 mx-auto">
-                            <i class="fa-solid fa-chart-pie"></i>
-                            <span>Rincian</span>
-                          </button>
+                          <div class="flex items-center justify-center gap-1.5">
+                            <button data-student-id="${s.id}" class="btn-view-detail px-2.5 py-1.5 bg-emerald-50 hover:bg-emerald-700 hover:text-white text-emerald-800 rounded-xl text-xs font-bold transition-all shadow-xs flex items-center gap-1" title="Lihat Rincian Nilai">
+                              <i class="fa-solid fa-chart-pie"></i>
+                              <span>Rincian</span>
+                            </button>
+                            <button data-edit-student="${s.id}" class="edit-student-btn px-2.5 py-1.5 bg-amber-50 hover:bg-amber-600 hover:text-white text-amber-800 rounded-xl text-xs font-bold transition-all shadow-xs flex items-center gap-1 border border-amber-200" title="Edit Akun & Reset Sandi">
+                              <i class="fa-solid fa-pen-to-square"></i>
+                              <span>Edit</span>
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     `;
@@ -6233,6 +6263,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         <!-- MODAL DETAIL NILAI SISWA (JIKA DIPILIH) -->
         ${renderStudentDetailModal()}
+        <!-- MODAL EDIT DATA & KATA SANDI SISWA (JIKA DIPILIH) -->
+        ${renderEditStudentModal()}
       </div>
     `;
   }
@@ -6260,7 +6292,12 @@ document.addEventListener('DOMContentLoaded', () => {
               </div>
               <div>
                 <h3 class="text-xl font-bold text-emerald-950">${s.name}</h3>
-                <p class="text-xs text-emerald-700">Kelas ${s.class || 'IX-A'} &bull; ID Siswa: ${s.id}</p>
+                <p class="text-xs text-emerald-700 flex flex-wrap items-center gap-2 mt-0.5">
+                  <span>Kelas ${s.class || 'IX-A'} &bull; ID Siswa: ${s.id}</span>
+                  <span class="inline-flex items-center gap-1 font-mono font-bold bg-amber-50 text-amber-900 px-2 py-0.5 rounded-md border border-amber-200">
+                    <i class="fa-solid fa-key text-[10px] text-amber-600"></i> Sandi: ${s.password || '123456'}
+                  </span>
+                </p>
               </div>
             </div>
             <button id="btn-close-student-detail" class="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition-all">
@@ -6323,7 +6360,11 @@ document.addEventListener('DOMContentLoaded', () => {
             `}
           </div>
 
-          <div class="text-right pt-2 border-t border-slate-100">
+          <div class="flex items-center justify-between pt-3 border-t border-slate-100">
+            <button data-edit-student="${s.id}" class="edit-student-btn px-4 py-2.5 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-xs font-bold transition-all shadow-sm flex items-center gap-2">
+              <i class="fa-solid fa-pen-to-square"></i>
+              <span>Edit Akun & Sandi</span>
+            </button>
             <button id="btn-close-student-detail-2" class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-xl text-xs font-bold transition-all">
               Tutup Rincian
             </button>
@@ -6461,6 +6502,21 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.target === modalBackdrop) closeModal();
       });
     }
+
+    // Edit Student Buttons
+    document.querySelectorAll('.edit-student-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const studentId = e.currentTarget.getAttribute('data-edit-student');
+        const student = (state.students || []).find(s => String(s.id) === String(studentId));
+        if (student) {
+          state.selectedStudentDetail = null;
+          state.editingStudent = { ...student };
+          render();
+        }
+      });
+    });
+
+    attachEditStudentModalEvents();
   }
   // Helper to dynamically update the document/tab title matching the active menu
   function updatePageTitle() {
@@ -7086,19 +7142,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
               <form id="add-student-form" class="space-y-4">
                 <div>
-                  <label class="block text-xs font-bold text-emerald-900 mb-1">Nama Lengkap Siswa</label>
+                  <label class="block text-xs font-bold text-emerald-900 mb-1">Nama Lengkap Siswa (Username Login) <span class="text-rose-500">*</span></label>
                   <input type="text" id="new-student-name" required placeholder="Contoh: Muhammad Farhan" class="w-full px-4 py-2.5 rounded-xl border border-emerald-200 focus:ring-2 focus:ring-emerald-600 text-xs sm:text-sm">
                 </div>
 
                 <div class="grid grid-cols-2 gap-3">
                   <div>
-                    <label class="block text-xs font-bold text-emerald-900 mb-1">Kelas</label>
+                    <label class="block text-xs font-bold text-emerald-900 mb-1">Kelas <span class="text-rose-500">*</span></label>
                     <input type="text" id="new-student-class" required placeholder="Contoh: IX-A" class="w-full px-4 py-2.5 rounded-xl border border-emerald-200 focus:ring-2 focus:ring-emerald-600 text-xs sm:text-sm">
                   </div>
                   <div>
-                    <label class="block text-xs font-bold text-emerald-900 mb-1">ID / NISN</label>
-                    <input type="text" id="new-student-id" placeholder="Opsional (cth: 106)" class="w-full px-4 py-2.5 rounded-xl border border-emerald-200 focus:ring-2 focus:ring-emerald-600 text-xs sm:text-sm">
+                    <label class="block text-xs font-bold text-emerald-900 mb-1">Kata Sandi / Password</label>
+                    <input type="text" id="new-student-password" placeholder="Default: 123456" class="w-full px-4 py-2.5 rounded-xl border border-emerald-200 focus:ring-2 focus:ring-emerald-600 text-xs sm:text-sm font-mono">
                   </div>
+                </div>
+
+                <div>
+                  <label class="block text-xs font-bold text-emerald-900 mb-1">ID / NISN Siswa (Opsional)</label>
+                  <input type="text" id="new-student-id" placeholder="Opsional (cth: 106)" class="w-full px-4 py-2.5 rounded-xl border border-emerald-200 focus:ring-2 focus:ring-emerald-600 text-xs sm:text-sm">
                 </div>
 
                 <button type="submit" class="w-full py-3 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl font-bold text-xs shadow-md transition-all flex items-center justify-center gap-2">
@@ -7109,42 +7170,66 @@ document.addEventListener('DOMContentLoaded', () => {
 
             <!-- Tabel Daftar Siswa -->
             <div class="bg-white rounded-3xl p-6 border border-emerald-100 shadow-sm space-y-4">
-              <div class="flex items-center justify-between">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
                 <h3 class="text-base font-bold text-emerald-950 flex items-center gap-2">
                   <i class="fa-solid fa-users text-emerald-600"></i>
                   <span>Daftar Akun Siswa (${state.students.length})</span>
                 </h3>
+                <div class="relative w-full sm:w-48">
+                  <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-emerald-600 text-xs"></i>
+                  <input type="text" id="settings-student-search" placeholder="Cari nama siswa..." class="w-full pl-8 pr-3 py-1.5 rounded-xl border border-emerald-200 bg-emerald-50/40 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:bg-white transition-all">
+                </div>
               </div>
 
               <div class="overflow-x-auto max-h-80 overflow-y-auto">
-                <table class="w-full text-left text-xs">
+                <table id="settings-students-table" class="w-full text-left text-xs whitespace-nowrap">
                   <thead class="bg-emerald-50 text-emerald-900 font-bold sticky top-0">
                     <tr>
-                      <th class="p-3">Nama</th>
+                      <th class="p-3">Nama (Username)</th>
                       <th class="p-3">Kelas</th>
+                      <th class="p-3">Kata Sandi</th>
                       <th class="p-3 text-center">Aksi</th>
                     </tr>
                   </thead>
                   <tbody class="divide-y divide-emerald-50">
-                    ${state.students.map(s => `
-                      <tr class="hover:bg-emerald-50/50">
+                    ${state.students.map(s => {
+                      const displayPwd = s.password || '123456';
+                      return `
+                      <tr class="hover:bg-emerald-50/50 transition-colors">
                         <td class="p-3 font-bold text-emerald-950">
                           <div class="flex items-center gap-2.5">
                             <div class="w-7 h-7 rounded-full overflow-hidden shrink-0 border border-emerald-300 bg-emerald-100 flex items-center justify-center shadow-xs">
                               <img src="${s.avatar || ((s.gender === 'P' || (s.name && /siswi|putri|siti|nur|anisa|fatimah|rahma|ayu|alya|zahr/i.test(s.name))) ? 'avatar-siswi.jpg' : 'avatar-siswa.jpg')}" alt="${s.name}" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
                               <span class="hidden text-xs font-bold text-emerald-800">${s.name ? s.name[0].toUpperCase() : 'S'}</span>
                             </div>
-                            <span class="truncate">${s.name}</span>
+                            <div>
+                              <div class="truncate max-w-[140px] sm:max-w-xs font-bold text-emerald-950">${s.name}</div>
+                              <div class="text-[10px] text-slate-400 font-mono font-normal">ID: ${s.id}</div>
+                            </div>
                           </div>
                         </td>
-                        <td class="p-3 text-emerald-700">${s.class}</td>
+                        <td class="p-3">
+                          <span class="px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800 text-[11px] font-semibold">${s.class || 'IX-A'}</span>
+                        </td>
+                        <td class="p-3">
+                          <div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-lg bg-amber-50 text-amber-900 border border-amber-200/80 font-mono text-[11px] font-bold">
+                            <i class="fa-solid fa-key text-[10px] text-amber-600"></i>
+                            <span>${displayPwd}</span>
+                          </div>
+                        </td>
                         <td class="p-3 text-center">
-                          <button data-del-student="${s.id}" class="delete-student-btn px-2.5 py-1 bg-red-50 hover:bg-red-600 hover:text-white text-red-600 rounded-lg transition-all text-[11px] font-semibold border border-red-200">
-                            <i class="fa-solid fa-trash"></i>
-                          </button>
+                          <div class="flex items-center justify-center gap-1.5">
+                            <button data-edit-student="${s.id}" class="edit-student-btn px-2.5 py-1.5 bg-amber-50 hover:bg-amber-600 hover:text-white text-amber-800 rounded-lg transition-all text-[11px] font-bold border border-amber-200 flex items-center gap-1 shadow-xs" title="Edit Akun & Reset Kata Sandi">
+                              <i class="fa-solid fa-pen-to-square"></i>
+                              <span>Edit</span>
+                            </button>
+                            <button data-del-student="${s.id}" class="delete-student-btn px-2 py-1.5 bg-red-50 hover:bg-red-600 hover:text-white text-red-600 rounded-lg transition-all text-[11px] font-semibold border border-red-200" title="Hapus Akun Siswa">
+                              <i class="fa-solid fa-trash"></i>
+                            </button>
+                          </div>
                         </td>
                       </tr>
-                    `).join('')}
+                    `}).join('')}
                   </tbody>
                 </table>
               </div>
@@ -7218,6 +7303,118 @@ document.addEventListener('DOMContentLoaded', () => {
               </div>
             </div>
           </div>
+        </div>
+
+        <!-- MODAL EDIT DATA & KATA SANDI SISWA -->
+        ${renderEditStudentModal()}
+      </div>
+    `;
+  }
+
+  // 8B. MODAL EDIT AKUN SISWA (Ganti Username & Kata Sandi)
+  function renderEditStudentModal() {
+    if (!state.editingStudent) return '';
+    const s = state.editingStudent;
+    const currentPwd = s.password || '123456';
+    return `
+      <div id="edit-student-modal-overlay" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 animate-fadeIn">
+        <div class="bg-white rounded-3xl max-w-md w-full shadow-2xl border border-emerald-100 overflow-hidden animate-slideUp">
+          <!-- Modal Header -->
+          <div class="bg-gradient-to-r from-emerald-800 via-teal-800 to-emerald-900 p-5 text-white flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-lg border border-white/20 text-emerald-200">
+                <i class="fa-solid fa-user-pen"></i>
+              </div>
+              <div>
+                <h3 class="font-extrabold text-base sm:text-lg">Edit Akun Siswa</h3>
+                <p class="text-emerald-200 text-[11px]">Ubah nama login atau kata sandi siswa</p>
+              </div>
+            </div>
+            <button id="btn-close-edit-student" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors">
+              <i class="fa-solid fa-xmark text-sm"></i>
+            </button>
+          </div>
+
+          <!-- Modal Body / Form -->
+          <form id="edit-student-form" class="p-6 space-y-4">
+            <!-- Alert Info -->
+            <div class="p-3.5 bg-emerald-50 rounded-2xl border border-emerald-200 text-xs text-emerald-900 flex items-start gap-2.5">
+              <i class="fa-solid fa-circle-info text-emerald-600 mt-0.5 shrink-0 text-sm"></i>
+              <div>
+                <p class="font-bold">Lupa User / Password?</p>
+                <p class="text-[11px] text-emerald-700 mt-0.5">Siswa dapat langsung login menggunakan <strong>Nama Akun</strong> dan <strong>Kata Sandi</strong> baru setelah Anda menyimpan perubahan ini.</p>
+              </div>
+            </div>
+
+            <!-- ID Siswa (Readonly) -->
+            <div>
+              <label class="block text-xs font-bold text-emerald-950 mb-1 flex items-center justify-between">
+                <span>ID Siswa (NISN)</span>
+                <span class="text-[10px] text-slate-400 font-normal">ID Sistem</span>
+              </label>
+              <input type="text" id="edit-student-id" value="${s.id}" disabled class="w-full px-3.5 py-2 rounded-xl border border-slate-200 bg-slate-100 text-slate-500 font-mono text-xs cursor-not-allowed">
+            </div>
+
+            <!-- Nama Siswa / Username Login -->
+            <div>
+              <label class="block text-xs font-bold text-emerald-950 mb-1">
+                Nama Lengkap / Username Siswa <span class="text-rose-500">*</span>
+              </label>
+              <div class="relative">
+                <i class="fa-solid fa-user absolute left-3.5 top-3 text-emerald-600 text-xs"></i>
+                <input type="text" id="edit-student-name" required value="${s.name || ''}" placeholder="Masukkan nama siswa..." class="w-full pl-9 pr-3.5 py-2.5 rounded-xl border border-emerald-200 focus:ring-2 focus:ring-emerald-600 text-xs sm:text-sm font-semibold text-emerald-950">
+              </div>
+              <p class="text-[10px] text-slate-500 mt-1">Nama ini digunakan siswa saat mengisi kolom "Nama Akun" di halaman login.</p>
+            </div>
+
+            <!-- Kata Sandi / Password Siswa -->
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <label class="block text-xs font-bold text-emerald-950">
+                  Kata Sandi / Password Baru <span class="text-rose-500">*</span>
+                </label>
+                <button type="button" id="btn-quick-fill-pwd" class="text-[10px] font-bold text-emerald-700 hover:text-emerald-900 underline flex items-center gap-1">
+                  <i class="fa-solid fa-rotate-left"></i> Setel '123456'
+                </button>
+              </div>
+              <div class="relative">
+                <i class="fa-solid fa-key absolute left-3.5 top-3 text-amber-600 text-xs"></i>
+                <input type="text" id="edit-student-password" required value="${currentPwd}" placeholder="Kata sandi baru..." class="w-full pl-9 pr-24 py-2.5 rounded-xl border border-emerald-200 focus:ring-2 focus:ring-emerald-600 text-xs sm:text-sm font-mono font-bold text-emerald-950">
+                <div class="absolute right-1.5 top-1.5 flex items-center gap-1">
+                  <button type="button" id="btn-gen-random-pwd" class="px-2 py-1 bg-emerald-100 hover:bg-emerald-200 text-emerald-800 rounded-lg text-[10px] font-bold transition-all" title="Buat password acak">
+                    Acak
+                  </button>
+                  <button type="button" id="btn-toggle-edit-pwd" class="w-7 h-7 flex items-center justify-center text-slate-400 hover:text-slate-600 text-xs" title="Tampilkan/Sembunyikan">
+                    <i class="fa-solid fa-eye" id="icon-toggle-edit-pwd"></i>
+                  </button>
+                </div>
+              </div>
+              <p class="text-[10px] text-slate-500 mt-1">Minimal 3 karakter. Anda bisa langsung beri tahu siswa kata sandi ini.</p>
+            </div>
+
+            <!-- Kelas -->
+            <div>
+              <label class="block text-xs font-bold text-emerald-950 mb-1">Kelas <span class="text-rose-500">*</span></label>
+              <div class="relative">
+                <i class="fa-solid fa-chalkboard-user absolute left-3.5 top-3 text-emerald-600 text-xs"></i>
+                <input type="text" id="edit-student-class" required value="${s.class || 'IX-A'}" placeholder="Contoh: IX-A" class="w-full pl-9 pr-3.5 py-2.5 rounded-xl border border-emerald-200 focus:ring-2 focus:ring-emerald-600 text-xs sm:text-sm font-semibold text-emerald-950">
+              </div>
+            </div>
+
+            <!-- Feedback Message -->
+            <div id="edit-student-msg" class="hidden text-xs p-3 rounded-xl"></div>
+
+            <!-- Action Buttons -->
+            <div class="pt-3 flex items-center gap-2.5">
+              <button type="button" id="btn-cancel-edit-student" class="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold text-xs transition-colors">
+                Batal
+              </button>
+              <button type="submit" id="btn-save-edit-student" class="flex-1 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl font-bold text-xs shadow-md transition-all flex items-center justify-center gap-1.5">
+                <i class="fa-solid fa-floppy-disk"></i>
+                <span>Simpan Perubahan</span>
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     `;
@@ -7860,25 +8057,65 @@ document.addEventListener('DOMContentLoaded', () => {
         const name = document.getElementById('new-student-name').value.trim();
         const studentClass = document.getElementById('new-student-class').value.trim();
         const customId = document.getElementById('new-student-id').value.trim();
+        const passwordInput = document.getElementById('new-student-password');
+        const password = (passwordInput ? passwordInput.value.trim() : '') || '123456';
 
         if (name && studentClass) {
+          const isPutri = name && /siswi|putri|siti|nur|anisa|fatimah|rahma|ayu|alya|zahr/i.test(name);
           const newStudent = {
             id: customId ? parseInt(customId) || Date.now() : Date.now(),
             name,
             class: studentClass,
+            password: password,
+            avatar: isPutri ? 'avatar-siswi.jpg' : 'avatar-siswa.jpg',
+            gender: isPutri ? 'P' : 'L',
             score: 0,
+            istimaScore: 0,
+            kalamScore: 0,
+            duelScore: 0,
+            matchGameScore: 0,
+            averageScore: 0,
             progress: 0,
-            lastActive: "Belum Aktif"
+            lastActive: "Belum Aktif",
+            submissions: [],
+            kalamHistory: []
           };
           state.students.push(newStudent);
           localStorage.setItem('arabic_app_students', JSON.stringify(state.students));
           if (window.FirebaseSync) {
             window.FirebaseSync.saveStudent(newStudent);
           }
+          if (typeof showToast === 'function') {
+            showToast(`Akun siswa ${name} berhasil disimpan! Kata Sandi: ${password}`, 'success');
+          }
           render();
         }
       });
     }
+
+    // Live Search Siswa di Pengaturan
+    const searchInput = document.getElementById('settings-student-search');
+    if (searchInput) {
+      searchInput.addEventListener('input', (e) => {
+        const q = e.target.value.toLowerCase().trim();
+        document.querySelectorAll('#settings-students-table tbody tr').forEach(row => {
+          const text = row.textContent.toLowerCase();
+          row.style.display = text.includes(q) ? '' : 'none';
+        });
+      });
+    }
+
+    // Edit Student Buttons
+    document.querySelectorAll('.edit-student-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const studentId = e.currentTarget.getAttribute('data-edit-student');
+        const student = (state.students || []).find(s => String(s.id) === String(studentId));
+        if (student) {
+          state.editingStudent = { ...student };
+          render();
+        }
+      });
+    });
 
     // Delete Student Buttons
     document.querySelectorAll('.delete-student-btn').forEach(btn => {
@@ -7936,6 +8173,155 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
     });
+
+    // Event interaktif modal edit siswa
+    attachEditStudentModalEvents();
+  }
+
+  // Event handler untuk form modal edit akun siswa
+  function attachEditStudentModalEvents() {
+    const editModalOverlay = document.getElementById('edit-student-modal-overlay');
+    if (!editModalOverlay) return;
+
+    const closeModal = () => {
+      state.editingStudent = null;
+      render();
+    };
+
+    const closeBtn = document.getElementById('btn-close-edit-student');
+    const cancelBtn = document.getElementById('btn-cancel-edit-student');
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
+    if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
+    editModalOverlay.addEventListener('click', (e) => {
+      if (e.target === editModalOverlay) closeModal();
+    });
+
+    const btnQuickFill = document.getElementById('btn-quick-fill-pwd');
+    const pwdInput = document.getElementById('edit-student-password');
+    if (btnQuickFill && pwdInput) {
+      btnQuickFill.addEventListener('click', () => {
+        pwdInput.value = '123456';
+        pwdInput.focus();
+      });
+    }
+
+    const btnGenRandom = document.getElementById('btn-gen-random-pwd');
+    if (btnGenRandom && pwdInput) {
+      btnGenRandom.addEventListener('click', () => {
+        const chars = '23456789abcdefghkmnpqrstuvwxyz';
+        let code = '';
+        for (let i = 0; i < 6; i++) {
+          code += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        pwdInput.value = code;
+        pwdInput.focus();
+      });
+    }
+
+    const btnTogglePwd = document.getElementById('btn-toggle-edit-pwd');
+    const iconTogglePwd = document.getElementById('icon-toggle-edit-pwd');
+    if (btnTogglePwd && pwdInput && iconTogglePwd) {
+      btnTogglePwd.addEventListener('click', () => {
+        const isPwd = pwdInput.type === 'password';
+        pwdInput.type = isPwd ? 'text' : 'password';
+        iconTogglePwd.className = isPwd ? 'fa-solid fa-eye' : 'fa-solid fa-eye-slash';
+      });
+    }
+
+    const editForm = document.getElementById('edit-student-form');
+    if (editForm) {
+      editForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const newName = (document.getElementById('edit-student-name').value || '').trim();
+        const newPwd = (document.getElementById('edit-student-password').value || '').trim();
+        const newClass = (document.getElementById('edit-student-class').value || '').trim();
+        const editMsg = document.getElementById('edit-student-msg');
+        const saveBtn = document.getElementById('btn-save-edit-student');
+
+        if (!newName || !newPwd || !newClass) {
+          if (editMsg) {
+            editMsg.className = "text-xs p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 block flex items-center gap-2";
+            editMsg.innerHTML = '<i class="fa-solid fa-circle-exclamation shrink-0 text-rose-500"></i> <span>Mohon lengkapi semua kolom!</span>';
+          }
+          return;
+        }
+
+        if (newPwd.length < 3) {
+          if (editMsg) {
+            editMsg.className = "text-xs p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 block flex items-center gap-2";
+            editMsg.innerHTML = '<i class="fa-solid fa-circle-exclamation shrink-0 text-rose-500"></i> <span>Kata sandi minimal 3 karakter!</span>';
+          }
+          return;
+        }
+
+        // Cek duplikasi nama jika nama diubah
+        const isDup = (state.students || []).some(s => 
+          String(s.id) !== String(state.editingStudent.id) &&
+          s.name.trim().toLowerCase() === newName.toLowerCase()
+        );
+        if (isDup) {
+          if (editMsg) {
+            editMsg.className = "text-xs p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 block flex items-center gap-2";
+            editMsg.innerHTML = '<i class="fa-solid fa-circle-exclamation shrink-0 text-rose-500"></i> <span>Nama siswa tersebut sudah dipakai oleh siswa lain! Silakan gunakan nama unik.</span>';
+          }
+          return;
+        }
+
+        if (saveBtn) {
+          saveBtn.disabled = true;
+          saveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan...';
+        }
+
+        const oldName = state.editingStudent.name;
+        const studentIdx = (state.students || []).findIndex(s => String(s.id) === String(state.editingStudent.id));
+        if (studentIdx !== -1) {
+          const st = state.students[studentIdx];
+          st.name = newName;
+          st.password = newPwd;
+          st.class = newClass;
+
+          // Update avatar jika nama berubah pola
+          if (st.gender === 'P' || /siswi|putri|siti|nur|anisa|fatimah|rahma|ayu|alya|zahr/i.test(newName)) {
+            if (!st.avatar || st.avatar.includes('avatar-siswa.jpg')) {
+              st.avatar = 'avatar-siswi.jpg';
+            }
+            st.gender = 'P';
+          }
+
+          localStorage.setItem('arabic_app_students', JSON.stringify(state.students));
+
+          // Perbarui submissions lokal jika nama berubah
+          if (Array.isArray(state.submissions) && oldName !== newName) {
+            state.submissions.forEach(sub => {
+              if ((sub.studentId && String(sub.studentId) === String(st.id)) || 
+                  (sub.studentName && sub.studentName.toLowerCase() === oldName.toLowerCase())) {
+                sub.studentName = newName;
+                sub.class = newClass;
+              }
+            });
+            localStorage.setItem('arabic_app_submissions', JSON.stringify(state.submissions));
+          }
+
+          // Sinkronisasi langsung ke Firebase Firestore Cloud
+          if (window.FirebaseSync) {
+            try {
+              await window.FirebaseSync.saveStudent(st);
+            } catch(err) {
+              console.warn("⚠️ Firebase sync saat edit akun siswa:", err);
+            }
+          }
+        }
+
+        if (typeof showToast === 'function') {
+          showToast(`Akun siswa ${newName} berhasil diperbarui! (Sandi: ${newPwd})`, 'success');
+        } else {
+          alert(`✅ Akun siswa "${newName}" berhasil diperbarui!\n\nNama/Username: ${newName}\nKata Sandi: ${newPwd}\nKelas: ${newClass}`);
+        }
+
+        state.editingStudent = null;
+        render();
+      });
+    }
   }
 
   // ==========================================
@@ -9409,7 +9795,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
           // 2. Sinkronisasi Realtime untuk Akun Guru (Dashboard, Tabel Siswa, & Pengaturan Akun)
           if (state.currentUser && state.currentUser.role === 'guru') {
-            if (state.currentView === 'students' || state.currentView === 'dashboard' || state.currentView === 'settings') {
+            if ((state.currentView === 'students' || state.currentView === 'dashboard' || state.currentView === 'settings') && !state.editingStudent) {
               render();
             }
           }
