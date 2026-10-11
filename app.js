@@ -6827,19 +6827,14 @@ document.addEventListener('DOMContentLoaded', () => {
         ${isSiswa ? `
           <!-- CARD 1: DATA DIRI SISWA (BIODATA) -->
           <div class="bg-white rounded-3xl p-6 sm:p-7 shadow-sm border border-emerald-100 space-y-5">
-            <div class="flex items-center justify-between gap-3 border-b border-emerald-50 pb-3">
-              <div class="flex items-center gap-2.5 min-w-0">
-                <div class="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-base font-black shrink-0">
-                  <i class="fa-solid fa-id-card"></i>
-                </div>
-                <div class="min-w-0">
-                  <h2 class="text-base sm:text-lg font-bold text-emerald-950 truncate">Data Diri Siswa</h2>
-                  <p class="text-xs text-slate-500 truncate">Informasi identitas akun pembelajaran terdaftar</p>
-                </div>
+            <div class="flex items-center gap-3 border-b border-emerald-50 pb-3">
+              <div class="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-base font-black shrink-0">
+                <i class="fa-solid fa-id-card"></i>
               </div>
-              <span class="shrink-0 whitespace-nowrap text-xs font-arabic font-bold text-emerald-800 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
-                بيانات الطالب
-              </span>
+              <div class="min-w-0 flex-1">
+                <h2 class="text-base sm:text-lg font-bold text-emerald-950">Data Diri Siswa</h2>
+                <p class="text-xs text-slate-500">Informasi identitas akun pembelajaran terdaftar</p>
+              </div>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 text-xs sm:text-sm">
@@ -6872,19 +6867,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
           <!-- CARD 2: STATISTIK SKOR & CAPAIAN BELAJAR -->
           <div class="bg-white rounded-3xl p-6 sm:p-7 shadow-sm border border-emerald-100 space-y-6">
-            <div class="flex items-center justify-between gap-3 border-b border-emerald-50 pb-3">
-              <div class="flex items-center gap-2.5 min-w-0">
-                <div class="w-9 h-9 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center text-base font-black shrink-0">
-                  <i class="fa-solid fa-chart-simple"></i>
-                </div>
-                <div class="min-w-0">
-                  <h2 class="text-base sm:text-lg font-bold text-emerald-950 truncate">Statistik Skor & Evaluasi</h2>
-                  <p class="text-xs text-slate-500 truncate">Hasil pengerjaan latihan & kuis</p>
-                </div>
+            <div class="flex items-center gap-3 border-b border-emerald-50 pb-3">
+              <div class="w-9 h-9 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center text-base font-black shrink-0">
+                <i class="fa-solid fa-chart-simple"></i>
               </div>
-              <span class="shrink-0 whitespace-nowrap text-xs font-arabic font-bold text-amber-800 bg-amber-50 px-3 py-1 rounded-full border border-amber-200">
-                إحصائيات الدرجات
-              </span>
+              <div class="min-w-0 flex-1">
+                <h2 class="text-base sm:text-lg font-bold text-emerald-950">Statistik Skor & Evaluasi</h2>
+                <p class="text-xs text-slate-500">Hasil pengerjaan latihan & kuis</p>
+              </div>
             </div>
 
             <!-- Average Score Highlight Banner -->
@@ -6963,19 +6953,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
           <!-- CARD 3: MENU LAINNYA (AKSES CEPAT MODUL PEMBELAJARAN) -->
           <div class="bg-white rounded-3xl p-6 sm:p-7 shadow-sm border border-emerald-100 space-y-4">
-            <div class="flex items-center justify-between gap-3 border-b border-emerald-50 pb-3">
-              <div class="flex items-center gap-2.5 min-w-0">
-                <div class="w-9 h-9 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center text-base font-black shrink-0">
-                  <i class="fa-solid fa-compass"></i>
-                </div>
-                <div class="min-w-0">
-                  <h2 class="text-base sm:text-lg font-bold text-emerald-950 truncate">Akses Modul Lainnya</h2>
-                  <p class="text-xs text-slate-500 truncate">Buka materi & aktivitas bahasa Arab</p>
-                </div>
+            <div class="flex items-center gap-3 border-b border-emerald-50 pb-3">
+              <div class="w-9 h-9 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center text-base font-black shrink-0">
+                <i class="fa-solid fa-compass"></i>
               </div>
-              <span class="shrink-0 whitespace-nowrap text-xs font-arabic font-bold text-indigo-800 bg-indigo-50 px-3 py-1 rounded-full border border-indigo-200">
-                المزيد من الدروس
-              </span>
+              <div class="min-w-0 flex-1">
+                <h2 class="text-base sm:text-lg font-bold text-emerald-950">Akses Modul Lainnya</h2>
+                <p class="text-xs text-slate-500">Buka materi & aktivitas bahasa Arab</p>
+              </div>
             </div>
 
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
