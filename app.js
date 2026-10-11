@@ -2131,7 +2131,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     <div class="bg-white/10 backdrop-blur-md p-3.5 rounded-2xl border border-white/15 space-y-1.5 mt-2">
                       <div class="text-[10px] font-bold text-emerald-300 uppercase tracking-wider">Contoh Kalimat:</div>
-                      <div class="font-arabic text-base font-bold text-right text-emerald-100 leading-relaxed">${item.sentence}</div>
+                      <div class="font-arabic text-base font-bold text-right text-emerald-100 leading-relaxed" dir="rtl" style="unicode-bidi: isolate;">${item.sentence}&rlm;</div>
                       <div class="italic text-[11px] text-emerald-200 leading-normal">"${item.sentenceTranslation}"</div>
                     </div>
                   </div>
@@ -3590,8 +3590,8 @@ document.addEventListener('DOMContentLoaded', () => {
               </span>
             </div>
 
-            <div class="pt-4 pb-4 sm:pt-6 sm:pb-6 px-3 text-2xl sm:text-4xl lg:text-5xl font-arabic font-bold text-emerald-950 leading-[2.8] sm:leading-[3.2] tracking-normal select-all text-center">
-              ${currentItem.arabic}
+            <div dir="rtl" class="pt-4 pb-4 sm:pt-6 sm:pb-6 px-3 text-2xl sm:text-4xl lg:text-5xl font-arabic font-bold text-emerald-950 leading-[2.8] sm:leading-[3.2] tracking-normal select-all !text-center text-center" style="direction: rtl; unicode-bidi: isolate; text-align: center;">
+              ${currentItem.arabic}&rlm;
             </div>
 
             <div class="space-y-1.5 pt-4 border-t border-emerald-100 max-w-xl mx-auto">
@@ -3804,7 +3804,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <i class="fa-solid fa-bullseye text-emerald-600"></i>
                     <span>Teks Target (Standar):</span>
                   </span>
-                  <p class="font-arabic text-base sm:text-lg text-emerald-950 font-bold leading-relaxed" dir="rtl">${currentItem.arabic}</p>
+                  <p class="font-arabic text-base sm:text-lg text-emerald-950 font-bold leading-relaxed text-right" dir="rtl" style="unicode-bidi: isolate;">${currentItem.arabic}&rlm;</p>
                 </div>
                 <div class="p-3.5 bg-teal-50/70 rounded-2xl border border-teal-200 space-y-1.5">
                   <span class="font-bold text-teal-800 text-[11px] flex items-center gap-1.5">
