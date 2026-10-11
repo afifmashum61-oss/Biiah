@@ -4797,16 +4797,20 @@ document.addEventListener('DOMContentLoaded', () => {
               </div>
               <div class="flex flex-wrap items-center gap-2 text-[10px] sm:text-xs font-semibold">
                 <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-500 text-white font-bold shadow-2xs">
-                  <span class="font-arabic text-xs">أَوْسَعُ مِنْ</span> (Isim Tafdhil Komparatif)
+                  <span dir="rtl" class="font-arabic text-sm">أَوْسَعُ مِنْ</span>
+                  <span class="font-sans text-[10px]">(Komparatif)</span>
                 </span>
                 <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-700 text-white font-bold shadow-2xs">
-                  <span class="font-arabic text-xs">أَوْسَعُ الْفُصُوْلِ</span> (Isim Tafdhil Superlatif)
+                  <span dir="rtl" class="font-arabic text-sm">أَوْسَعُ الْفُصُوْلِ</span>
+                  <span class="font-sans text-[10px]">(Superlatif)</span>
                 </span>
                 <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-700 text-white font-bold shadow-2xs">
-                  <span class="font-arabic text-xs">احْرِصْ</span> (Fi'il Amr)
+                  <span dir="rtl" class="font-arabic text-sm">احْرِصْ</span>
+                  <span class="font-sans text-[10px]">(Fi'il Amr)</span>
                 </span>
                 <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-rose-600 text-white font-bold shadow-2xs">
-                  <span class="font-arabic text-xs">لَا تَرْمِ</span> (Fi'il Nahi)
+                  <span dir="rtl" class="font-arabic text-sm">لَا تَرْمِ</span>
+                  <span class="font-sans text-[10px]">(Fi'il Nahi)</span>
                 </span>
               </div>
             </div>
@@ -4814,22 +4818,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
           <!-- Section 1: Fi'il Amr & Fi'il Nahi -->
           <div class="space-y-4">
-            <h3 class="text-base sm:text-lg font-bold text-emerald-900 border-l-4 border-emerald-600 pl-3 flex items-center gap-2">
-              <i class="fa-solid fa-book-open text-emerald-600 text-sm"></i>
-              <span>Bagian 1: فِعْلُ الْأَمْرِ (Perintah) وَفِعْلُ النَّهْيِ (Larangan)</span>
-            </h3>
+            <div class="border-l-4 border-emerald-600 pl-3">
+              <h3 class="text-base sm:text-lg font-bold text-emerald-950 flex flex-wrap items-center gap-2">
+                <i class="fa-solid fa-book-open text-emerald-600 text-sm"></i>
+                <span>Bagian 1:</span>
+                <span class="inline-flex items-center gap-1.5 bg-emerald-100/90 text-emerald-900 px-3 py-1 rounded-xl text-xs sm:text-sm font-semibold border border-emerald-200">
+                  <span dir="rtl" class="font-arabic font-bold text-base sm:text-lg leading-none">فِعْلُ الْأَمْرِ</span>
+                  <span class="text-emerald-700 text-xs font-sans font-medium">(Perintah)</span>
+                </span>
+                <span class="text-slate-400 font-bold text-xs">&</span>
+                <span class="inline-flex items-center gap-1.5 bg-rose-100/90 text-rose-900 px-3 py-1 rounded-xl text-xs sm:text-sm font-semibold border border-rose-200">
+                  <span dir="rtl" class="font-arabic font-bold text-base sm:text-lg leading-none">فِعْلُ النَّهْيِ</span>
+                  <span class="text-rose-700 text-xs font-sans font-medium">(Larangan)</span>
+                </span>
+              </h3>
+            </div>
             
             <div class="grid md:grid-cols-2 gap-6">
               ${grammar.sections.map(sec => `
                 <div class="bg-emerald-50/40 rounded-3xl p-5 sm:p-6 border border-emerald-200/80 space-y-4 shadow-sm hover:shadow-md transition-all">
-                  <div class="flex items-center justify-between gap-2">
-                    <div class="${sec.theme === 'rose' ? 'bg-gradient-to-r from-rose-700 to-red-800' : 'bg-gradient-to-r from-emerald-800 to-teal-800'} text-white px-4 py-2 rounded-xl text-sm font-bold inline-flex items-center gap-2 font-arabic shadow-sm">
+                  <div class="flex flex-wrap items-center justify-between gap-2.5 pb-2 border-b ${sec.theme === 'rose' ? 'border-rose-100' : 'border-emerald-100'}">
+                    <div class="${sec.theme === 'rose' ? 'bg-gradient-to-r from-rose-700 to-red-800' : 'bg-gradient-to-r from-emerald-800 to-teal-800'} text-white px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-bold inline-flex items-center gap-2 shadow-sm shrink-0">
                       <i class="fa-solid ${sec.theme === 'rose' ? 'fa-ban' : 'fa-bullhorn'} text-xs"></i>
-                      <span>${sec.type}</span>
+                      <span class="font-sans font-bold tracking-tight">${sec.titleLatin || (sec.theme === 'rose' ? "Fi'il Nahi" : "Fi'il Amr")}</span>
+                      <span class="opacity-40 font-normal">|</span>
+                      <span dir="rtl" class="font-arabic font-bold text-sm sm:text-base leading-none">${sec.titleArabic || (sec.theme === 'rose' ? "فِعْلُ النَّهْيِ" : "فِعْلُ الْأَمْرِ")}</span>
                     </div>
-                    <span class="text-[10px] font-bold ${sec.theme === 'rose' ? 'text-rose-700 bg-rose-100' : 'text-emerald-700 bg-emerald-100'} px-2.5 py-1 rounded-full border ${sec.theme === 'rose' ? 'border-rose-200' : 'border-emerald-200'}">
-                      ${sec.badge || ''}
-                    </span>
+                    <div class="inline-flex items-center gap-1.5 ${sec.theme === 'rose' ? 'bg-rose-100/90 text-rose-800 border-rose-200' : 'bg-emerald-100/90 text-emerald-800 border-emerald-200'} px-3 py-1 rounded-xl text-[11px] font-bold border shadow-2xs shrink-0">
+                      <i class="fa-solid ${sec.theme === 'rose' ? 'fa-ban' : 'fa-circle-check'} text-[10px] ${sec.theme === 'rose' ? 'text-rose-600' : 'text-emerald-600'}"></i>
+                      <span>${sec.badge || (sec.theme === 'rose' ? 'Kalimat Larangan' : 'Kalimat Perintah')}</span>
+                    </div>
                   </div>
 
                   <p class="text-xs text-emerald-950 leading-relaxed font-medium">${sec.desc}</p>

@@ -291,10 +291,12 @@ const ARABIC_DATA = {
     explanation: "Dalam tema Pelestarian Lingkungan, kita menguasai Kalimat Perintah untuk mengajak kebaikan, Kalimat Larangan untuk mencegah kerusakan, serta Isim Tafdhil untuk membandingkan tingkat sifat (lebih / paling).",
     sections: [
       {
-        type: "Fi'il Amr (فِعْلُ الأَمْرِ)",
+        type: "Fi'il Amr",
+        titleLatin: "Fi'il Amr",
+        titleArabic: "فِعْلُ الْأَمْرِ",
         theme: "emerald",
         desc: "Kata kerja yang digunakan untuk memerintah/meminta seseorang melakukan tindakan pelestarian lingkungan.",
-        badge: "Pola: فِعْلُ الأَمْرِ (Perintah)",
+        badge: "Kalimat Perintah",
         examples: [
           {
             arabic: "احْرِصْ عَلَى النَّظَافَةِ!",
@@ -308,7 +310,7 @@ const ARABIC_DATA = {
             explanation: "Kata «احْرِصْ» adalah Fi'il Amr yang menunjukkan perintah langsung: 'Jagalah!' (untuk mufrad mudzakkar)."
           },
           {
-            arabic: "اِغْرِسِ الأَشْجَارَ فِي الْحَدِيقَةِ!",
+            arabic: "اِغْرِسِ الْأَشْجَارَ فِي الْحَدِيقَةِ!",
             targetArabic: "اِغْرِسِ",
             targetRole: "فِعْلُ أَمْرٍ",
             roleDesc: "Kata Kerja Perintah (Dikasrahkan karena washal/pertemuan dua sukun)",
@@ -332,10 +334,12 @@ const ARABIC_DATA = {
         ]
       },
       {
-        type: "Fi'il Nahi (فِعْلُ النَّهْيِ)",
+        type: "Fi'il Nahi",
+        titleLatin: "Fi'il Nahi",
+        titleArabic: "فِعْلُ النَّهْيِ",
         theme: "rose",
-        desc: "Kata kerja yang digunakan untuk melarang seseorang merusak lingkungan (Pola: لَا + الفعل المضارع المجزوم).",
-        badge: "Pola: لَا النَّاهِيَة + مُضَارِع مَجْزُوم",
+        desc: "Kata kerja yang digunakan untuk melarang seseorang melakukan tindakan perusakan lingkungan hidup.",
+        badge: "Kalimat Larangan",
         examples: [
           {
             arabic: "لَا تَرْمِ الْقُمَامَةَ فِي الشَّارِعِ!",
@@ -360,7 +364,7 @@ const ARABIC_DATA = {
             explanation: "Frasa «لَا تُسْرِفْ» adalah Fi'il Nahi: 'Jangan berlebih-lebihan/boros!'. Huruf fa' disukunkan karena jazm."
           },
           {
-            arabic: "لَا تَقْطَعُوا الأَشْجَارَ عَبَثًا!",
+            arabic: "لَا تَقْطَعُوا الْأَشْجَارَ عَبَثًا!",
             targetArabic: "لَا تَقْطَعُوا",
             targetRole: "فِعْلُ نَهْيٍ لِلْجَمْعِ",
             roleDesc: "Larangan Jamak (Jazm dengan membuang nun)",
