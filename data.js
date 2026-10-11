@@ -103,7 +103,7 @@ const ARABIC_DATA = {
       latin: "Nufāyatun",
       meaning: "Sampah / Limbah",
       category: "Masalah",
-      sentence: "يَجِبُ وَضْعُ النُّفَايَةِ فِي كِيسٍ مُغْلَقٍ وَرَمْيُهَا فِي سَلَّةِ الْمُهْمَلاَتِ.",
+      sentence: "يَجِبُ وَضْعُ النُّفَايَةِ فِي كِيسٍ مُغْلَقٍ وَرَمْيُهَا فِي سَلَّةِ الْمُهْمَلَاتِ.",
       sentenceTranslation: "Sampah harus dimasukkan ke kantong tertutup dan dibuang di tempat sampah.",
       svgKey: "sampah",
       image: "img-sampah.jpg"
@@ -158,7 +158,7 @@ const ARABIC_DATA = {
       latin: "Ġarsul Asy-jār",
       meaning: "Menanam Pohon / Penghijauan",
       category: "Aksi",
-      sentence: "يَقُومُ الطُّلاَّبُ بِغَرْسِ الأَشْجَارِ فِي حَدِيقَةِ الْمَدْرَسَةِ.",
+      sentence: "يَقُومُ الطُّلَاّبُ بِغَرْسِ الأَشْجَارِ فِي حَدِيقَةِ الْمَدْرَسَةِ.",
       sentenceTranslation: "Para siswa melakukan penanaman pohon di taman sekolah.",
       svgKey: "reboisasi",
       image: "img-menanam-pohon.jpg"
@@ -176,22 +176,22 @@ const ARABIC_DATA = {
     },
     {
       id: 16,
-      arabic: "تَرْشِيدُ اسْتِهْلاَكِ الْمَاءِ",
+      arabic: "تَرْشِيدُ اسْتِهْلَاكِ الْمَاءِ",
       latin: "Tarsyīdu istihlākil mā'",
       meaning: "Penghematan Air",
       category: "Solusi",
-      sentence: "يَجِبُ عَلَيْنَا تَرْشِيدُ اسْتِهْلاَكِ الْمَاءِ كُلَّ يَوْمٍ.",
+      sentence: "يَجِبُ عَلَيْنَا تَرْشِيدُ اسْتِهْلَاكِ الْمَاءِ كُلَّ يَوْمٍ.",
       sentenceTranslation: "Kita harus menghemat penggunaan air setiap hari.",
       svgKey: "air_bersih",
       image: "img-penghematan-air.jpg"
     },
     {
       id: 17,
-      arabic: "سَلَّةُ الْمُهْمَلاَتِ",
+      arabic: "سَلَّةُ الْمُهْمَلَاتِ",
       latin: "Sallatul Muhmalāt",
       meaning: "Tempat Sampah",
       category: "Alat",
-      sentence: "تُوجَدُ سَلَّةُ الْمُهْمَلاَتِ فِي كُلِّ فَصْلٍ.",
+      sentence: "تُوجَدُ سَلَّةُ الْمُهْمَلَاتِ فِي كُلِّ فَصْلٍ.",
       sentenceTranslation: "Terdapat tempat sampah di setiap kelas.",
       svgKey: "sampah",
       image: "img-tempat-sampah.jpg"
@@ -204,13 +204,13 @@ const ARABIC_DATA = {
     paragraphs: [
       {
         section: "امر الإسلام بالحفاظ على البيئة",
-        arabic: "أَمَرَ الإِسْلاَمُ بِالْحِفَاظِ عَلَى الْبِيئَةِ وَنَهَى عَنْ إِفْسَادِهَا، وَإِفْسَادُ الْبِيئَةِ لَهُ صُوَرٌ مُتَعَدِّدَةٌ، مِنْهَا:\n• رَمْيُ النُّفَايَاتِ فِي النَّهْرِ أَوْ فِي الْبَحْرِ\n• رَمْيُ مِيَاهِ الصَّرْفِ فِي النَّهْرِ\n• إِحْرَاقُ الْغَابَاتِ وَالأَشْجَارِ لِغَيْرِ الْحَاجَةِ الضَّرُورِيَّةِ\nوَكُلُّ هَذِهِ الْمُمَارَسَاتِ تُفْسِدُ الْبِيئَةَ.",
+        arabic: "أَمَرَ الإِسْلَامُ بِالْحِفَاظِ عَلَى الْبِيئَةِ وَنَهَى عَنْ إِفْسَادِهَا، وَإِفْسَادُ الْبِيئَةِ لَهُ صُوَرٌ مُتَعَدِّدَةٌ، مِنْهَا:\n• رَمْيُ النُّفَايَاتِ فِي النَّهْرِ أَوْ فِي الْبَحْرِ\n• رَمْيُ مِيَاهِ الصَّرْفِ فِي النَّهْرِ\n• إِحْرَاقُ الْغَابَاتِ وَالأَشْجَارِ لِغَيْرِ الْحَاجَةِ الضَّرُورِيَّةِ\nوَكُلُّ هَذِهِ الْمُمَارَسَاتِ تُفْسِدُ الْبِيئَةَ.",
         translation: "Islam memerintahkan untuk menjaga pelestarian lingkungan hidup dan melarang merusaknya. Kerusakan lingkungan memiliki berbagai bentuk, di antaranya:\n• Membuang sampah di sungai atau di laut\n• Membuang air limbah di sungai\n• Pembakaran hutan dan pepohonan tanpa kebutuhan yang mendesak\nDan seluruh tindakan ini merusak lingkungan hidup.",
         tokens: [
           { word: "أَمَرَ", color: "emerald", role: "فِعْلٌ مَاضٍ", roleDesc: "Kata Kerja Lampau (Fi'il Madhi)", irob: "فِعْلٌ مَاضٍ مَبْنِيٌّ عَلَى الْفَتْحِ الظَّاهِرِ عَلَى آخِرِهِ", meaning: "Telah memerintahkan" },
-          { word: "الإِسْلاَمُ", color: "blue", role: "فَاعِلٌ (Subjek)", roleDesc: "Subjek pelaku dari 'Amara'", irob: "فَاعِلٌ مَرْفُوعٌ وَعَلاَمَةُ رَفْعِهِ الضَّمَّةُ الظَّاهِرَةُ عَلَى آخِرِهِ", meaning: "Agama Islam" },
-          { word: "بِالْحِفَاظِ", color: "amber", role: "جَارٌّ وَمَجْرُورٌ", roleDesc: "Huruf Jar (الباء) + Isim Majrur", irob: "البَاءُ حَرْفُ جَرٍّ، الْحِفَاظِ اِسْمٌ مَجْرُورٌ بِالْبَاءِ وَعَلاَمَةُ جَرِّهِ الْكَسْرَةُ", meaning: "Dengan pelestarian" },
-          { word: "عَلَى الْبِيئَةِ", color: "amber", role: "جَارٌّ وَمَجْرُورٌ", roleDesc: "Huruf Jar (على) + Isim Majrur", irob: "عَلَى حَرْفُ جَرٍّ، الْبِيئَةِ اِسْمٌ مَجْرُورٌ بِعَلَى وَعَلاَمَةُ جَرِّهِ الْكَسْرَةُ", meaning: "Atas lingkungan hidup" },
+          { word: "الإِسْلَامُ", color: "blue", role: "فَاعِلٌ (Subjek)", roleDesc: "Subjek pelaku dari 'Amara'", irob: "فَاعِلٌ مَرْفُوعٌ وَعَلَامَةُ رَفْعِهِ الضَّمَّةُ الظَّاهِرَةُ عَلَى آخِرِهِ", meaning: "Agama Islam" },
+          { word: "بِالْحِفَاظِ", color: "amber", role: "جَارٌّ وَمَجْرُورٌ", roleDesc: "Huruf Jar (الباء) + Isim Majrur", irob: "البَاءُ حَرْفُ جَرٍّ، الْحِفَاظِ اِسْمٌ مَجْرُورٌ بِالْبَاءِ وَعَلَامَةُ جَرِّهِ الْكَسْرَةُ", meaning: "Dengan pelestarian" },
+          { word: "عَلَى الْبِيئَةِ", color: "amber", role: "جَارٌّ وَمَجْرُورٌ", roleDesc: "Huruf Jar (على) + Isim Majrur", irob: "عَلَى حَرْفُ جَرٍّ، الْبِيئَةِ اِسْمٌ مَجْرُورٌ بِعَلَى وَعَلَامَةُ جَرِّهِ الْكَسْرَةُ", meaning: "Atas lingkungan hidup" },
           { word: "وَنَهَى", color: "emerald", role: "حَرْفُ عَطْفٍ + فِعْلٌ مَاضٍ", roleDesc: "Kata Kerja Lampau (Melarang)", irob: "الوَاوُ حَرْفُ عَطْفٍ، نَهَى فِعْلٌ مَاضٍ مَبْنِيٌّ عَلَى الْفَتْحِ الْمُقَدَّرِ", meaning: "Dan telah melarang" },
           { word: "عَنْ إِفْسَادِهَا", color: "amber", role: "جَارٌّ وَمَجْرُورٌ وَمُضَافٌ إِلَيْهِ", roleDesc: "Huruf Jar (عن) + Majrur Mudhaf + Dhamir", irob: "عَنْ حَرْفُ جَرٍّ، إِفْسَادِ اِسْمٌ مَجْرُورٌ وَهُوَ مُضَافٌ، وَ(هَا) ضَمِيرٌ مُتَّصِلٌ فِي مَحَلِّ جَرِّ مُضَافٌ إِلَيْهِ", meaning: "Dari merusaknya" },
           { word: "وَإِفْسَادُ الْبِيئَةِ", color: "cyan", role: "مُبْتَدَأٌ + مُضَافٌ إِلَيْهِ", roleDesc: "Mubtada' Marfu' + Mudhaf Ilaih", irob: "إِفْسَادُ مُبْتَدَأٌ مَرْفُوعٌ بِالضَّمَّةِ وَهُوَ مُضَافٌ، الْبِيئَةِ مُضَافٌ إِلَيْهِ مَجْرُورٌ بِالْكَسْرَةِ", meaning: "Dan pengerusakan lingkungan" },
@@ -223,15 +223,15 @@ const ARABIC_DATA = {
       },
       {
         section: "المشكلات البيئية عَالَمِيَّةٌ وأقسام التلوث",
-        arabic: "وَفِي هَذَا الْعَصْرِ أَصْبَحَتِ الْبِيئَةُ تُوَاجِهُ مُشْكِلاَتٍ بِيئِيَّةً عَالَمِيَّةً، مِنْهَا: التَّصَحُّرُ، وَالتَّلَوُّثُ الْبِيئِيُّ، وَالإِحْتِبَاسُ الْحَرَارِيُّ. وَتَلَوُّثُ الْبِيئَةِ يُنْقَسِمُ إِلَى ثَلاَثَةِ أَقْسَامٍ، وَهِيَ: تَلَوُّثُ الْمَاءِ، وَتَلَوُّثُ الْهَوَاءِ، وَتَلَوُّثُ التُّرْبَةِ.",
+        arabic: "وَفِي هَذَا الْعَصْرِ أَصْبَحَتِ الْبِيئَةُ تُوَاجِهُ مُشْكِلَاتٍ بِيئِيَّةً عَالَمِيَّةً، مِنْهَا: التَّصَحُّرُ، وَالتَّلَوُّثُ الْبِيئِيُّ، وَالإِحْتِبَاسُ الْحَرَارِيُّ. وَتَلَوُّثُ الْبِيئَةِ يُنْقَسِمُ إِلَى ثَلَاثَةِ أَقْسَامٍ، وَهِيَ: تَلَوُّثُ الْمَاءِ، وَتَلَوُّثُ الْهَوَاءِ، وَتَلَوُّثُ التُّرْبَةِ.",
         translation: "Di era modern ini, lingkungan hidup menghadapi permasalahan lingkungan global, di antaranya: penebangan hutan/deforestasi, pencemaran lingkungan, dan pemanasan global. Pencemaran lingkungan terbagi menjadi tiga jenis, yaitu: pencemaran air, pencemaran udara, dan pencemaran tanah.",
         tokens: [
           { word: "وَفِي هَذَا الْعَصْرِ", color: "amber", role: "جَارٌّ وَمَجْرُورٌ وَبَدَلٌ", roleDesc: "Keterangan Waktu (Di era modern ini)", irob: "فِي حَرْفُ جَرٍّ، هَذَا اِسْمُ إِشَارَةٍ مَبْنِيٌّ فِي مَحَلِّ جَرٍّ، الْعَصْرِ بَدَلٌ مَجْرُورٌ", meaning: "Dan di era modern ini" },
           { word: "أَصْبَحَتِ الْبِيئَةُ", color: "cyan", role: "فِعْلٌ نَاقِصٌ + اِسْمُ (أَصْبَحَ)", roleDesc: "Fi'il Naqis (Asbahat) + Isim Asbahat Marfu'", irob: "أَصْبَحَتِ فِعْلٌ مَاضٍ نَاقِصٌ، وَالتَّاءُ لِلتَّأْنِيثِ، الْبِيئَةُ اِسْمُ (أَصْبَحَ) مَرْفُوعٌ بِالضَّمَّةِ", meaning: "Lingkungan hidup menjadi" },
-          { word: "تُوَاجِهُ مُشْكِلاَتٍ بِيئِيَّةً عَالَمِيَّةً", color: "emerald", role: "فِعْلٌ مُضَارِعٌ + مَفْعُولٌ بِهِ + نَعْتٌ", roleDesc: "Fi'il Mudhari' + Maf'ul Bih Manshub + Na'at (Sifat)", irob: "تُوَاجِهُ فِعْلٌ مُضَارِعٌ، مُشْكِلاَتٍ مَفْعُولٌ بِهِ مَنْصُوبٌ بِالْكَسْرَةِ (جَمْعُ مُؤَنَّثٍ سَالِمٍ)، بِيئِيَّةً عَالَمِيَّةً نَعْتَانِ مَنْصُوبَانِ", meaning: "Menghadapi permasalahan lingkungan global" },
+          { word: "تُوَاجِهُ مُشْكِلَاتٍ بِيئِيَّةً عَالَمِيَّةً", color: "emerald", role: "فِعْلٌ مُضَارِعٌ + مَفْعُولٌ بِهِ + نَعْتٌ", roleDesc: "Fi'il Mudhari' + Maf'ul Bih Manshub + Na'at (Sifat)", irob: "تُوَاجِهُ فِعْلٌ مُضَارِعٌ، مُشْكِلَاتٍ مَفْعُولٌ بِهِ مَنْصُوبٌ بِالْكَسْرَةِ (جَمْعُ مُؤَنَّثٍ سَالِمٍ)، بِيئِيَّةً عَالَمِيَّةً نَعْتَانِ مَنْصُوبَانِ", meaning: "Menghadapi permasalahan lingkungan global" },
           { word: "مِنْهَا: التَّصَحُّرُ، وَالتَّلَوُّثُ الْبِيئِيُّ، وَالإِحْتِبَاسُ الْحَرَارِيُّ", color: "purple", role: "خَبَرٌ مُقَدَّمٌ + مُبْتَدَأٌ مُؤَخَّرٌ + مَعْطُوفٌ", roleDesc: "Rincian Masalah Global (Deforestasi, Polusi, Pemanasan Global)", irob: "مِنْهَا جَارٌّ وَمَجْرُورٌ خَبَرٌ مُقَدَّمٌ، التَّصَحُّرُ مُبْتَدَأٌ مُؤَخَّرٌ مَرْفُوعٌ، التَّلَوُّثُ وَالإِحْتِبَاسُ مَعْطُوفَانِ مَرْفُوعَانِ", meaning: "Di antaranya: deforestasi, pencemaran lingkungan, dan pemanasan global" },
           { word: "وَتَلَوُّثُ الْبِيئَةِ", color: "cyan", role: "مُبْتَدَأٌ + مُضَافٌ إِلَيْهِ", roleDesc: "Mubtada' Marfu' + Mudhaf Ilaih", irob: "تَلَوُّثُ مُبْتَدَأٌ مَرْفُوعٌ بِالضَّمَّةِ وَهُوَ مُضَافٌ، الْبِيئَةِ مُضَافٌ إِلَيْهِ مَجْرُورٌ", meaning: "Dan pencemaran lingkungan" },
-          { word: "يُنْقَسِمُ إِلَى ثَلاَثَةِ أَقْسَامٍ", color: "emerald", role: "فِعْلٌ مُضَارِعٌ + جَارٌّ وَمَجْرُورٌ (خَبَرٌ)", roleDesc: "Fi'il Mudhari' + Jar Majrur Mudhaf Ilaih", irob: "يُنْقَسِمُ فِعْلٌ مُضَارِعٌ مَرْفُوعٌ، إِلَى ثَلاَثَةِ جَارٌّ وَمَجْرُورٌ وَهُوَ مُضَافٌ، أَقْسَامٍ مُضَافٌ إِلَيْهِ مَجْرُورٌ", meaning: "Terbagi menjadi tiga jenis" },
+          { word: "يُنْقَسِمُ إِلَى ثَلَاثَةِ أَقْسَامٍ", color: "emerald", role: "فِعْلٌ مُضَارِعٌ + جَارٌّ وَمَجْرُورٌ (خَبَرٌ)", roleDesc: "Fi'il Mudhari' + Jar Majrur Mudhaf Ilaih", irob: "يُنْقَسِمُ فِعْلٌ مُضَارِعٌ مَرْفُوعٌ، إِلَى ثَلَاثَةِ جَارٌّ وَمَجْرُورٌ وَهُوَ مُضَافٌ، أَقْسَامٍ مُضَافٌ إِلَيْهِ مَجْرُورٌ", meaning: "Terbagi menjadi tiga jenis" },
           { word: "تَلَوُّثُ الْمَاءِ، وَتَلَوُّثُ الْهَوَاءِ، وَتَلَوُّثُ التُّرْبَةِ", color: "amber", role: "بَدَلٌ + مَعْطُوفَاتٌ", roleDesc: "Rincian 3 Jenis Polusi (Air, Udara, Tanah)", irob: "تَلَوُّثُ بَدَلٌ مَرْفُوعٌ، الْمَاءِ مُضَافٌ إِلَيْهِ، تَلَوُّثُ الْهَوَاءِ وَالتُّرْبَةِ مَعْطُوفَانِ", meaning: "Pencemaran air, pencemaran udara, dan pencemaran tanah" }
         ]
       },
@@ -334,41 +334,41 @@ const ARABIC_DATA = {
       {
         type: "Fi'il Nahi (فِعْلُ النَّهْيِ)",
         theme: "rose",
-        desc: "Kata kerja yang digunakan untuk melarang seseorang merusak lingkungan (Pola: لاَ + الفعل المضارع المجزوم).",
-        badge: "Pola: لاَ النَّاهِيَة + مُضَارِع مَجْزُوم",
+        desc: "Kata kerja yang digunakan untuk melarang seseorang merusak lingkungan (Pola: لَا + الفعل المضارع المجزوم).",
+        badge: "Pola: لَا النَّاهِيَة + مُضَارِع مَجْزُوم",
         examples: [
           {
-            arabic: "لاَ تَرْمِ الْقُمَامَةَ فِي الشَّارِعِ!",
-            targetArabic: "لاَ تَرْمِ",
+            arabic: "لَا تَرْمِ الْقُمَامَةَ فِي الشَّارِعِ!",
+            targetArabic: "لَا تَرْمِ",
             targetRole: "فِعْلُ نَهْيٍ",
             roleDesc: "Larangan (Jazm dengan membuang huruf 'illat)",
             latin: "Lā tarmi al-qumāmata fisy-syāri'!",
             targetLatin: "Lā tarmi",
             indonesian: "Jangan buang sampah di jalan!",
             targetIndonesian: "Jangan buang",
-            explanation: "Frasa «لاَ تَرْمِ» adalah Fi'il Nahi: 'Jangan membuang!'. Huruf ya' di akhir dibuang karena jazm."
+            explanation: "Frasa «لَا تَرْمِ» adalah Fi'il Nahi: 'Jangan membuang!'. Huruf ya' di akhir dibuang karena jazm."
           },
           {
-            arabic: "لاَ تُسْرِفْ فِي اسْتِهْلاَكِ الْمَاءِ!",
-            targetArabic: "لاَ تُسْرِفْ",
+            arabic: "لَا تُسْرِفْ فِي اسْتِهْلَاكِ الْمَاءِ!",
+            targetArabic: "لَا تُسْرِفْ",
             targetRole: "فِعْلُ نَهْيٍ",
             roleDesc: "Larangan (Jazm dengan tanda sukun)",
             latin: "Lā tusrif fī istihlākil-mā'!",
             targetLatin: "Lā tusrif",
             indonesian: "Jangan boros dalam menggunakan air!",
             targetIndonesian: "Jangan boros",
-            explanation: "Frasa «لاَ تُسْرِفْ» adalah Fi'il Nahi: 'Jangan berlebih-lebihan/boros!'. Huruf fa' disukunkan karena jazm."
+            explanation: "Frasa «لَا تُسْرِفْ» adalah Fi'il Nahi: 'Jangan berlebih-lebihan/boros!'. Huruf fa' disukunkan karena jazm."
           },
           {
-            arabic: "لاَ تَقْطَعُوا الأَشْجَارَ عَبَثًا!",
-            targetArabic: "لاَ تَقْطَعُوا",
+            arabic: "لَا تَقْطَعُوا الأَشْجَارَ عَبَثًا!",
+            targetArabic: "لَا تَقْطَعُوا",
             targetRole: "فِعْلُ نَهْيٍ لِلْجَمْعِ",
             roleDesc: "Larangan Jamak (Jazm dengan membuang nun)",
             latin: "Lā taqṭa'ūl-asy-jāra 'abaṡan!",
             targetLatin: "Lā taqṭa'ū",
             indonesian: "Janganlah kalian memotong pohon sembarangan!",
             targetIndonesian: "Janganlah kalian memotong",
-            explanation: "Frasa «لاَ تَقْطَعُوا» adalah Fi'il Nahi Jamak untuk kalian: 'Janganlah kalian memotong!'."
+            explanation: "Frasa «لَا تَقْطَعُوا» adalah Fi'il Nahi Jamak untuk kalian: 'Janganlah kalian memotong!'."
           }
         ]
       }
@@ -551,7 +551,7 @@ const ARABIC_DATA = {
           role: "Guru (Ustadz)",
           avatar: "avatar-guru.jpg",
           bubbleColor: "amber",
-          arabic: "أَيُّهَا التَّلاَمِيْذُ، أُنْظُرُوا إِلَى الصُّوْرَتَيْنِ.",
+          arabic: "أَيُّهَا التَّلَامِيْذُ، أُنْظُرُوا إِلَى الصُّوْرَتَيْنِ.",
           translation: "Wahai murid-murid, lihatlah kedua gambar ini!"
         },
         {
@@ -587,7 +587,7 @@ const ARABIC_DATA = {
           role: "Siswa (Abdullah)",
           avatar: "avatar-siswa.jpg",
           bubbleColor: "blue",
-          arabic: "كِلاَهُمَا بِمَا كَسَبَتْ أَيْدِي النَّاسِ.",
+          arabic: "كِلَاهُمَا بِمَا كَسَبَتْ أَيْدِي النَّاسِ.",
           translation: "Kedua bencana tersebut terjadi akibat ulah perbuatan tangan manusia."
         },
         {
@@ -614,7 +614,7 @@ const ARABIC_DATA = {
           role: "Guru (Ustadz)",
           avatar: "avatar-guru.jpg",
           bubbleColor: "sky",
-          arabic: "أَحْسَنْتَ يَا حَمْدَانُ. لِذَلِكَ أَيُّهَا التَّلاَمِيْذُ، الْبِيئَةُ تَنْتَظِرُ دَوْرَكُمْ. عَلَيْكُمْ أَنْ تُحَافِظُوا عَلَى الْبِيئَةِ.",
+          arabic: "أَحْسَنْتَ يَا حَمْدَانُ. لِذَلِكَ أَيُّهَا التَّلَامِيْذُ، الْبِيئَةُ تَنْتَظِرُ دَوْرَكُمْ. عَلَيْكُمْ أَنْ تُحَافِظُوا عَلَى الْبِيئَةِ.",
           translation: "Bagus sekali wahai Hamdan! Oleh karena itu wahai murid-murid, lingkungan hidup menunggu peran kalian. Hendaknya kalian melestarikan lingkungan hidup."
         }
       ]
@@ -984,7 +984,7 @@ const ARABIC_DATA = {
           { id: 1, arabic: "الْحِفَاظُ عَلَى الْبِيئَةِ", meaning: "Pelestarian Lingkungan Hidup", latin: "Al-Ḥifāẓu 'alal bī'ah" },
           { id: 2, arabic: "غَرْسُ الأَشْجَارِ فِي الْحَدِيقَةِ", meaning: "Menanam Pohon di Taman", latin: "Ġarsul asy-jāri fil ḥadīqah" },
           { id: 3, arabic: "تَدْوِيرُ النَّفَايَاتِ يُقَلِّلُ التَّلَوُّثَ", meaning: "Daur Ulang Sampah Mengurangi Polusi", latin: "Tadwīrul nafāyāti yuqallilut talawwuşa" },
-          { id: 4, arabic: "لاَ تَرْمِ الْقُمَامَةَ فِي النَّهْرِ!", meaning: "Jangan Buang Sampah di Sungai!", latin: "Lā tarmi al-qumāmata fin-nahr!" },
+          { id: 4, arabic: "لَا تَرْمِ الْقُمَامَةَ فِي النَّهْرِ!", meaning: "Jangan Buang Sampah di Sungai!", latin: "Lā tarmi al-qumāmata fin-nahr!" },
           { id: 5, arabic: "النَّظَافَةُ مِنَ الإِيمَانِ", meaning: "Kebersihan Sebagian dari Iman", latin: "An-Naẓāfatu minal īmān" }
         ]
       },
@@ -995,7 +995,7 @@ const ARABIC_DATA = {
                 questions: [
           {
             id: 1,
-            audioText: "أَمَرَ الإِسْلاَمُ بِالْحِفَاظِ عَلَى الْبِيئَةِ وَنَهَى عَنْ إِفْسَادِهَا.",
+            audioText: "أَمَرَ الإِسْلَامُ بِالْحِفَاظِ عَلَى الْبِيئَةِ وَنَهَى عَنْ إِفْسَادِهَا.",
             question: "Dengarkan audio di atas! Apa yang diperintahkan oleh Islam?",
             options: [
               "الْحِفَاظُ عَلَى الْبِيئَةِ (Menjaga Lingkungan)",
@@ -1004,11 +1004,11 @@ const ARABIC_DATA = {
               "قَطْعُ الأَشْجَارِ (Menebang Pohon)"
             ],
             answer: 0,
-            explanation: "Sesuai audio yang didengar: «أَمَرَ الإِسْلاَمُ بِالْحِفَاظِ عَلَى الْبِيئَةِ»."
+            explanation: "Sesuai audio yang didengar: «أَمَرَ الإِسْلَامُ بِالْحِفَاظِ عَلَى الْبِيئَةِ»."
           },
           {
             id: 2,
-            audioText: "يَقُومُ الطُّلاَّبُ بِغَرْسِ الأَشْجَارِ فِي حَدِيقَةِ الْمَدْرَسَةِ كُلَّ يَوْمِ الْجُمُعَةِ.",
+            audioText: "يَقُومُ الطُّلَاّبُ بِغَرْسِ الأَشْجَارِ فِي حَدِيقَةِ الْمَدْرَسَةِ كُلَّ يَوْمِ الْجُمُعَةِ.",
             question: "Di manakah para siswa menanam pohon sesuai audio?",
             options: [
               "فِي الشَّارِعِ (Di Jalan)",
@@ -1021,11 +1021,11 @@ const ARABIC_DATA = {
           },
           {
             id: 3,
-            audioText: "التَّلَوُّثُ يُنْقَسِمُ إِلَى ثَلاَثَةِ أَقْسَامٍ: تَلَوُّثُ الْمَاءِ، وَالْهَوَاءِ، وَالتُّرْبَةِ.",
+            audioText: "التَّلَوُّثُ يُنْقَسِمُ إِلَى ثَلَاثَةِ أَقْسَامٍ: تَلَوُّثُ الْمَاءِ، وَالْهَوَاءِ، وَالتُّرْبَةِ.",
             question: "Berapa jumlah jenis pencemaran lingkungan yang disebutkan dalam audio?",
             options: [
               "قِسْمَانِ (2 Jenis)",
-              "ثَلاَثَةُ أَقْسَامٍ (3 Jenis)",
+              "ثَلَاثَةُ أَقْسَامٍ (3 Jenis)",
               "أَرْبَعَةُ أَقْسَامٍ (4 Jenis)",
               "خَمْسَةُ أَقْسَامٍ (5 Jenis)"
             ],
@@ -1034,7 +1034,7 @@ const ARABIC_DATA = {
           },
           {
             id: 4,
-            audioText: "احْرِصْ عَلَى النَّظَافَةِ وَلاَ تُسْرِفْ فِي اسْتِهْلاَكِ الْمَاءِ!",
+            audioText: "احْرِصْ عَلَى النَّظَافَةِ وَلَا تُسْرِفْ فِي اسْتِهْلَاكِ الْمَاءِ!",
             question: "Apa pesan utama kalimat perintah dan larangan dalam audio?",
             options: [
               "Jagalah kebersihan dan jangan boros air!",
@@ -1043,7 +1043,7 @@ const ARABIC_DATA = {
               "Bikinlah asap pabrik!"
             ],
             answer: 0,
-            explanation: "Sesuai audio: «احْرِصْ عَلَى النَّظَافَةِ وَلاَ تُسْرِفْ فِي اسْتِهْلاَكِ الْمَاءِ»."
+            explanation: "Sesuai audio: «احْرِصْ عَلَى النَّظَافَةِ وَلَا تُسْرِفْ فِي اسْتِهْلَاكِ الْمَاءِ»."
           },
           {
             id: 5,
@@ -1053,7 +1053,7 @@ const ARABIC_DATA = {
               "زِيَادَةُ الأَوْسَاخِ (Menambah Kotoran)",
               "تَقْلِيلُ التَّلَوُّثِ الْبِيئِيِّ (Mengurangi Pencemaran)",
               "تَلْوِيثُ مِيَاهِ النَّهْرِ (Mencemari Air Sungai)",
-              "إِتْلاَفُ التُّرْبَةِ (Merusak Tanah)"
+              "إِتْلَافُ التُّرْبَةِ (Merusak Tanah)"
             ],
             answer: 1,
             explanation: "Berdasarkan audio: «إِعَادَةُ تَدْوِيرِ النُّفَايَاتِ تُسَاعِدُ فِي تَقْلِيلِ التَّلَوُّثِ الْبِيئِيِّ»."
@@ -1073,16 +1073,16 @@ const ARABIC_DATA = {
           },
           {
             id: 7,
-            audioText: "يَجِبُ عَلَيْنَا أَنْ نُلْقِيَ الْقُمَامَةَ فِي سَلَّةِ الْمُهْمَلاَتِ.",
+            audioText: "يَجِبُ عَلَيْنَا أَنْ نُلْقِيَ الْقُمَامَةَ فِي سَلَّةِ الْمُهْمَلَاتِ.",
             question: "Di manakah kita seharusnya membuang sampah menurut rekaman audio?",
             options: [
               "فِي مِيَاهِ النَّهْرِ (Di Air Sungai)",
               "فِي وَسَطِ الشَّارِعِ (Di Tengah Jalan)",
-              "فِي سَلَّةِ الْمُهْمَلاَتِ (Di Tempat Sampah)",
+              "فِي سَلَّةِ الْمُهْمَلَاتِ (Di Tempat Sampah)",
               "فِي مَلْعَبِ الْكُرَةِ (Di Lapangan Bola)"
             ],
             answer: 2,
-            explanation: "Audio menyatakan kewajiban membuang sampah: «فِي سَلَّةِ الْمُهْمَلاَتِ» (di tempat sampah)."
+            explanation: "Audio menyatakan kewajiban membuang sampah: «فِي سَلَّةِ الْمُهْمَلَاتِ» (di tempat sampah)."
           },
           {
             id: 8,
@@ -1099,7 +1099,7 @@ const ARABIC_DATA = {
           },
           {
             id: 9,
-            audioText: "يَا أَخِي، لاَ تُحْرِقِ الْغَابَةَ؛ لِأَنَّهَا تُسَبِّبُ مَوْتَ الْحَيَوَانَاتِ!",
+            audioText: "يَا أَخِي، لَا تُحْرِقِ الْغَابَةَ؛ لِأَنَّهَا تُسَبِّبُ مَوْتَ الْحَيَوَانَاتِ!",
             question: "Mengapa kita dilarang membakar hutan menurut alasan di dalam audio?",
             options: [
               "لِأَنَّهَا تُسَبِّبُ مَوْتَ الْحَيَوَانَاتِ (Menyebabkan Kematian Hewan)",
@@ -1108,12 +1108,12 @@ const ARABIC_DATA = {
               "لِأَنَّهَا تَزِيدُ مِنَ الأَمْطَارِ (Menambah Curah Hujan)"
             ],
             answer: 0,
-            explanation: "Audio menyebutkan larangan: «لاَ تُحْرِقِ الْغَابَةَ؛ لِأَنَّهَا تُسَبِّبُ مَوْتَ الْحَيَوَانَاتِ»."
+            explanation: "Audio menyebutkan larangan: «لَا تُحْرِقِ الْغَابَةَ؛ لِأَنَّهَا تُسَبِّبُ مَوْتَ الْحَيَوَانَاتِ»."
           },
           {
             id: 10,
-            audioText: "تَرْشِيدُ اسْتِهْلاَكِ الْمَاءِ يَحْفَظُ حَيَاةَ الأَجْيَالِ الْقَادِمَةِ.",
-            question: "Apa tujuan penting dari penghematan air (تَرْشِيدُ اسْتِهْلاَكِ الْمَاءِ) berdasarkan audio?",
+            audioText: "تَرْشِيدُ اسْتِهْلَاكِ الْمَاءِ يَحْفَظُ حَيَاةَ الأَجْيَالِ الْقَادِمَةِ.",
+            question: "Apa tujuan penting dari penghematan air (تَرْشِيدُ اسْتِهْلَاكِ الْمَاءِ) berdasarkan audio?",
             options: [
               "تَجْفِيفُ مِيَاهِ الآبَارِ (Mengeringkan Sumur)",
               "حِفْظُ حَيَاةِ الأَجْيَالِ الْقَادِمَةِ (Menjaga Masa Depan Generasi Mendatang)",
@@ -1121,7 +1121,7 @@ const ARABIC_DATA = {
               "تَعْطِيلُ مَحَطَّاتِ الْمِيَاهِ (Menghentikan Distribusi Air)"
             ],
             answer: 1,
-            explanation: "Sesuai audio: «تَرْشِيدُ اسْتِهْلاَكِ الْمَاءِ يَحْفَظُ حَيَاةَ الأَجْيَالِ الْقَادِمَةِ» (Menjaga masa depan generasi mendatang)."
+            explanation: "Sesuai audio: «تَرْشِيدُ اسْتِهْلَاكِ الْمَاءِ يَحْفَظُ حَيَاةَ الأَجْيَالِ الْقَادِمَةِ» (Menjaga masa depan generasi mendatang)."
           }
         ]
       },
@@ -1144,7 +1144,7 @@ const ARABIC_DATA = {
           },
           {
             id: 2,
-            audioText: "رَمْيُ النُّفَايَاتِ فِي سَلَّةِ الْمُهْمَلاَتِ",
+            audioText: "رَمْيُ النُّفَايَاتِ فِي سَلَّةِ الْمُهْمَلَاتِ",
             title: "Membuang Sampah di Tempatnya",
             image: "img-tempat-sampah.jpg",
             fallbackSvg: "sampah",
@@ -1169,7 +1169,7 @@ const ARABIC_DATA = {
     categories: [
       { id: "all", name: "الْكُلُّ", label: "Semua Latihan", count: 15 },
       { id: "dasar", name: "عِبَارَاتٌ رَئِيْسِيَّةٌ", label: "Frasa Kunci", count: 4 },
-      { id: "amr_nahyi", name: "الأَمْرُ وَالنَّهْيُ", label: "Perintah & Larangan", count: 5 },
+      { id: "amr_nahyi", name: "الْأَمْرُ وَالنَّهْيُ", label: "Perintah & Larangan", count: 5 },
       { id: "kalimat", name: "جُمَلٌ مُفِيْدَةٌ", label: "Kalimat Lengkap", count: 4 },
       { id: "hiwar", name: "حِوَارٌ قَصِيْرٌ", label: "Percakapan Pendek", count: 2 }
     ],
@@ -1222,7 +1222,7 @@ const ARABIC_DATA = {
         id: 5,
         category: "amr_nahyi",
         categoryName: "Perintah & Larangan",
-        arabic: "اِزْرَعِ الأَشْجَارَ فِي حَدِيقَةِ الْمَدْرَسَةِ!",
+        arabic: "اِزْرَعِ الْأَشْجَارَ فِي حَدِيقَةِ الْمَدْرَسَةِ!",
         latin: "Izra'il-asyjāra fī ḥadīqatil-madrasah!",
         translation: "Tanamlah pohon-pohon di taman sekolah! (Fi'il Amr)",
         phoneticTip: "Ucapkan Fi'il Amr 'Izra'' dengan huruf 'Ain (ع) di ujung kata secara mantap.",
@@ -1244,7 +1244,7 @@ const ARABIC_DATA = {
         id: 7,
         category: "amr_nahyi",
         categoryName: "Perintah & Larangan",
-        arabic: "لاَ تَرْمِ النِّفَايَاتِ فِي النَّهْرِ!",
+        arabic: "لَا تَرْمِ النُّفَايَاتِ فِي النَّهْرِ!",
         latin: "Lā tarmin-nifāyāti fīn-nahr!",
         translation: "Janganlah kamu membuang sampah limbah ke dalam sungai! (Fi'il Nahyi)",
         phoneticTip: "Nada larangan tegas, perhatikan pelafalan Fa (ف) dan Nun ber-tasydid.",
@@ -1255,10 +1255,10 @@ const ARABIC_DATA = {
         id: 8,
         category: "amr_nahyi",
         categoryName: "Perintah & Larangan",
-        arabic: "لاَ تُفْسِدُوا فِي الأَرْضِ بَعْدَ إِصْلاَحِهَا!",
+        arabic: "لَا تُفْسِدُوا فِي الْأَرْضِ بَعْدَ إِصْلَاحِهَا!",
         latin: "Lā tufsidū fīl-arḍi ba'da iṣlāḥihā!",
         translation: "Janganlah kamu membuat kerusakan di muka bumi setelah perbaikannya! (Fi'il Nahyi Jamak)",
-        phoneticTip: "Kutipan ayat Al-Qur'an, lafalkan Dhad (ض) dan Shod (ص) dengan jelas.",
+        phoneticTip: "Kutipan ayat Al-Qur'an (QS. Al-A'raf: 56/85), perhatikan Lā an-Nahiyah (jazm bi-hadzfin nun), sukun pada lam qamariyah (الْأَرْضِ), serta lafal Dhad (ض) dan Shod (ص).",
         difficulty: "Tantangan",
         targetClean: "لا تفسدوا في الارض بعد اصلاحها"
       },
@@ -1310,7 +1310,7 @@ const ARABIC_DATA = {
         id: 13,
         category: "kalimat",
         categoryName: "Kalimat Lengkap",
-        arabic: "النَّظَافَةُ مِنَ الإِيمَانِ وَهِيَ شِعَارُ الْمُسْلِمِ",
+        arabic: "النَّظَافَةُ مِنَ الْإِيمَانِ وَهِيَ شِعَارُ الْمُسْلِمِ",
         latin: "An-naẓāfatu minal-īmān wa hiya syi'ārul-muslim.",
         translation: "Kebersihan itu sebagian dari iman dan merupakan syiar seorang muslim.",
         phoneticTip: "Hadits dan semboyan Islam tentang kebersihan, lafalkan dengan tartil.",
@@ -1493,15 +1493,15 @@ const ARABIC_DATA = {
         "options": [
           "اِرْمِ الْقُمَامَةَ فِي الشَّارِعِ!",
           "تَرْمِي الْقُمَامَةَ فِي الشَّارِعِ",
-          "لاَ تَرْمِ الْقُمَامَةَ فِي الشَّارِعِ!",
+          "لَا تَرْمِ الْقُمَامَةَ فِي الشَّارِعِ!",
           "رَمَى الْقُمَامَةَ فِي الشَّارِعِ"
         ],
         "answer": 2,
-        "explanation": "«لاَ تَرْمِ» menggunakan La Nahiyah yang menjazemkan fi'il mudhari' (membuang huruf 'illat ya)."
+        "explanation": "«لَا تَرْمِ» menggunakan La Nahiyah yang menjazemkan fi'il mudhari' (membuang huruf 'illat ya)."
       },
       {
         "id": 202,
-        "question": "Fi'il nahi «لاَ تُسْرِفُوا فِي الْمَاءِ!» ditujukan untuk dhamir:",
+        "question": "Fi'il nahi «لَا تُسْرِفُوا فِي الْمَاءِ!» ditujukan untuk dhamir:",
         "options": [
           "أَنْتُمْ (Kalian banyak laki-laki)",
           "أَنْتَ (Kamu satu laki-laki)",
@@ -1509,19 +1509,19 @@ const ARABIC_DATA = {
           "أَنْتُمَا (Kalian berdua)"
         ],
         "answer": 0,
-        "explanation": "Wawu jama'ah (وا) pada «لاَ تُسْرِفُوا» menandakan subjek jamak mudzakkar: أَنْتُمْ."
+        "explanation": "Wawu jama'ah (وا) pada «لَا تُسْرِفُوا» menandakan subjek jamak mudzakkar: أَنْتُمْ."
       },
       {
         "id": 203,
         "question": "Bentuk larangan \"Janganlah kamu (perempuan) mematikan lampu!\" yang benar adalah:",
         "options": [
-          "لاَ تُطْفِئُ النُّورَ!",
-          "لاَ تُطْفِئْ النُّورَ!",
-          "لاَ تُطْفِئُوا النُّورَ!",
-          "لاَ تُطْفِئِي النُّورَ!"
+          "لَا تُطْفِئُ النُّورَ!",
+          "لَا تُطْفِئْ النُّورَ!",
+          "لَا تُطْفِئُوا النُّورَ!",
+          "لَا تُطْفِئِي النُّورَ!"
         ],
         "answer": 3,
-        "explanation": "Untuk dhamir أَنْتِ, fi'il nahi berakhiran ya mukhatabah (membuang huruf nun): «لاَ تُطْفِئِي»."
+        "explanation": "Untuk dhamir أَنْتِ, fi'il nahi berakhiran ya mukhatabah (membuang huruf nun): «لَا تُطْفِئِي»."
       },
       {
         "id": 204,
@@ -1541,15 +1541,15 @@ const ARABIC_DATA = {
         "options": [
           "اِقْطَعِ الأَشْجَارَ دُونَ إِذْنٍ!",
           "قَطَعَ الأَشْجَارَ دُونَ إِذْنٍ",
-          "لاَ تَقْطَعِ الأَشْجَارَ دُونَ إِذْنٍ!",
+          "لَا تَقْطَعِ الأَشْجَارَ دُونَ إِذْنٍ!",
           "تَقْطَعُ الأَشْجَارَ دُونَ إِذْنٍ"
         ],
         "answer": 2,
-        "explanation": "«لاَ تَقْطَعِ» (jangan tebang) adalah fi'il nahi untuk mencegah perusakan alam."
+        "explanation": "«لَا تَقْطَعِ» (jangan tebang) adalah fi'il nahi untuk mencegah perusakan alam."
       },
       {
         "id": 206,
-        "question": "Lengkapi kalimat perintah untuk banyak murid: «يَا طُلاَّبُ، ...... عَلَى نَظَافَةِ الْمَدْرَسَةِ!»",
+        "question": "Lengkapi kalimat perintah untuk banyak murid: «يَا طُلَاّبُ، ...... عَلَى نَظَافَةِ الْمَدْرَسَةِ!»",
         "options": [
           "حَافِظْ",
           "حَافِظُوا",
@@ -1557,7 +1557,7 @@ const ARABIC_DATA = {
           "تُحَافِظُونَ"
         ],
         "answer": 1,
-        "explanation": "«يَا طُلاَّبُ» adalah panggilan jamak (banyak siswa), maka fi'il amr ber-wawu jama'ah: «حَافِظُوا»."
+        "explanation": "«يَا طُلَاّبُ» adalah panggilan jamak (banyak siswa), maka fi'il amr ber-wawu jama'ah: «حَافِظُوا»."
       },
       {
         "id": 207,
@@ -1585,7 +1585,7 @@ const ARABIC_DATA = {
       },
       {
         "id": 209,
-        "question": "Tanda jazem pada fi'il nahi mufrad shahih akhir seperti «لاَ تُفْسِدْ فِي الأَرْضِ» adalah:",
+        "question": "Tanda jazem pada fi'il nahi mufrad shahih akhir seperti «لَا تُفْسِدْ فِي الْأَرْضِ» adalah:",
         "options": [
           "Kasrah",
           "Fathah",
@@ -1597,15 +1597,15 @@ const ARABIC_DATA = {
       },
       {
         "id": 210,
-        "question": "Ubah larangan «لاَ تُهْمِلْ» (jangan lalai) untuk rombongan siswi perempuan (أَنْتُنَّ):",
+        "question": "Ubah larangan «لَا تُهْمِلْ» (jangan lalai) untuk rombongan siswi perempuan (أَنْتُنَّ):",
         "options": [
-          "لاَ تُهْمِلُوا",
-          "لاَ تُهْمِلْنَ",
-          "لاَ تُهْمِلِي",
-          "لاَ تُهْمِلاَ"
+          "لَا تُهْمِلُوا",
+          "لَا تُهْمِلْنَ",
+          "لَا تُهْمِلِي",
+          "لَا تُهْمِلَا"
         ],
         "answer": 1,
-        "explanation": "Untuk dhamir jamak mu'annats (أَنْتُنَّ), fi'il nahi diakhiri nun niswah: «لاَ تُهْمِلْنَ»."
+        "explanation": "Untuk dhamir jamak mu'annats (أَنْتُنَّ), fi'il nahi diakhiri nun niswah: «لَا تُهْمِلْنَ»."
       }
     ]
   },
@@ -1709,7 +1709,7 @@ const ARABIC_DATA = {
         "question": "Bentuk Isim Tafdhil dari kata «نَظِيفٌ» (bersih) adalah:",
         "options": [
           "أَنْظَفُ",
-          "نَظَاَفَةٌ",
+          "نَظَافَةٌ",
           "مُنَظَّفٌ",
           "تَنْظِيفٌ"
         ],
@@ -1902,13 +1902,13 @@ const ARABIC_DATA = {
         "id": 502,
         "question": "Lengkapi kalimat perintah dan larangan seimbang: «...... عَلَى نَظَافَةِ الْمَاءِ، وَ...... فِيهِ النِّفَايَاتِ!»",
         "options": [
-          "حَافِظِي - لاَ تَرْمُوا",
+          "حَافِظِي - لَا تَرْمُوا",
           "حَافِظُوا - تَرْمِي",
           "تُحَافِظُ - تَرْمِ",
-          "احْرِصْ - لاَ تَرْمِ"
+          "احْرِصْ - لَا تَرْمِ"
         ],
         "answer": 3,
-        "explanation": "Keduanya seimbang untuk dhamir أَنْتَ: «احْرِصْ» (jagalah) dan «لاَ تَرْمِ» (jangan buang)."
+        "explanation": "Keduanya seimbang untuk dhamir أَنْتَ: «احْرِصْ» (jagalah) dan «لَا تَرْمِ» (jangan buang)."
       },
       {
         "id": 503,
@@ -1924,7 +1924,7 @@ const ARABIC_DATA = {
       },
       {
         "id": 504,
-        "question": "Pada kalimat «يَا مُسْلِمُونَ، لاَ تُفْسِدُوا فِي الأَرْضِ», tanda jazem pada «لاَ تُفْسِدُوا» adalah:",
+        "question": "Pada kalimat «يَا مُسْلِمُونَ، لَا تُفْسِدُوا فِي الْأَرْضِ», tanda jazem pada «لَا تُفْسِدُوا» adalah:",
         "options": [
           "Sukun",
           "Fathah",

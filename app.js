@@ -1535,7 +1535,7 @@ document.addEventListener('DOMContentLoaded', () => {
               <span class="text-emerald-300 font-bold inline-block whitespace-nowrap sm:inline">${state.currentUser.name}!</span>
             </h1>
             <p class="text-emerald-100 text-xs sm:text-sm lg:text-base mb-6 sm:mb-8 lg:mb-9 leading-relaxed sm:leading-loose">
-              Media pembelajaran Bahasa Arab interaktif untuk memahami pentingnya menjaga dan melestarikan lingkungan (<span dir="rtl" class="font-arabic font-semibold">الحفاظ على البيئة</span>) serta menguasai <span dir="rtl" class="font-arabic font-semibold">فِعْلُ الأَمْرِ</span> dan <span dir="rtl" class="font-arabic font-semibold">فِعْلُ النَّهْيِ</span>.
+              Media pembelajaran Bahasa Arab interaktif untuk memahami pentingnya menjaga dan melestarikan lingkungan (<span dir="rtl" class="font-arabic font-semibold">الحفاظ على البيئة</span>) serta menguasai <span dir="rtl" class="font-arabic font-semibold">فِعْلُ الْأَمْرِ</span> dan <span dir="rtl" class="font-arabic font-semibold">فِعْلُ النَّهْيِ</span>.
             </p>
             <div class="flex flex-col sm:flex-row gap-3 sm:gap-4">
               <button onclick="navigateTo('mufradat')" class="w-full sm:w-auto px-5 sm:px-7 py-3 sm:py-3.5 bg-emerald-400 hover:bg-emerald-300 active:bg-emerald-500 text-emerald-950 font-bold rounded-xl sm:rounded-2xl shadow-lg hover:shadow-emerald-400/30 active:shadow-md transition-all active:scale-95 duration-150 flex items-center justify-center gap-2 text-xs sm:text-sm cursor-pointer">
@@ -1824,7 +1824,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
                 <h3 class="text-base font-bold text-emerald-950 mb-1 font-arabic">القواعد (Tata Bahasa)</h3>
                 <p class="text-xs text-slate-600 font-medium leading-relaxed mb-4">
-                  Pembahasan gramatika فِعْلُ الأَمْرِ (perintah) dan فِعْلُ النَّهْيِ (larangan) beserta contohnya.
+                  Pembahasan gramatika فِعْلُ الْأَمْرِ (perintah) dan فِعْلُ النَّهْيِ (larangan) beserta contohnya.
                 </p>
               </div>
               <button type="button" class="w-full py-2.5 bg-amber-50 hover:bg-amber-600 hover:text-white text-amber-800 rounded-xl font-semibold text-xs transition-all active:scale-95 duration-150 flex items-center justify-center gap-2">
@@ -4806,7 +4806,7 @@ document.addEventListener('DOMContentLoaded', () => {
                   <span class="font-arabic text-xs">احْرِصْ</span> (Fi'il Amr)
                 </span>
                 <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-rose-600 text-white font-bold shadow-2xs">
-                  <span class="font-arabic text-xs">لاَ تَرْمِ</span> (Fi'il Nahi)
+                  <span class="font-arabic text-xs">لَا تَرْمِ</span> (Fi'il Nahi)
                 </span>
               </div>
             </div>
@@ -4816,7 +4816,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="space-y-4">
             <h3 class="text-base sm:text-lg font-bold text-emerald-900 border-l-4 border-emerald-600 pl-3 flex items-center gap-2">
               <i class="fa-solid fa-book-open text-emerald-600 text-sm"></i>
-              <span>Bagian 1: فِعْلُ الأَمْرِ (Perintah) وَفِعْلُ النَّهْيِ (Larangan)</span>
+              <span>Bagian 1: فِعْلُ الْأَمْرِ (Perintah) وَفِعْلُ النَّهْيِ (Larangan)</span>
             </h3>
             
             <div class="grid md:grid-cols-2 gap-6">
