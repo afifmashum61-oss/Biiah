@@ -842,7 +842,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const headerBackBtn = document.getElementById('header-back-btn');
 
   // Drawer Controls
-  function toggleDrawer(open) {
+  function toggleDrawer(open, popHistory = true) {
     const shouldOpen = open !== undefined ? open : !state.isDrawerOpen;
     if (state.isDrawerOpen === shouldOpen) return;
     state.isDrawerOpen = shouldOpen;
@@ -865,8 +865,12 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       drawer.classList.add('translate-x-full');
       drawerOverlay.classList.add('hidden');
-      if (window.history.state && window.history.state.drawer) {
+      if (popHistory && window.history.state && window.history.state.drawer) {
         try { window.history.back(); } catch(e) {}
+      } else if (!popHistory && window.history.state && window.history.state.drawer) {
+        try {
+          window.history.replaceState({ view: state.currentView }, '', '#' + state.currentView);
+        } catch(e) {}
       }
     }
   }
@@ -968,6 +972,8 @@ document.addEventListener('DOMContentLoaded', () => {
   function openLogoutConfirmModal() {
     if (!state.currentUser || isLoggingOut) return;
 
+    window._logoutModalOpenedAt = Date.now();
+
     // Haptic touch feedback jika didukung perangkat HP (Android/iOS)
     if (navigator.vibrate) {
       try { navigator.vibrate(18); } catch(e) {}
@@ -987,7 +993,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const modal = document.createElement('div');
     modal.id = 'logout-confirm-modal';
-    modal.className = 'fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 overflow-hidden pointer-events-auto';
+    modal.className = 'fixed inset-0 z-[70] flex items-end sm:items-center justify-center p-0 sm:p-4 overflow-hidden pointer-events-auto';
     modal.setAttribute('role', 'dialog');
     modal.setAttribute('aria-modal', 'true');
     modal.setAttribute('aria-labelledby', 'logout-modal-title');
@@ -1095,6 +1101,7 @@ document.addEventListener('DOMContentLoaded', () => {
   window.openLogoutConfirmModal = openLogoutConfirmModal;
 
   function closeLogoutConfirmModal(onClosed) {
+    window._logoutModalOpenedAt = 0;
     const modal = document.getElementById('logout-confirm-modal');
     if (!modal) {
       if (typeof onClosed === 'function') onClosed();
@@ -1225,6 +1232,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // 0. Jika modal konfirmasi logout sedang terbuka, tutup modal dengan halus
     const logoutModal = document.getElementById('logout-confirm-modal');
     if (logoutModal) {
+      if (window._logoutModalOpenedAt && (Date.now() - window._logoutModalOpenedAt < 400)) {
+        return;
+      }
       closeLogoutConfirmModal();
       return;
     }
@@ -1313,6 +1323,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Jika modal konfirmasi logout terbuka saat user back di HP, cukup tutup modal
     const logoutModal = document.getElementById('logout-confirm-modal');
     if (logoutModal) {
+      if (window._logoutModalOpenedAt && (Date.now() - window._logoutModalOpenedAt < 400)) {
+        return;
+      }
       closeLogoutConfirmModal();
       return;
     }
@@ -1479,10 +1492,20 @@ document.addEventListener('DOMContentLoaded', () => {
     if (userBadge) {
       if (state.currentUser) {
         userBadge.innerHTML = `
-          <div class="hidden md:flex items-center gap-2 bg-emerald-50 text-emerald-800 border border-emerald-200 px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium shadow-2xs">
-            <span class="w-2.5 h-2.5 rounded-full ${state.currentUser.role === 'guru' ? 'bg-amber-500' : 'bg-emerald-500'} animate-pulse"></span>
-            <span class="truncate max-w-[150px] lg:max-w-none">${state.currentUser.name} (${state.currentUser.role === 'guru' ? 'Guru' : 'Siswa'})</span>
+          <!-- Desktop Header Controls (Tablet & PC) -->
+          <div class="hidden md:flex items-center gap-2">
+            <button id="desktop-header-user-btn" onclick="navigateTo('profile')" class="flex items-center gap-2 bg-emerald-50 hover:bg-emerald-100 active:scale-95 text-emerald-800 border border-emerald-200 px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium shadow-2xs transition-all cursor-pointer group" title="Buka Profil & Statistik Akun">
+              <span class="w-2.5 h-2.5 rounded-full ${state.currentUser.role === 'guru' ? 'bg-amber-500' : 'bg-emerald-500'} animate-pulse"></span>
+              <span class="truncate max-w-[150px] lg:max-w-none font-semibold">${state.currentUser.name} (${state.currentUser.role === 'guru' ? 'Guru' : 'Siswa'})</span>
+              <i class="fa-solid fa-chevron-right text-[10px] text-emerald-600/70 group-hover:translate-x-0.5 transition-transform"></i>
+            </button>
+            <button id="desktop-header-logout-btn" onclick="openLogoutConfirmModal()" class="flex items-center gap-1.5 bg-rose-50 hover:bg-rose-100 active:scale-95 text-rose-700 hover:text-rose-800 border border-rose-200/90 px-3 py-1.5 rounded-full text-xs sm:text-sm font-bold shadow-2xs transition-all cursor-pointer group" title="Keluar dari Akun (Logout)">
+              <i class="fa-solid fa-right-from-bracket text-xs text-rose-600 group-hover:-translate-x-0.5 transition-transform"></i>
+              <span>Logout</span>
+            </button>
           </div>
+
+          <!-- Mobile Header User Button -->
           <button id="mobile-header-user-btn" onclick="navigateTo('profile')" class="flex md:hidden items-center gap-1.5 bg-emerald-50 hover:bg-emerald-100 active:scale-95 text-emerald-800 border border-emerald-200 px-2.5 py-1 rounded-full text-[11px] font-bold shadow-2xs transition-all cursor-pointer touch-manipulation" title="Buka Profil & Logout">
             <span class="w-2 h-2 rounded-full ${state.currentUser.role === 'guru' ? 'bg-amber-500' : 'bg-emerald-500'}"></span>
             <span>${state.currentUser.role === 'guru' ? 'Guru' : 'Siswa'}</span>
@@ -1505,7 +1528,8 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 'dialogue', icon: 'fa-comments', label: 'الحوار' },
         { id: 'quiz', icon: 'fa-pen-to-square', label: 'التدريبات' },
         { id: 'duelgame', icon: 'fa-bolt', label: 'مُبَارَزَةُ السَّرِيعَةِ' },
-        { id: 'leaderboard', icon: 'fa-trophy', label: 'تَرْتِيبُ الْفَصْلِ (Peringkat)' }
+        { id: 'leaderboard', icon: 'fa-trophy', label: 'تَرْتِيبُ الْفَصْلِ (Peringkat)' },
+        { id: 'profile', icon: 'fa-circle-user', label: 'مَلَفُّ التَّعْرِيفِ (Profil Akun)' }
       ];
 
       if (state.currentUser && state.currentUser.role === 'guru') {
@@ -1539,7 +1563,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (logoutBtn) {
         logoutBtn.addEventListener('click', (e) => {
           e.preventDefault();
-          toggleDrawer(false);
+          toggleDrawer(false, false);
           openLogoutConfirmModal();
         });
       }
