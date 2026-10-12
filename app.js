@@ -1516,7 +1516,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="space-y-8">
         <!-- Hero Banner with Arch Frame & Saymana aesthetic -->
         <div class="relative bg-gradient-to-r from-emerald-900 via-emerald-800 to-teal-800 rounded-2xl sm:rounded-3xl lg:rounded-[2.5rem] p-5 sm:p-8 lg:p-10 text-white overflow-hidden shadow-xl sm:shadow-2xl border border-emerald-700">
-          <div class="absolute right-0 top-0 bottom-0 w-1/2 sm:w-1/3 bg-[url('https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=600&q=80')] bg-cover bg-center opacity-15 sm:opacity-20 mix-blend-overlay pointer-events-none"></div>
+          <div class="absolute right-0 top-0 bottom-0 w-1/2 sm:w-1/3 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.12),transparent_70%)] pointer-events-none"></div>
           <div class="relative z-10 max-w-2xl">
             <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-3 py-1 rounded-full text-xs font-semibold text-emerald-200 mb-3 sm:mb-4 border border-white/10 font-arabic">
               <i class="fa-solid fa-leaf text-emerald-400"></i>
@@ -1544,7 +1544,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         ${!isGuru ? `
         <!-- Hasil Latihan & Capaian Belajar Siswa (Simple & Clean) -->
-        <div class="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-sm border border-emerald-100 space-y-4 animate-fadeIn">
+        <div class="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-sm border border-emerald-100 space-y-4">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 border-b border-emerald-100 pb-3">
             <h2 class="text-base sm:text-lg font-bold text-emerald-950 flex items-center gap-2">
               <i class="fa-solid fa-chart-line text-emerald-600"></i>
@@ -2065,14 +2065,12 @@ document.addEventListener('DOMContentLoaded', () => {
             </h2>
             <p class="text-xs text-emerald-600 mt-1">Kosakata Bahasa Arab Tema Pelestarian Lingkungan (Sentuh/Klik kartu untuk memutar & melihat arti)</p>
           </div>
-          
-
         </div>
 
         <!-- Vocab 3D Flip Card Grid -->
         <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           ${vocabList.map(item => `
-            <div class="flip-card-container group lazy-render" onclick="this.classList.toggle('is-flipped')">
+            <div class="flip-card-container group" onclick="this.classList.toggle('is-flipped')">
               <div class="flip-card-inner">
                 
                 <!-- FRONT SIDE OF FLIP CARD -->
@@ -2108,7 +2106,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="flip-card-back bg-gradient-to-br from-emerald-900 via-emerald-800 to-teal-900 p-6 text-white shadow-2xl rounded-[2rem] flex flex-col justify-between border border-emerald-700">
                   <div>
                     <div class="flex items-center justify-between mb-3 border-b border-emerald-700/60 pb-3">
-                      <span class="px-3 py-1 bg-white/20 backdrop-blur-md text-emerald-200 rounded-full text-[10px] font-bold">
+                      <span class="px-3 py-1 bg-white/20 text-emerald-200 rounded-full text-[10px] font-bold border border-white/20">
                         ${item.category || 'Arti & Contoh'}
                       </span>
                       <button onclick="event.stopPropagation(); speakArabic('${item.sentence || item.arabic}')" class="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 text-white flex items-center justify-center transition-all">
@@ -2121,7 +2119,7 @@ document.addEventListener('DOMContentLoaded', () => {
                       <h4 class="text-2xl font-extrabold text-white mb-2 leading-snug">${item.meaning}</h4>
                     </div>
 
-                    <div class="bg-white/10 backdrop-blur-md p-3.5 rounded-2xl border border-white/15 space-y-1.5 mt-2">
+                    <div class="bg-white/10 p-3.5 rounded-2xl border border-white/15 space-y-1.5 mt-2">
                       <div class="text-[10px] font-bold text-emerald-300 uppercase tracking-wider">Contoh Kalimat:</div>
                       <div class="font-arabic text-base font-bold text-right text-emerald-100 leading-relaxed" dir="rtl" style="unicode-bidi: isolate;">${item.sentence}&rlm;</div>
                       <div class="italic text-[11px] text-emerald-200 leading-normal">"${item.sentenceTranslation}"</div>
@@ -2134,7 +2132,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     <span>Putar Kembali</span>
                   </div>
                 </div>
-
               </div>
             </div>
           `).join('')}
@@ -6581,8 +6578,25 @@ document.addEventListener('DOMContentLoaded', () => {
     document.title = title;
   }
 
-  // MAIN RENDER SWITCH
-  function render() {
+  // MAIN RENDER SWITCH (Debounced via requestAnimationFrame for silky 60FPS updates & zero lag)
+  let renderRafId = null;
+  function render(forceImmediate = false) {
+    if (forceImmediate) {
+      if (renderRafId) {
+        cancelAnimationFrame(renderRafId);
+        renderRafId = null;
+      }
+      renderInternal();
+      return;
+    }
+    if (renderRafId) cancelAnimationFrame(renderRafId);
+    renderRafId = requestAnimationFrame(() => {
+      renderRafId = null;
+      renderInternal();
+    });
+  }
+
+  function renderInternal() {
     updatePageTitle();
     const headerEl = document.querySelector('header');
     const footerEl = document.querySelector('footer');
@@ -9750,6 +9764,15 @@ document.addEventListener('DOMContentLoaded', () => {
               (s.name && state.currentUser.name && s.name.trim().toLowerCase() === state.currentUser.name.trim().toLowerCase())
             );
             if (freshStudent) {
+              const hasScoreChanged = 
+                state.currentUser.score !== freshStudent.score ||
+                state.currentUser.istimaScore !== freshStudent.istimaScore ||
+                state.currentUser.kalamScore !== freshStudent.kalamScore ||
+                state.currentUser.duelScore !== freshStudent.duelScore ||
+                state.currentUser.matchGameScore !== freshStudent.matchGameScore ||
+                state.currentUser.averageScore !== freshStudent.averageScore ||
+                state.currentUser.progress !== freshStudent.progress;
+
               state.currentUser = {
                 ...state.currentUser,
                 id: freshStudent.id,
@@ -9784,7 +9807,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 localStorage.setItem('arabic_kalam_history', JSON.stringify(freshStudent.kalamHistory));
               }
 
-              if (state.currentView === 'dashboard') {
+              if (hasScoreChanged && state.currentView === 'dashboard') {
                 render();
               }
             }
@@ -9797,13 +9820,17 @@ document.addEventListener('DOMContentLoaded', () => {
             }
           }
         } else if (update.type === 'submissions' && update.data) {
+          const prevLen = (state.submissions || []).length;
           state.submissions = update.data;
-          if (state.currentUser && state.currentUser.role === 'siswa' && state.currentView === 'dashboard') {
-            render();
-          }
-          if (state.currentUser && state.currentUser.role === 'guru') {
-            if (state.currentView === 'students' || state.currentView === 'dashboard') {
+          const newLen = update.data.length;
+          if (newLen !== prevLen) {
+            if (state.currentUser && state.currentUser.role === 'siswa' && state.currentView === 'dashboard') {
               render();
+            }
+            if (state.currentUser && state.currentUser.role === 'guru') {
+              if (state.currentView === 'students' || state.currentView === 'dashboard') {
+                render();
+              }
             }
           }
         } else if (update.type === 'teachers' && update.data) {
@@ -9821,10 +9848,10 @@ document.addEventListener('DOMContentLoaded', () => {
       }, 300);
     }
   }
-  startFirebaseSync();
 
-  // Initial Boot
-  render();
+  // Initial Boot (Render first immediately, then start Cloud Sync in background)
+  render(true);
+  startFirebaseSync();
 
   // Inisialisasi riwayat awal browser untuk mendukung navigasi gestur usap back di HP
   if (window.history && window.history.replaceState) {
