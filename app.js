@@ -425,7 +425,9 @@ document.addEventListener('DOMContentLoaded', () => {
     kahootLastCorrect: false,
     kahootPointsEarned: 0,
     leaderboardClassFilter: 'current', // 'current' (kelas siswa), 'all', 'IX-A', 'IX-B'
-
+    settingsActiveTab: 'students', // 'students' or 'teachers'
+    showAddStudentForm: false,
+    showAddTeacherForm: false,
 
     // 1v1 Fast Quiz Duel State
     duelState: {
@@ -7280,27 +7282,48 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
         ` : `
           <!-- TAMPILAN PROFIL UNTUK GURU -->
-          <div class="bg-white rounded-3xl p-6 sm:p-7 shadow-sm border border-emerald-100 space-y-5">
-            <h2 class="text-lg font-bold text-emerald-950 flex items-center gap-2">
-              <i class="fa-solid fa-chalkboard-user text-emerald-600"></i>
-              <span>Data Akun Guru Pengampu</span>
-            </h2>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
-              <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100 flex items-center justify-between">
-                <span class="text-slate-500">Nama Guru:</span>
-                <span class="font-bold text-slate-900">${user.name}</span>
+          <div class="bg-white rounded-3xl p-5 sm:p-7 shadow-sm border border-emerald-100 space-y-4 sm:space-y-5">
+            <div class="flex items-center justify-between border-b border-emerald-50 pb-3">
+              <div class="flex items-center gap-2.5">
+                <div class="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center text-sm font-bold shrink-0">
+                  <i class="fa-solid fa-chalkboard-user"></i>
+                </div>
+                <div>
+                  <h2 class="text-base sm:text-lg font-bold text-emerald-950">Data Akun Guru Pengampu</h2>
+                  <p class="text-[11px] text-slate-500">Informasi pengajar & akses manajemen kelas</p>
+                </div>
               </div>
-              <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100 flex items-center justify-between">
-                <span class="text-slate-500">Mata Pelajaran:</span>
-                <span class="font-bold text-slate-900">Bahasa Arab (Kelas 9)</span>
+              <span class="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold">Aktif</span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs sm:text-sm">
+              <div class="p-3.5 bg-slate-50/70 rounded-2xl border border-slate-100 flex items-center justify-between">
+                <span class="text-slate-500 font-medium">Nama Guru:</span>
+                <span class="font-bold text-slate-900 text-right">${user.name}</span>
+              </div>
+              <div class="p-3.5 bg-slate-50/70 rounded-2xl border border-slate-100 flex items-center justify-between">
+                <span class="text-slate-500 font-medium">Mata Pelajaran:</span>
+                <span class="font-bold text-slate-900 text-right">Bahasa Arab (Kelas 9)</span>
+              </div>
+              <div class="p-3.5 bg-slate-50/70 rounded-2xl border border-slate-100 flex items-center justify-between">
+                <span class="text-slate-500 font-medium">Total Siswa Terdaftar:</span>
+                <span class="font-bold text-emerald-800 font-mono text-right">${state.students ? state.students.length : 0} Siswa</span>
+              </div>
+              <div class="p-3.5 bg-slate-50/70 rounded-2xl border border-slate-100 flex items-center justify-between">
+                <span class="text-slate-500 font-medium">Lembaga:</span>
+                <span class="font-bold text-slate-800 text-right">MTs Darussalam Jombang</span>
               </div>
             </div>
-            <div class="pt-2 flex flex-col sm:flex-row gap-3">
-              <button onclick="navigateTo('students')" class="flex-1 py-3.5 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-2xl text-xs flex items-center justify-center gap-2 shadow-md">
-                <i class="fa-solid fa-users"></i> Tabel & Nilai Siswa
+
+            <!-- Action Buttons for Teacher -->
+            <div class="pt-2 grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <button onclick="navigateTo('students')" class="py-3.5 px-4 bg-emerald-700 hover:bg-emerald-800 active:scale-95 text-white font-bold rounded-2xl text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer touch-manipulation">
+                <i class="fa-solid fa-users text-sm"></i>
+                <span>Tabel & Nilai Siswa</span>
               </button>
-              <button onclick="navigateTo('settings')" class="flex-1 py-3.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-2xl text-xs flex items-center justify-center gap-2">
-                <i class="fa-solid fa-gear"></i> Pengaturan Akun
+              <button onclick="navigateTo('settings')" class="py-3.5 px-4 bg-slate-100 hover:bg-emerald-50 hover:text-emerald-900 active:scale-95 text-slate-800 font-bold rounded-2xl text-xs sm:text-sm flex items-center justify-center gap-2 border border-slate-200/80 transition-all cursor-pointer touch-manipulation">
+                <i class="fa-solid fa-gear text-emerald-700 text-sm"></i>
+                <span>Pengaturan & Kelola Akun</span>
               </button>
             </div>
           </div>
@@ -7379,196 +7402,397 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 8. SETTINGS VIEW (Pengaturan & Manajemen Akun Guru & Siswa)
   function renderSettings() {
+    const activeTab = state.settingsActiveTab || 'students';
+    const isStudentsTab = activeTab === 'students';
+    const isTeachersTab = activeTab === 'teachers';
+
     return `
-      <div class="space-y-8 max-w-6xl mx-auto">
-        <!-- Header -->
-        <div class="bg-white p-6 sm:p-8 rounded-3xl border border-emerald-100 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div>
-            <div class="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-800 rounded-full text-xs font-bold border border-emerald-200 mb-2">
-              <i class="fa-solid fa-user-gear"></i> Manajemen Akun
+      <div class="space-y-5 sm:space-y-6 max-w-6xl mx-auto px-1 sm:px-4 pb-16 animate-fadeIn">
+        
+        <!-- Header Pengaturan & Kelola Akun -->
+        <div class="bg-gradient-to-br from-emerald-900 via-teal-900 to-emerald-950 text-white p-5 sm:p-7 rounded-3xl border border-emerald-700/40 shadow-xl relative overflow-hidden">
+          <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-emerald-400/10 rounded-full blur-2xl pointer-events-none"></div>
+          
+          <div class="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div class="space-y-2">
+              <div class="flex items-center gap-2">
+                <button onclick="navigateTo('profile')" class="w-8 h-8 rounded-xl bg-white/10 hover:bg-white/20 active:scale-95 text-white flex items-center justify-center text-xs transition-all border border-white/15" title="Kembali ke Profil">
+                  <i class="fa-solid fa-arrow-left"></i>
+                </button>
+                <div class="inline-flex items-center gap-1.5 px-3 py-1 bg-white/15 text-emerald-200 rounded-full text-[11px] font-bold border border-white/20 shadow-2xs">
+                  <i class="fa-solid fa-user-gear"></i>
+                  <span>Panel Guru Pengampu</span>
+                </div>
+              </div>
+              <h2 class="text-xl sm:text-2xl md:text-3xl font-black text-white tracking-tight">Pengaturan & Kelola Akun</h2>
+              <p class="text-xs sm:text-sm text-emerald-200/90 leading-relaxed max-w-xl">
+                Kelola kredensial akun, username login, dan reset kata sandi siswa maupun guru dengan cepat dan aman.
+              </p>
             </div>
-            <h2 class="text-2xl sm:text-3xl font-bold text-emerald-950">Pengaturan & Kelola Akun</h2>
-            <p class="text-xs sm:text-sm text-emerald-600 mt-1">Kelola data akun Guru dan Siswa untuk hak akses media pembelajaran</p>
+
+            <!-- Quick Stat Badges -->
+            <div class="flex items-center gap-2 self-stretch sm:self-auto">
+              <div class="flex-1 sm:flex-initial px-3.5 py-2 rounded-2xl bg-white/10 border border-white/15 backdrop-blur-md text-center">
+                <span class="block text-[10px] text-emerald-300 font-semibold uppercase tracking-wider">Total Siswa</span>
+                <span class="text-lg font-black text-white">${state.students ? state.students.length : 0}</span>
+              </div>
+              <div class="flex-1 sm:flex-initial px-3.5 py-2 rounded-2xl bg-white/10 border border-white/15 backdrop-blur-md text-center">
+                <span class="block text-[10px] text-amber-300 font-semibold uppercase tracking-wider">Total Guru</span>
+                <span class="text-lg font-black text-white">${state.teachers ? state.teachers.length : 0}</span>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div class="grid lg:grid-cols-2 gap-8">
-          <!-- SECTION 1: KELOLA AKUN SISWA -->
-          <div class="space-y-6">
-            <!-- Form Tambah Siswa -->
-            <div class="bg-white rounded-3xl p-6 border border-emerald-100 shadow-sm space-y-4">
-              <h3 class="text-lg font-bold text-emerald-950 flex items-center gap-2">
-                <i class="fa-solid fa-user-plus text-emerald-600"></i>
-                <span>Tambah Akun Siswa Baru</span>
-              </h3>
+        <!-- Segmented Tab Switcher (Khusus Mobile & Desktop) -->
+        <div class="bg-white p-1.5 rounded-2xl border border-emerald-100 shadow-2xs flex items-center gap-1.5">
+          <button id="tab-btn-students" class="flex-1 py-2.5 px-3 rounded-xl font-black text-xs sm:text-sm flex items-center justify-center gap-2 transition-all cursor-pointer ${isStudentsTab ? 'bg-emerald-700 text-white shadow-md' : 'text-slate-600 hover:text-emerald-900 hover:bg-emerald-50'}">
+            <i class="fa-solid fa-users text-sm"></i>
+            <span>Akun Siswa</span>
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${isStudentsTab ? 'bg-white/20 text-white' : 'bg-emerald-100 text-emerald-800'}">
+              ${state.students ? state.students.length : 0}
+            </span>
+          </button>
+          
+          <button id="tab-btn-teachers" class="flex-1 py-2.5 px-3 rounded-xl font-black text-xs sm:text-sm flex items-center justify-center gap-2 transition-all cursor-pointer ${isTeachersTab ? 'bg-amber-600 text-white shadow-md' : 'text-slate-600 hover:text-amber-900 hover:bg-amber-50'}">
+            <i class="fa-solid fa-chalkboard-user text-sm"></i>
+            <span>Akun Guru</span>
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${isTeachersTab ? 'bg-white/20 text-white' : 'bg-amber-100 text-amber-800'}">
+              ${state.teachers ? state.teachers.length : 0}
+            </span>
+          </button>
+        </div>
 
+        <!-- ========================================== -->
+        <!-- TAB 1: KELOLA AKUN SISWA -->
+        <!-- ========================================== -->
+        <div id="tab-section-students" class="${isStudentsTab ? 'block' : 'hidden'} space-y-5 animate-fadeIn">
+          
+          <!-- Collapsible Tambah Siswa Baru Card -->
+          <div class="bg-white rounded-3xl border border-emerald-100 shadow-sm overflow-hidden transition-all">
+            <div class="p-4 sm:p-5 flex items-center justify-between gap-3 bg-emerald-50/40">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center text-sm font-bold shrink-0">
+                  <i class="fa-solid fa-user-plus"></i>
+                </div>
+                <div>
+                  <h3 class="font-bold text-slate-900 text-sm sm:text-base">Tambah Akun Siswa Baru</h3>
+                  <p class="text-[11px] text-slate-500">Daftarkan akun login untuk siswa baru</p>
+                </div>
+              </div>
+              <button id="btn-toggle-add-student" class="py-2 px-3.5 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer ${state.showAddStudentForm ? 'bg-slate-200 text-slate-700 hover:bg-slate-300' : 'bg-emerald-700 hover:bg-emerald-800 text-white shadow-sm'}">
+                <i class="fa-solid ${state.showAddStudentForm ? 'fa-chevron-up' : 'fa-plus'} text-[11px]"></i>
+                <span>${state.showAddStudentForm ? 'Tutup Form' : 'Tambah Siswa'}</span>
+              </button>
+            </div>
+
+            <!-- Form Body (Collapsible) -->
+            <div id="add-student-form-container" class="${state.showAddStudentForm ? 'block' : 'hidden'} p-4 sm:p-6 border-t border-emerald-100 bg-white">
               <form id="add-student-form" class="space-y-4">
                 <div>
-                  <label class="block text-xs font-bold text-emerald-900 mb-1">Nama Lengkap Siswa (Username Login) <span class="text-rose-500">*</span></label>
-                  <input type="text" id="new-student-name" required placeholder="Contoh: Muhammad Farhan" class="w-full px-4 py-2.5 rounded-xl border border-emerald-200 focus:ring-2 focus:ring-emerald-600 text-xs sm:text-sm">
+                  <label class="block text-xs font-bold text-emerald-950 mb-1">
+                    Nama Lengkap Siswa (Username Login) <span class="text-rose-500">*</span>
+                  </label>
+                  <input type="text" id="new-student-name" required placeholder="Contoh: Muhammad Farhan" class="w-full px-4 py-2.5 rounded-xl border border-emerald-200 focus:ring-2 focus:ring-emerald-600 text-xs sm:text-sm font-semibold">
                 </div>
 
-                <div class="grid grid-cols-2 gap-3">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label class="block text-xs font-bold text-emerald-900 mb-1">Kelas <span class="text-rose-500">*</span></label>
-                    <input type="text" id="new-student-class" required placeholder="Contoh: IX-A" class="w-full px-4 py-2.5 rounded-xl border border-emerald-200 focus:ring-2 focus:ring-emerald-600 text-xs sm:text-sm">
+                    <label class="block text-xs font-bold text-emerald-950 mb-1">Kelas <span class="text-rose-500">*</span></label>
+                    <input type="text" id="new-student-class" required placeholder="Contoh: IX-A" value="IX-A" class="w-full px-4 py-2.5 rounded-xl border border-emerald-200 focus:ring-2 focus:ring-emerald-600 text-xs sm:text-sm font-semibold">
                   </div>
                   <div>
-                    <label class="block text-xs font-bold text-emerald-900 mb-1">Kata Sandi / Password</label>
-                    <input type="text" id="new-student-password" placeholder="Default: 123456" class="w-full px-4 py-2.5 rounded-xl border border-emerald-200 focus:ring-2 focus:ring-emerald-600 text-xs sm:text-sm font-mono">
+                    <label class="block text-xs font-bold text-emerald-950 mb-1">Kata Sandi / Password</label>
+                    <input type="text" id="new-student-password" placeholder="Default: 123456" value="123456" class="w-full px-4 py-2.5 rounded-xl border border-emerald-200 focus:ring-2 focus:ring-emerald-600 text-xs sm:text-sm font-mono font-bold">
                   </div>
                 </div>
 
                 <div>
-                  <label class="block text-xs font-bold text-emerald-900 mb-1">ID / NISN Siswa (Opsional)</label>
+                  <label class="block text-xs font-bold text-emerald-950 mb-1">ID / NISN Siswa (Opsional)</label>
                   <input type="text" id="new-student-id" placeholder="Opsional (cth: 106)" class="w-full px-4 py-2.5 rounded-xl border border-emerald-200 focus:ring-2 focus:ring-emerald-600 text-xs sm:text-sm">
                 </div>
 
-                <button type="submit" class="w-full py-3 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl font-bold text-xs shadow-md transition-all flex items-center justify-center gap-2">
-                  <i class="fa-solid fa-plus"></i> Simpan Akun Siswa
-                </button>
-              </form>
-            </div>
-
-            <!-- Tabel Daftar Siswa -->
-            <div class="bg-white rounded-3xl p-6 border border-emerald-100 shadow-sm space-y-4">
-              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
-                <h3 class="text-base font-bold text-emerald-950 flex items-center gap-2">
-                  <i class="fa-solid fa-users text-emerald-600"></i>
-                  <span>Daftar Akun Siswa (${state.students.length})</span>
-                </h3>
-                <div class="relative w-full sm:w-48">
-                  <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-emerald-600 text-xs"></i>
-                  <input type="text" id="settings-student-search" placeholder="Cari nama siswa..." class="w-full pl-8 pr-3 py-1.5 rounded-xl border border-emerald-200 bg-emerald-50/40 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:bg-white transition-all">
+                <div class="flex items-center gap-2 pt-2">
+                  <button type="button" onclick="state.showAddStudentForm = false; render();" class="py-2.5 px-4 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold text-xs transition-all cursor-pointer">
+                    Batal
+                  </button>
+                  <button type="submit" class="flex-1 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl font-bold text-xs shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer">
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    <span>Simpan Akun Siswa</span>
+                  </button>
                 </div>
-              </div>
-
-              <div class="overflow-x-auto max-h-80 overflow-y-auto">
-                <table id="settings-students-table" class="w-full text-left text-xs whitespace-nowrap">
-                  <thead class="bg-emerald-50 text-emerald-900 font-bold sticky top-0">
-                    <tr>
-                      <th class="p-3">Nama (Username)</th>
-                      <th class="p-3">Kelas</th>
-                      <th class="p-3">Kata Sandi</th>
-                      <th class="p-3 text-center">Aksi</th>
-                    </tr>
-                  </thead>
-                  <tbody class="divide-y divide-emerald-50">
-                    ${state.students.map(s => {
-                      const displayPwd = s.password || '123456';
-                      return `
-                      <tr class="hover:bg-emerald-50/50 transition-colors">
-                        <td class="p-3 font-bold text-emerald-950">
-                          <div class="flex items-center gap-2.5">
-                            <div class="w-7 h-7 rounded-full overflow-hidden shrink-0 border border-emerald-300 bg-emerald-100 flex items-center justify-center shadow-xs">
-                              <img src="${s.avatar || ((s.gender === 'P' || (s.name && /siswi|putri|siti|nur|anisa|fatimah|rahma|ayu|alya|zahr/i.test(s.name))) ? 'avatar-siswi.jpg' : 'avatar-siswa.jpg')}" alt="${s.name}" loading="lazy" decoding="async" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
-                              <span class="hidden text-xs font-bold text-emerald-800">${s.name ? s.name[0].toUpperCase() : 'S'}</span>
-                            </div>
-                            <div>
-                              <div class="truncate max-w-[140px] sm:max-w-xs font-bold text-emerald-950">${s.name}</div>
-                              <div class="text-[10px] text-slate-400 font-mono font-normal">ID: ${s.id}</div>
-                            </div>
-                          </div>
-                        </td>
-                        <td class="p-3">
-                          <span class="px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800 text-[11px] font-semibold">${s.class || 'IX-A'}</span>
-                        </td>
-                        <td class="p-3">
-                          <div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-lg bg-amber-50 text-amber-900 border border-amber-200/80 font-mono text-[11px] font-bold">
-                            <i class="fa-solid fa-key text-[10px] text-amber-600"></i>
-                            <span>${displayPwd}</span>
-                          </div>
-                        </td>
-                        <td class="p-3 text-center">
-                          <div class="flex items-center justify-center gap-1.5">
-                            <button data-edit-student="${s.id}" class="edit-student-btn px-2.5 py-1.5 bg-amber-50 hover:bg-amber-600 hover:text-white text-amber-800 rounded-lg transition-all text-[11px] font-bold border border-amber-200 flex items-center gap-1 shadow-xs" title="Edit Akun & Reset Kata Sandi">
-                              <i class="fa-solid fa-pen-to-square"></i>
-                              <span>Edit</span>
-                            </button>
-                            <button data-del-student="${s.id}" class="delete-student-btn px-2 py-1.5 bg-red-50 hover:bg-red-600 hover:text-white text-red-600 rounded-lg transition-all text-[11px] font-semibold border border-red-200" title="Hapus Akun Siswa">
-                              <i class="fa-solid fa-trash"></i>
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    `}).join('')}
-                  </tbody>
-                </table>
-              </div>
+              </form>
             </div>
           </div>
 
-          <!-- SECTION 2: KELOLA AKUN GURU -->
-          <div class="space-y-6">
-            <!-- Form Tambah Guru -->
-            <div class="bg-white rounded-3xl p-6 border border-emerald-100 shadow-sm space-y-4">
-              <h3 class="text-lg font-bold text-emerald-950 flex items-center gap-2">
-                <i class="fa-solid fa-user-shield text-amber-600"></i>
-                <span>Tambah Akun Guru Baru</span>
-              </h3>
-
-              <form id="add-teacher-form" class="space-y-4">
-                <div>
-                  <label class="block text-xs font-bold text-emerald-900 mb-1">Nama Lengkap Guru & Gelar</label>
-                  <input type="text" id="new-teacher-name" required placeholder="Contoh: Ustadzah Salma, M.Pd" class="w-full px-4 py-2.5 rounded-xl border border-emerald-200 focus:ring-2 focus:ring-amber-500 text-xs sm:text-sm">
-                </div>
-
-                <div class="grid grid-cols-2 gap-3">
-                  <div>
-                    <label class="block text-xs font-bold text-emerald-900 mb-1">NIP / NUPTK</label>
-                    <input type="text" id="new-teacher-nip" required placeholder="Contoh: 1988..." class="w-full px-4 py-2.5 rounded-xl border border-emerald-200 focus:ring-2 focus:ring-amber-500 text-xs sm:text-sm">
-                  </div>
-                  <div>
-                    <label class="block text-xs font-bold text-emerald-900 mb-1">Mata Pelajaran</label>
-                    <input type="text" id="new-teacher-subject" required value="Bahasa Arab" class="w-full px-4 py-2.5 rounded-xl border border-emerald-200 focus:ring-2 focus:ring-amber-500 text-xs sm:text-sm">
-                  </div>
-                </div>
-
-                <button type="submit" class="w-full py-3 bg-amber-600 hover:bg-amber-700 text-white rounded-xl font-bold text-xs shadow-md transition-all flex items-center justify-center gap-2">
-                  <i class="fa-solid fa-plus"></i> Simpan Akun Guru
-                </button>
-              </form>
-            </div>
-
-            <!-- Tabel Daftar Guru -->
-            <div class="bg-white rounded-3xl p-6 border border-emerald-100 shadow-sm space-y-4">
-              <div class="flex items-center justify-between">
-                <h3 class="text-base font-bold text-emerald-950 flex items-center gap-2">
-                  <i class="fa-solid fa-chalkboard-user text-amber-600"></i>
-                  <span>Daftar Akun Guru (${state.teachers.length})</span>
+          <!-- Section Daftar Akun Siswa -->
+          <div class="bg-white rounded-3xl p-4 sm:p-6 border border-emerald-100 shadow-sm space-y-4">
+            
+            <!-- Search & Filter Bar -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <h3 class="font-bold text-slate-900 text-base flex items-center gap-2">
+                  <i class="fa-solid fa-users text-emerald-600"></i>
+                  <span>Daftar Siswa Terdaftar</span>
+                  <span class="text-xs font-normal text-slate-500">(${state.students ? state.students.length : 0})</span>
                 </h3>
+                <p class="text-[11px] text-slate-400">Sentuh tombol edit untuk mereset kata sandi atau memperbarui data</p>
               </div>
 
-              <div class="overflow-x-auto max-h-80 overflow-y-auto">
-                <table class="w-full text-left text-xs">
-                  <thead class="bg-amber-50 text-amber-900 font-bold sticky top-0">
-                    <tr>
-                      <th class="p-3">Nama Guru</th>
-                      <th class="p-3">NIP</th>
-                      <th class="p-3 text-center">Aksi</th>
-                    </tr>
-                  </thead>
-                  <tbody class="divide-y divide-amber-50">
-                    ${state.teachers.map(t => `
-                      <tr class="hover:bg-amber-50/50">
-                        <td class="p-3 font-bold text-emerald-950">${t.name}</td>
-                        <td class="p-3 text-emerald-700 font-mono text-[11px]">${t.nip}</td>
-                        <td class="p-3 text-center">
-                          <button data-del-teacher="${t.id}" class="delete-teacher-btn px-2.5 py-1 bg-red-50 hover:bg-red-600 hover:text-white text-red-600 rounded-lg transition-all text-[11px] font-semibold border border-red-200">
+              <!-- Search Input -->
+              <div class="relative w-full sm:w-64">
+                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-emerald-600 text-xs"></i>
+                <input type="text" id="settings-student-search" placeholder="Cari nama atau kelas siswa..." class="w-full pl-9 pr-8 py-2 rounded-xl border border-emerald-200 bg-emerald-50/30 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:bg-white transition-all">
+                <button id="btn-clear-student-search" class="hidden absolute right-2.5 top-2.5 text-slate-400 hover:text-slate-600 text-xs cursor-pointer">
+                  <i class="fa-solid fa-xmark"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- TAMPILAN MOBILE: KARTU SISWA RESPONSIF (Anti Cut-Off di HP!) -->
+            <div id="settings-student-cards-mobile" class="space-y-3 sm:hidden">
+              ${(state.students || []).map(s => {
+                const displayPwd = s.password || '123456';
+                const avatar = s.avatar || ((s.gender === 'P' || (s.name && /siswi|putri|siti|nur|anisa|fatimah|rahma|ayu|alya|zahr/i.test(s.name))) ? 'avatar-siswi.jpg' : 'avatar-siswa.jpg');
+                return `
+                <div class="student-item-card p-3.5 bg-slate-50/70 hover:bg-emerald-50/40 rounded-2xl border border-slate-200/80 hover:border-emerald-300 transition-all space-y-3">
+                  <!-- Header Kartu: Avatar + Nama + Kelas -->
+                  <div class="flex items-center justify-between gap-2.5">
+                    <div class="flex items-center gap-2.5 min-w-0">
+                      <div class="w-10 h-10 rounded-full overflow-hidden shrink-0 border border-emerald-300 bg-emerald-100">
+                        <img src="${avatar}" alt="${s.name}" class="w-full h-full object-cover" onerror="this.src='avatar-siswa.jpg'">
+                      </div>
+                      <div class="min-w-0">
+                        <h4 class="font-bold text-slate-900 text-sm truncate">${s.name}</h4>
+                        <span class="text-[10px] text-slate-400 font-mono">NISN: ${s.id}</span>
+                      </div>
+                    </div>
+                    <span class="px-2.5 py-1 rounded-lg bg-emerald-100 text-emerald-800 text-[11px] font-bold shrink-0">
+                      ${s.class || 'IX-A'}
+                    </span>
+                  </div>
+
+                  <!-- Kolom Kata Sandi & Tombol Salin -->
+                  <div class="flex items-center justify-between p-2 px-3 bg-amber-50/80 rounded-xl border border-amber-200/80 text-xs">
+                    <div class="flex items-center gap-2 font-mono font-bold text-amber-950">
+                      <i class="fa-solid fa-key text-amber-600 text-xs"></i>
+                      <span class="text-slate-500 font-sans text-[11px]">Sandi:</span>
+                      <span class="bg-white px-2 py-0.5 rounded border border-amber-300 text-slate-900 font-black">${displayPwd}</span>
+                    </div>
+                    <button data-copy-pwd="${displayPwd}" class="copy-pwd-btn text-[11px] font-bold text-amber-800 bg-amber-200/80 hover:bg-amber-300 active:scale-95 px-2.5 py-1 rounded-lg transition-all flex items-center gap-1 cursor-pointer">
+                      <i class="fa-regular fa-copy text-[10px]"></i>
+                      <span>Salin</span>
+                    </button>
+                  </div>
+
+                  <!-- Tombol Aksi Mobile (Edit & Hapus) -->
+                  <div class="grid grid-cols-2 gap-2 pt-1 border-t border-slate-200/60">
+                    <button data-edit-student="${s.id}" class="edit-student-btn py-2 px-3 bg-white hover:bg-emerald-600 hover:text-white text-emerald-800 rounded-xl font-bold text-xs border border-emerald-300 shadow-2xs transition-all flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer">
+                      <i class="fa-solid fa-pen-to-square text-xs"></i>
+                      <span>Edit & Reset</span>
+                    </button>
+                    <button data-del-student="${s.id}" class="delete-student-btn py-2 px-3 bg-white hover:bg-rose-600 hover:text-white text-rose-700 rounded-xl font-bold text-xs border border-rose-300 shadow-2xs transition-all flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer">
+                      <i class="fa-solid fa-trash text-xs"></i>
+                      <span>Hapus</span>
+                    </button>
+                  </div>
+                </div>
+              `}).join('')}
+            </div>
+
+            <!-- TAMPILAN TABLE: DESKTOP & TABLET (Layar Lebih Lebar) -->
+            <div class="hidden sm:block overflow-x-auto max-h-96 overflow-y-auto rounded-2xl border border-slate-100">
+              <table id="settings-students-table" class="w-full text-left text-xs whitespace-nowrap">
+                <thead class="bg-emerald-50 text-emerald-900 font-bold sticky top-0 z-10">
+                  <tr>
+                    <th class="p-3">Nama (Username)</th>
+                    <th class="p-3">Kelas</th>
+                    <th class="p-3">Kata Sandi</th>
+                    <th class="p-3 text-center">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-emerald-50">
+                  ${(state.students || []).map(s => {
+                    const displayPwd = s.password || '123456';
+                    const avatar = s.avatar || ((s.gender === 'P' || (s.name && /siswi|putri|siti|nur|anisa|fatimah|rahma|ayu|alya|zahr/i.test(s.name))) ? 'avatar-siswi.jpg' : 'avatar-siswa.jpg');
+                    return `
+                    <tr class="student-item-row hover:bg-emerald-50/50 transition-colors">
+                      <td class="p-3 font-bold text-emerald-950">
+                        <div class="flex items-center gap-2.5">
+                          <div class="w-7 h-7 rounded-full overflow-hidden shrink-0 border border-emerald-300 bg-emerald-100 flex items-center justify-center shadow-xs">
+                            <img src="${avatar}" alt="${s.name}" class="w-full h-full object-cover" onerror="this.src='avatar-siswa.jpg'">
+                          </div>
+                          <div>
+                            <div class="truncate max-w-[140px] sm:max-w-xs font-bold text-emerald-950">${s.name}</div>
+                            <div class="text-[10px] text-slate-400 font-mono font-normal">ID: ${s.id}</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td class="p-3">
+                        <span class="px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800 text-[11px] font-semibold">${s.class || 'IX-A'}</span>
+                      </td>
+                      <td class="p-3">
+                        <div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-lg bg-amber-50 text-amber-900 border border-amber-200 font-mono text-[11px] font-bold">
+                          <i class="fa-solid fa-key text-[10px] text-amber-600"></i>
+                          <span>${displayPwd}</span>
+                        </div>
+                      </td>
+                      <td class="p-3 text-center">
+                        <div class="flex items-center justify-center gap-1.5">
+                          <button data-edit-student="${s.id}" class="edit-student-btn px-2.5 py-1.5 bg-amber-50 hover:bg-amber-600 hover:text-white text-amber-800 rounded-lg transition-all text-[11px] font-bold border border-amber-200 flex items-center gap-1 shadow-2xs active:scale-95 cursor-pointer" title="Edit Akun & Reset Sandi">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                            <span>Edit</span>
+                          </button>
+                          <button data-del-student="${s.id}" class="delete-student-btn px-2 py-1.5 bg-red-50 hover:bg-red-600 hover:text-white text-red-600 rounded-lg transition-all text-[11px] font-semibold border border-red-200 active:scale-95 cursor-pointer" title="Hapus Akun">
                             <i class="fa-solid fa-trash"></i>
                           </button>
-                        </td>
-                      </tr>
-                    `).join('')}
-                  </tbody>
-                </table>
-              </div>
+                        </div>
+                      </td>
+                    </tr>
+                  `}).join('')}
+                </tbody>
+              </table>
             </div>
+
+            <!-- Empty Search State -->
+            <div id="student-empty-state" class="hidden text-center py-8 space-y-2">
+              <i class="fa-solid fa-user-slash text-3xl text-slate-300"></i>
+              <p class="text-xs text-slate-500 font-medium">Tidak ada siswa yang sesuai dengan pencarian Anda</p>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- TAB 2: KELOLA AKUN GURU -->
+        <!-- ========================================== -->
+        <div id="tab-section-teachers" class="${isTeachersTab ? 'block' : 'hidden'} space-y-5 animate-fadeIn">
+          
+          <!-- Collapsible Tambah Guru Card -->
+          <div class="bg-white rounded-3xl border border-amber-100 shadow-sm overflow-hidden transition-all">
+            <div class="p-4 sm:p-5 flex items-center justify-between gap-3 bg-amber-50/50">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center text-sm font-bold shrink-0">
+                  <i class="fa-solid fa-user-shield"></i>
+                </div>
+                <div>
+                  <h3 class="font-bold text-slate-900 text-sm sm:text-base">Tambah Akun Guru Baru</h3>
+                  <p class="text-[11px] text-slate-500">Daftarkan akun pengajar untuk materi bahasa Arab</p>
+                </div>
+              </div>
+              <button id="btn-toggle-add-teacher" class="py-2 px-3.5 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer ${state.showAddTeacherForm ? 'bg-slate-200 text-slate-700 hover:bg-slate-300' : 'bg-amber-600 hover:bg-amber-700 text-white shadow-sm'}">
+                <i class="fa-solid ${state.showAddTeacherForm ? 'fa-chevron-up' : 'fa-plus'} text-[11px]"></i>
+                <span>${state.showAddTeacherForm ? 'Tutup Form' : 'Tambah Guru'}</span>
+              </button>
+            </div>
+
+            <div id="add-teacher-form-container" class="${state.showAddTeacherForm ? 'block' : 'hidden'} p-4 sm:p-6 border-t border-amber-100 bg-white">
+              <form id="add-teacher-form" class="space-y-4">
+                <div>
+                  <label class="block text-xs font-bold text-emerald-950 mb-1">Nama Lengkap Guru & Gelar <span class="text-rose-500">*</span></label>
+                  <input type="text" id="new-teacher-name" required placeholder="Contoh: Ustadzah Salma, M.Pd" class="w-full px-4 py-2.5 rounded-xl border border-amber-200 focus:ring-2 focus:ring-amber-500 text-xs sm:text-sm font-semibold">
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label class="block text-xs font-bold text-emerald-950 mb-1">NIP / NUPTK <span class="text-rose-500">*</span></label>
+                    <input type="text" id="new-teacher-nip" required placeholder="Contoh: 1988..." class="w-full px-4 py-2.5 rounded-xl border border-amber-200 focus:ring-2 focus:ring-amber-500 text-xs sm:text-sm">
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-emerald-950 mb-1">Mata Pelajaran</label>
+                    <input type="text" id="new-teacher-subject" required value="Bahasa Arab" class="w-full px-4 py-2.5 rounded-xl border border-amber-200 focus:ring-2 focus:ring-amber-500 text-xs sm:text-sm">
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-2 pt-2">
+                  <button type="button" onclick="state.showAddTeacherForm = false; render();" class="py-2.5 px-4 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold text-xs transition-all cursor-pointer">
+                    Batal
+                  </button>
+                  <button type="submit" class="flex-1 py-2.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl font-bold text-xs shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer">
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    <span>Simpan Akun Guru</span>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- Section Daftar Akun Guru -->
+          <div class="bg-white rounded-3xl p-4 sm:p-6 border border-amber-100 shadow-sm space-y-4">
+            <h3 class="font-bold text-slate-900 text-base flex items-center gap-2">
+              <i class="fa-solid fa-chalkboard-user text-amber-600"></i>
+              <span>Daftar Guru Pengampu</span>
+              <span class="text-xs font-normal text-slate-500">(${state.teachers ? state.teachers.length : 0})</span>
+            </h3>
+
+            <!-- TAMPILAN MOBILE: KARTU GURU (Anti Cut-off di HP!) -->
+            <div class="space-y-3 sm:hidden">
+              ${(state.teachers || []).map(t => {
+                const isCurrent = state.currentUser && state.currentUser.name && state.currentUser.name.toLowerCase() === t.name.toLowerCase();
+                return `
+                <div class="p-3.5 bg-amber-50/40 rounded-2xl border border-amber-200/70 flex items-center justify-between gap-3">
+                  <div class="flex items-center gap-3 min-w-0">
+                    <div class="w-10 h-10 rounded-full overflow-hidden bg-amber-100 border border-amber-300 shrink-0 flex items-center justify-center text-amber-800 text-base font-black">
+                      <img src="avatar-guru.jpg" alt="${t.name}" class="w-full h-full object-cover" onerror="this.src='avatar-guru.jpg'">
+                    </div>
+                    <div class="min-w-0">
+                      <h4 class="font-bold text-slate-900 text-sm truncate">${t.name}</h4>
+                      <p class="text-[11px] text-slate-500 font-mono">NIP: ${t.nip}</p>
+                    </div>
+                  </div>
+                  ${isCurrent ? `
+                    <span class="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 font-bold text-[10px] shrink-0">
+                      Anda
+                    </span>
+                  ` : `
+                    <button data-del-teacher="${t.id}" class="delete-teacher-btn w-8 h-8 rounded-xl bg-white text-rose-600 hover:bg-rose-600 hover:text-white border border-rose-200 flex items-center justify-center text-xs active:scale-95 transition-all shrink-0 cursor-pointer" title="Hapus Guru">
+                      <i class="fa-solid fa-trash"></i>
+                    </button>
+                  `}
+                </div>
+              `}).join('')}
+            </div>
+
+            <!-- TAMPILAN DESKTOP: TABLE GURU -->
+            <div class="hidden sm:block overflow-x-auto rounded-2xl border border-slate-100">
+              <table class="w-full text-left text-xs">
+                <thead class="bg-amber-50 text-amber-900 font-bold sticky top-0">
+                  <tr>
+                    <th class="p-3">Nama Guru</th>
+                    <th class="p-3">NIP</th>
+                    <th class="p-3 text-center">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-amber-50">
+                  ${(state.teachers || []).map(t => {
+                    const isCurrent = state.currentUser && state.currentUser.name && state.currentUser.name.toLowerCase() === t.name.toLowerCase();
+                    return `
+                    <tr class="hover:bg-amber-50/50">
+                      <td class="p-3 font-bold text-emerald-950">${t.name}</td>
+                      <td class="p-3 text-emerald-700 font-mono text-[11px]">${t.nip}</td>
+                      <td class="p-3 text-center">
+                        ${isCurrent ? `
+                          <span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold text-[10px]">
+                            Akun Anda
+                          </span>
+                        ` : `
+                          <button data-del-teacher="${t.id}" class="delete-teacher-btn px-2.5 py-1 bg-red-50 hover:bg-red-600 hover:text-white text-red-600 rounded-lg transition-all text-[11px] font-semibold border border-red-200 cursor-pointer">
+                            <i class="fa-solid fa-trash"></i>
+                          </button>
+                        `}
+                      </td>
+                    </tr>
+                  `}).join('')}
+                </tbody>
+              </table>
+            </div>
+
           </div>
         </div>
 
         <!-- MODAL EDIT DATA & KATA SANDI SISWA -->
         ${renderEditStudentModal()}
+
       </div>
     `;
   }
@@ -7579,10 +7803,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const s = state.editingStudent;
     const currentPwd = s.password || '123456';
     return `
-      <div id="edit-student-modal-overlay" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 animate-fadeIn">
-        <div class="bg-white rounded-3xl max-w-md w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-emerald-100 animate-slideUp">
+      <div id="edit-student-modal-overlay" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 animate-fadeIn">
+        <div class="bg-white rounded-t-[2.25rem] sm:rounded-3xl max-w-md w-full max-h-[90vh] overflow-y-auto shadow-2xl border-t sm:border border-emerald-100 animate-slideUp">
+          
+          <!-- Mobile Drag Handle -->
+          <div class="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mt-3 mb-1 sm:hidden"></div>
+
           <!-- Modal Header -->
-          <div class="bg-gradient-to-r from-emerald-800 via-teal-800 to-emerald-900 p-5 text-white flex items-center justify-between">
+          <div class="bg-gradient-to-r from-emerald-800 via-teal-800 to-emerald-900 p-4 sm:p-5 text-white flex items-center justify-between rounded-t-3xl sm:rounded-t-3xl">
             <div class="flex items-center gap-3">
               <div class="w-10 h-10 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-lg border border-white/20 text-emerald-200">
                 <i class="fa-solid fa-user-pen"></i>
@@ -7592,19 +7820,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 <p class="text-emerald-200 text-[11px]">Ubah nama login atau kata sandi siswa</p>
               </div>
             </div>
-            <button id="btn-close-edit-student" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors">
+            <button id="btn-close-edit-student" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors cursor-pointer">
               <i class="fa-solid fa-xmark text-sm"></i>
             </button>
           </div>
 
           <!-- Modal Body / Form -->
-          <form id="edit-student-form" class="p-6 space-y-4">
+          <form id="edit-student-form" class="p-5 sm:p-6 space-y-4">
             <!-- Alert Info -->
-            <div class="p-3.5 bg-emerald-50 rounded-2xl border border-emerald-200 text-xs text-emerald-900 flex items-start gap-2.5">
+            <div class="p-3 bg-emerald-50 rounded-2xl border border-emerald-200 text-xs text-emerald-900 flex items-start gap-2.5">
               <i class="fa-solid fa-circle-info text-emerald-600 mt-0.5 shrink-0 text-sm"></i>
               <div>
-                <p class="font-bold">Lupa User / Password?</p>
-                <p class="text-[11px] text-emerald-700 mt-0.5">Siswa dapat langsung login menggunakan <strong>Nama Akun</strong> dan <strong>Kata Sandi</strong> baru setelah Anda menyimpan perubahan ini.</p>
+                <p class="font-bold">Reset Nama & Sandi Siswa</p>
+                <p class="text-[11px] text-emerald-700 mt-0.5">Siswa dapat langsung login dengan <strong>Nama</strong> dan <strong>Kata Sandi</strong> baru setelah Anda menyimpan form ini.</p>
               </div>
             </div>
 
@@ -7614,7 +7842,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <span>ID Siswa (NISN)</span>
                 <span class="text-[10px] text-slate-400 font-normal">ID Sistem</span>
               </label>
-              <input type="text" id="edit-student-id" value="${s.id}" disabled class="w-full px-3.5 py-2 rounded-xl border border-slate-200 bg-slate-100 text-slate-500 font-mono text-xs cursor-not-allowed">
+              <input type="text" id="edit-student-id" value="${s.id}" disabled class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-100 text-slate-500 font-mono text-xs cursor-not-allowed">
             </div>
 
             <!-- Nama Siswa / Username Login -->
@@ -7623,7 +7851,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 Nama Lengkap / Username Siswa <span class="text-rose-500">*</span>
               </label>
               <div class="relative">
-                <i class="fa-solid fa-user absolute left-3.5 top-3 text-emerald-600 text-xs"></i>
+                <i class="fa-solid fa-user absolute left-3.5 top-3.5 text-emerald-600 text-xs"></i>
                 <input type="text" id="edit-student-name" required value="${s.name || ''}" placeholder="Masukkan nama siswa..." class="w-full pl-9 pr-3.5 py-2.5 rounded-xl border border-emerald-200 focus:ring-2 focus:ring-emerald-600 text-xs sm:text-sm font-semibold text-emerald-950">
               </div>
               <p class="text-[10px] text-slate-500 mt-1">Nama ini digunakan siswa saat mengisi kolom "Nama Akun" di halaman login.</p>
@@ -7633,20 +7861,20 @@ document.addEventListener('DOMContentLoaded', () => {
             <div>
               <div class="flex items-center justify-between mb-1">
                 <label class="block text-xs font-bold text-emerald-950">
-                  Kata Sandi / Password Baru <span class="text-rose-500">*</span>
+                  Kata Sandi Baru <span class="text-rose-500">*</span>
                 </label>
-                <button type="button" id="btn-quick-fill-pwd" class="text-[10px] font-bold text-emerald-700 hover:text-emerald-900 underline flex items-center gap-1">
+                <button type="button" id="btn-quick-fill-pwd" class="text-[10px] font-bold text-emerald-700 hover:text-emerald-900 underline flex items-center gap-1 cursor-pointer">
                   <i class="fa-solid fa-rotate-left"></i> Setel '123456'
                 </button>
               </div>
               <div class="relative">
-                <i class="fa-solid fa-key absolute left-3.5 top-3 text-amber-600 text-xs"></i>
+                <i class="fa-solid fa-key absolute left-3.5 top-3.5 text-amber-600 text-xs"></i>
                 <input type="text" id="edit-student-password" required value="${currentPwd}" placeholder="Kata sandi baru..." class="w-full pl-9 pr-24 py-2.5 rounded-xl border border-emerald-200 focus:ring-2 focus:ring-emerald-600 text-xs sm:text-sm font-mono font-bold text-emerald-950">
                 <div class="absolute right-1.5 top-1.5 flex items-center gap-1">
-                  <button type="button" id="btn-gen-random-pwd" class="px-2 py-1 bg-emerald-100 hover:bg-emerald-200 text-emerald-800 rounded-lg text-[10px] font-bold transition-all" title="Buat password acak">
+                  <button type="button" id="btn-gen-random-pwd" class="px-2 py-1 bg-emerald-100 hover:bg-emerald-200 text-emerald-800 rounded-lg text-[10px] font-bold transition-all cursor-pointer" title="Buat password acak">
                     Acak
                   </button>
-                  <button type="button" id="btn-toggle-edit-pwd" class="w-7 h-7 flex items-center justify-center text-slate-400 hover:text-slate-600 text-xs" title="Tampilkan/Sembunyikan">
+                  <button type="button" id="btn-toggle-edit-pwd" class="w-7 h-7 flex items-center justify-center text-slate-400 hover:text-slate-600 text-xs cursor-pointer" title="Tampilkan/Sembunyikan">
                     <i class="fa-solid fa-eye" id="icon-toggle-edit-pwd"></i>
                   </button>
                 </div>
@@ -7658,7 +7886,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <div>
               <label class="block text-xs font-bold text-emerald-950 mb-1">Kelas <span class="text-rose-500">*</span></label>
               <div class="relative">
-                <i class="fa-solid fa-chalkboard-user absolute left-3.5 top-3 text-emerald-600 text-xs"></i>
+                <i class="fa-solid fa-chalkboard-user absolute left-3.5 top-3.5 text-emerald-600 text-xs"></i>
                 <input type="text" id="edit-student-class" required value="${s.class || 'IX-A'}" placeholder="Contoh: IX-A" class="w-full pl-9 pr-3.5 py-2.5 rounded-xl border border-emerald-200 focus:ring-2 focus:ring-emerald-600 text-xs sm:text-sm font-semibold text-emerald-950">
               </div>
             </div>
@@ -7667,11 +7895,11 @@ document.addEventListener('DOMContentLoaded', () => {
             <div id="edit-student-msg" class="hidden text-xs p-3 rounded-xl"></div>
 
             <!-- Action Buttons -->
-            <div class="pt-3 flex items-center gap-2.5">
-              <button type="button" id="btn-cancel-edit-student" class="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold text-xs transition-colors">
+            <div class="pt-2 flex items-center gap-2.5">
+              <button type="button" id="btn-cancel-edit-student" class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold text-xs transition-colors cursor-pointer">
                 Batal
               </button>
-              <button type="submit" id="btn-save-edit-student" class="flex-1 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl font-bold text-xs shadow-md transition-all flex items-center justify-center gap-1.5">
+              <button type="submit" id="btn-save-edit-student" class="flex-1 py-3 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl font-bold text-xs shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer">
                 <i class="fa-solid fa-floppy-disk"></i>
                 <span>Simpan Perubahan</span>
               </button>
@@ -8311,7 +8539,39 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function attachSettingsEvents() {
-    // Add Student Form
+    // 1. Tab Switcher (Siswa <-> Guru)
+    const tabStudentsBtn = document.getElementById('tab-btn-students');
+    const tabTeachersBtn = document.getElementById('tab-btn-teachers');
+    if (tabStudentsBtn) {
+      tabStudentsBtn.addEventListener('click', () => {
+        state.settingsActiveTab = 'students';
+        render();
+      });
+    }
+    if (tabTeachersBtn) {
+      tabTeachersBtn.addEventListener('click', () => {
+        state.settingsActiveTab = 'teachers';
+        render();
+      });
+    }
+
+    // 2. Toggle Collapsible Forms
+    const toggleAddStudentBtn = document.getElementById('btn-toggle-add-student');
+    if (toggleAddStudentBtn) {
+      toggleAddStudentBtn.addEventListener('click', () => {
+        state.showAddStudentForm = !state.showAddStudentForm;
+        render();
+      });
+    }
+    const toggleAddTeacherBtn = document.getElementById('btn-toggle-add-teacher');
+    if (toggleAddTeacherBtn) {
+      toggleAddTeacherBtn.addEventListener('click', () => {
+        state.showAddTeacherForm = !state.showAddTeacherForm;
+        render();
+      });
+    }
+
+    // 3. Add Student Form
     const addStudentForm = document.getElementById('add-student-form');
     if (addStudentForm) {
       addStudentForm.addEventListener('submit', (e) => {
@@ -8347,27 +8607,81 @@ document.addEventListener('DOMContentLoaded', () => {
           if (window.FirebaseSync) {
             window.FirebaseSync.saveStudent(newStudent);
           }
-          if (typeof showToast === 'function') {
-            showToast(`Akun siswa ${name} berhasil disimpan! Kata Sandi: ${password}`, 'success');
-          }
+          state.showAddStudentForm = false;
+          showToast(`Akun siswa ${name} berhasil disimpan! Kata Sandi: ${password}`, 'success');
           render();
         }
       });
     }
 
-    // Live Search Siswa di Pengaturan
+    // 4. Live Search Siswa (Filter Cards & Table)
     const searchInput = document.getElementById('settings-student-search');
+    const clearSearchBtn = document.getElementById('btn-clear-student-search');
+    const emptyState = document.getElementById('student-empty-state');
+    
     if (searchInput) {
       searchInput.addEventListener('input', (e) => {
         const q = e.target.value.toLowerCase().trim();
-        document.querySelectorAll('#settings-students-table tbody tr').forEach(row => {
-          const text = row.textContent.toLowerCase();
-          row.style.display = text.includes(q) ? '' : 'none';
+        if (clearSearchBtn) {
+          if (q) clearSearchBtn.classList.remove('hidden');
+          else clearSearchBtn.classList.add('hidden');
+        }
+
+        let visibleCount = 0;
+        // Filter mobile cards
+        document.querySelectorAll('.student-item-card').forEach(card => {
+          const text = card.textContent.toLowerCase();
+          const match = text.includes(q);
+          card.style.display = match ? '' : 'none';
+          if (match) visibleCount++;
         });
+
+        // Filter desktop table rows
+        document.querySelectorAll('.student-item-row').forEach(row => {
+          const text = row.textContent.toLowerCase();
+          const match = text.includes(q);
+          row.style.display = match ? '' : 'none';
+        });
+
+        if (emptyState) {
+          if (visibleCount === 0 && q) {
+            emptyState.classList.remove('hidden');
+          } else {
+            emptyState.classList.add('hidden');
+          }
+        }
       });
     }
 
-    // Edit Student Buttons
+    if (clearSearchBtn && searchInput) {
+      clearSearchBtn.addEventListener('click', () => {
+        searchInput.value = '';
+        searchInput.dispatchEvent(new Event('input'));
+        searchInput.focus();
+      });
+    }
+
+    // 5. Copy Password Buttons (Ramah Guru di HP!)
+    document.querySelectorAll('.copy-pwd-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const pwd = e.currentTarget.getAttribute('data-copy-pwd');
+        if (pwd && navigator.clipboard) {
+          navigator.clipboard.writeText(pwd).then(() => {
+            if (navigator.vibrate) {
+              try { navigator.vibrate(15); } catch(err) {}
+            }
+            showToast(`Kata sandi "${pwd}" berhasil disalin ke papan klip!`, 'success');
+          }).catch(() => {
+            showToast(`Kata sandi siswa: ${pwd}`, 'info');
+          });
+        } else if (pwd) {
+          showToast(`Kata sandi siswa: ${pwd}`, 'info');
+        }
+      });
+    });
+
+    // 6. Edit Student Buttons
     document.querySelectorAll('.edit-student-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
         const studentId = e.currentTarget.getAttribute('data-edit-student');
@@ -8379,22 +8693,25 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // Delete Student Buttons
+    // 7. Delete Student Buttons
     document.querySelectorAll('.delete-student-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
         const studentId = e.currentTarget.getAttribute('data-del-student');
-        if (confirm("Apakah Anda yakin ingin menghapus akun siswa ini?")) {
+        const student = (state.students || []).find(s => String(s.id) === String(studentId));
+        const studentName = student ? student.name : 'siswa';
+        if (confirm(`Apakah Anda yakin ingin menghapus akun ${studentName}?`)) {
           state.students = state.students.filter(s => String(s.id) !== String(studentId));
           localStorage.setItem('arabic_app_students', JSON.stringify(state.students));
           if (window.FirebaseSync) {
             window.FirebaseSync.deleteStudent(studentId);
           }
+          showToast(`Akun ${studentName} berhasil dihapus.`, 'info');
           render();
         }
       });
     });
 
-    // Add Teacher Form
+    // 8. Add Teacher Form
     const addTeacherForm = document.getElementById('add-teacher-form');
     if (addTeacherForm) {
       addTeacherForm.addEventListener('submit', (e) => {
@@ -8416,12 +8733,14 @@ document.addEventListener('DOMContentLoaded', () => {
           if (window.FirebaseSync) {
             window.FirebaseSync.saveTeacher(newTeacher);
           }
+          state.showAddTeacherForm = false;
+          showToast(`Akun Guru ${name} berhasil disimpan!`, 'success');
           render();
         }
       });
     }
 
-    // Delete Teacher Buttons
+    // 9. Delete Teacher Buttons
     document.querySelectorAll('.delete-teacher-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
         const teacherId = parseInt(e.currentTarget.getAttribute('data-del-teacher'));
@@ -8431,12 +8750,13 @@ document.addEventListener('DOMContentLoaded', () => {
           if (window.FirebaseSync) {
             window.FirebaseSync.deleteTeacher(teacherId);
           }
+          showToast('Akun guru berhasil dihapus.', 'info');
           render();
         }
       });
     });
 
-    // Event interaktif modal edit siswa
+    // 10. Event interaktif modal edit siswa
     attachEditStudentModalEvents();
   }
 
