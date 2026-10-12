@@ -69,21 +69,22 @@
       text-size-adjust: 100%;
     }
 
-    /* Prevent horizontal scrolling & viewport jank on all screen sizes */
-    html, body {
-      overflow-x: hidden;
-      max-width: 100vw;
-      width: 100%;
-      overscroll-behavior-y: contain;
-      -webkit-overflow-scrolling: touch;
+    /* Prevent horizontal scrolling while preserving natural desktop mouse wheel scroll */
+    html {
+      overflow-x: clip;
       background-color: #f8faf7;
       color: #1e293b;
     }
+    body {
+      overflow-x: clip;
+      background-color: #f8faf7;
+      color: #1e293b;
+      min-height: 100vh;
+    }
 
-    /* Instant Touch Feedback: Removes 300ms mobile tap latency */
+    /* Tap Highlight Reset */
     *, *::before, *::after {
       -webkit-tap-highlight-color: transparent;
-      touch-action: manipulation;
     }
 
     /* Prevent iOS Safari auto-zoom on inputs */
