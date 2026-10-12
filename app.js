@@ -954,11 +954,278 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   window.navigateTo = navigateTo;
 
+  // =========================================================================
+  // SISTEM LOGOUT ULTRA-SMOOTH (Khusus Pengalaman Mobile / HP & Desktop)
+  // Menghilangkan confirm() bawaan browser yang kaku, menggantikannya dengan
+  // Bottom Sheet / Modal modern bersahabat jempol, haptic feedback, dan
+  // transisi keluar layar yang sangat halus tanpa jeda/kedipan visual.
+  // =========================================================================
+
+  let isLoggingOut = false;
+
+  function openLogoutConfirmModal() {
+    if (!state.currentUser || isLoggingOut) return;
+
+    // Haptic touch feedback jika didukung perangkat HP (Android/iOS)
+    if (navigator.vibrate) {
+      try { navigator.vibrate(18); } catch(e) {}
+    }
+
+    // Jika sudah ada modal logout terbuka, jangan duplikasi
+    const existingModal = document.getElementById('logout-confirm-modal');
+    if (existingModal) existingModal.remove();
+
+    const user = state.currentUser;
+    const isGuru = user.role === 'guru';
+    const avatarSrc = user.avatar 
+      ? user.avatar 
+      : (isGuru 
+          ? 'avatar-guru.jpg' 
+          : ((user.gender === 'P' || (user.name && /siswi|putri|siti|nur|anisa|fatimah|rahma|ayu|alya|zahr/i.test(user.name))) ? 'avatar-siswi.jpg' : 'avatar-siswa.jpg'));
+
+    const modal = document.createElement('div');
+    modal.id = 'logout-confirm-modal';
+    modal.className = 'fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 overflow-hidden pointer-events-auto';
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-labelledby', 'logout-modal-title');
+
+    modal.innerHTML = `
+      <!-- Backdrop Gelap dengan Efek Frosted Glass Lembut -->
+      <div id="logout-backdrop" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm opacity-0 transition-opacity duration-300 ease-out cursor-pointer"></div>
+
+      <!-- Container Modal / Mobile Bottom Sheet -->
+      <div id="logout-sheet" class="relative z-10 w-full max-w-md bg-white rounded-t-[2.25rem] sm:rounded-3xl shadow-2xl border-t sm:border border-slate-100 p-6 sm:p-7 transform translate-y-full sm:translate-y-6 sm:scale-95 opacity-0 transition-all duration-300 ease-out">
+        
+        <!-- Mobile Drag/Swipe Handle Indicator (Khusus Layar HP) -->
+        <div class="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mb-4 sm:hidden"></div>
+
+        <!-- Header Ikon Logout Elegan & Arabic Badge -->
+        <div class="flex items-center justify-between mb-4">
+          <div class="w-12 h-12 rounded-2xl bg-rose-50 border-2 border-rose-100 flex items-center justify-center text-rose-600 text-xl shadow-xs">
+            <i class="fa-solid fa-right-from-bracket"></i>
+          </div>
+          <span class="text-xs font-arabic font-bold text-rose-700 bg-rose-50 px-3 py-1 rounded-full border border-rose-100">
+            تَسْجِيلُ الْخُرُوجِ
+          </span>
+        </div>
+
+        <!-- Teks Konfirmasi -->
+        <div class="space-y-1.5 mb-5 text-left">
+          <h3 id="logout-modal-title" class="text-lg sm:text-xl font-black text-slate-900 tracking-tight">
+            Keluar dari Akun?
+          </h3>
+          <p class="text-xs sm:text-sm text-slate-500 leading-relaxed">
+            Apakah Anda yakin ingin mengakhiri sesi pembelajaran ini? Seluruh riwayat skor dan data Anda telah tersimpan dengan aman.
+          </p>
+        </div>
+
+        <!-- Kartu Identitas Akun Pengguna yang Sedang Aktif -->
+        <div class="flex items-center gap-3.5 p-3 sm:p-3.5 bg-slate-50/90 rounded-2xl border border-slate-200/80 mb-6">
+          <div class="w-11 h-11 rounded-full bg-emerald-100 p-0.5 border border-emerald-300 shrink-0 overflow-hidden">
+            <img src="${avatarSrc}" alt="${user.name}" class="w-full h-full rounded-full object-cover" onerror="this.src='avatar-siswa.jpg'">
+          </div>
+          <div class="min-w-0 flex-1">
+            <p class="text-sm font-bold text-slate-900 truncate">${user.name}</p>
+            <p class="text-xs text-slate-500 font-medium">${isGuru ? 'Guru Pengampu' : `Siswa Kelas ${user.class || 'IX-A'}`}</p>
+          </div>
+          <span class="px-2.5 py-1 bg-emerald-100/80 text-emerald-800 text-[10px] font-bold rounded-full border border-emerald-200 shrink-0">
+            Aktif
+          </span>
+        </div>
+
+        <!-- Tombol Aksi (Batal & Ya, Keluar) -->
+        <div class="grid grid-cols-2 gap-3">
+          <button id="logout-cancel-action" type="button" class="w-full py-3.5 px-4 bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-700 font-bold rounded-2xl text-xs sm:text-sm transition-all duration-150 flex items-center justify-center gap-2 cursor-pointer touch-manipulation">
+            <i class="fa-solid fa-xmark text-sm"></i>
+            <span>Batal</span>
+          </button>
+          
+          <button id="logout-confirm-action" type="button" class="w-full py-3.5 px-4 bg-gradient-to-r from-rose-600 via-rose-600 to-red-600 hover:from-rose-700 hover:to-red-700 active:scale-95 text-white font-black rounded-2xl text-xs sm:text-sm transition-all duration-150 shadow-lg shadow-rose-600/30 flex items-center justify-center gap-2 cursor-pointer group touch-manipulation">
+            <i class="fa-solid fa-right-from-bracket text-sm group-hover:-translate-x-0.5 transition-transform"></i>
+            <span>Ya, Keluar</span>
+          </button>
+        </div>
+
+      </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    const backdrop = document.getElementById('logout-backdrop');
+    const sheet = document.getElementById('logout-sheet');
+    const cancelBtn = document.getElementById('logout-cancel-action');
+    const confirmBtn = document.getElementById('logout-confirm-action');
+
+    // Trigger transisi buka dengan requestAnimationFrame agar halus 60FPS
+    requestAnimationFrame(() => {
+      if (backdrop) backdrop.classList.remove('opacity-0');
+      if (sheet) {
+        sheet.classList.remove('translate-y-full', 'sm:translate-y-6', 'sm:scale-95', 'opacity-0');
+        sheet.classList.add('translate-y-0', 'sm:translate-y-0', 'sm:scale-100', 'opacity-100');
+      }
+    });
+
+    // Event Batal
+    if (cancelBtn) {
+      cancelBtn.addEventListener('click', () => closeLogoutConfirmModal());
+    }
+    if (backdrop) {
+      backdrop.addEventListener('click', () => closeLogoutConfirmModal());
+    }
+
+    // Event Konfirmasi Logout
+    if (confirmBtn) {
+      confirmBtn.addEventListener('click', () => {
+        performLogout();
+      });
+    }
+
+    // Keyboard ESC listener
+    const escHandler = (e) => {
+      if (e.key === 'Escape') {
+        closeLogoutConfirmModal();
+        window.removeEventListener('keydown', escHandler);
+      }
+    };
+    window.addEventListener('keydown', escHandler);
+  }
+  window.openLogoutConfirmModal = openLogoutConfirmModal;
+
+  function closeLogoutConfirmModal(onClosed) {
+    const modal = document.getElementById('logout-confirm-modal');
+    if (!modal) {
+      if (typeof onClosed === 'function') onClosed();
+      return;
+    }
+
+    const backdrop = document.getElementById('logout-backdrop');
+    const sheet = document.getElementById('logout-sheet');
+
+    if (backdrop) backdrop.classList.add('opacity-0');
+    if (sheet) {
+      sheet.classList.remove('translate-y-0', 'sm:translate-y-0', 'sm:scale-100', 'opacity-100');
+      sheet.classList.add('translate-y-full', 'sm:translate-y-6', 'sm:scale-95', 'opacity-0');
+    }
+
+    setTimeout(() => {
+      if (modal.parentNode) modal.parentNode.removeChild(modal);
+      if (typeof onClosed === 'function') onClosed();
+    }, 280);
+  }
+  window.closeLogoutConfirmModal = closeLogoutConfirmModal;
+
+  function performLogout() {
+    if (isLoggingOut) return;
+    isLoggingOut = true;
+
+    // Haptic getar konfirmasi jika didukung HP
+    if (navigator.vibrate) {
+      try { navigator.vibrate([20, 40, 20]); } catch(e) {}
+    }
+
+    const confirmBtn = document.getElementById('logout-confirm-action');
+    const cancelBtn = document.getElementById('logout-cancel-action');
+    if (confirmBtn) {
+      confirmBtn.disabled = true;
+      confirmBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i><span>Keluar...</span>';
+    }
+    if (cancelBtn) {
+      cancelBtn.disabled = true;
+    }
+
+    // Hentikan seluruh audio & speech synthesis seketika
+    try {
+      if (window.speechSynthesis) window.speechSynthesis.cancel();
+      if (typeof cancelKalamRecording === 'function') cancelKalamRecording();
+      if (typeof stopStudentAudio === 'function') stopStudentAudio();
+      if (typeof stopArabicAudio === 'function') stopArabicAudio();
+    } catch(e) {}
+
+    // Transisi halus menutup modal & transisi keluar layar utama
+    closeLogoutConfirmModal(() => {
+      const mainEl = document.querySelector('main');
+      const bottomNav = document.getElementById('bottom-nav');
+      const bottomNavScrim = document.getElementById('bottom-nav-scrim');
+
+      // Animasi fade-out lembut pada konten utama & bottom nav
+      if (mainEl) {
+        mainEl.style.transition = 'opacity 0.22s ease-out, transform 0.22s ease-out';
+        mainEl.style.opacity = '0';
+        mainEl.style.transform = 'scale(0.98)';
+      }
+      if (bottomNav) {
+        bottomNav.style.transition = 'opacity 0.2s ease-out, transform 0.2s ease-out';
+        bottomNav.style.opacity = '0';
+        bottomNav.style.transform = 'translateY(16px)';
+      }
+      if (bottomNavScrim) {
+        bottomNavScrim.style.transition = 'opacity 0.2s ease-out';
+        bottomNavScrim.style.opacity = '0';
+      }
+
+      setTimeout(() => {
+        // Reset state sesi
+        state.currentUser = null;
+        state.currentView = 'login';
+        state.quizSubmitted = false;
+        state.quizScore = 0;
+        state.listeningQuizSubmitted = false;
+        state.listeningQuizScore = 0;
+        state.matchGameSubmitted = false;
+        state.kalamState.history = [];
+        state.isDrawerOpen = false;
+
+        localStorage.removeItem('arabic_app_user');
+
+        // Pastikan drawer tertutup jika sempat aktif
+        if (drawer) drawer.classList.add('translate-x-full');
+        if (drawerOverlay) drawerOverlay.classList.add('hidden');
+
+        // Kembalikan inline style animasi agar tidak mempengaruhi render login
+        if (mainEl) {
+          mainEl.style.transition = '';
+          mainEl.style.opacity = '';
+          mainEl.style.transform = '';
+        }
+        if (bottomNav) {
+          bottomNav.style.transition = '';
+          bottomNav.style.opacity = '';
+          bottomNav.style.transform = '';
+        }
+        if (bottomNavScrim) {
+          bottomNavScrim.style.transition = '';
+          bottomNavScrim.style.opacity = '';
+        }
+
+        try {
+          window.history.replaceState({ view: 'login' }, '', '#login');
+        } catch(e) {}
+
+        resetScrollToTop();
+        render(true);
+        resetScrollToTop();
+
+        isLoggingOut = false;
+
+        showToast('Sampai jumpa! Anda telah berhasil keluar dari akun.', 'info');
+      }, 240);
+    });
+  }
+  window.performLogout = performLogout;
+
   // Handler Terpusat Aksi Kembali (Kembali ke Beranda / Tutup Modal / Konfirmasi Keluar)
   function handleAppBack(isGesture = false) {
     if (typeof cancelKalamRecording === 'function') cancelKalamRecording();
     if (typeof stopStudentAudio === 'function') stopStudentAudio();
     if (typeof stopArabicAudio === 'function') stopArabicAudio();
+
+    // 0. Jika modal konfirmasi logout sedang terbuka, tutup modal dengan halus
+    const logoutModal = document.getElementById('logout-confirm-modal');
+    if (logoutModal) {
+      closeLogoutConfirmModal();
+      return;
+    }
 
     // 1. Jika menu samping (drawer) sedang terbuka, tutup drawer saja
     if (state.isDrawerOpen) {
@@ -1041,6 +1308,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (typeof stopStudentAudio === 'function') stopStudentAudio();
     if (typeof stopArabicAudio === 'function') stopArabicAudio();
 
+    // Jika modal konfirmasi logout terbuka saat user back di HP, cukup tutup modal
+    const logoutModal = document.getElementById('logout-confirm-modal');
+    if (logoutModal) {
+      closeLogoutConfirmModal();
+      return;
+    }
+
     // Jika drawer terbuka saat user mengusap back di HP, cukup tutup drawer
     if (state.isDrawerOpen) {
       state.isDrawerOpen = false;
@@ -1122,8 +1396,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // PENTING: Jika sudah di Beranda dan tidak ada modal/drawer yang terbuka,
       // jangan aktifkan gestur agar aktivitas di Beranda bebas hambatan
+      const logoutModal = document.getElementById('logout-confirm-modal');
       const studentModal = document.getElementById('student-detail-modal');
-      const canGoBack = state.isDrawerOpen || (studentModal && !studentModal.classList.contains('hidden')) || state.currentView !== 'dashboard';
+      const canGoBack = logoutModal || state.isDrawerOpen || (studentModal && !studentModal.classList.contains('hidden')) || state.currentView !== 'dashboard';
       if (!canGoBack) {
         isEdgeSwipeActive = false;
         return;
@@ -1206,10 +1481,11 @@ document.addEventListener('DOMContentLoaded', () => {
             <span class="w-2.5 h-2.5 rounded-full ${state.currentUser.role === 'guru' ? 'bg-amber-500' : 'bg-emerald-500'} animate-pulse"></span>
             <span class="truncate max-w-[150px] lg:max-w-none">${state.currentUser.name} (${state.currentUser.role === 'guru' ? 'Guru' : 'Siswa'})</span>
           </div>
-          <div class="flex md:hidden items-center gap-1.5 bg-emerald-50 text-emerald-800 border border-emerald-200 px-2.5 py-1 rounded-full text-[11px] font-bold shadow-2xs">
+          <button id="mobile-header-user-btn" onclick="navigateTo('profile')" class="flex md:hidden items-center gap-1.5 bg-emerald-50 hover:bg-emerald-100 active:scale-95 text-emerald-800 border border-emerald-200 px-2.5 py-1 rounded-full text-[11px] font-bold shadow-2xs transition-all cursor-pointer touch-manipulation" title="Buka Profil & Logout">
             <span class="w-2 h-2 rounded-full ${state.currentUser.role === 'guru' ? 'bg-amber-500' : 'bg-emerald-500'}"></span>
             <span>${state.currentUser.role === 'guru' ? 'Guru' : 'Siswa'}</span>
-          </div>
+            <i class="fa-solid fa-chevron-right text-[9px] text-emerald-600/70"></i>
+          </button>
         `;
       } else {
         userBadge.innerHTML = '';
@@ -1242,7 +1518,7 @@ document.addEventListener('DOMContentLoaded', () => {
         </button>
       `).join('') + `
         <div class="pt-3 mt-3 border-t border-emerald-100">
-          <button id="logout-btn" class="w-full flex items-center justify-end gap-2.5 px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl font-medium text-red-600 hover:bg-red-50 transition-all">
+          <button id="logout-btn" class="w-full flex items-center justify-end gap-2.5 px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl font-medium text-red-600 hover:bg-red-50 active:scale-95 transition-all cursor-pointer touch-manipulation">
             <span class="text-xs sm:text-sm font-semibold">تسجيل الخروج (Logout)</span>
             <i class="fa-solid fa-right-from-bracket w-5 text-center shrink-0"></i>
           </button>
@@ -1259,21 +1535,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const logoutBtn = document.getElementById('logout-btn');
       if (logoutBtn) {
-        logoutBtn.addEventListener('click', () => {
-          state.currentUser = null;
-          state.currentView = 'login';
-          state.quizSubmitted = false;
-          state.quizScore = 0;
-          state.listeningQuizSubmitted = false;
-          state.listeningQuizScore = 0;
-          state.matchGameSubmitted = false;
-          state.kalamState.history = [];
-          localStorage.removeItem('arabic_app_user');
+        logoutBtn.addEventListener('click', (e) => {
+          e.preventDefault();
           toggleDrawer(false);
-          try {
-            window.history.replaceState({ view: 'login' }, '', '#login');
-          } catch(e) {}
-          render();
+          openLogoutConfirmModal();
         });
       }
     }
@@ -7043,12 +7308,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         <!-- CARD 4: TOMBOL LOGOUT MERAH (تسجيل الخروج) -->
         <div class="pt-4">
-          <button id="profile-logout-btn" class="w-full py-4 px-6 bg-rose-600 hover:bg-rose-700 active:bg-rose-800 text-white font-black rounded-2xl sm:rounded-3xl shadow-xl shadow-rose-600/25 transition-all text-sm sm:text-base flex items-center justify-center gap-3 cursor-pointer group hover:scale-[1.01]">
+          <button id="profile-logout-btn" class="w-full py-4 px-6 bg-gradient-to-r from-rose-600 via-rose-600 to-red-600 hover:from-rose-700 hover:to-red-700 active:scale-[0.98] text-white font-black rounded-2xl sm:rounded-3xl shadow-xl shadow-rose-600/25 transition-all duration-150 text-sm sm:text-base flex items-center justify-center gap-3 cursor-pointer group touch-manipulation">
             <i class="fa-solid fa-right-from-bracket text-lg group-hover:-translate-x-1 transition-transform"></i>
             <span>Logout (تسجيل الخروج)</span>
           </button>
           <p class="text-center text-[11px] text-slate-400 mt-2">
-            Klik tombol di atas untuk keluar dari sesi akun Anda dengan aman.
+            Sentuh tombol di atas untuk keluar dari sesi akun Anda dengan aman.
           </p>
         </div>
       </div>
@@ -7058,23 +7323,9 @@ document.addEventListener('DOMContentLoaded', () => {
   function attachProfileEvents() {
     const logoutBtn = document.getElementById('profile-logout-btn');
     if (logoutBtn) {
-      logoutBtn.addEventListener('click', () => {
-        if (confirm('Apakah Anda yakin ingin keluar dari akun (Logout)?')) {
-          state.currentUser = null;
-          state.currentView = 'login';
-          state.quizSubmitted = false;
-          state.quizScore = 0;
-          state.listeningQuizSubmitted = false;
-          state.listeningQuizScore = 0;
-          state.matchGameSubmitted = false;
-          state.kalamState.history = [];
-          localStorage.removeItem('arabic_app_user');
-          try {
-            window.history.replaceState({ view: 'login' }, '', '#login');
-          } catch(e) {}
-          render();
-          showToast('Anda telah berhasil keluar dari akun.', 'info');
-        }
+      logoutBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        openLogoutConfirmModal();
       });
     }
 
