@@ -1492,17 +1492,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (userBadge) {
       if (state.currentUser) {
         userBadge.innerHTML = `
-          <!-- Desktop Header Controls (Tablet & PC) -->
-          <div class="hidden md:flex items-center gap-2">
-            <button id="desktop-header-user-btn" onclick="navigateTo('profile')" class="flex items-center gap-2 bg-emerald-50 hover:bg-emerald-100 active:scale-95 text-emerald-800 border border-emerald-200 px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium shadow-2xs transition-all cursor-pointer group" title="Buka Profil & Statistik Akun">
-              <span class="w-2.5 h-2.5 rounded-full ${state.currentUser.role === 'guru' ? 'bg-amber-500' : 'bg-emerald-500'} animate-pulse"></span>
-              <span class="truncate max-w-[150px] lg:max-w-none font-semibold">${state.currentUser.name} (${state.currentUser.role === 'guru' ? 'Guru' : 'Siswa'})</span>
-              <i class="fa-solid fa-chevron-right text-[10px] text-emerald-600/70 group-hover:translate-x-0.5 transition-transform"></i>
-            </button>
-            <button id="desktop-header-logout-btn" onclick="openLogoutConfirmModal()" class="flex items-center gap-1.5 bg-rose-50 hover:bg-rose-100 active:scale-95 text-rose-700 hover:text-rose-800 border border-rose-200/90 px-3 py-1.5 rounded-full text-xs sm:text-sm font-bold shadow-2xs transition-all cursor-pointer group" title="Keluar dari Akun (Logout)">
-              <i class="fa-solid fa-right-from-bracket text-xs text-rose-600 group-hover:-translate-x-0.5 transition-transform"></i>
-              <span>Logout</span>
-            </button>
+          <div class="hidden md:flex items-center gap-2 bg-emerald-50 text-emerald-800 border border-emerald-200 px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium shadow-2xs">
+            <span class="w-2.5 h-2.5 rounded-full ${state.currentUser.role === 'guru' ? 'bg-amber-500' : 'bg-emerald-500'} animate-pulse"></span>
+            <span class="truncate max-w-[150px] lg:max-w-none">${state.currentUser.name} (${state.currentUser.role === 'guru' ? 'Guru' : 'Siswa'})</span>
           </div>
 
           <!-- Mobile Header User Button -->
