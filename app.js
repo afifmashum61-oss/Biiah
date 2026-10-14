@@ -1053,11 +1053,8 @@ document.addEventListener('DOMContentLoaded', () => {
         <!-- Mobile Drag/Swipe Handle Indicator (Khusus Layar HP) -->
         <div class="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mb-4 sm:hidden"></div>
 
-        <!-- Header Ikon Logout Elegan & Arabic Badge -->
-        <div class="flex items-center justify-between mb-4">
-          <div class="w-12 h-12 rounded-2xl bg-rose-50 border-2 border-rose-100 flex items-center justify-center text-rose-600 text-xl shadow-xs">
-            <i class="fa-solid fa-right-from-bracket"></i>
-          </div>
+        <!-- Header Arabic Badge -->
+        <div class="flex items-center justify-end mb-3">
           <span class="text-xs font-arabic font-bold text-rose-700 bg-rose-50 px-3 py-1 rounded-full border border-rose-100">
             تَسْجِيلُ الْخُرُوجِ
           </span>
