@@ -509,10 +509,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 3500);
   }
 
-  // Helper: Kompresi foto yang diunggah siswa agar hemat memori (Base64 JPEG ~25KB)
-  function compressImageFile(file, maxWidth = 300, maxHeight = 300, quality = 0.82) {
+  // Helper: Kompresi foto yang diunggah siswa & guru agar hemat memori & sinkron ke seluruh device (Base64 JPEG ~15KB)
+  function compressImageFile(file, size = 240, quality = 0.82) {
     return new Promise((resolve, reject) => {
-      if (!file || !file.type.startsWith('image/')) {
+      if (!file || (file.type && !file.type.startsWith('image/'))) {
         return reject(new Error('File yang dipilih bukan gambar valid.'));
       }
       const reader = new FileReader();
@@ -521,24 +521,18 @@ document.addEventListener('DOMContentLoaded', () => {
         const img = new Image();
         img.onerror = () => reject(new Error('Gagal memuat gambar.'));
         img.onload = () => {
-          let width = img.width;
-          let height = img.height;
-          if (width > height) {
-            if (width > maxWidth) {
-              height = Math.round((height * maxWidth) / width);
-              width = maxWidth;
-            }
-          } else {
-            if (height > maxHeight) {
-              width = Math.round((width * maxHeight) / height);
-              height = maxHeight;
-            }
-          }
+          const minDim = Math.min(img.width, img.height);
+          const sx = (img.width - minDim) / 2;
+          const sy = (img.height - minDim) / 2;
+          const targetSize = Math.min(size, minDim);
+
           const canvas = document.createElement('canvas');
-          canvas.width = width;
-          canvas.height = height;
+          canvas.width = targetSize;
+          canvas.height = targetSize;
           const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, width, height);
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0, 0, targetSize, targetSize);
+          ctx.drawImage(img, sx, sy, minDim, minDim, 0, 0, targetSize, targetSize);
           resolve(canvas.toDataURL('image/jpeg', quality));
         };
         img.src = e.target.result;
@@ -556,6 +550,35 @@ document.addEventListener('DOMContentLoaded', () => {
     learningSyncChannel.onmessage = (event) => {
       const msg = event.data;
       if (!msg) return;
+
+      if (msg.type === 'AVATAR_UPDATED') {
+        if (state.currentUser && (
+          (msg.id && String(state.currentUser.id) === String(msg.id)) ||
+          (msg.name && state.currentUser.name && msg.name.trim().toLowerCase() === state.currentUser.name.trim().toLowerCase())
+        )) {
+          state.currentUser.avatar = msg.avatar;
+          localStorage.setItem('arabic_app_user', JSON.stringify(state.currentUser));
+          if (msg.role === 'siswa' && Array.isArray(state.students)) {
+            const s = state.students.find(st => (msg.id && String(st.id) === String(msg.id)) || (st.name && st.name.trim().toLowerCase() === msg.name.trim().toLowerCase()));
+            if (s) {
+              s.avatar = msg.avatar;
+              localStorage.setItem('arabic_app_students', JSON.stringify(state.students));
+            }
+          } else if (msg.role === 'guru' && Array.isArray(state.teachers)) {
+            const t = state.teachers.find(tc => (msg.id && String(tc.id) === String(msg.id)) || (tc.name && tc.name.trim().toLowerCase() === msg.name.trim().toLowerCase()));
+            if (t) {
+              t.avatar = msg.avatar;
+              localStorage.setItem('arabic_app_teachers', JSON.stringify(state.teachers));
+            }
+          }
+          if (state.currentView === 'profile' || state.currentView === 'dashboard') {
+            render();
+          } else if (typeof renderNavigation === 'function') {
+            renderNavigation();
+          }
+        }
+      }
+
       if (msg.type === 'NEW_SUBMISSION') {
         if (msg.submission) {
           if (!state.submissions) state.submissions = [];
@@ -609,11 +632,28 @@ document.addEventListener('DOMContentLoaded', () => {
           if (st) {
             state.currentUser = { ...state.currentUser, ...st };
             localStorage.setItem('arabic_app_user', JSON.stringify(state.currentUser));
-            if (state.currentView === 'dashboard') render();
+            if (state.currentView === 'dashboard' || state.currentView === 'profile') render();
           }
         }
-        if (state.currentUser && state.currentUser.role === 'guru' && (state.currentView === 'students' || state.currentView === 'dashboard')) {
+        if (state.currentUser && state.currentUser.role === 'guru' && (state.currentView === 'students' || state.currentView === 'dashboard' || state.currentView === 'settings')) {
           render();
+        }
+      } catch (err) {}
+    }
+    if (e.key === 'arabic_app_teachers' && e.newValue) {
+      try {
+        state.teachers = JSON.parse(e.newValue);
+        if (state.currentUser && state.currentUser.role === 'guru') {
+          const tch = state.teachers.find(t => 
+            (state.currentUser.id && String(t.id) === String(state.currentUser.id)) ||
+            (state.currentUser.nip && t.nip && String(t.nip) === String(state.currentUser.nip)) ||
+            (t.name && state.currentUser.name && t.name.trim().toLowerCase() === state.currentUser.name.trim().toLowerCase())
+          );
+          if (tch) {
+            state.currentUser = { ...state.currentUser, ...tch };
+            localStorage.setItem('arabic_app_user', JSON.stringify(state.currentUser));
+            if (state.currentView === 'dashboard' || state.currentView === 'profile' || state.currentView === 'settings') render();
+          }
         }
       } catch (err) {}
     }
@@ -724,11 +764,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // SINKRONKAN LANGSUNG KE AKUN SISWA YANG SEDANG LOGIN (currentUser)
       if (state.currentUser && state.currentUser.role === 'siswa') {
+        if (!student.avatar && state.currentUser.avatar) {
+          student.avatar = state.currentUser.avatar;
+        }
         state.currentUser = {
           ...state.currentUser,
           id: student.id,
           name: student.name,
           class: student.class || state.currentUser.class || 'IX-A',
+          avatar: student.avatar || state.currentUser.avatar || '',
+          gender: student.gender || state.currentUser.gender || '',
           score: student.score,
           istimaScore: student.istimaScore,
           kalamScore: student.kalamScore,
@@ -1491,16 +1536,23 @@ document.addEventListener('DOMContentLoaded', () => {
     
     if (userBadge) {
       if (state.currentUser) {
+        const u = state.currentUser;
+        const isG = u.role === 'guru';
+        const navAvatar = u.avatar || (isG ? 'avatar-guru.jpg' : ((u.gender === 'P' || (u.name && /siswi|putri|siti|nur|anisa|fatimah|rahma|ayu|alya|zahr/i.test(u.name))) ? 'avatar-siswi.jpg' : 'avatar-siswa.jpg'));
         userBadge.innerHTML = `
-          <div class="hidden md:flex items-center gap-2 bg-emerald-50 text-emerald-800 border border-emerald-200 px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium shadow-2xs">
-            <span class="w-2.5 h-2.5 rounded-full ${state.currentUser.role === 'guru' ? 'bg-amber-500' : 'bg-emerald-500'} animate-pulse"></span>
-            <span class="truncate max-w-[150px] lg:max-w-none">${state.currentUser.name} (${state.currentUser.role === 'guru' ? 'Guru' : 'Siswa'})</span>
+          <div onclick="navigateTo('profile')" class="hidden md:flex items-center gap-2 bg-emerald-50 hover:bg-emerald-100/80 active:scale-95 text-emerald-800 border border-emerald-200 px-2.5 py-1 rounded-full text-xs sm:text-sm font-medium shadow-2xs transition-all cursor-pointer" title="Buka Profil Akun">
+            <div class="w-6 h-6 rounded-full overflow-hidden border border-emerald-300 bg-emerald-100 shrink-0">
+              <img src="${navAvatar}" alt="${u.name}" class="w-full h-full object-cover" onerror="this.src='${isG ? 'avatar-guru.jpg' : 'avatar-siswa.jpg'}'">
+            </div>
+            <span class="truncate max-w-[150px] lg:max-w-none font-bold">${u.name} (${isG ? 'Guru' : 'Siswa'})</span>
           </div>
 
           <!-- Mobile Header User Button -->
-          <button id="mobile-header-user-btn" onclick="navigateTo('profile')" class="flex md:hidden items-center gap-1.5 bg-emerald-50 hover:bg-emerald-100 active:scale-95 text-emerald-800 border border-emerald-200 px-2.5 py-1 rounded-full text-[11px] font-bold shadow-2xs transition-all cursor-pointer touch-manipulation" title="Buka Profil & Logout">
-            <span class="w-2 h-2 rounded-full ${state.currentUser.role === 'guru' ? 'bg-amber-500' : 'bg-emerald-500'}"></span>
-            <span>${state.currentUser.role === 'guru' ? 'Guru' : 'Siswa'}</span>
+          <button id="mobile-header-user-btn" onclick="navigateTo('profile')" class="flex md:hidden items-center gap-1.5 bg-emerald-50 hover:bg-emerald-100 active:scale-95 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded-full text-[11px] font-bold shadow-2xs transition-all cursor-pointer touch-manipulation" title="Buka Profil & Logout">
+            <div class="w-5 h-5 rounded-full overflow-hidden border border-emerald-300 bg-emerald-100 shrink-0">
+              <img src="${navAvatar}" alt="${u.name}" class="w-full h-full object-cover" onerror="this.src='${isG ? 'avatar-guru.jpg' : 'avatar-siswa.jpg'}'">
+            </div>
+            <span>${isG ? 'Guru' : 'Siswa'}</span>
             <i class="fa-solid fa-chevron-right text-[9px] text-emerald-600/70"></i>
           </button>
         `;
@@ -5765,7 +5817,7 @@ document.addEventListener('DOMContentLoaded', () => {
           class: currentClass,
           score: state.quizScore || 85,
           kahootPoints: state.kahootPoints || 9500,
-          avatar: state.currentUser.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150'
+          avatar: state.currentUser.avatar || ((state.currentUser.gender === 'P' || (state.currentUser.name && /siswi|putri|siti|nur|anisa|fatimah|rahma|ayu|alya|zahr/i.test(state.currentUser.name))) ? 'avatar-siswi.jpg' : 'avatar-siswa.jpg')
         });
       }
     }
@@ -7031,6 +7083,17 @@ document.addEventListener('DOMContentLoaded', () => {
       if (found) studentObj = found;
     }
 
+    // Ambil data guru segar dari state.teachers jika ada
+    let teacherObj = user;
+    if (isGuru && state.teachers && state.teachers.length > 0) {
+      const foundT = state.teachers.find(t => 
+        (user.id && String(t.id) === String(user.id)) || 
+        (user.nip && t.nip && String(t.nip) === String(user.nip)) || 
+        (t.name && user.name && t.name.trim().toLowerCase() === user.name.trim().toLowerCase())
+      );
+      if (foundT) teacherObj = foundT;
+    }
+
     const submissions = Array.isArray(studentObj.submissions) ? studentObj.submissions : (Array.isArray(user.submissions) ? user.submissions : []);
 
     return `
@@ -7056,7 +7119,7 @@ document.addEventListener('DOMContentLoaded', () => {
                          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
                     <span class="hidden w-full h-full text-3xl font-black text-amber-300 items-center justify-center">${user.name[0].toUpperCase()}</span>
                   ` : `
-                    <img id="profile-avatar-img" src="${user.avatar || 'avatar-guru.jpg'}" alt="${user.name}" loading="lazy" decoding="async" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+                    <img id="profile-avatar-img" src="${(teacherObj.avatar || user.avatar) || 'avatar-guru.jpg'}" alt="${user.name}" loading="lazy" decoding="async" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
                     <span class="hidden w-full h-full text-3xl font-black text-amber-300 items-center justify-center">👨‍🏫</span>
                   `}
                 </div>
@@ -7377,36 +7440,88 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
           showToast('Mengompres dan memproses foto...', 'info');
-          const dataUrl = await compressImageFile(file, 280, 280, 0.85);
+          const dataUrl = await compressImageFile(file, 240, 0.82);
 
           if (state.currentUser) {
             state.currentUser.avatar = dataUrl;
             localStorage.setItem('arabic_app_user', JSON.stringify(state.currentUser));
 
-            // Perbarui di state.students
-            if (Array.isArray(state.students)) {
-              const sIdx = state.students.findIndex(s => 
-                (state.currentUser.id && String(s.id) === String(state.currentUser.id)) ||
-                (s.name && s.name.trim().toLowerCase() === state.currentUser.name.trim().toLowerCase())
+            const isTeacher = state.currentUser.role === 'guru';
+
+            if (isTeacher) {
+              // 1. Perbarui di state.teachers
+              if (!Array.isArray(state.teachers)) state.teachers = [];
+              const tIdx = state.teachers.findIndex(t => 
+                (state.currentUser.id && String(t.id) === String(state.currentUser.id)) ||
+                (state.currentUser.nip && t.nip && String(t.nip) === String(state.currentUser.nip)) ||
+                (t.name && state.currentUser.name && t.name.trim().toLowerCase() === state.currentUser.name.trim().toLowerCase())
               );
-              if (sIdx !== -1) {
-                state.students[sIdx].avatar = dataUrl;
+              if (tIdx !== -1) {
+                state.teachers[tIdx].avatar = dataUrl;
+                if (!state.currentUser.id) state.currentUser.id = state.teachers[tIdx].id;
+              } else {
+                const newTId = state.currentUser.id || 201;
+                state.currentUser.id = newTId;
+                state.teachers.push({
+                  id: newTId,
+                  name: state.currentUser.name,
+                  nip: state.currentUser.nip || '198503152010011002',
+                  avatar: dataUrl
+                });
+              }
+              localStorage.setItem('arabic_app_teachers', JSON.stringify(state.teachers));
+
+              // 2. Sinkronisasi ke Firestore collection 'teachers'
+              if (window.FirebaseSync && typeof window.FirebaseSync.saveTeacher === 'function') {
+                await window.FirebaseSync.saveTeacher(state.currentUser);
+              }
+            } else {
+              // 1. Perbarui di state.students
+              let currentStudentObj = null;
+              if (Array.isArray(state.students)) {
+                const sIdx = state.students.findIndex(s => 
+                  (state.currentUser.id && String(s.id) === String(state.currentUser.id)) ||
+                  (s.name && state.currentUser.name && s.name.trim().toLowerCase() === state.currentUser.name.trim().toLowerCase())
+                );
+                if (sIdx !== -1) {
+                  state.students[sIdx].avatar = dataUrl;
+                  if (!state.currentUser.id) state.currentUser.id = state.students[sIdx].id;
+                  currentStudentObj = state.students[sIdx];
+                } else {
+                  currentStudentObj = { ...state.currentUser, avatar: dataUrl };
+                  state.students.push(currentStudentObj);
+                }
                 localStorage.setItem('arabic_app_students', JSON.stringify(state.students));
+              }
+
+              // 2. Sinkronisasi ke Firestore collection 'students'
+              if (window.FirebaseSync && typeof window.FirebaseSync.saveStudent === 'function') {
+                await window.FirebaseSync.saveStudent(currentStudentObj || state.currentUser);
               }
             }
 
-            // Sinkronisasi ke Firebase Cloud Firestore
-            if (window.FirebaseSync && typeof window.FirebaseSync.saveStudent === 'function') {
-              await window.FirebaseSync.saveStudent(state.currentUser);
+            // 3. Broadcast ke seluruh tab browser lain
+            if (learningSyncChannel) {
+              learningSyncChannel.postMessage({
+                type: 'AVATAR_UPDATED',
+                role: state.currentUser.role,
+                id: state.currentUser.id,
+                name: state.currentUser.name,
+                avatar: dataUrl
+              });
             }
 
-            // Tampilkan foto di UI secara instan
+            // 4. Tampilkan foto di UI secara instan
             const avatarImg = document.getElementById('profile-avatar-img');
             if (avatarImg) {
               avatarImg.src = dataUrl;
               avatarImg.style.display = 'block';
             }
-            showToast('Alhamdulillah! Foto profil berhasil diperbarui. 🎉', 'success');
+            if (typeof renderNavigation === 'function') {
+              renderNavigation();
+            }
+
+            showToast('Alhamdulillah! Foto profil berhasil disimpan & disinkronkan ke seluruh perangkat. 🎉', 'success');
           }
         } catch (err) {
           console.error("Gagal mengganti foto profil:", err);
@@ -7749,7 +7864,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="p-3.5 bg-amber-50/40 rounded-2xl border border-amber-200/70 flex items-center justify-between gap-3">
                   <div class="flex items-center gap-3 min-w-0">
                     <div class="w-10 h-10 rounded-full overflow-hidden bg-amber-100 border border-amber-300 shrink-0 flex items-center justify-center text-amber-800 text-base font-black">
-                      <img src="avatar-guru.jpg" alt="${t.name}" class="w-full h-full object-cover" onerror="this.src='avatar-guru.jpg'">
+                      <img src="${t.avatar || 'avatar-guru.jpg'}" alt="${t.name}" class="w-full h-full object-cover" onerror="this.src='avatar-guru.jpg'">
                     </div>
                     <div class="min-w-0">
                       <h4 class="font-bold text-slate-900 text-sm truncate">${t.name}</h4>
@@ -7784,7 +7899,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     const isCurrent = state.currentUser && state.currentUser.name && state.currentUser.name.toLowerCase() === t.name.toLowerCase();
                     return `
                     <tr class="hover:bg-amber-50/50">
-                      <td class="p-3 font-bold text-emerald-950">${t.name}</td>
+                      <td class="p-3 font-bold text-emerald-950">
+                        <div class="flex items-center gap-2">
+                          <div class="w-7 h-7 rounded-full overflow-hidden border border-amber-300 bg-amber-100 shrink-0">
+                            <img src="${t.avatar || 'avatar-guru.jpg'}" alt="${t.name}" class="w-full h-full object-cover" onerror="this.src='avatar-guru.jpg'">
+                          </div>
+                          <span>${t.name}</span>
+                        </div>
+                      </td>
                       <td class="p-3 text-emerald-700 font-mono text-[11px]">${t.nip}</td>
                       <td class="p-3 text-center">
                         ${isCurrent ? `
@@ -8007,6 +8129,70 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const cleanInput = inputName.toLowerCase();
 
+        // 1. Live Fetch ke Firestore agar foto profil & data terbaru dari device lain langsung tersinkron
+        if (window.db) {
+          try {
+            if (submitBtn) {
+              submitBtn.disabled = true;
+              submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menghubungkan ke cloud...';
+            }
+            const [snapStudents, snapTeachers] = await Promise.all([
+              window.db.collection('students').get(),
+              window.db.collection('teachers').get()
+            ]);
+
+            if (!snapStudents.empty) {
+              const cloudStudents = [];
+              snapStudents.forEach(doc => {
+                const data = doc.data() || {};
+                cloudStudents.push({
+                  id: data.id || doc.id,
+                  name: data.name || '',
+                  class: data.class || 'IX-A',
+                  password: data.password || '',
+                  avatar: data.avatar || '',
+                  gender: data.gender || '',
+                  score: typeof data.score === 'number' ? data.score : 0,
+                  istimaScore: typeof data.istimaScore === 'number' ? data.istimaScore : 0,
+                  kalamScore: typeof data.kalamScore === 'number' ? data.kalamScore : 0,
+                  duelScore: typeof data.duelScore === 'number' ? data.duelScore : 0,
+                  matchGameScore: typeof data.matchGameScore === 'number' ? data.matchGameScore : 0,
+                  averageScore: typeof data.averageScore === 'number' ? data.averageScore : 0,
+                  progress: typeof data.progress === 'number' ? data.progress : 0,
+                  lastActive: data.lastActive || 'Aktif',
+                  submissions: Array.isArray(data.submissions) ? data.submissions : [],
+                  ...data
+                });
+              });
+              state.students = cloudStudents;
+              localStorage.setItem('arabic_app_students', JSON.stringify(cloudStudents));
+            }
+
+            if (!snapTeachers.empty) {
+              const cloudTeachers = [];
+              snapTeachers.forEach(doc => {
+                const data = doc.data() || {};
+                cloudTeachers.push({
+                  id: data.id || doc.id,
+                  name: data.name || '',
+                  nip: data.nip || '',
+                  avatar: data.avatar || '',
+                  ...data
+                });
+              });
+              state.teachers = cloudTeachers;
+              localStorage.setItem('arabic_app_teachers', JSON.stringify(cloudTeachers));
+            }
+          } catch(err) {
+            console.warn("⚠️ Live fetch login:", err);
+          } finally {
+            if (submitBtn) {
+              submitBtn.disabled = false;
+              submitBtn.innerHTML = '<span>Masuk ke Pembelajaran</span> <i class="fa-solid fa-arrow-right text-xs"></i>';
+            }
+          }
+        }
+
         // 3A. Deteksi Apakah Guru
         const matchedTeacher = (state.teachers || []).find(t => 
           t.name.toLowerCase() === cleanInput ||
@@ -8028,10 +8214,14 @@ document.addEventListener('DOMContentLoaded', () => {
           }
 
           const teacherName = matchedTeacher ? matchedTeacher.name : inputName;
+          const teacherId = matchedTeacher ? (matchedTeacher.id || 201) : 201;
+          const teacherAvatar = matchedTeacher && matchedTeacher.avatar ? matchedTeacher.avatar : '';
           state.currentUser = {
+            id: teacherId,
             name: teacherName,
             role: 'guru',
-            nip: matchedTeacher ? matchedTeacher.nip : '198503152010011002'
+            nip: matchedTeacher ? matchedTeacher.nip : '198503152010011002',
+            avatar: teacherAvatar
           };
           localStorage.setItem('arabic_app_user', JSON.stringify(state.currentUser));
           state.currentView = 'dashboard';
@@ -8047,52 +8237,6 @@ document.addEventListener('DOMContentLoaded', () => {
           s.name.toLowerCase() === cleanInput ||
           s.name.toLowerCase().includes(cleanInput)
         );
-
-        // Jika belum ditemukan di memori lokal, lakukan live fetch ke Firestore (antisipasi jika baru daftar dari HP lain)
-        if (!matchedStudent && window.db) {
-          try {
-            if (submitBtn) {
-              submitBtn.disabled = true;
-              submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Memeriksa data cloud...';
-            }
-            const snap = await window.db.collection('students').get();
-            if (!snap.empty) {
-              const cloudStudents = [];
-              snap.forEach(doc => {
-                const data = doc.data() || {};
-                cloudStudents.push({
-                  id: data.id || doc.id,
-                  name: data.name || '',
-                  class: data.class || 'IX-A',
-                  password: data.password || '',
-                  score: typeof data.score === 'number' ? data.score : 0,
-                  istimaScore: typeof data.istimaScore === 'number' ? data.istimaScore : 0,
-                  kalamScore: typeof data.kalamScore === 'number' ? data.kalamScore : 0,
-                  duelScore: typeof data.duelScore === 'number' ? data.duelScore : 0,
-                  matchGameScore: typeof data.matchGameScore === 'number' ? data.matchGameScore : 0,
-                  averageScore: typeof data.averageScore === 'number' ? data.averageScore : 0,
-                  progress: typeof data.progress === 'number' ? data.progress : 0,
-                  lastActive: data.lastActive || 'Aktif',
-                  submissions: Array.isArray(data.submissions) ? data.submissions : [],
-                  ...data
-                });
-              });
-              state.students = cloudStudents;
-              localStorage.setItem('arabic_app_students', JSON.stringify(cloudStudents));
-              matchedStudent = state.students.find(s => 
-                s.name.toLowerCase() === cleanInput ||
-                s.name.toLowerCase().includes(cleanInput)
-              );
-            }
-          } catch(err) {
-            console.warn("⚠️ Live fetch login:", err);
-          } finally {
-            if (submitBtn) {
-              submitBtn.disabled = false;
-              submitBtn.innerHTML = '<span>Masuk ke Pembelajaran</span> <i class="fa-solid fa-arrow-right text-xs"></i>';
-            }
-          }
-        }
 
         if (matchedStudent) {
           // Jika siswa sudah memiliki kata sandi tersimpan, cocokkan
@@ -10343,6 +10487,7 @@ document.addEventListener('DOMContentLoaded', () => {
       window.FirebaseSync.init(ARABIC_DATA.initialStudents, ARABIC_DATA.initialTeachers, (update) => {
         if (update.type === 'students' && update.data) {
           state.students = update.data;
+          localStorage.setItem('arabic_app_students', JSON.stringify(state.students));
 
           // 1. Sinkronisasi Realtime untuk Akun Siswa di Perangkat Manapun (HP / Komputer)
           if (state.currentUser && state.currentUser.role === 'siswa') {
@@ -10351,6 +10496,7 @@ document.addEventListener('DOMContentLoaded', () => {
               (s.name && state.currentUser.name && s.name.trim().toLowerCase() === state.currentUser.name.trim().toLowerCase())
             );
             if (freshStudent) {
+              const hasAvatarChanged = !!freshStudent.avatar && freshStudent.avatar !== state.currentUser.avatar;
               const hasScoreChanged = 
                 state.currentUser.score !== freshStudent.score ||
                 state.currentUser.istimaScore !== freshStudent.istimaScore ||
@@ -10365,6 +10511,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 id: freshStudent.id,
                 name: freshStudent.name,
                 class: freshStudent.class || state.currentUser.class || 'IX-A',
+                avatar: freshStudent.avatar || state.currentUser.avatar || '',
+                gender: freshStudent.gender || state.currentUser.gender || '',
                 score: typeof freshStudent.score === 'number' ? freshStudent.score : 0,
                 istimaScore: typeof freshStudent.istimaScore === 'number' ? freshStudent.istimaScore : 0,
                 kalamScore: typeof freshStudent.kalamScore === 'number' ? freshStudent.kalamScore : 0,
@@ -10394,8 +10542,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 localStorage.setItem('arabic_kalam_history', JSON.stringify(freshStudent.kalamHistory));
               }
 
-              if (hasScoreChanged && state.currentView === 'dashboard') {
-                render();
+              if (hasAvatarChanged || hasScoreChanged) {
+                if (state.currentView === 'dashboard' || state.currentView === 'profile') {
+                  render();
+                } else if (typeof renderNavigation === 'function') {
+                  renderNavigation();
+                }
               }
             }
           }
@@ -10422,6 +10574,35 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         } else if (update.type === 'teachers' && update.data) {
           state.teachers = update.data;
+          localStorage.setItem('arabic_app_teachers', JSON.stringify(state.teachers));
+
+          // Sinkronisasi Realtime Akun Guru jika sedang aktif di perangkat ini
+          if (state.currentUser && state.currentUser.role === 'guru') {
+            const freshTeacher = update.data.find(t => 
+              (state.currentUser.id && String(t.id) === String(state.currentUser.id)) ||
+              (state.currentUser.nip && t.nip && String(t.nip) === String(state.currentUser.nip)) ||
+              (t.name && state.currentUser.name && t.name.trim().toLowerCase() === state.currentUser.name.trim().toLowerCase())
+            );
+            if (freshTeacher) {
+              const hasAvatarChanged = !!freshTeacher.avatar && freshTeacher.avatar !== state.currentUser.avatar;
+              state.currentUser = {
+                ...state.currentUser,
+                id: freshTeacher.id || state.currentUser.id,
+                name: freshTeacher.name || state.currentUser.name,
+                nip: freshTeacher.nip || state.currentUser.nip,
+                avatar: freshTeacher.avatar || state.currentUser.avatar || ''
+              };
+              localStorage.setItem('arabic_app_user', JSON.stringify(state.currentUser));
+
+              if (hasAvatarChanged) {
+                if (state.currentView === 'profile' || state.currentView === 'dashboard' || state.currentView === 'settings') {
+                  render();
+                } else if (typeof renderNavigation === 'function') {
+                  renderNavigation();
+                }
+              }
+            }
+          }
           if (state.currentView === 'settings') {
             render();
           }

@@ -23,6 +23,15 @@ try {
       firebase.initializeApp(firebaseConfig);
     }
     db = firebase.firestore();
+    try {
+      db.enablePersistence({ synchronizeTabs: true }).catch(err => {
+        if (err.code === 'failed-precondition') {
+          console.warn("⚠️ [Firebase] Multi-tab persistence failed-precondition");
+        } else if (err.code === 'unimplemented') {
+          console.warn("⚠️ [Firebase] Browser tidak mendukung persistence");
+        }
+      });
+    } catch(pe) {}
     isFirebaseConnected = true;
     console.log("⚡ [Firebase Cloud DB] Terhubung ke Firestore: db-lomba");
   } else {
@@ -72,6 +81,8 @@ window.FirebaseSync = {
               name: data.name || '',
               class: data.class || 'IX-A',
               password: data.password || '',
+              avatar: data.avatar || '',
+              gender: data.gender || '',
               score: typeof data.score === 'number' ? data.score : 0, // Kuis Utama / Kahoot
               istimaScore: typeof data.istimaScore === 'number' ? data.istimaScore : 0, // Latihan Istima
               kalamScore: typeof data.kalamScore === 'number' ? data.kalamScore : 0, // Praktik Kalam AI
@@ -102,7 +113,10 @@ window.FirebaseSync = {
         const batchT = db.batch();
         defaultTeachers.forEach(tch => {
           const docRef = teachersCol.doc(String(tch.id));
-          batchT.set(docRef, tch);
+          batchT.set(docRef, {
+            ...tch,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+          });
         });
         await batchT.commit();
       }
@@ -111,7 +125,16 @@ window.FirebaseSync = {
         if (!querySnap.empty) {
           const cloudTeachers = [];
           querySnap.forEach(doc => {
-            cloudTeachers.push(doc.data());
+            const data = doc.data() || {};
+            cloudTeachers.push({
+              id: data.id || doc.id,
+              name: data.name || '',
+              nip: data.nip || '',
+              subject: data.subject || 'Bahasa Arab',
+              status: data.status || 'Aktif',
+              avatar: data.avatar || '',
+              ...data
+            });
           });
           localStorage.setItem('arabic_app_teachers', JSON.stringify(cloudTeachers));
           if (typeof onSyncCallback === 'function') {
@@ -179,7 +202,13 @@ window.FirebaseSync = {
       const docId = String(student.id || Date.now());
       const payload = {};
       Object.keys(student).forEach(k => {
-        if (student[k] !== undefined) payload[k] = student[k];
+        if (student[k] !== undefined) {
+          // Jangan menimpa avatar yang sudah ada di cloud jika payload hanya memiliki default atau string kosong
+          if (k === 'avatar' && (!student[k] || student[k] === 'avatar-siswa.jpg' || student[k] === 'avatar-siswi.jpg')) {
+            return;
+          }
+          payload[k] = student[k];
+        }
       });
       payload.updatedAt = firebase.firestore.FieldValue.serverTimestamp();
       await db.collection('students').doc(docId).set(payload, { merge: true });
@@ -198,10 +227,11 @@ window.FirebaseSync = {
       const batch = db.batch();
       studentsList.forEach(st => {
         const docRef = db.collection('students').doc(String(st.id));
-        batch.set(docRef, {
-          ...st,
-          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-        }, { merge: true });
+        const payload = { ...st, updatedAt: firebase.firestore.FieldValue.serverTimestamp() };
+        if (!payload.avatar || payload.avatar === 'avatar-siswa.jpg' || payload.avatar === 'avatar-siswi.jpg') {
+          delete payload.avatar;
+        }
+        batch.set(docRef, payload, { merge: true });
       });
       await batch.commit();
       console.log("☁️ [Firebase] Seluruh data siswa tersinkronisasi ke cloud!");
@@ -221,14 +251,27 @@ window.FirebaseSync = {
     }
   },
 
-  // Simpan Guru
+  // Simpan / update data Guru ke Firestore
   async saveTeacher(teacher) {
-    if (!this.isConnected() || !teacher) return;
+    if (!this.isConnected() || !teacher) return false;
     try {
-      const docId = String(teacher.id || Date.now());
-      await db.collection('teachers').doc(docId).set(teacher, { merge: true });
+      const docId = String(teacher.id || (teacher.nip ? 'tch_' + teacher.nip : 201));
+      const payload = {};
+      Object.keys(teacher).forEach(k => {
+        if (teacher[k] !== undefined) {
+          if (k === 'avatar' && (!teacher[k] || teacher[k] === 'avatar-guru.jpg')) {
+            return;
+          }
+          payload[k] = teacher[k];
+        }
+      });
+      payload.updatedAt = firebase.firestore.FieldValue.serverTimestamp();
+      await db.collection('teachers').doc(docId).set(payload, { merge: true });
+      console.log(`✅ [Firebase] Guru ${teacher.name} tersimpan ke cloud Firestore.`);
+      return true;
     } catch (err) {
       console.error("❌ Gagal simpan guru ke Firebase:", err);
+      return false;
     }
   },
 
@@ -237,6 +280,7 @@ window.FirebaseSync = {
     if (!this.isConnected()) return;
     try {
       await db.collection('teachers').doc(String(teacherId)).delete();
+      console.log(`🗑️ [Firebase] Guru ID ${teacherId} terhapus dari cloud.`);
     } catch (err) {
       console.error("❌ Gagal hapus guru dari Firebase:", err);
     }
