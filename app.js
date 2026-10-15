@@ -1677,8 +1677,8 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 'dialogue', icon: 'fa-comments', label: 'الحوار' },
         { id: 'quiz', icon: 'fa-pen-to-square', label: 'التدريبات' },
         { id: 'duelgame', icon: 'fa-bolt', label: 'مُبَارَزَةُ السَّرِيعَةِ' },
-        { id: 'leaderboard', icon: 'fa-trophy', label: 'تَرْتِيبُ الْفَصْلِ (Peringkat)' },
-        { id: 'profile', icon: 'fa-circle-user', label: 'مَلَفُّ التَّعْرِيفِ (Profil Akun)' }
+        { id: 'leaderboard', icon: 'fa-trophy', label: 'تَرْتِيبُ الْفَصْلِ' },
+        { id: 'profile', icon: 'fa-circle-user', label: 'مَلَفُّ التَّعْرِيفِ' }
       ];
 
       if (state.currentUser && state.currentUser.role === 'guru') {
