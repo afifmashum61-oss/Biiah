@@ -9981,7 +9981,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // STEP 2A: ROOM WAITING SCREEN (Host / Guest Matched Screen)
     if (duel.lobbyStep === 'create_room') {
       const isPaired = duel.guestFound;
-      const isCloud = window.FirebaseSync && window.FirebaseSync.isConnected();
       return `
         <div class="max-w-xl mx-auto bg-white rounded-[2.5rem] p-8 sm:p-10 shadow-2xl border-4 ${isPaired ? 'border-emerald-500' : 'border-amber-400'} text-center space-y-6 animate-fadeIn">
           <div class="w-20 h-20 rounded-full ${isPaired ? 'bg-emerald-100 text-emerald-600' : 'bg-amber-100 text-amber-600'} flex items-center justify-center text-4xl mx-auto shadow-inner">
@@ -10000,13 +9999,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
           <!-- Big PIN Box -->
           <div class="bg-gradient-to-br ${isPaired ? 'from-emerald-700 via-teal-800 to-emerald-900 border-emerald-300' : 'from-amber-500 via-amber-600 to-amber-700 border-amber-300'} text-white p-6 sm:p-8 rounded-3xl shadow-xl border-2 space-y-3 relative overflow-hidden">
-            <div class="flex items-center justify-between text-xs font-bold uppercase tracking-widest text-amber-200">
-              <span>KODE PIN KAMAR DUEL</span>
-              <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold ${isCloud ? 'bg-emerald-500/30 text-emerald-100 border border-emerald-400/40' : 'bg-white/20 text-white'}">
-                <i class="fa-solid fa-circle text-[8px] ${isCloud ? 'text-emerald-300 animate-pulse' : 'text-amber-200'}"></i>
-                ${isCloud ? 'Cloud Real-time' : 'Mode Lokal'}
-              </span>
-            </div>
+            <div class="text-xs font-bold uppercase tracking-widest text-amber-200">KODE PIN KAMAR DUEL</div>
             <div class="text-5xl sm:text-6xl font-black font-mono tracking-widest text-white drop-shadow-md select-all my-2">
               ${duel.roomPin}
             </div>
