@@ -333,6 +333,58 @@ document.addEventListener('DOMContentLoaded', () => {
     history.scrollRestoration = 'manual';
   }
 
+  // Helper Global: Deteksi apakah sebuah objek/nama/akun merupakan Akun Guru (Pengajar)
+  function isTeacherAccount(account) {
+    if (!account) return false;
+    // 1. Role eksplisit guru / teacher
+    if (account.role === 'guru' || account.role === 'teacher' || account.isGuru === true) {
+      return true;
+    }
+    // 2. Properti khusus guru (NIP atau mata pelajaran tanpa rombel siswa)
+    if (account.nip && !account.score && !account.class) {
+      return true;
+    }
+    const rawName = (account.name || '').trim();
+    if (!rawName) return false;
+    const clean = rawName.toLowerCase();
+
+    // 3. Nama guru pengampu utama aplikasi (Afif Ma'shum, M.Pd)
+    if (clean.includes("afif ma'shum") || clean.includes("afif mashum") || clean === "afif") {
+      return true;
+    }
+
+    // 4. Awalan gelar kehormatan guru / ustadz
+    if (/^(ustadz|ustadzah|ust|usth|guru|pengajar|bpk|ibu|pak|bu)\b/i.test(clean)) {
+      return true;
+    }
+
+    // 5. Gelar akademik guru di nama (M.Pd, S.Pd, S.Pd.I, dll)
+    if (/,?\s*(m\.pd|s\.pd|s\.pd\.i|m\.pd\.i|m\.a|lc|m\.ag)\b/i.test(clean)) {
+      return true;
+    }
+
+    // 6. Cocokkan dengan daftar guru yang terdaftar
+    const allTeachers = [
+      ...((typeof state !== 'undefined' && state && Array.isArray(state.teachers)) ? state.teachers : []),
+      ...((typeof ARABIC_DATA !== 'undefined' && Array.isArray(ARABIC_DATA.initialTeachers)) ? ARABIC_DATA.initialTeachers : [])
+    ];
+    const match = allTeachers.some(t => {
+      if (!t) return false;
+      if (t.id && account.id && String(t.id) === String(account.id)) return true;
+      if (t.name && t.name.trim().toLowerCase() === clean) return true;
+      return false;
+    });
+    if (match) return true;
+
+    // 7. Jika akun yang dicek adalah currentUser yang berperan guru
+    if (typeof state !== 'undefined' && state && state.currentUser && state.currentUser.role === 'guru') {
+      if (state.currentUser.name && state.currentUser.name.trim().toLowerCase() === clean) return true;
+      if (account.id && state.currentUser.id && String(state.currentUser.id) === String(account.id)) return true;
+    }
+
+    return false;
+  }
+
   // Global State
   const state = {
     currentUser: null, // { name, role: 'siswa'|'guru', email }
@@ -348,7 +400,9 @@ document.addEventListener('DOMContentLoaded', () => {
       if (saved) {
         try {
           const parsed = JSON.parse(saved);
-          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            return parsed.filter(s => !isTeacherAccount(s));
+          }
         } catch(e) {}
       }
       return [...ARABIC_DATA.initialStudents];
@@ -672,6 +726,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Fungsi Terpusat: Simpan Semua Nilai Latihan Soal & Game Realtime ke Akun Siswa & Akun Guru di Cloud
   function submitStudentActivity({ activityType, category = 'latihan', score, maxScore = 100, details = '', additionalData = {} }) {
+    // Akun guru TIDAK dimasukkan ke pencatatan nilai siswa, aktivitas latihan, maupun peringkat kelas
+    if (state.currentUser && (state.currentUser.role === 'guru' || isTeacherAccount(state.currentUser))) {
+      return;
+    }
+
     const studentName = state.currentUser ? state.currentUser.name : 'Siswa Tamu';
     const studentRole = state.currentUser ? state.currentUser.role : 'siswa';
 
@@ -836,6 +895,12 @@ document.addEventListener('DOMContentLoaded', () => {
   if (savedUser) {
     try {
       state.currentUser = JSON.parse(savedUser);
+      // Auto-koreksi akun guru jika sebelumnya pernah tersimpan sebagai siswa
+      if (isTeacherAccount(state.currentUser)) {
+        state.currentUser.role = 'guru';
+        delete state.currentUser.class;
+        localStorage.setItem('arabic_app_user', JSON.stringify(state.currentUser));
+      }
       const hashView = window.location.hash.replace('#', '');
       const validViews = ['dashboard', 'mufradat', 'istima', 'kalam', 'qiraah', 'qawaid', 'dialogue', 'quiz', 'duelgame', 'leaderboard', 'profile', 'students', 'settings'];
       if (hashView && validViews.includes(hashView)) {
@@ -864,19 +929,62 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  const savedStudents = localStorage.getItem('arabic_app_students');
-  if (savedStudents) {
-    try {
-      state.students = JSON.parse(savedStudents);
-    } catch (e) {}
-  }
-
   const savedTeachers = localStorage.getItem('arabic_app_teachers');
   if (savedTeachers) {
     try {
       state.teachers = JSON.parse(savedTeachers);
     } catch (e) {}
   }
+  if (!Array.isArray(state.teachers) || state.teachers.length === 0) {
+    state.teachers = [...(ARABIC_DATA.initialTeachers || [])];
+  }
+  // Pastikan Guru Utama Afif Ma'shum ada di state.teachers
+  if (!state.teachers.some(t => (t.name || '').toLowerCase().includes('afif'))) {
+    state.teachers.unshift({
+      id: 200,
+      name: "Afif Ma'shum, M.Pd",
+      nip: "198503152010011002",
+      subject: "Bahasa Arab",
+      status: "Aktif",
+      avatar: "avatar-guru.jpg"
+    });
+    localStorage.setItem('arabic_app_teachers', JSON.stringify(state.teachers));
+  }
+
+  const savedStudents = localStorage.getItem('arabic_app_students');
+  if (savedStudents) {
+    try {
+      const parsed = JSON.parse(savedStudents);
+      if (Array.isArray(parsed)) {
+        state.students = parsed.filter(s => !isTeacherAccount(s));
+      }
+    } catch (e) {}
+  }
+
+  // Fungsi Pembersihan: Memastikan akun guru tidak pernah tersimpan di daftar siswa
+  function purgeTeachersFromStudents() {
+    if (!Array.isArray(state.students)) return;
+    const removedTeachers = [];
+    state.students = state.students.filter(s => {
+      if (isTeacherAccount(s)) {
+        removedTeachers.push(s);
+        return false;
+      }
+      return true;
+    });
+    if (removedTeachers.length > 0) {
+      localStorage.setItem('arabic_app_students', JSON.stringify(state.students));
+      // Bersihkan juga dari Firestore collection 'students' jika ada
+      if (window.FirebaseSync && typeof window.FirebaseSync.deleteStudent === 'function') {
+        removedTeachers.forEach(t => {
+          if (t.id) {
+            window.FirebaseSync.deleteStudent(t.id);
+          }
+        });
+      }
+    }
+  }
+  purgeTeachersFromStudents();
 
   // DOM Elements
   const appContainer = document.getElementById('app-content');
@@ -5789,14 +5897,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 🏆 REKAP RANGKING AKHIR KELAS (Leaderboard View & Embedded Component)
   function renderClassLeaderboard(filterClass) {
-    const currentClass = (state.currentUser && state.currentUser.class) ? state.currentUser.class : 'IX-A';
+    const isTeacher = state.currentUser ? (state.currentUser.role === 'guru' || isTeacherAccount(state.currentUser)) : false;
+    const currentClass = (state.currentUser && state.currentUser.class && !isTeacher) ? state.currentUser.class : 'IX-A';
     const activeFilter = filterClass || state.leaderboardClassFilter || 'current';
     
-    let classToUse = activeFilter === 'current' ? currentClass : activeFilter;
-    let studentList = [...(state.students || [])];
+    let classToUse = activeFilter === 'current' ? (isTeacher ? 'IX-A' : currentClass) : activeFilter;
     
-    // Ensure current logged-in student is included with latest real-time points
-    if (state.currentUser && state.currentUser.role === 'siswa') {
+    // Pastikan seluruh akun guru TIDAK PERNAH dimasukkan ke dalam daftar peringkat siswa
+    let studentList = (state.students || []).filter(s => !isTeacherAccount(s));
+    
+    // Ensure current logged-in student is included with latest real-time points (HANYA UNTUK SISWA, BUKAN GURU)
+    if (state.currentUser && state.currentUser.role === 'siswa' && !isTeacher) {
       const idx = studentList.findIndex(s => 
         (state.currentUser.id && String(s.id) === String(state.currentUser.id)) ||
         (s.name && state.currentUser.name && s.name.trim().toLowerCase() === state.currentUser.name.trim().toLowerCase())
@@ -5830,9 +5941,9 @@ document.addEventListener('DOMContentLoaded', () => {
       return ptsB - ptsA;
     });
 
-    // Find current student's rank
+    // Find current student's rank (HANYA UNTUK SISWA, BUKAN GURU)
     let currentRank = -1;
-    if (state.currentUser) {
+    if (state.currentUser && !isTeacher) {
       currentRank = studentList.findIndex(s => 
         (state.currentUser.id && String(s.id) === String(state.currentUser.id)) ||
         (s.name && state.currentUser.name && s.name.trim().toLowerCase() === state.currentUser.name.trim().toLowerCase())
@@ -5874,8 +5985,26 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
         </div>
 
-        <!-- Current Student Rank Callout Banner -->
-        ${currentRank > 0 && state.currentUser ? `
+        <!-- Banner Peringkat Siswa atau Mode Pantau Guru -->
+        ${isTeacher ? `
+          <div class="bg-gradient-to-r from-emerald-600/30 via-teal-600/30 to-blue-600/30 border-2 border-emerald-400/50 rounded-2xl p-3 sm:p-4 flex items-center justify-between gap-3 shadow-lg">
+            <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
+              <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-500 text-slate-950 font-black text-lg sm:text-xl flex items-center justify-center shadow-lg shrink-0">
+                <i class="fa-solid fa-chalkboard-user"></i>
+              </div>
+              <div class="min-w-0">
+                <div class="text-[10px] sm:text-[11px] text-emerald-300 font-bold uppercase tracking-wider whitespace-nowrap">Mode Guru Pengampu</div>
+                <div class="text-sm sm:text-base font-extrabold text-white truncate">
+                  ${state.currentUser.name} <span class="text-xs font-normal text-emerald-200">(Memantau Peringkat Siswa)</span>
+                </div>
+              </div>
+            </div>
+            <div class="text-right shrink-0">
+              <div class="text-[10px] text-emerald-200 uppercase font-bold whitespace-nowrap">Total Siswa Terdata</div>
+              <div class="text-base sm:text-lg font-black text-emerald-300 font-mono whitespace-nowrap">👥 ${studentList.length} Siswa</div>
+            </div>
+          </div>
+        ` : (currentRank > 0 && state.currentUser ? `
           <div class="bg-gradient-to-r from-yellow-500/20 via-amber-500/20 to-emerald-500/20 border-2 border-yellow-400/50 rounded-2xl p-3 sm:p-4 flex items-center justify-between gap-3 shadow-lg">
             <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
               <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-yellow-400 text-yellow-950 font-black text-lg sm:text-xl flex items-center justify-center shadow-lg shrink-0">
@@ -5893,7 +6022,7 @@ document.addEventListener('DOMContentLoaded', () => {
               <div class="text-base sm:text-lg font-black text-yellow-300 font-mono whitespace-nowrap">⭐ ${(state.kahootPoints || 0).toLocaleString()}</div>
             </div>
           </div>
-        ` : ''}
+        ` : '')}
 
         <!-- Top 3 Podium Cards -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3">
@@ -5902,7 +6031,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const borderColors = ['border-yellow-400 bg-yellow-400/10', 'border-slate-300 bg-slate-300/10', 'border-amber-600 bg-amber-600/10'];
             const badgeColors = ['bg-yellow-400 text-yellow-950', 'bg-slate-200 text-slate-900', 'bg-amber-600 text-white'];
             const pts = (st.kahootPoints !== undefined) ? st.kahootPoints : (st.score ? st.score * 150 : 0);
-            const isMe = state.currentUser && (
+            const isMe = !isTeacher && state.currentUser && (
               (state.currentUser.id && String(st.id) === String(state.currentUser.id)) ||
               (st.name && state.currentUser.name && st.name.trim().toLowerCase() === state.currentUser.name.trim().toLowerCase())
             );
@@ -5946,7 +6075,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 ${studentList.map((st, idx) => {
                   const pts = (st.kahootPoints !== undefined) ? st.kahootPoints : (st.score ? st.score * 150 : 0);
                   const score = st.score || Math.round(pts / 150);
-                  const isMe = state.currentUser && (
+                  const isMe = !isTeacher && state.currentUser && (
                     (state.currentUser.id && String(st.id) === String(state.currentUser.id)) ||
                     (st.name && state.currentUser.name && st.name.trim().toLowerCase() === state.currentUser.name.trim().toLowerCase())
                   );
@@ -6314,7 +6443,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 7. STUDENTS MONITORING VIEW (Guru Only)
   function renderStudents() {
-    const students = state.students || [];
+    const students = (state.students || []).filter(s => !isTeacherAccount(s));
     const submissions = state.submissions || [];
     const activeTab = state.studentsTab || 'table';
 
@@ -7443,7 +7572,7 @@ document.addEventListener('DOMContentLoaded', () => {
             state.currentUser.avatar = dataUrl;
             localStorage.setItem('arabic_app_user', JSON.stringify(state.currentUser));
 
-            const isTeacher = state.currentUser.role === 'guru';
+            const isTeacher = state.currentUser.role === 'guru' || isTeacherAccount(state.currentUser);
 
             if (isTeacher) {
               // 1. Perbarui di state.teachers
@@ -7533,6 +7662,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const activeTab = state.settingsActiveTab || 'students';
     const isStudentsTab = activeTab === 'students';
     const isTeachersTab = activeTab === 'teachers';
+    const actualStudents = (state.students || []).filter(s => !isTeacherAccount(s));
 
     return `
       <div class="space-y-5 sm:space-y-6 max-w-6xl mx-auto px-1 sm:px-4 pb-16 animate-fadeIn">
@@ -7562,7 +7692,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="flex items-center gap-2 self-stretch sm:self-auto">
               <div class="flex-1 sm:flex-initial px-3.5 py-2 rounded-2xl bg-white/10 border border-white/15 backdrop-blur-md text-center">
                 <span class="block text-[10px] text-emerald-300 font-semibold uppercase tracking-wider">Total Siswa</span>
-                <span class="text-lg font-black text-white">${state.students ? state.students.length : 0}</span>
+                <span class="text-lg font-black text-white">${actualStudents.length}</span>
               </div>
               <div class="flex-1 sm:flex-initial px-3.5 py-2 rounded-2xl bg-white/10 border border-white/15 backdrop-blur-md text-center">
                 <span class="block text-[10px] text-amber-300 font-semibold uppercase tracking-wider">Total Guru</span>
@@ -7578,7 +7708,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <i class="fa-solid fa-users text-sm"></i>
             <span>Akun Siswa</span>
             <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${isStudentsTab ? 'bg-white/20 text-white' : 'bg-emerald-100 text-emerald-800'}">
-              ${state.students ? state.students.length : 0}
+              ${actualStudents.length}
             </span>
           </button>
           
@@ -7662,7 +7792,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <h3 class="font-bold text-slate-900 text-base flex items-center gap-2">
                   <i class="fa-solid fa-users text-emerald-600"></i>
                   <span>Daftar Siswa Terdaftar</span>
-                  <span class="text-xs font-normal text-slate-500">(${state.students ? state.students.length : 0})</span>
+                  <span class="text-xs font-normal text-slate-500">(${actualStudents.length})</span>
                 </h3>
                 <p class="text-[11px] text-slate-400">Sentuh tombol edit untuk mereset kata sandi atau memperbarui data</p>
               </div>
@@ -7679,7 +7809,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             <!-- TAMPILAN MOBILE: KARTU SISWA RESPONSIF (Anti Cut-Off di HP!) -->
             <div id="settings-student-cards-mobile" class="space-y-3 sm:hidden">
-              ${(state.students || []).map(s => {
+              ${actualStudents.map(s => {
                 const displayPwd = s.password || '123456';
                 const avatar = s.avatar || ((s.gender === 'P' || (s.name && /siswi|putri|siti|nur|anisa|fatimah|rahma|ayu|alya|zahr/i.test(s.name))) ? 'avatar-siswi.jpg' : 'avatar-siswa.jpg');
                 return `
@@ -7740,7 +7870,7 @@ document.addEventListener('DOMContentLoaded', () => {
                   </tr>
                 </thead>
                 <tbody class="divide-y divide-emerald-50">
-                  ${(state.students || []).map(s => {
+                  ${actualStudents.map(s => {
                     const displayPwd = s.password || '123456';
                     const avatar = s.avatar || ((s.gender === 'P' || (s.name && /siswi|putri|siti|nur|anisa|fatimah|rahma|ayu|alya|zahr/i.test(s.name))) ? 'avatar-siswi.jpg' : 'avatar-siswa.jpg');
                     return `
@@ -8194,14 +8324,22 @@ document.addEventListener('DOMContentLoaded', () => {
         const matchedTeacher = (state.teachers || []).find(t => 
           t.name.toLowerCase() === cleanInput ||
           t.name.toLowerCase().includes(cleanInput) ||
+          cleanInput.includes(t.name.toLowerCase()) ||
           (t.nip && t.nip.toLowerCase() === cleanInput)
         );
 
-        const isTeacherTitle = cleanInput.includes('ustadz') || cleanInput.includes('ustadzah') || cleanInput.includes('guru') || cleanInput === 'guru';
+        const isTeacherTitle = isTeacherAccount({ name: inputName }) ||
+                               cleanInput.includes('ustadz') || 
+                               cleanInput.includes('ustadzah') || 
+                               cleanInput.includes('guru') || 
+                               cleanInput === 'guru' ||
+                               cleanInput.includes("afif ma'shum") ||
+                               cleanInput.includes("afif mashum") ||
+                               cleanInput === 'afif';
 
         if (matchedTeacher || isTeacherTitle) {
-          // Verifikasi Kata Sandi Guru (Default: guru123 atau NIP guru atau password tersimpan)
-          const validPasswords = ['guru123', 'admin123'];
+          // Verifikasi Kata Sandi Guru (Default: guru123, admin123, atau password tersimpan)
+          const validPasswords = ['guru123', 'admin123', '123456', '12345'];
           if (matchedTeacher && matchedTeacher.nip) validPasswords.push(matchedTeacher.nip);
           if (matchedTeacher && matchedTeacher.password) validPasswords.push(matchedTeacher.password);
 
@@ -8211,7 +8349,7 @@ document.addEventListener('DOMContentLoaded', () => {
           }
 
           const teacherName = matchedTeacher ? matchedTeacher.name : inputName;
-          const teacherId = matchedTeacher ? (matchedTeacher.id || 201) : 201;
+          const teacherId = matchedTeacher ? (matchedTeacher.id || 200) : 200;
           const teacherAvatar = matchedTeacher && matchedTeacher.avatar ? matchedTeacher.avatar : '';
           state.currentUser = {
             id: teacherId,
@@ -8221,6 +8359,7 @@ document.addEventListener('DOMContentLoaded', () => {
             avatar: teacherAvatar
           };
           localStorage.setItem('arabic_app_user', JSON.stringify(state.currentUser));
+          purgeTeachersFromStudents();
           state.currentView = 'dashboard';
           if (window.history && window.history.replaceState) {
             try { window.history.replaceState({ view: 'dashboard', root: true }, '', '#dashboard'); } catch(e) {}
@@ -8317,6 +8456,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (regPwd.length < 3) {
           showRegAlert("Kata sandi minimal 3 karakter!", "error");
+          return;
+        }
+
+        // Cegah pendaftaran jika nama merupakan nama akun guru
+        if (isTeacherAccount({ name: regName })) {
+          showRegAlert("Nama ini terdeteksi sebagai akun Guru/Pengajar. Silakan langsung login di form Masuk (kata sandi: guru123).", "error");
           return;
         }
 
@@ -8740,6 +8885,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const password = (passwordInput ? passwordInput.value.trim() : '') || '123456';
 
         if (name && studentClass) {
+          if (isTeacherAccount({ name })) {
+            alert("Nama ini terdeteksi sebagai akun Guru/Pengajar. Silakan gunakan tab 'Kelola Akun Guru' untuk mendaftarkan akun pengajar.");
+            return;
+          }
           const isPutri = name && /siswi|putri|siti|nur|anisa|fatimah|rahma|ayu|alya|zahr/i.test(name);
           const newStudent = {
             id: customId ? parseInt(customId) || Date.now() : Date.now(),
@@ -10483,8 +10632,16 @@ document.addEventListener('DOMContentLoaded', () => {
     if (window.FirebaseSync && window.FirebaseSync.isConnected()) {
       window.FirebaseSync.init(ARABIC_DATA.initialStudents, ARABIC_DATA.initialTeachers, (update) => {
         if (update.type === 'students' && update.data) {
-          state.students = update.data;
-          localStorage.setItem('arabic_app_students', JSON.stringify(state.students));
+          const cleanStudents = update.data.filter(s => !isTeacherAccount(s));
+          state.students = cleanStudents;
+          localStorage.setItem('arabic_app_students', JSON.stringify(cleanStudents));
+
+          // Bersihkan akun guru dari Firestore jika ada yang tersimpan di students
+          update.data.forEach(s => {
+            if (isTeacherAccount(s) && window.FirebaseSync && typeof window.FirebaseSync.deleteStudent === 'function') {
+              window.FirebaseSync.deleteStudent(s.id);
+            }
+          });
 
           // 1. Sinkronisasi Realtime untuk Akun Siswa di Perangkat Manapun (HP / Komputer)
           if (state.currentUser && state.currentUser.role === 'siswa') {

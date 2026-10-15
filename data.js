@@ -965,8 +965,9 @@ const ARABIC_DATA = {
   ],
 
   initialTeachers: [
-    { id: 201, name: "Ustadz Abdullah, S.Pd.I", nip: "198503152010011002", subject: "Bahasa Arab", status: "Aktif" },
-    { id: 202, name: "Ustadzah Fatimah, M.Pd", nip: "199008202015022005", subject: "Bahasa Arab & Nahwu", status: "Aktif" }
+    { id: 200, name: "Afif Ma'shum, M.Pd", nip: "198503152010011002", subject: "Bahasa Arab", status: "Aktif", avatar: "avatar-guru.jpg" },
+    { id: 201, name: "Ustadz Abdullah, S.Pd.I", nip: "198503152010011002", subject: "Bahasa Arab", status: "Aktif", avatar: "avatar-guru.jpg" },
+    { id: 202, name: "Ustadzah Fatimah, M.Pd", nip: "199008202015022005", subject: "Bahasa Arab & Nahwu", status: "Aktif", avatar: "avatar-guru.jpg" }
   ],
 
   listening: {

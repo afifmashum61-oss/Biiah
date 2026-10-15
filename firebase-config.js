@@ -76,6 +76,21 @@ window.FirebaseSync = {
           const cloudStudents = [];
           querySnap.forEach(doc => {
             const data = doc.data() || {};
+            // Filter: Akun guru tidak boleh masuk ke koleksi atau daftar peringkat siswa
+            const nameLower = (data.name || '').toLowerCase();
+            const isGuru = data.role === 'guru' || 
+                           nameLower.includes("afif ma'shum") || 
+                           nameLower.includes("afif mashum") || 
+                           nameLower.startsWith("ustadz") || 
+                           nameLower.startsWith("ustazah") || 
+                           nameLower.startsWith("ustadzah") || 
+                           /,?\s*(m\.pd|s\.pd|s\.pd\.i|m\.pd\.i|m\.a|lc|m\.ag)\b/i.test(nameLower);
+            if (isGuru) {
+              // Jika sebelumnya pernah tersimpan di koleksi 'students', bersihkan dari cloud
+              studentsCol.doc(doc.id).delete().catch(() => {});
+              return;
+            }
+
             cloudStudents.push({
               id: data.id || doc.id || ('std_' + Date.now()),
               name: data.name || '',
@@ -198,6 +213,11 @@ window.FirebaseSync = {
   // Simpan / update data satu siswa ke Firestore
   async saveStudent(student) {
     if (!this.isConnected() || !student) return false;
+    // Cegah akun guru tersimpan ke koleksi siswa
+    const nameLower = (student.name || '').toLowerCase();
+    if (student.role === 'guru' || nameLower.includes("afif ma'shum") || nameLower.includes("afif mashum") || nameLower.startsWith('ustadz') || nameLower.startsWith('ustazah') || nameLower.startsWith('ustadzah') || /,?\s*(m\.pd|s\.pd|s\.pd\.i|m\.pd\.i|m\.a|lc|m\.ag)\b/i.test(nameLower)) {
+      return false;
+    }
     try {
       const docId = String(student.id || Date.now());
       const payload = {};
@@ -226,6 +246,10 @@ window.FirebaseSync = {
     try {
       const batch = db.batch();
       studentsList.forEach(st => {
+        const nameLower = (st.name || '').toLowerCase();
+        if (st.role === 'guru' || nameLower.includes("afif ma'shum") || nameLower.includes("afif mashum") || nameLower.startsWith('ustadz') || nameLower.startsWith('ustazah') || nameLower.startsWith('ustadzah') || /,?\s*(m\.pd|s\.pd|s\.pd\.i|m\.pd\.i|m\.a|lc|m\.ag)\b/i.test(nameLower)) {
+          return;
+        }
         const docRef = db.collection('students').doc(String(st.id));
         const payload = { ...st, updatedAt: firebase.firestore.FieldValue.serverTimestamp() };
         if (!payload.avatar || payload.avatar === 'avatar-siswa.jpg' || payload.avatar === 'avatar-siswi.jpg') {
