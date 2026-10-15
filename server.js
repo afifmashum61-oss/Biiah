@@ -4,8 +4,8 @@ const fs = require('fs');
 const path = require('path');
 const { URL } = require('url');
 
-const PORT = 3000;
-const HOST = '127.0.0.1';
+const PORT = process.env.PORT || 3000;
+const HOST = process.env.HOST || '0.0.0.0';
 const PUBLIC_DIR = __dirname;
 
 const MIME_TYPES = {
@@ -92,6 +92,14 @@ const server = http.createServer((req, res) => {
         } else {
           return res.end(JSON.stringify({ success: false, message: 'Room not found' }));
         }
+      }
+
+      // DELETE /api/duel/cancel?pin=1234 or /api/duel/room
+      if ((req.method === 'DELETE' || req.method === 'POST') && (pathname === '/api/duel/cancel' || pathname === '/api/duel/delete')) {
+        const pin = String(urlObj.searchParams.get('pin') || '');
+        if (pin) inMemoryDuelRooms.delete(pin);
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        return res.end(JSON.stringify({ success: true }));
       }
 
       // POST Endpoints

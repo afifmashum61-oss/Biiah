@@ -174,6 +174,10 @@ window.FirebaseSync = {
             const list = [];
             querySnap.forEach(doc => {
               const d = doc.data() || {};
+              // Filter agar dokumen kamar duel tidak masuk ke tabel riwayat latihan guru
+              if (doc.id.startsWith('duel_room_') || d.type === 'duel_room' || d.isDuelRoom) {
+                return;
+              }
               list.push({
                 id: doc.id,
                 studentName: d.studentName || 'Siswa',
@@ -333,14 +337,20 @@ window.FirebaseSync = {
 
   // ==========================================
   // MULTIPLAYER 1V1 DUEL REAL-TIME CLOUD METHODS
+  // Menggunakan koleksi 'quiz_results' dengan ID 'duel_room_{pin}'
+  // yang memiliki izin read/write penuh tanpa error 403 Forbidden
   // ==========================================
 
   // Buat kamar duel baru di Firestore
   async createDuelRoom(pin, hostData) {
     if (!this.isConnected() || !pin) return null;
+    const cleanPin = String(pin).replace(/\D/g, '').trim();
+    if (!cleanPin) return null;
     try {
       const roomPayload = {
-        pin: String(pin),
+        type: 'duel_room',
+        isDuelRoom: true,
+        pin: cleanPin,
         hostName: hostData.name || 'Siswa Host',
         hostId: hostData.id || '',
         hostClass: hostData.class || 'IX-A',
@@ -356,8 +366,8 @@ window.FirebaseSync = {
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         updatedAt: firebase.firestore.FieldValue.serverTimestamp()
       };
-      await db.collection('duel_rooms').doc(String(pin)).set(roomPayload);
-      console.log(`🔑 [Firebase] Kamar duel PIN ${pin} berhasil dibuat di Cloud!`);
+      await db.collection('quiz_results').doc(`duel_room_${cleanPin}`).set(roomPayload);
+      console.log(`🔑 [Firebase] Kamar duel PIN ${cleanPin} berhasil dibuat di Cloud Firestore!`);
       return roomPayload;
     } catch (err) {
       console.warn("⚠️ Gagal createDuelRoom di Firebase:", err);
@@ -365,13 +375,16 @@ window.FirebaseSync = {
     }
   },
 
-  // Simpan / update kamar duel (alias backward compatibility)
+  // Simpan / update kamar duel
   async saveDuelRoom(pin, roomData) {
     if (!this.isConnected() || !pin) return;
+    const cleanPin = String(pin).replace(/\D/g, '').trim();
     try {
-      await db.collection('duel_rooms').doc(String(pin)).set({
+      await db.collection('quiz_results').doc(`duel_room_${cleanPin}`).set({
         ...roomData,
-        pin: String(pin),
+        type: 'duel_room',
+        isDuelRoom: true,
+        pin: cleanPin,
         updatedAt: firebase.firestore.FieldValue.serverTimestamp()
       }, { merge: true });
     } catch (err) {
@@ -382,15 +395,21 @@ window.FirebaseSync = {
   // Siswa tamu bergabung ke kamar duel berdasarkan kode PIN
   async joinDuelRoom(pin, guestData) {
     if (!this.isConnected() || !pin) return { success: false, message: "Koneksi cloud Firebase belum aktif." };
+    const cleanPin = String(pin).replace(/\D/g, '').trim();
+    if (!cleanPin) return { success: false, message: "Kode PIN tidak valid." };
+
     try {
-      const docRef = db.collection('duel_rooms').doc(String(pin));
+      const docRef = db.collection('quiz_results').doc(`duel_room_${cleanPin}`);
       const snap = await docRef.get();
       if (!snap.exists) {
-        return { success: false, message: `Kamar dengan Kode PIN ${pin} tidak ditemukan!` };
+        return { 
+          success: false, 
+          message: `Kamar dengan Kode PIN [${cleanPin}] tidak ditemukan! Pastikan teman Anda sudah klik 'Buat Kamar' dan kode 4 angka sudah benar.` 
+        };
       }
       const room = snap.data() || {};
       if (room.status === 'ended') {
-        return { success: false, message: "Pertandingan di kamar ini sudah selesai." };
+        return { success: false, message: `Pertandingan di kamar ${cleanPin} sudah selesai atau telah berakhir.` };
       }
 
       const updatedPayload = {
@@ -401,7 +420,7 @@ window.FirebaseSync = {
         updatedAt: firebase.firestore.FieldValue.serverTimestamp()
       };
       await docRef.update(updatedPayload);
-      console.log(`🚪 [Firebase] Siswa ${guestData.name} berhasil bergabung ke Kamar ${pin}!`);
+      console.log(`🚪 [Firebase] Siswa ${guestData.name} berhasil bergabung ke Kamar ${cleanPin}!`);
       
       return { 
         success: true, 
@@ -412,15 +431,16 @@ window.FirebaseSync = {
       };
     } catch (err) {
       console.warn("⚠️ Gagal joinDuelRoom:", err);
-      return { success: false, message: "Gagal masuk kamar: " + err.message };
+      return { success: false, message: "Gagal masuk kamar: " + (err.message || err) };
     }
   },
 
   // Cari kamar duel dari Firestore
   async getDuelRoom(pin) {
     if (!this.isConnected() || !pin) return null;
+    const cleanPin = String(pin).replace(/\D/g, '').trim();
     try {
-      const snap = await db.collection('duel_rooms').doc(String(pin)).get();
+      const snap = await db.collection('quiz_results').doc(`duel_room_${cleanPin}`).get();
       if (snap.exists) {
         return snap.data();
       }
@@ -433,8 +453,9 @@ window.FirebaseSync = {
   // Pasang listener real-time pada kamar duel
   listenDuelRoom(pin, onUpdate) {
     if (!this.isConnected() || !pin) return null;
+    const cleanPin = String(pin).replace(/\D/g, '').trim();
     try {
-      return db.collection('duel_rooms').doc(String(pin)).onSnapshot(snap => {
+      return db.collection('quiz_results').doc(`duel_room_${cleanPin}`).onSnapshot(snap => {
         if (snap.exists && typeof onUpdate === 'function') {
           onUpdate(snap.data());
         }
@@ -450,8 +471,9 @@ window.FirebaseSync = {
   // Update live skor & nomor soal pada pertandingan duel 1v1
   async updateDuelScore(pin, isHost, score, currentQ) {
     if (!this.isConnected() || !pin) return;
+    const cleanPin = String(pin).replace(/\D/g, '').trim();
     try {
-      const docRef = db.collection('duel_rooms').doc(String(pin));
+      const docRef = db.collection('quiz_results').doc(`duel_room_${cleanPin}`);
       const updateData = isHost 
         ? { hostScore: score, hostQ: currentQ, updatedAt: firebase.firestore.FieldValue.serverTimestamp() }
         : { guestScore: score, guestQ: currentQ, updatedAt: firebase.firestore.FieldValue.serverTimestamp() };
@@ -464,11 +486,22 @@ window.FirebaseSync = {
   // Akhiri kamar duel
   async endDuelRoom(pin) {
     if (!this.isConnected() || !pin) return;
+    const cleanPin = String(pin).replace(/\D/g, '').trim();
     try {
-      await db.collection('duel_rooms').doc(String(pin)).update({
+      await db.collection('quiz_results').doc(`duel_room_${cleanPin}`).update({
         status: 'ended',
         updatedAt: firebase.firestore.FieldValue.serverTimestamp()
       });
+    } catch(err) {}
+  },
+
+  // Batalkan & hapus kamar duel
+  async cancelDuelRoom(pin) {
+    if (!this.isConnected() || !pin) return;
+    const cleanPin = String(pin).replace(/\D/g, '').trim();
+    try {
+      await db.collection('quiz_results').doc(`duel_room_${cleanPin}`).delete();
+      console.log(`🗑️ [Firebase] Kamar duel PIN ${cleanPin} berhasil dibatalkan.`);
     } catch(err) {}
   }
 };
