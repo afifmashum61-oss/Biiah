@@ -7085,8 +7085,17 @@ document.addEventListener('DOMContentLoaded', () => {
     if (headerEl) headerEl.classList.remove('hidden');
     // Footer hanya tampil di Desktop/Tablet (md:block) dan selalu disembunyikan di HP (hidden md:block)
     // agar teks hak cipta/kredit tidak bertumpuk atau mengganggu di belakang floating bottom navigation
-    if (footerEl) footerEl.className = "hidden md:block bg-white border border-emerald-100 rounded-2xl py-6 mt-12 shadow-xs";
-    if (mainEl) mainEl.className = "w-full max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8 pb-32 sm:pb-36 md:pb-12 min-h-[calc(100vh-14rem)]";
+    const isPlayingDuel = state.currentView === 'duelgame' && state.duelState && state.duelState.lobbyStep === 'playing';
+    if (footerEl) {
+      footerEl.className = isPlayingDuel ? "hidden" : "hidden md:block bg-white border border-emerald-100 rounded-2xl py-6 mt-12 shadow-xs";
+    }
+    if (mainEl) {
+      if (isPlayingDuel) {
+        mainEl.className = "w-full max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 py-1 sm:py-3 pb-20 sm:pb-8 min-h-0";
+      } else {
+        mainEl.className = "w-full max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8 pb-32 sm:pb-36 md:pb-12 min-h-[calc(100vh-14rem)]";
+      }
+    }
 
     // Kontrol tombol kembali di Header: Tampil saat membuka materi/kuis/pengaturan, sembunyi di Beranda
     if (headerBackBtn) {
@@ -9330,7 +9339,9 @@ document.addEventListener('DOMContentLoaded', () => {
       if (timerDisplay) {
         timerDisplay.textContent = `${duel.timeLeft}s`;
         if (duel.timeLeft <= 3) {
-          timerDisplay.className = 'text-2xl sm:text-3xl font-black text-rose-500 animate-ping';
+          timerDisplay.className = 'text-lg sm:text-2xl font-black text-rose-400 animate-ping leading-none mt-0.5';
+        } else {
+          timerDisplay.className = 'text-lg sm:text-2xl font-black text-amber-400 leading-none mt-0.5';
         }
       }
 
@@ -10252,74 +10263,67 @@ document.addEventListener('DOMContentLoaded', () => {
     const opponentPct = Math.min(100, Math.round((duel.scoreOpponent / (totalQ * 180)) * 100));
 
     return `
-      <div class="space-y-6 max-w-4xl mx-auto">
-        <!-- Header & Set Badge Bar -->
-        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white p-4 rounded-2xl shadow-sm border border-emerald-100">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center font-black text-xl shadow-md">
-              <i class="fa-solid fa-bolt"></i>
+      <div class="space-y-2 sm:space-y-3.5 max-w-4xl mx-auto">
+        <!-- Scoreboard vs Opponent (Compact Single-View with Integrated Top Bar & Sticky Dock) -->
+        <div class="sticky top-16 sm:top-20 z-20 bg-gradient-to-r from-emerald-900 via-teal-950 to-slate-900 rounded-2xl sm:rounded-3xl p-2.5 sm:p-4 text-white border-2 border-emerald-400 shadow-xl relative overflow-hidden backdrop-blur-md">
+          
+          <!-- Top Bar: Set Badge, Level, PIN, and Back to Menu -->
+          <div class="flex items-center justify-between text-[11px] font-bold text-emerald-200 border-b border-white/10 pb-1.5 mb-1.5 sm:mb-2">
+            <div class="flex items-center gap-1.5 min-w-0">
+              <span class="px-2 py-0.5 bg-amber-400/25 text-amber-300 rounded-full text-[10px] font-extrabold border border-amber-400/30 shrink-0">
+                ${activeSet.badge}
+              </span>
+              <span class="text-[10px] font-semibold text-emerald-200 truncate">
+                Level ${(duel.selectedSetIdx || 0) + 1}${duel.roomPin ? ' • PIN: ' + duel.roomPin : ''}
+              </span>
+              <span class="text-[10px] text-emerald-300 hidden md:inline truncate">• ${activeSet.title}</span>
             </div>
-            <div>
-              <div class="flex items-center gap-2">
-                <span class="px-2.5 py-0.5 bg-amber-100 text-amber-900 rounded-full text-[10px] font-extrabold">
-                  ${activeSet.badge}
-                </span>
-                <span class="px-2 py-0.5 bg-emerald-100 text-emerald-900 rounded-full text-[10px] font-bold">
-                  Level ${(duel.selectedSetIdx || 0) + 1}
-                </span>
-                ${duel.roomPin ? `<span class="px-2 py-0.5 bg-indigo-100 text-indigo-900 rounded-md text-[10px] font-mono font-bold">PIN: ${duel.roomPin}</span>` : ''}
-              </div>
-              <h3 class="text-base font-bold text-emerald-950">${activeSet.title}</h3>
-            </div>
+
+            <button id="btn-back-to-lobby" class="px-2.5 py-1 bg-white/10 hover:bg-white/20 active:scale-95 text-white font-bold rounded-lg text-[10px] transition-all flex items-center gap-1 shrink-0 border border-white/15 cursor-pointer">
+              <i class="fa-solid fa-arrow-left"></i> <span>Menu Level</span>
+            </button>
           </div>
 
-          <button id="btn-back-to-lobby" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition-all flex items-center gap-1.5">
-            <i class="fa-solid fa-arrow-left"></i> Menu Level
-          </button>
-        </div>
-
-        <!-- Scoreboard vs Opponent -->
-        <div class="bg-gradient-to-r from-emerald-900 via-teal-950 to-slate-900 rounded-3xl p-6 text-white border-2 border-emerald-400 shadow-2xl relative overflow-hidden">
-          <div class="grid grid-cols-3 items-center text-center relative z-10 gap-2">
+          <div class="grid grid-cols-3 items-center text-center relative z-10 gap-1 sm:gap-2">
             <!-- Player Status -->
-            <div class="text-left space-y-1">
-              <div class="flex items-center gap-2">
-                <div class="w-8 h-8 rounded-full bg-emerald-500 text-white font-bold flex items-center justify-center text-xs shadow-md">
+            <div class="text-left space-y-0.5">
+              <div class="flex items-center gap-1 sm:gap-1.5">
+                <div class="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-emerald-500 text-white font-bold flex items-center justify-center text-[10px] sm:text-xs shadow-md shrink-0">
                   ${state.currentUser ? state.currentUser.name[0].toUpperCase() : 'S'}
                 </div>
-                <div class="truncate text-xs font-bold text-emerald-200 max-w-[100px] sm:max-w-none">
+                <div class="truncate text-[11px] sm:text-xs font-bold text-emerald-200 max-w-[70px] sm:max-w-none">
                   ${state.currentUser ? state.currentUser.name : 'Siswa'}
                 </div>
               </div>
-              <div id="duel-player-score" class="text-2xl sm:text-3xl font-black text-amber-300">${duel.scorePlayer} <span class="text-xs">Pts</span></div>
-              <div class="w-full bg-black/40 rounded-full h-2 overflow-hidden border border-white/10">
+              <div id="duel-player-score" class="text-base sm:text-2xl font-black text-amber-300 leading-tight">${duel.scorePlayer} <span class="text-[9px] sm:text-xs font-bold">Pts</span></div>
+              <div class="w-full bg-black/40 rounded-full h-1 sm:h-2 overflow-hidden border border-white/10">
                 <div id="duel-player-bar" class="bg-gradient-to-r from-emerald-400 to-amber-400 h-full transition-all duration-500" style="width: ${playerPct}%"></div>
               </div>
             </div>
 
             <!-- Timer & Round -->
             <div class="flex flex-col items-center justify-center">
-              <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-black/50 border-4 border-amber-400 flex flex-col items-center justify-center shadow-inner">
-                <span class="text-[9px] uppercase font-bold text-amber-300">WAKTU</span>
-                <span id="duel-timer-seconds" class="text-2xl sm:text-3xl font-black text-amber-400">${duel.timeLeft}s</span>
+              <div class="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-black/60 border-2 sm:border-3 ${duel.timeLeft <= 3 ? 'border-rose-400 animate-pulse' : 'border-amber-400'} flex flex-col items-center justify-center shadow-inner py-0.5">
+                <span class="text-[7px] sm:text-[9px] uppercase font-bold text-amber-300 leading-none">WAKTU</span>
+                <span id="duel-timer-seconds" class="text-lg sm:text-2xl font-black ${duel.timeLeft <= 3 ? 'text-rose-400 animate-ping' : 'text-amber-400'} leading-none mt-0.5">${duel.timeLeft}s</span>
               </div>
-              <div class="text-[11px] font-bold text-emerald-300 mt-2 bg-black/30 px-3 py-0.5 rounded-full border border-white/10">
+              <div class="text-[9px] sm:text-[11px] font-bold text-emerald-300 mt-1 bg-black/40 px-2 sm:px-2.5 py-0.5 rounded-full border border-white/10 leading-none whitespace-nowrap">
                 Ronde ${duel.currentQuestionIdx + 1} / ${totalQ}
               </div>
             </div>
 
             <!-- Opponent Status -->
-            <div class="text-right space-y-1">
-              <div class="flex items-center justify-end gap-2">
-                <div class="truncate text-xs font-bold text-indigo-200 max-w-[100px] sm:max-w-none">
+            <div class="text-right space-y-0.5">
+              <div class="flex items-center justify-end gap-1 sm:gap-1.5">
+                <div class="truncate text-[11px] sm:text-xs font-bold text-indigo-200 max-w-[70px] sm:max-w-none">
                   ${duel.opponentName}
                 </div>
-                <div class="w-8 h-8 rounded-full bg-indigo-600 text-white font-bold flex items-center justify-center text-xs shadow-md">
+                <div class="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-indigo-600 text-white font-bold flex items-center justify-center text-[10px] sm:text-xs shadow-md shrink-0">
                   ${duel.mode === 'ai' ? (activeSet.botAvatar || '🤖') : (duel.opponentName[0] || 'L')}
                 </div>
               </div>
-              <div id="duel-opponent-score" class="text-2xl sm:text-3xl font-black text-white">${duel.scoreOpponent} <span class="text-xs">Pts</span></div>
-              <div class="w-full bg-black/40 rounded-full h-2 overflow-hidden border border-white/10">
+              <div id="duel-opponent-score" class="text-base sm:text-2xl font-black text-white leading-tight">${duel.scoreOpponent} <span class="text-[9px] sm:text-xs font-bold">Pts</span></div>
+              <div class="w-full bg-black/40 rounded-full h-1 sm:h-2 overflow-hidden border border-white/10">
                 <div id="duel-opponent-bar" class="bg-gradient-to-r from-indigo-400 to-rose-400 h-full transition-all duration-500" style="width: ${opponentPct}%"></div>
               </div>
             </div>
@@ -10327,35 +10331,35 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
 
         <!-- Question Card Arena -->
-        <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-lg border border-emerald-100 space-y-6">
-          <div class="flex items-center justify-between border-b border-emerald-50 pb-4">
-            <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-800 rounded-full text-xs font-bold border border-emerald-200">
-              <i class="fa-solid fa-font"></i> Soal Qawa'id: ${activeSet.badge}
+        <div class="bg-white rounded-2xl sm:rounded-3xl p-3 sm:p-5 shadow-lg border border-emerald-100 space-y-2 sm:space-y-3">
+          <div class="flex items-center justify-between border-b border-emerald-50 pb-2">
+            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 bg-emerald-50 text-emerald-800 rounded-full text-[10px] sm:text-xs font-bold border border-emerald-200">
+              <i class="fa-solid fa-font text-[9px]"></i> Soal Qawa'id: ${activeSet.badge}
             </span>
-            <button id="duel-tts-btn" class="px-3.5 py-1.5 bg-emerald-100 hover:bg-emerald-200 text-emerald-900 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5">
-              <i class="fa-solid fa-volume-high"></i> Pelafalan Audio
+            <button id="duel-tts-btn" class="px-2.5 py-1 bg-emerald-100 hover:bg-emerald-200 active:scale-95 text-emerald-900 rounded-lg text-[10px] sm:text-xs font-bold transition-all flex items-center gap-1 cursor-pointer">
+              <i class="fa-solid fa-volume-high text-[10px]"></i> Pelafalan Audio
             </button>
           </div>
 
-          <div class="py-2 text-center">
-            <h2 class="text-xl sm:text-2xl font-bold text-emerald-950 font-sans leading-relaxed text-center" dir="auto">
+          <div class="py-0.5 sm:py-1 text-center">
+            <h2 class="text-sm sm:text-lg md:text-xl font-bold text-emerald-950 font-sans leading-snug sm:leading-relaxed text-center" dir="auto">
               ${currentQ.question}
             </h2>
           </div>
 
           <!-- Options Grid -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
             ${currentQ.options.map((opt, idx) => {
               let btnStyle = "bg-emerald-50/50 border-emerald-200 text-emerald-950 hover:bg-emerald-100 hover:border-emerald-400";
               let statusIcon = "";
 
               if (duel.isSubmitted) {
                 if (idx === currentQ.answer) {
-                  btnStyle = "bg-emerald-600 text-white border-emerald-700 shadow-md font-bold scale-[1.02]";
-                  statusIcon = `<i class="fa-solid fa-circle-check text-emerald-200 text-xl ml-auto"></i>`;
+                  btnStyle = "bg-emerald-600 text-white border-emerald-700 shadow-md font-bold";
+                  statusIcon = `<i class="fa-solid fa-circle-check text-emerald-200 text-base sm:text-xl ml-auto shrink-0"></i>`;
                 } else if (idx === duel.selectedAnswer) {
                   btnStyle = "bg-rose-500 text-white border-rose-600 shadow-md font-bold";
-                  statusIcon = `<i class="fa-solid fa-circle-xmark text-rose-200 text-xl ml-auto"></i>`;
+                  statusIcon = `<i class="fa-solid fa-circle-xmark text-rose-200 text-base sm:text-xl ml-auto shrink-0"></i>`;
                 } else {
                   btnStyle = "bg-slate-100 text-slate-400 border-slate-200 opacity-60";
                 }
@@ -10365,13 +10369,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 <button 
                   data-opt-idx="${idx}" 
                   ${duel.isSubmitted ? 'disabled' : ''}
-                  class="duel-option-btn w-full p-4 rounded-2xl border-2 text-left font-semibold text-sm sm:text-base transition-all flex items-center justify-between gap-3 ${btnStyle}"
+                  class="duel-option-btn w-full py-2.5 px-3 sm:py-3 sm:px-4 rounded-xl sm:rounded-2xl border-2 text-left font-semibold text-xs sm:text-sm md:text-base transition-all flex items-center justify-between gap-2.5 active:scale-98 cursor-pointer ${btnStyle}"
                 >
-                  <div class="flex items-center gap-3">
-                    <span class="w-8 h-8 rounded-xl bg-white/20 border border-current flex items-center justify-center text-xs font-black shrink-0">
+                  <div class="flex items-center gap-2 sm:gap-3 min-w-0">
+                    <span class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg sm:rounded-xl bg-white/30 border border-current flex items-center justify-center text-[11px] sm:text-xs font-black shrink-0">
                       ${String.fromCharCode(65 + idx)}
                     </span>
-                    <span class="text-base sm:text-lg font-medium" dir="auto">${opt}</span>
+                    <span class="text-xs sm:text-sm md:text-base font-semibold leading-snug line-clamp-2 break-words" dir="auto">${opt}</span>
                   </div>
                   ${statusIcon}
                 </button>
@@ -10381,14 +10385,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
           <!-- Explanation Callout -->
           ${duel.isSubmitted ? `
-            <div class="p-4 rounded-2xl ${duel.selectedAnswer === currentQ.answer ? 'bg-emerald-50 border border-emerald-200 text-emerald-900' : 'bg-rose-50 border border-rose-200 text-rose-900'} space-y-1 animate-fade-in">
-              <div class="flex items-center gap-2 font-bold text-xs uppercase tracking-wide">
+            <div class="p-2.5 sm:p-3 rounded-xl sm:rounded-2xl ${duel.selectedAnswer === currentQ.answer ? 'bg-emerald-50 border border-emerald-200 text-emerald-900' : 'bg-rose-50 border border-rose-200 text-rose-900'} space-y-1 animate-fade-in">
+              <div class="flex items-center gap-1.5 font-bold text-[11px] sm:text-xs uppercase tracking-wide">
                 ${duel.selectedAnswer === currentQ.answer ? '✨ TEPAT SEKALI!' : '❌ KURANG TEPAT'}
               </div>
-              <div class="text-xs sm:text-sm leading-relaxed">
+              <div class="text-[11px] sm:text-xs leading-relaxed line-clamp-3">
                 ${currentQ.explanation}
               </div>
-              <div class="text-[11px] text-slate-500 pt-1 flex items-center gap-1 font-semibold">
+              <div class="text-[10px] text-slate-500 pt-0.5 flex items-center gap-1 font-semibold">
                 <i class="fa-solid fa-spinner animate-spin"></i>
                 <span>Menuju soal berikutnya...</span>
               </div>
